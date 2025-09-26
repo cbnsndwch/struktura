@@ -456,19 +456,37 @@ async function createLabels(): Promise<void> {
 async function createMilestones(): Promise<void> {
     console.log('🎯 Creating GitHub milestones...');
 
-    for (const milestone of MILESTONES) {
-        const command = `gh api repos/${REPO}/milestones -f title="${milestone.title}" -f description="${milestone.description}" -f due_on="${milestone.due_on}" -f state="open"`;
-        const result = execCommand(command);
+    // First, get existing milestones
+    const existingResult = execCommand(`gh api repos/${REPO}/milestones`);
+    let existingMilestones: any[] = [];
 
-        if (result.success) {
-            console.log(`✅ Created milestone: ${milestone.title}`);
-        } else if (result.error?.includes('already_exists')) {
+    if (existingResult.success && existingResult.output) {
+        try {
+            existingMilestones = JSON.parse(existingResult.output);
+        } catch {
+            existingMilestones = [];
+        }
+    }
+
+    for (const milestone of MILESTONES) {
+        const existing = existingMilestones.find(
+            m => m.title === milestone.title
+        );
+
+        if (existing) {
             console.log(`⏭️  Milestone already exists: ${milestone.title}`);
         } else {
-            console.error(
-                `❌ Failed to create milestone ${milestone.title}:`,
-                result.error
-            );
+            const command = `gh api repos/${REPO}/milestones -f title="${milestone.title}" -f description="${milestone.description}" -f due_on="${milestone.due_on}" -f state="open"`;
+            const result = execCommand(command);
+
+            if (result.success) {
+                console.log(`✅ Created milestone: ${milestone.title}`);
+            } else {
+                console.error(
+                    `❌ Failed to create milestone ${milestone.title}:`,
+                    result.error
+                );
+            }
         }
     }
 }
@@ -487,42 +505,103 @@ function getMilestoneNumber(title: string): number | null {
 }
 
 /**
- * Create GitHub issues if they don't exist
+ * Create or update GitHub issues
  */
 async function createIssues(): Promise<void> {
-    console.log('📋 Creating GitHub issues...');
+    console.log('📋 Creating/updating GitHub issues...');
+
+    // First, get existing issues
+    const existingResult = execCommand(
+        `gh issue list --repo "${REPO}" --limit 100 --json number,title`
+    );
+    let existingIssues: any[] = [];
+
+    if (existingResult.success && existingResult.output) {
+        try {
+            existingIssues = JSON.parse(existingResult.output);
+        } catch {
+            existingIssues = [];
+        }
+    }
 
     for (const issue of ISSUES) {
+        // Check if issue already exists
+        const existing = existingIssues.find(e => e.title === issue.title);
+
         // Get milestone number
         const milestoneNumber = getMilestoneNumber(issue.milestone);
 
-        // Build the gh issue create command
-        let command = `gh issue create --repo "${REPO}" --title "${issue.title}" --body "${issue.body.replace(/"/g, '\\"')}"`;
+        // Write body to temporary file to avoid command line escaping issues
+        const tempFile = path.join(__dirname, `temp-issue-${Date.now()}.md`);
+        await fs.writeFile(tempFile, issue.body, 'utf8');
 
-        // Add labels
-        if (issue.labels.length > 0) {
-            command += ` --label "${issue.labels.join(',')}"`;
-        }
+        try {
+            if (existing) {
+                console.log(
+                    `🔄 Updating existing issue: ${issue.title} (#${existing.number})`
+                );
 
-        // Add milestone
-        if (milestoneNumber) {
-            command += ` --milestone ${milestoneNumber}`;
-        }
+                // Update the existing issue body
+                const updateCommand = `gh issue edit ${existing.number} --repo "${REPO}" --body-file "${tempFile}"`;
+                const updateResult = execCommand(updateCommand);
 
-        // Add assignees
-        if (issue.assignees.length > 0) {
-            command += ` --assignee "${issue.assignees.join(',')}"`;
-        }
+                if (updateResult.success) {
+                    console.log(`✅ Updated issue body: ${issue.title}`);
 
-        const result = execCommand(command);
+                    // Update labels separately
+                    if (issue.labels.length > 0) {
+                        const labelCommand = `gh issue edit ${existing.number} --repo "${REPO}" --add-label "${issue.labels.join(',')}"`;
+                        execCommand(labelCommand);
+                    }
 
-        if (result.success) {
-            console.log(`✅ Created issue: ${issue.title}`);
-        } else {
-            console.error(
-                `❌ Failed to create issue ${issue.title}:`,
-                result.error
-            );
+                    // Update milestone if available
+                    if (milestoneNumber) {
+                        const milestoneCommand = `gh issue edit ${existing.number} --repo "${REPO}" --milestone ${milestoneNumber}`;
+                        execCommand(milestoneCommand);
+                    }
+                } else {
+                    console.error(
+                        `❌ Failed to update issue ${issue.title}:`,
+                        updateResult.error
+                    );
+                }
+            } else {
+                // Create new issue
+                let command = `gh issue create --repo "${REPO}" --title "${issue.title}" --body-file "${tempFile}"`;
+
+                // Add labels
+                if (issue.labels.length > 0) {
+                    command += ` --label "${issue.labels.join(',')}"`;
+                }
+
+                // Add milestone
+                if (milestoneNumber) {
+                    command += ` --milestone ${milestoneNumber}`;
+                }
+
+                // Add assignees
+                if (issue.assignees.length > 0) {
+                    command += ` --assignee "${issue.assignees.join(',')}"`;
+                }
+
+                const result = execCommand(command);
+
+                if (result.success) {
+                    console.log(`✅ Created issue: ${issue.title}`);
+                } else {
+                    console.error(
+                        `❌ Failed to create issue ${issue.title}:`,
+                        result.error
+                    );
+                }
+            }
+        } finally {
+            // Clean up temporary file
+            try {
+                await fs.unlink(tempFile);
+            } catch {
+                // Ignore cleanup errors
+            }
         }
     }
 }
