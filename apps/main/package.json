@@ -23,6 +23,7 @@
         "@nestjs/common": "^11.1.6",
         "@nestjs/core": "^11.1.6",
         "@nestjs/graphql": "^13.1.0",
+        "@nestjs/mongoose": "^11.0.3",
         "@nestjs/platform-express": "^11.1.6",
         "@nestjs/serve-static": "^5.0.3",
         "apollo-server-express": "^3.13.0",
@@ -40,8 +41,10 @@
         "@nestjs/testing": "^11.1.6",
         "@types/express": "^5.0.3",
         "@types/node": "^22.0.0",
+        "@types/supertest": "^6.0.3",
         "eslint": "^9.36.0",
         "prettier": "^3.6.2",
+        "supertest": "^7.1.4",
         "typescript": "^5.9.2",
         "vitest": "^3.2.4"
     },
