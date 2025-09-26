@@ -1,15 +1,32 @@
 {
     "$schema": "https://turborepo.org/schema.json",
-    "globalEnv": ["PORT", "NODE_ENV", "DATABASE_URL", "GRAPHQL_PLAYGROUND", "GRAPHQL_INTROSPECTION"],
+    "globalEnv": [
+        "PORT", 
+        "NODE_ENV", 
+        "DATABASE_URL", 
+        "GRAPHQL_PLAYGROUND", 
+        "GRAPHQL_INTROSPECTION",
+        "CI",
+        "GITHUB_ACTIONS"
+    ],
     "ui": "stream",
     "tasks": {
         "clean": {
             "dependsOn": ["^clean"],
-            "outputs": ["dist/**", "lib/**", "build/**"]
+            "outputs": ["dist/**", "lib/**", "build/**"],
+            "cache": false
         },
         "build": {
             "dependsOn": ["^build"],
-            "outputs": ["dist/**", "lib/**", "build/**"]
+            "inputs": [
+                "src/**",
+                "package.json",
+                "tsconfig.json",
+                "tsup.config.ts",
+                "nest-cli.json"
+            ],
+            "outputs": ["dist/**", "lib/**", "build/**"],
+            "env": ["NODE_ENV"]
         },
         "dev": {
             "cache": false,
@@ -20,16 +37,75 @@
             "persistent": true
         },
         "lint": {
-            "dependsOn": ["^lint"],
+            "dependsOn": ["^build"],
+            "inputs": [
+                "src/**",
+                "*.js",
+                "*.ts",
+                "*.tsx",
+                "*.json",
+                "eslint.config.js",
+                ".eslintrc*"
+            ],
             "outputs": []
+        },
+        "lint:fix": {
+            "dependsOn": ["^build"],
+            "inputs": [
+                "src/**",
+                "*.js",
+                "*.ts",
+                "*.tsx", 
+                "*.json",
+                "eslint.config.js",
+                ".eslintrc*"
+            ],
+            "outputs": [],
+            "cache": false
         },
         "format": {
-            "dependsOn": ["^format"],
-            "outputs": []
+            "inputs": [
+                "src/**",
+                "*.js",
+                "*.ts",
+                "*.tsx",
+                "*.json",
+                "*.md",
+                ".prettierrc*",
+                "prettier.config.*"
+            ],
+            "outputs": [],
+            "cache": false
         },
         "test": {
-            "dependsOn": ["^test"],
-            "outputs": ["coverage/**"]
+            "dependsOn": ["^build"],
+            "inputs": [
+                "src/**",
+                "test/**",
+                "tests/**",
+                "**/*.test.*",
+                "**/*.spec.*",
+                "vitest.config.*",
+                "jest.config.*"
+            ],
+            "outputs": ["coverage/**"],
+            "env": ["NODE_ENV"]
+        },
+        "test:watch": {
+            "cache": false,
+            "persistent": true
+        },
+        "test:e2e": {
+            "dependsOn": ["^build"],
+            "inputs": [
+                "src/**",
+                "test/**", 
+                "e2e/**",
+                "**/*.e2e.*",
+                "vitest.e2e.config.*"
+            ],
+            "outputs": ["coverage/**"],
+            "env": ["NODE_ENV", "DATABASE_URL"]
         }
     }
 }
