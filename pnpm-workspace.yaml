@@ -1,18 +1,19 @@
-shamefullyHoist: true
-
 packages:
-    - features/*/contracts
-    - features/*/domain
-    - features/*/ui
-    - libs/*
-    - apps/*
-    - tools/*
+  - features/*/contracts
+  - features/*/domain
+  - features/*/ui
+  - libs/*
+  - apps/*
+  - tools/*
 
 ignoredBuiltDependencies:
-    - '@nestjs/core'
-    - '@scarf/scarf'
+  - '@nestjs/core'
+  - '@scarf/scarf'
 
 onlyBuiltDependencies:
-    - '@swc/core'
-    - esbuild
-    - protobufjs
+  - '@swc/core'
+  - esbuild
+  - mongodb-memory-server
+  - protobufjs
+
+shamefullyHoist: true

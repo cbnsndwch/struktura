@@ -7,42 +7,48 @@ The main Struktura application is a unified NestJS backend with integrated React
 ## Quick Start
 
 1. **Environment Setup**:
-   ```bash
-   cp .env.example .env
-   # Edit .env with your configuration
-   ```
+
+    ```bash
+    cp .env.example .env
+    # Edit .env with your configuration
+    ```
 
 2. **Development**:
-   ```bash
-   pnpm dev
-   ```
+
+    ```bash
+    pnpm dev
+    ```
 
 3. **Production**:
-   ```bash
-   pnpm build
-   pnpm start:prod
-   ```
+    ```bash
+    pnpm build
+    pnpm start:prod
+    ```
 
 ## Features
 
 ### GraphQL API
+
 - **Endpoint**: `http://localhost:3000/graphql`
 - **Playground**: Available in development mode at the same URL
 - **Schema**: Auto-generated using code-first approach
 
 #### Basic Queries
+
 ```graphql
 query {
-  hello
-  health
+    hello
+    health
 }
 ```
 
 ### REST Endpoints
+
 - **Health Check**: `GET /health` - Returns application and database status
 - **Root**: `GET /` - Returns welcome message with generated ID
 
 ### Database Integration
+
 - **MongoDB**: Configured with Mongoose ODM
 - **Connection Pooling**: Optimized for production with retry logic
 - **Schemas**: User schema with proper indexing (extendable)
@@ -50,6 +56,7 @@ query {
 ## Configuration
 
 ### Environment Variables
+
 - `NODE_ENV`: Application environment (development/production)
 - `PORT`: Server port (default: 3000)
 - `DATABASE_URL`: MongoDB connection string
@@ -57,6 +64,7 @@ query {
 - `GRAPHQL_INTROSPECTION`: Enable/disable GraphQL introspection
 
 ### Database Configuration
+
 - **Connection Pool**: Max 10 connections
 - **Timeouts**: Server selection (2s), Socket (45s)
 - **Retry Logic**: 2 attempts with 1s delay
