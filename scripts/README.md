@@ -6,9 +6,9 @@ This directory contains scripts for managing the Struktura project backlog and s
 
 ### Core Scripts
 
-- **`sync-github-backlog.ps1`** - Main PowerShell script for syncing backlog with GitHub
+- **`sync-github-backlog.ps1`** - PowerShell script for syncing backlog with GitHub
+- **`sync-github-issues.ts`** - TypeScript version with CLI options (recommended)
 - **`setup-project-board.ps1`** - Creates and configures GitHub Project boards
-- **`sync-github-issues.js`** - Node.js version (alternative implementation)
 
 ### Documentation
 
@@ -34,7 +34,12 @@ This directory contains scripts for managing the Struktura project backlog and s
 
 ### Initial Setup
 
-1. **Sync the complete backlog**:
+1. **Sync the complete backlog** (TypeScript - recommended):
+   ```powershell
+   npx tsx scripts/sync-github-issues.ts
+   ```
+
+   Or using PowerShell:
    ```powershell
    .\scripts\sync-github-backlog.ps1
    ```
@@ -46,9 +51,40 @@ This directory contains scripts for managing the Struktura project backlog and s
 
 ## 📋 Available Scripts
 
+### sync-github-issues.ts (Recommended)
+
+TypeScript script for creating GitHub issues, labels, and milestones from the catalog.
+
+**Usage:**
+```powershell
+# Full sync (labels + milestones + issues)
+npx tsx scripts/sync-github-issues.ts
+
+# Dry run (see what would be created without making changes)
+npx tsx scripts/sync-github-issues.ts --dry-run
+
+# Sync only labels
+npx tsx scripts/sync-github-issues.ts --labels-only
+
+# Sync only milestones  
+npx tsx scripts/sync-github-issues.ts --milestones-only
+
+# Sync only issues
+npx tsx scripts/sync-github-issues.ts --issues-only
+```
+
+**Features:**
+- ✅ TypeScript with proper type safety
+- ✅ Creates GitHub labels with proper colors and descriptions
+- ✅ Creates milestones with due dates
+- ✅ Creates issues with proper formatting and linking
+- ✅ Handles existing items gracefully (no duplicates)
+- ✅ Supports dry-run mode for testing
+- ✅ Selective sync options (labels/milestones/issues only)
+
 ### sync-github-backlog.ps1
 
-Main script for creating GitHub issues, labels, and milestones from the catalog.
+PowerShell version of the sync script (alternative implementation).
 
 **Usage:**
 ```powershell

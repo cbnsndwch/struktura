@@ -8,8 +8,8 @@
  */
 
 import { execSync } from 'node:child_process';
-import fs from 'node:fs/promises';
-import path from 'node:path';
+import { promises as fs } from 'node:fs';
+import * as path from 'node:path';
 import { fileURLToPath } from 'node:url';
 
 // ES modules compatibility
@@ -587,9 +587,15 @@ async function main(): Promise<void> {
     }
 }
 
-// Run the script
-if (import.meta.url === `file://${process.argv[1]}`) {
-    main();
+// Run the script if this file is executed directly
+const scriptPath = fileURLToPath(import.meta.url);
+const isMainModule = process.argv[1] === scriptPath;
+
+if (isMainModule) {
+    main().catch(error => {
+        console.error('Script failed:', error);
+        process.exit(1);
+    });
 }
 
 export { createLabels, createMilestones, createIssues };

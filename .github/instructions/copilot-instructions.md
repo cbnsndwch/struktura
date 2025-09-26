@@ -19,6 +19,15 @@
 
 You and I are creating and maintaining the Struktura monorepo - a no-code data management platform that empowers non-technical users to create, customize, and manage complex data structures without requiring database expertise. We are using a **modular monolith architecture** with the following core technologies:
 
+## Development Standards
+
+### TypeScript-First Approach
+- **ALL code must be TypeScript**: Application code, tools, scripts, configuration files
+- **No JavaScript files**: Convert any `.js` files to `.ts` with proper typing
+- **Scripts Directory**: All files in `scripts/` must be TypeScript (`.ts`) with proper Node.js types
+- **Tools Directory**: All utilities and tools must be TypeScript with strict typing
+- **Type Safety**: Use strict TypeScript configuration, avoid `any` types where possible
+
 - **Node.js** >=v22.13.1 with **pnpm@10.17.1+** for package management
 - **NestJS** modular monolith with **GraphQL** and **Apollo Server**
 - **React Router 7** framework mode for admin UI, integrated with NestJS
@@ -84,8 +93,8 @@ Shared utilities and services including authentication, database utilities, vali
 ### Tools & Documentation
 
 - **`tools/`** - Development utilities (ESLint config, TypeScript config, dependency management)
-- **`docs/`** - Comprehensive documentation including architecture, feature specs, and guides
-- **`scripts/`** - Build, deployment, and maintenance scripts
+- **`docs/`** - Comprehensive documentation including architecture, feature specs, and guides  
+- **`scripts/`** - Build, deployment, and maintenance scripts (**TypeScript only** - all scripts must be `.ts` files)
 
 > 📋 **For complete repository structure details, see [README.md](../../README.md)**
 
