@@ -23,8 +23,8 @@
         "@cbnsndwch/struktura-eslint-config": "workspace:*",
         "@cbnsndwch/struktura-tsconfig": "workspace:*",
         "eslint": "^9.36.0",
-        "prettier": "^3.4.1",
-        "tsup": "^8.3.0",
+        "prettier": "^3.6.2",
+        "tsup": "^8.5.0",
         "typescript": "^5.9.2",
         "vitest": "^3.2.4"
     },
