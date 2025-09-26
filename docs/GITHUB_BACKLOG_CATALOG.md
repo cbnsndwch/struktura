@@ -1,5 +1,4 @@
-# GitHub Backlog Catalog
-# Struktura Project Issue Management
+# GitHub Backlog Catalog - Struktura Project Issue Management
 
 This file serves as the source of truth for all GitHub issues, epics, and milestones in the Struktura project. It synchronizes between repository documentation and GitHub Issues using the `gh` CLI.
 
