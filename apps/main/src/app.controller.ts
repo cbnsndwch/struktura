@@ -20,14 +20,14 @@ export class AppController {
     getHealth() {
         let dbStatus = 'unknown';
         let readyState = 0;
-        
+
         try {
             readyState = this.connection.readyState;
             dbStatus = readyState === 1 ? 'connected' : 'disconnected';
-        } catch (error) {
+        } catch {
             dbStatus = 'error';
         }
-        
+
         return {
             status: 'ok',
             timestamp: new Date().toISOString(),

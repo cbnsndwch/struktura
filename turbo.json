@@ -1,6 +1,6 @@
 {
     "$schema": "https://turborepo.org/schema.json",
-    "globalEnv": ["PORT"],
+    "globalEnv": ["PORT", "NODE_ENV", "DATABASE_URL", "GRAPHQL_PLAYGROUND", "GRAPHQL_INTROSPECTION"],
     "ui": "stream",
     "tasks": {
         "clean": {
