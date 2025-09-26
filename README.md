@@ -110,7 +110,7 @@ pnpm test
 pnpm test:coverage
 
 # Run tests for specific package
-pnpm --filter @cbnsndwch/struktura-contracts test
+pnpm --filter @cbnsndwch/struktura-shared-contracts test
 ```
 
 ### Adding Dependencies
@@ -123,7 +123,7 @@ pnpm --filter @cbnsndwch/struktura-web add react-query
 pnpm add -Dw typescript
 
 # Add dependency to workspace
-pnpm --filter @cbnsndwch/struktura-ui add @cbnsndwch/struktura-contracts
+pnpm --filter @cbnsndwch/struktura-ui add @cbnsndwch/struktura-shared-contracts
 ```
 
 ## 📦 Package Management
@@ -135,7 +135,7 @@ Packages can depend on each other using the `workspace:*` protocol:
 ```json
 {
     "dependencies": {
-        "@cbnsndwch/struktura-contracts": "workspace:*",
+        "@cbnsndwch/struktura-shared-contracts": "workspace:*",
         "@cbnsndwch/struktura-ui": "workspace:*"
     }
 }

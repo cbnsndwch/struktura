@@ -15,6 +15,7 @@
     },
     "scripts": {
         "build": "turbo run build",
+        "build:feat": "turbo run build --filter='@cbnsndwch/struktura-*-contracts' --filter='@cbnsndwch/struktura-*-domain' --filter='@cbnsndwch/struktura-*-ui'",
         "clean": "turbo run clean",
         "clog": "conventional-changelog -p angular -i CHANGELOG.md -o changelog-temp.md",
         "deps": "node tools/dep-version-map.js && tools/dep-version-map.json",

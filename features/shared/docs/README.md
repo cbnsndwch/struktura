@@ -45,18 +45,24 @@ Other features can import from specific submodules:
 
 ```typescript
 // Import contracts
-import { BaseEntity, Result } from '@cbnsndwch/struktura-feature-shared/contracts';
+import {
+    BaseEntity,
+    Result
+} from '@cbnsndwch/struktura-shared-contracts';
 
 // Import domain utilities
-import { BaseService, SharedUtils } from '@cbnsndwch/struktura-feature-shared/domain';
+import {
+    BaseService,
+    SharedUtils
+} from '@cbnsndwch/struktura-shared-domain';
 
 // Import UI utilities
-import { theme, UIUtils } from '@cbnsndwch/struktura-feature-shared/ui';
+import { theme, UIUtils } from '@cbnsndwch/struktura-shared-ui';
 ```
 
 ## Development Guidelines
 
 1. **Keep it minimal** - Only add truly shared functionality
-2. **Avoid feature-specific logic** - This should work for any feature  
+2. **Avoid feature-specific logic** - This should work for any feature
 3. **Maintain backward compatibility** - Changes here affect all features
 4. **Document breaking changes** - Use changesets for version management

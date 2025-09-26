@@ -1,7 +1,9 @@
 shamefullyHoist: true
 
 packages:
-    - features/*
+    - features/*/contracts
+    - features/*/domain
+    - features/*/ui
     - libs/*
     - apps/*
     - tools/*

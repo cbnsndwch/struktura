@@ -1,21 +1,12 @@
 {
-    "name": "@cbnsndwch/struktura-utils",
+    "name": "@cbnsndwch/struktura-shared-domain",
     "version": "0.1.0",
     "private": true,
     "type": "module",
-    "description": "Common utility functions for Struktura",
+    "description": "Shared domain logic for Struktura features",
     "main": "./dist/index.js",
     "module": "./dist/index.js",
     "types": "./dist/index.d.ts",
-    "exports": {
-        ".": {
-            "import": "./dist/index.js",
-            "types": "./dist/index.d.ts"
-        }
-    },
-    "files": [
-        "dist"
-    ],
     "scripts": {
         "build": "tsup",
         "clean": "rm -rf dist",
@@ -26,7 +17,8 @@
         "test:watch": "vitest"
     },
     "dependencies": {
-        "@cbnsndwch/struktura-shared-contracts": "workspace:*"
+        "@cbnsndwch/struktura-shared-contracts": "workspace:*",
+        "@nestjs/common": "^11"
     },
     "devDependencies": {
         "@cbnsndwch/struktura-eslint-config": "workspace:*",
@@ -36,6 +28,12 @@
         "tsup": "^8.3.0",
         "typescript": "^5.9.2",
         "vitest": "^3.2.4"
+    },
+    "files": [
+        "dist"
+    ],
+    "exports": {
+        ".": "./dist/index.js"
     },
     "engines": {
         "node": ">=22"

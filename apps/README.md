@@ -60,8 +60,7 @@ pnpm test
 
 The main application uses workspace dependencies:
 
-- `@cbnsndwch/struktura-contracts` - Shared type definitions
-- `@cbnsndwch/struktura-feature-shared` - Common feature functionality
+- `@cbnsndwch/struktura-shared-contracts` - Shared type definitions
 - `@cbnsndwch/struktura-auth` - Authentication utilities
 - `@cbnsndwch/struktura-database` - Database connection and schemas
 - `@cbnsndwch/struktura-utils` - Common utility functions

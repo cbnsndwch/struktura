@@ -6,6 +6,6 @@
             "@cbnsndwch/struktura-*": ["./libs/*/src", "./apps/*/src"]
         }
     },
-    "include": ["scripts/**/*", "tools/**/*", "libs/**/*", "apps/**/*"],
+    "include": ["scripts/**/*", "tools/**/*", "libs/**/*", "apps/**/*", "features/shared/contracts/src/dict.type.ts", "features/shared/contracts/src/invariant.ts"],
     "exclude": ["node_modules", "dist", "build", "coverage", ".turbo"]
 }

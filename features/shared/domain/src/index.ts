@@ -1,23 +1,22 @@
-/**
- * Shared domain logic and utilities for all Struktura features
- */
+import { Logger } from '@nestjs/common';
 
 import type {
-    Result,
-    PaginatedResult,
-    PaginationParams
-} from '../contracts/index.js';
+    IPaginationParams,
+    IPaginatedResult,
+    Result
+} from '@cbnsndwch/struktura-shared-contracts';
 
 // Base service class that all feature services can extend
 export abstract class BaseService {
     protected abstract name: string;
 
-    protected log(message: string, data?: any): void {
-        console.log(`[${this.name}] ${message}`, data || '');
-    }
+    protected logger: Logger;
 
-    protected error(message: string, error?: any): void {
-        console.error(`[${this.name}] ${message}`, error || '');
+    /**
+     *
+     */
+    constructor(logger: Logger = new Logger('BaseService')) {
+        this.logger = logger;
     }
 }
 
@@ -40,8 +39,8 @@ export class SharedUtils {
     static createPaginatedResult<T>(
         items: T[],
         total: number,
-        params: PaginationParams
-    ): PaginatedResult<T> {
+        params: IPaginationParams
+    ): IPaginatedResult<T> {
         const page = params.page || 1;
         const limit = params.limit || 20;
         const totalPages = Math.ceil(total / limit);
