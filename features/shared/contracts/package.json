@@ -16,9 +16,6 @@
         "test": "vitest --run --passWithNoTests",
         "test:watch": "vitest"
     },
-    "dependencies": {
-        "@cbnsndwch/struktura-shared-contracts": "workspace:*"
-    },
     "devDependencies": {
         "@cbnsndwch/struktura-eslint-config": "workspace:*",
         "@cbnsndwch/struktura-tsconfig": "workspace:*",

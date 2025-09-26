@@ -1,14 +1,15 @@
 {
     "$schema": "https://turborepo.org/schema.json",
-    "ui": "tui",
+    "globalEnv": ["PORT"],
+    "ui": "stream",
     "tasks": {
         "clean": {
             "dependsOn": ["^clean"],
-            "outputs": ["dist/**", "lib/**", ".next/**", "build/**"]
+            "outputs": ["dist/**", "lib/**", "build/**"]
         },
         "build": {
             "dependsOn": ["^build"],
-            "outputs": ["dist/**", "lib/**", ".next/**", "build/**"]
+            "outputs": ["dist/**", "lib/**", "build/**"]
         },
         "dev": {
             "cache": false,
