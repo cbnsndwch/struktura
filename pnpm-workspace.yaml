@@ -1,0 +1,16 @@
+shamefullyHoist: true
+
+packages:
+    - features/*
+    - libs/*
+    - apps/*
+    - tools/*
+
+ignoredBuiltDependencies:
+    - '@nestjs/core'
+    - '@scarf/scarf'
+
+onlyBuiltDependencies:
+    - '@swc/core'
+    - esbuild
+    - protobufjs

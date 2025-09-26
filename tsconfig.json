@@ -1,0 +1,11 @@
+{
+    "extends": "./tools/tsconfig/base.json",
+    "compilerOptions": {
+        "baseUrl": ".",
+        "paths": {
+            "@cbnsndwch/struktura-*": ["./libs/*/src", "./apps/*/src"]
+        }
+    },
+    "include": ["scripts/**/*", "tools/**/*", "libs/**/*", "apps/**/*"],
+    "exclude": ["node_modules", "dist", "build", "coverage", ".turbo"]
+}

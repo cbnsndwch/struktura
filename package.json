@@ -1,0 +1,70 @@
+{
+    "name": "@cbnsndwch/struktura-monorepo",
+    "description": "Struktura - No-Code Data Management Platform",
+    "version": "0.1.0",
+    "license": "MIT",
+    "private": true,
+    "type": "module",
+    "repository": "https://github.com/cbnsndwch/struktura",
+    "author": {
+        "name": "cbnsndwch LLC",
+        "url": "https://github.com/cbnsndwch"
+    },
+    "bin": {
+        "dvm": "./tools/dep-version-map/main.mjs"
+    },
+    "scripts": {
+        "build": "turbo run build",
+        "clean": "turbo run clean",
+        "clog": "conventional-changelog -p angular -i CHANGELOG.md -o changelog-temp.md",
+        "deps": "node tools/dep-version-map.js && tools/dep-version-map.json",
+        "format": "turbo run format",
+        "lint:fix": "turbo run lint:fix",
+        "lint": "turbo run lint",
+        "test": "turbo run test",
+        "dev": "turbo run dev",
+        "start": "turbo run start",
+        "changeset": "changeset",
+        "changeset:version": "changeset version",
+        "changeset:publish": "changeset publish",
+        "changeset:status": "changeset status --verbose",
+        "release": "pnpm build && pnpm test && pnpm changeset:publish",
+        "vset": "tsx ./scripts/version-bump.ts",
+        "vtag": "tsx ./scripts/create-version-tag.ts"
+    },
+    "devDependencies": {
+        "@changesets/cli": "^2.29.7",
+        "@eslint/js": "^9.36.0",
+        "change-case": "^5.4.4",
+        "conventional-changelog-cli": "^5.0.0",
+        "eslint": "^9.36.0",
+        "eslint-config-prettier": "^10.1.8",
+        "eslint-import-resolver-typescript": "^3.10.1",
+        "eslint-plugin-import": "^2.31.0",
+        "eslint-plugin-prettier": "^5.2.1",
+        "globals": "^16.4.0",
+        "http-server": "^14.1.1",
+        "npm-check-updates": "^18.3.0",
+        "prettier": "^3.4.1",
+        "typescript-eslint": "^8.44.1"
+    },
+    "dependencies": {
+        "turbo": "^2.5.8"
+    },
+    "jest": {
+        "projects": [
+            "<rootDir>/features/*",
+            "<rootDir>/apps/*",
+            "<rootDir>/libs/*"
+        ]
+    },
+    "workspaces": {
+        "packages": [
+            "features/*",
+            "apps/*",
+            "libs/*",
+            "tools/*"
+        ]
+    },
+    "packageManager": "pnpm@10.17.1+sha512.17c560fca4867ae9473a3899ad84a88334914f379be46d455cbf92e5cf4b39d34985d452d2583baf19967fa76cb5c17bc9e245529d0b98745721aa7200ecaf7a"
+}

@@ -1,0 +1,69 @@
+# Yarn
+.yarn/*
+!.yarn/patches
+!.yarn/releases
+!.yarn/plugins
+!.yarn/sdks
+!.yarn/versions
+.pnp.*
+
+# Dependencies & compiled output
+**/node_modules
+**/.pnp.*
+lib
+build
+dist
+
+# Logs
+logs
+*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+lerna-debug.log*
+
+# macOS
+.DS_Store
+
+# Tests
+/coverage
+/.nyc_output
+
+# IDEs and editors
+/.idea
+.project
+.classpath
+.c9/
+*.launch
+.settings/
+*.sublime-workspace
+
+# IDE - VSCode
+.vscode/*
+!.vscode/settings.json
+!.vscode/tasks.json
+!.vscode/launch.json
+!.vscode/extensions.json
+
+# Environments and credentials
+**/.env*
+*credentials
+
+# Struktura specific
+.tmp
+temp-*
+
+# Others
+lerna-debug.log
+npm-debug.log
+tsconfig.tsbuildinfo
+
+# Turbo
+/.turbo/daemon
+/.turbo/cookies
+/.turbo/cache
+/.turbo/preferences/tui.json
+
+# Changesets
+/IMPLEMENTATION.md
+/changelog-temp.md

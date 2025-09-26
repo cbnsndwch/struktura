@@ -1,0 +1,9 @@
+{
+    "name": "@cbnsndwch/struktura-dep-version-map",
+    "type": "module",
+    "private": true,
+    "devDependencies": {
+        "glob": "^11.0.3",
+        "lodash-es": "^4.17.21"
+    }
+}

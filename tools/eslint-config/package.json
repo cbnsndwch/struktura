@@ -1,0 +1,45 @@
+{
+    "name": "@cbnsndwch/struktura-eslint-config",
+    "version": "0.1.0",
+    "description": "Shared ESLint Config for Struktura",
+    "type": "module",
+    "license": "MIT",
+    "author": {
+        "name": "cbnsndwch LLC",
+        "url": "https://github.com/cbnsndwch"
+    },
+    "repository": {
+        "type": "git",
+        "url": "https://github.com/cbnsndwch/struktura",
+        "directory": "tools/eslint-config"
+    },
+    "publishConfig": {
+        "access": "public",
+        "registry": "https://registry.npmjs.org/"
+    },
+    "exports": {
+        "./base": "./base.js",
+        "./next-js": "./next.js",
+        "./react-internal": "./react-internal.js"
+    },
+    "files": [
+        "*.js",
+        "README.md"
+    ],
+    "devDependencies": {
+        "@eslint/js": "^9.36.0",
+        "eslint": "^9.36.0",
+        "eslint-config-prettier": "^10.1.8",
+        "eslint-import-resolver-typescript": "^3.6.3",
+        "eslint-plugin-import": "^2.31.0",
+        "eslint-plugin-only-warn": "^1.1.0",
+        "eslint-plugin-prettier": "^5.2.1",
+        "eslint-plugin-react": "^7.37.5",
+        "eslint-plugin-react-hooks": "^5.2.0",
+        "eslint-plugin-turbo": "^2.5.8",
+        "globals": "^16.4.0",
+        "prettier": "^3.4.1",
+        "typescript": "^5.9.2",
+        "typescript-eslint": "^8.44.1"
+    }
+}
