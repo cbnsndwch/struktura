@@ -1,0 +1,14 @@
+{
+  "extends": "@cbnsndwch/struktura-tsconfig/nest-library",
+  "include": [
+    "src/**/*"
+  ],
+  "exclude": [
+    "dist",
+    "node_modules"
+  ],
+  "compilerOptions": {
+    "outDir": "./dist",
+    "rootDir": "./src"
+  }
+}
