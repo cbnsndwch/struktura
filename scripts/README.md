@@ -1,20 +1,48 @@
-# GitHub Backlog Management Scripts
+# Scripts
 
-This directory contains scripts for managing the Struktura project backlog and synchronizing between repository documentation and GitHub Issues.
+**TypeScript build, deployment, and automation scripts** for the Struktura monorepo. All scripts are written in TypeScript following the project's TypeScript-first approach.
 
-## 📁 Files Overview
+## 📁 Scripts Overview
 
-### Core Scripts
+### Version Management
 
-- **`sync-github-backlog.ps1`** - PowerShell script for syncing backlog with GitHub
-- **`sync-github-issues.ts`** - TypeScript version with CLI options (recommended)
+- **`version-bump.ts`** - Automated version management across all workspaces
+- **`create-version-tag.ts`** - Git tag creation automation for releases
+
+### GitHub Integration  
+
+- **`sync-github-issues.ts`** - Synchronizes project backlog with GitHub Issues and Projects
+- **`sync-github-backlog.ps1`** - PowerShell wrapper for GitHub backlog management
 - **`setup-project-board.ps1`** - Creates and configures GitHub Project boards
 
-### Documentation
+### Documentation References
 
 - **`../docs/GITHUB_BACKLOG_CATALOG.md`** - Central catalog tracking all issues and epics
+- **`../docs/DEVELOPMENT_ACTION_PLAN.md`** - Development workflow and planning
 
-## 🚀 Quick Start
+## � TypeScript-First Approach
+
+All scripts follow Struktura's **TypeScript-first development standard**:
+
+- **No JavaScript files** - All scripts are `.ts` files with proper Node.js types
+- **Strict type safety** - Full TypeScript compliance with `@types/node`
+- **Modern execution** - Run directly with `tsx` for development and Node.js ESM for production
+- **Consistent tooling** - Same linting, formatting, and build standards as application code
+
+### Usage Examples
+
+```bash
+# Run TypeScript scripts directly with tsx
+npx tsx scripts/version-bump.ts --patch
+npx tsx scripts/create-version-tag.ts
+npx tsx scripts/sync-github-issues.ts --dry-run
+
+# Scripts are also available as package.json commands
+pnpm vset --minor        # version-bump.ts with minor increment
+pnpm vtag               # create-version-tag.ts
+```
+
+## �🚀 Quick Start
 
 ### Prerequisites
 

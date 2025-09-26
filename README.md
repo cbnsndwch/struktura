@@ -24,31 +24,41 @@ pnpm format
 
 ## 📁 Monorepo Structure
 
-This repository is organized as a Turborepo monorepo with pnpm workspaces:
+This repository is organized as a sophisticated Turborepo monorepo with pnpm workspaces and feature-based modular architecture:
 
 ```
 ├── apps/                    # Applications
 │   └── main/                # Single unified NestJS app with React Router 7 admin UI
-├── features/                # Feature modules
-│   ├── shared/              # Common domain code, shared contracts, base UI components
-│   ├── content-management/  # Core CMS functionality
-│   ├── user-management/     # User accounts and permissions
-│   ├── dashboard/           # Analytics and reporting
+├── features/                # Feature modules (each subdirectory is a separate workspace)
+│   ├── shared/              # Foundation layer with common code
+│   │   ├── contracts/       # 📦 Shared TypeScript interfaces and types workspace
+│   │   ├── domain/          # 📦 Common business logic and services workspace
+│   │   ├── ui/              # 📦 Base UI component system workspace
+│   │   └── docs/            # 📚 Feature documentation
+│   ├── api/                 # GraphQL/REST API exposure (planned)
+│   ├── content/             # Core CMS functionality (planned)
+│   ├── dashboard/           # Analytics and reporting (planned)
+│   ├── data/                # CRUD operations and data transformations (planned)
+│   ├── file/                # File uploads and asset management (planned)
+│   ├── real-time-sync/      # Live collaboration with Zero (planned)
+│   ├── schema/              # Dynamic schema creation and validation (planned)
+│   ├── user/                # User accounts and permissions (planned)
+│   ├── workspace/           # Multi-tenant workspace administration (planned)
 │   └── [feature]/           # Each feature contains: contracts/, domain/, ui/, docs/
 ├── libs/                    # Cross-cutting libraries
-│   ├── auth/                # Authentication and authorization
-│   ├── i18n/                # Internationalization
-│   ├── logging/             # Application logging
-│   ├── telemetry/           # Performance monitoring
-│   ├── organizations/       # Multi-tenancy support
-│   ├── database/            # MongoDB utilities and schemas
-│   └── utils/               # Common utility functions
-├── tools/                   # Development tools
-│   ├── eslint-config/       # Shared ESLint configuration
-│   ├── tsconfig/            # Shared TypeScript configuration
-│   └── dep-version-map/     # Dependency version management
-├── scripts/                 # Build and deployment scripts
-└── docs/                    # Project documentation
+│   ├── auth/                # Authentication and authorization utilities
+│   ├── utils/               # Common utility functions
+│   └── [planned]/           # i18n, logging, telemetry, organizations
+├── tools/                   # Development tools and shared configurations
+│   ├── eslint-config/       # Shared ESLint configuration for all workspaces
+│   ├── tsconfig/            # Shared TypeScript configurations
+│   └── dep-version-map/     # Dependency version management utility
+├── scripts/                 # TypeScript build, deployment, and automation scripts
+│   ├── version-bump.ts      # Automated version management
+│   ├── create-version-tag.ts # Git tag creation automation
+│   ├── sync-github-issues.ts # GitHub integration for project management
+│   └── setup-project-board.ps1 # Project board automation
+└── docs/                    # Comprehensive project documentation
 ```
 
 ## 🛠 Technology Stack
@@ -113,17 +123,46 @@ pnpm test:coverage
 pnpm --filter @cbnsndwch/struktura-shared-contracts test
 ```
 
+### Workspace Configuration
+
+Our monorepo uses an enhanced pnpm workspace configuration with sophisticated dependency management:
+
+```yaml
+# pnpm-workspace.yaml
+packages:
+  - features/*/contracts    # Feature contract workspaces
+  - features/*/domain      # Feature domain logic workspaces  
+  - features/*/ui          # Feature UI component workspaces
+  - libs/*                 # Cross-cutting library workspaces
+  - apps/*                 # Application workspaces
+  - tools/*                # Development tool workspaces
+
+# Optimized build performance
+ignoredBuiltDependencies:
+  - '@nestjs/core'         # Prevent unnecessary rebuilds
+  - '@scarf/scarf'         # Skip telemetry builds
+
+onlyBuiltDependencies:     # Force specific packages to build from source
+  - '@swc/core'            # SWC compiler
+  - esbuild                # Fast bundler
+  - protobufjs             # Protocol buffer support
+```
+
 ### Adding Dependencies
 
 ```bash
-# Add dependency to specific package
-pnpm --filter @cbnsndwch/struktura-web add react-query
+# Add dependency to specific feature workspace
+pnpm --filter @cbnsndwch/struktura-shared-contracts add lodash
+pnpm --filter @cbnsndwch/struktura-main add react-query
 
 # Add dev dependency to root
 pnpm add -Dw typescript
 
-# Add dependency to workspace
-pnpm --filter @cbnsndwch/struktura-ui add @cbnsndwch/struktura-shared-contracts
+# Add workspace dependency (feature to feature)
+pnpm --filter @cbnsndwch/struktura-shared-ui add @cbnsndwch/struktura-shared-contracts
+
+# Add dependency to all workspaces of a type
+pnpm --filter "@cbnsndwch/struktura-*-ui" add react
 ```
 
 ## 📦 Package Management

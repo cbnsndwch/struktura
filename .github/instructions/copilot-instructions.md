@@ -76,15 +76,15 @@ Feature-specific modules organized by business domain, each containing:
 **Core Features:**
 
 - **`shared/`** - Foundation layer with common domain code, shared contracts, and base UI component system
-- **`content-management/`** - Core CMS functionality for creating, editing, and organizing content
-- **`user-management/`** - User accounts, authentication, profiles, and role-based permissions
-- **`workspace-management/`** - Multi-tenant workspace creation and administration
-- **`schema-management/`** - Dynamic schema creation, field definitions, and data validation
-- **`data-management/`** - CRUD operations, bulk imports/exports, and data transformations
+- **`content/`** - Core CMS functionality for creating, editing, and organizing content
+- **`user/`** - User accounts, authentication, profiles, and role-based permissions
+- **`workspace/`** - Multi-tenant workspace creation and administration
+- **`schema/`** - Dynamic schema creation, field definitions, and data validation
+- **`data/`** - CRUD operations, bulk imports/exports, and data transformations
 - **`dashboard/`** - Analytics, reporting, and data visualization
-- **`api-management/`** - GraphQL/REST API exposure and rate limiting
+- **`api/`** - GraphQL/REST API exposure and rate limiting
 - **`real-time-sync/`** - Live collaboration and real-time data synchronization
-- **`file-management/`** - File uploads, storage, and asset management
+- **`file/`** - File uploads, storage, and asset management
 
 ### Cross-cutting Libraries (`libs/`)
 

@@ -80,16 +80,38 @@ docs: update API documentation for schemas
 
 ## 🏗 Project Structure
 
-Our monorepo is organized as follows:
+Our monorepo uses a sophisticated **modular monolith architecture** with feature-based organization:
 
 ```
-├── apps/                    # Applications
-├── features/                # Feature modules
-├── libs/                    # Shared libraries
-├── tools/                   # Development tools
-├── docs/                    # Documentation
-└── scripts/                 # Build and deployment scripts
+├── apps/                           # Applications
+│   └── main/                      # Single unified NestJS app with React Router 7 admin UI
+├── features/                       # Feature modules (each subdirectory contains workspaces)
+│   ├── shared/                    # Foundation layer
+│   │   ├── contracts/             # 📦 Shared TypeScript interfaces workspace
+│   │   ├── domain/                # 📦 Common business logic workspace
+│   │   ├── ui/                    # 📦 Base UI component system workspace
+│   │   └── docs/                  # Feature documentation
+│   └── [feature]/                 # Each feature: contracts/, domain/, ui/, docs/
+├── libs/                           # Cross-cutting libraries
+│   ├── auth/                      # Authentication utilities
+│   └── utils/                     # Common utility functions
+├── tools/                          # Development tools and shared configurations
+│   ├── eslint-config/             # Shared ESLint configuration
+│   ├── tsconfig/                  # Shared TypeScript configurations
+│   └── dep-version-map/           # Dependency version management
+├── scripts/                        # TypeScript automation scripts
+│   ├── version-bump.ts            # Automated version management
+│   ├── create-version-tag.ts      # Git tag creation
+│   └── sync-github-issues.ts      # GitHub integration
+└── docs/                           # Comprehensive project documentation
 ```
+
+### Workspace Organization
+
+- Each feature contains **multiple separate pnpm workspaces** (`contracts/`, `domain/`, `ui/`)
+- Features follow a layered architecture: contracts → domain → ui
+- Cross-cutting concerns live in `libs/` as shared workspaces
+- Development tools are organized in `tools/` with shared configurations
 
 ## 🧪 Testing
 
