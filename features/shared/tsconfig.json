@@ -1,0 +1,16 @@
+{
+  "extends": "@cbnsndwch/struktura-tsconfig/base",
+  "include": [
+    "contracts/**/*",
+    "domain/**/*",
+    "ui/**/*"
+  ],
+  "exclude": [
+    "dist",
+    "node_modules"
+  ],
+  "compilerOptions": {
+    "outDir": "./dist",
+    "rootDir": "."
+  }
+}
