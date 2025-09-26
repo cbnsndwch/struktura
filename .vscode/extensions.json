@@ -1,5 +1,7 @@
 {
     "recommendations": [
+        "antfu.vite",
+        "bradlc.vscode-tailwindcss",
         "codezombiech.gitignore",
         "dbaeumer.vscode-eslint",
         "eamodio.gitlens",
@@ -8,8 +10,6 @@
         "formulahendry.auto-close-tag",
         "formulahendry.auto-rename-tag",
         "jock.svg",
-        "Serhioromano.vscode-gitflow",
-        "antfu.vite",
-        "bradlc.vscode-tailwindcss"
+        "Serhioromano.vscode-gitflow"
     ]
 }

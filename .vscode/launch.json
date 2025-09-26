@@ -31,13 +31,6 @@
             "url": "http://localhost:3000"
         },
         {
-            "name": "Main App - Firefox Debug",
-            "request": "launch",
-            "type": "firefox",
-            "webRoot": "${workspaceRoot}/apps/main/admin",
-            "url": "http://localhost:3000"
-        },
-        {
             "name": "Web - Edge Debug",
             "request": "launch",
             "type": "msedge",
