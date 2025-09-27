@@ -3,6 +3,7 @@ import { InjectConnection } from '@nestjs/mongoose';
 import mongoose from 'mongoose';
 
 import { AppService } from './app.service.js';
+import { Public } from './auth/decorators/public.decorator.js';
 
 @Controller()
 export class AppController {
@@ -11,11 +12,13 @@ export class AppController {
         @InjectConnection() private readonly connection: mongoose.Connection
     ) {}
 
+    @Public()
     @Get()
     getHello(): string {
         return this.appService.getHello();
     }
 
+    @Public()
     @Get('health')
     getHealth() {
         let dbStatus = 'unknown';
