@@ -9,8 +9,6 @@ updates:
       day: "monday"
       time: "09:00"
     open-pull-requests-limit: 10
-    reviewers:
-      - "cbnsndwch"
     assignees:
       - "cbnsndwch"
     commit-message:
@@ -19,6 +17,11 @@ updates:
     labels:
       - "dependencies"
       - "automated"
+    # Version constraints to keep Node.js types in v22.x until LTS
+    ignore:
+      - dependency-name: "@types/node"
+        versions: 
+          - ">=24.0.0"
 
   # Enable version updates for GitHub Actions
   - package-ecosystem: "github-actions"
@@ -28,8 +31,6 @@ updates:
       day: "monday"
       time: "09:00"
     open-pull-requests-limit: 5
-    reviewers:
-      - "cbnsndwch"
     assignees:
       - "cbnsndwch"
     commit-message:
@@ -47,8 +48,6 @@ updates:
       day: "monday"
       time: "09:00"
     open-pull-requests-limit: 3
-    reviewers:
-      - "cbnsndwch"
     assignees:
       - "cbnsndwch"
     commit-message:

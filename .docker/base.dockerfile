@@ -1,6 +1,6 @@
 # Base image for Struktura with OS-level dependencies
 # Built weekly and on-demand for consistency across environments
-FROM node:24-alpine
+FROM node:22-alpine
 
 LABEL maintainer="cbnsndwch LLC <support@cbnsndwch.io>"
 LABEL description="Struktura base image with OS-level dependencies"
