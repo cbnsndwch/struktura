@@ -248,7 +248,7 @@ jobs:
     if: always()
     steps:
       - name: Notify team
-        run:
+        run: |
           if [[ "${{ needs.quality-checks.result }}" == "success" && "${{ needs.security-scan.result }}" == "success" && "${{ needs.build-and-push.result }}" == "success" ]]; then
             echo "✅ CI/CD Pipeline completed successfully"
           else

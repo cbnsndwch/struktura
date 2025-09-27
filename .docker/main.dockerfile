@@ -1,19 +1,32 @@
 # Multi-stage Dockerfile for Struktura main application
-# Optimized for ARM64 Linux with efficient layer caching
+# Optimized for ARM64 Linux with efficient layer caching and pnpm store caching
 
 ARG BASE_IMAGE=node:22-alpine
 
 # ================================
-# Dependencies stage
+# Base stage - pnpm setup and cache
 # ================================
-FROM ${BASE_IMAGE} as dependencies
+FROM ${BASE_IMAGE} AS base
 
-# Install pnpm if not in base image
-RUN if ! command -v pnpm &> /dev/null; then npm install -g pnpm@10.17.1; fi
+# Install pnpm globally and configure store
+RUN npm install -g pnpm@10.17.1
+
+# Set pnpm store directory for caching
+ENV PNPM_HOME="/pnpm"
+ENV PATH="$PNPM_HOME:$PATH"
+ENV STORE_DIR="/app/.pnpm-store"
+
+# Configure pnpm to use the cache directory
+RUN pnpm config set store-dir $STORE_DIR
 
 WORKDIR /app
 
-# Copy package management files
+# ================================
+# Dependencies stage
+# ================================
+FROM base AS dependencies
+
+# Copy package management files first (these change less frequently)
 COPY pnpm-workspace.yaml ./
 COPY package.json pnpm-lock.yaml ./
 COPY turbo.json ./
@@ -27,13 +40,15 @@ COPY features/shared/ui/package.json ./features/shared/ui/
 COPY libs/auth/package.json ./libs/auth/
 COPY libs/utils/package.json ./libs/utils/
 
-# Install all dependencies
-RUN pnpm install --frozen-lockfile
+# Install dependencies using pnpm store for caching
+# Use --prefer-frozen-lockfile for better cache utilization
+RUN --mount=type=cache,id=pnpm-store,target=/app/.pnpm-store \
+    pnpm install --frozen-lockfile
 
 # ================================
 # Build stage
 # ================================
-FROM dependencies as builder
+FROM dependencies AS builder
 
 # Copy source code
 COPY . .
@@ -44,38 +59,36 @@ RUN pnpm build
 # ================================
 # Production stage
 # ================================
-FROM ${BASE_IMAGE} as production
-
-# Install pnpm if not in base image
-RUN if ! command -v pnpm &> /dev/null; then npm install -g pnpm@10.17.1; fi
+FROM base AS production
 
 # Install curl for health check
 RUN if command -v apk &> /dev/null; then \
         apk add --no-cache curl || echo "Could not install curl via apk"; \
     fi
 
-WORKDIR /app
-
-# Copy package files
+# Copy package files for production dependencies
 COPY pnpm-workspace.yaml ./
 COPY package.json pnpm-lock.yaml ./
 
-# Copy built applications and libraries
-COPY --from=builder /app/apps/main/dist ./apps/main/dist
-COPY --from=builder /app/apps/main/package.json ./apps/main/
-COPY --from=builder /app/features/shared/contracts/dist ./features/shared/contracts/dist
-COPY --from=builder /app/features/shared/contracts/package.json ./features/shared/contracts/
-COPY --from=builder /app/features/shared/domain/dist ./features/shared/domain/dist
-COPY --from=builder /app/features/shared/domain/package.json ./features/shared/domain/
-COPY --from=builder /app/features/shared/ui/dist ./features/shared/ui/dist
-COPY --from=builder /app/features/shared/ui/package.json ./features/shared/ui/
-COPY --from=builder /app/libs/auth/dist ./libs/auth/dist
-COPY --from=builder /app/libs/auth/package.json ./libs/auth/
-COPY --from=builder /app/libs/utils/dist ./libs/utils/dist
-COPY --from=builder /app/libs/utils/package.json ./libs/utils/
+# Copy all package.json files (needed for workspace resolution)
+COPY apps/main/package.json ./apps/main/
+COPY features/shared/contracts/package.json ./features/shared/contracts/
+COPY features/shared/domain/package.json ./features/shared/domain/
+COPY features/shared/ui/package.json ./features/shared/ui/
+COPY libs/auth/package.json ./libs/auth/
+COPY libs/utils/package.json ./libs/utils/
 
-# Install production dependencies only
-RUN pnpm install --prod --frozen-lockfile
+# Install production dependencies only using cached store
+RUN --mount=type=cache,id=pnpm-store,target=/app/.pnpm-store \
+    pnpm install --prod --frozen-lockfile
+
+# Copy built applications and libraries from builder stage
+COPY --from=builder /app/apps/main/dist ./apps/main/dist
+COPY --from=builder /app/features/shared/contracts/dist ./features/shared/contracts/dist
+COPY --from=builder /app/features/shared/domain/dist ./features/shared/domain/dist
+COPY --from=builder /app/features/shared/ui/dist ./features/shared/ui/dist
+COPY --from=builder /app/libs/auth/dist ./libs/auth/dist
+COPY --from=builder /app/libs/utils/dist ./libs/utils/dist
 
 # Set environment variables
 ENV NODE_ENV=production

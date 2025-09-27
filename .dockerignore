@@ -59,3 +59,12 @@ docs
 
 # Turborepo
 .turbo
+
+# PNPM
+.pnpm-store
+.pnpm-debug.log*
+
+# Additional cache directories
+.cache
+.npm
+.yarn
