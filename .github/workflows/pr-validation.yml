@@ -8,7 +8,7 @@ on:
 jobs:
   # Skip validation for draft PRs
   check-pr-state:
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
     outputs:
       should-run: ${{ steps.check.outputs.should-run }}
     steps:
@@ -27,7 +27,7 @@ jobs:
   # Lint and Format Validation
   # ================================
   lint-and-format:
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
     needs: check-pr-state
     if: needs.check-pr-state.outputs.should-run == 'true'
     steps:
@@ -64,7 +64,7 @@ jobs:
   # Test Validation
   # ================================
   test-validation:
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
     needs: check-pr-state
     if: needs.check-pr-state.outputs.should-run == 'true'
     steps:
@@ -93,7 +93,7 @@ jobs:
   # Build Validation
   # ================================
   build-validation:
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
     needs: check-pr-state
     if: needs.check-pr-state.outputs.should-run == 'true'
     steps:
@@ -131,7 +131,7 @@ jobs:
   # Docker Build Test
   # ================================
   docker-build-test:
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
     needs: [lint-and-format, test-validation, build-validation]
     if: needs.check-pr-state.outputs.should-run == 'true'
     steps:
@@ -159,7 +159,7 @@ jobs:
   # Security Check
   # ================================
   security-check:
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
     needs: check-pr-state
     if: needs.check-pr-state.outputs.should-run == 'true'
     steps:
@@ -185,7 +185,7 @@ jobs:
   # PR Status Summary
   # ================================
   pr-validation-summary:
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
     needs: [check-pr-state, lint-and-format, test-validation, build-validation, docker-build-test, security-check]
     if: always() && needs.check-pr-state.outputs.should-run == 'true'
     steps:

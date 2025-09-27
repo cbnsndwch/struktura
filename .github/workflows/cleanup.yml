@@ -17,7 +17,7 @@ env:
 
 jobs:
   cleanup-images:
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
     permissions:
       contents: read
       packages: write
@@ -39,7 +39,7 @@ jobs:
           delete-only-untagged-versions: false
 
   cleanup-caches:
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
     permissions:
       actions: write
     steps:

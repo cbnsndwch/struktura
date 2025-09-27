@@ -531,7 +531,7 @@ env:
 
 jobs:
     detect-changes:
-        runs-on: ubuntu-latest
+        runs-on: ubuntu-24.04
         outputs:
             app-changed: ${{ steps.changes.outputs.app }}
         steps:
@@ -545,7 +545,7 @@ jobs:
                         - 'libs/**'
 
     test:
-        runs-on: ubuntu-latest
+        runs-on: ubuntu-24.04
         steps:
             - uses: actions/checkout@v4
 
@@ -569,7 +569,7 @@ jobs:
     build-main:
         needs: [detect-changes, test]
         if: needs.detect-changes.outputs.app-changed == 'true'
-        runs-on: ubuntu-latest
+        runs-on: ubuntu-24.04
         steps:
             - uses: actions/checkout@v4
 
@@ -588,7 +588,7 @@ jobs:
     deploy-staging:
         needs: [build-main]
         if: github.ref == 'refs/heads/develop'
-        runs-on: ubuntu-latest
+        runs-on: ubuntu-24.04
         environment: staging
         steps:
             - name: Setup Docker Context for Swarm
@@ -608,7 +608,7 @@ jobs:
     deploy-production:
         needs: [build-main]
         if: github.ref == 'refs/heads/main'
-        runs-on: ubuntu-latest
+        runs-on: ubuntu-24.04
         environment: production
         steps:
             - name: Setup Docker Context for Swarm

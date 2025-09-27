@@ -56,3 +56,8 @@ updates:
     labels:
       - "docker"
       - "automated"
+    # Version constraints to keep Node.js images in v22.x until LTS
+    ignore:
+      - dependency-name: "node"
+        versions: 
+          - "24*"
