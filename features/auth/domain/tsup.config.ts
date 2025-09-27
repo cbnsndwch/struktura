@@ -6,7 +6,7 @@ export default defineConfig({
     dts: true,
     sourcemap: true,
     clean: true,
-    target: 'es2022',
+    target: 'es2023',
     external: [
         'bcryptjs',
         'jsonwebtoken',
