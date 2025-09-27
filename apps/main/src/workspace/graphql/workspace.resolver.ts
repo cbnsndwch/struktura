@@ -1,10 +1,12 @@
 import { Resolver, Query, Mutation, Args, Context } from '@nestjs/graphql';
 import { UseGuards } from '@nestjs/common';
+
 import { WorkspaceService } from '../services/workspace.service.js';
 import { JwtAuthGuard } from '../../auth/guards/jwt-auth.guard.js';
 import { WorkspaceGuard, WorkspaceRoles } from '../guards/workspace.guard.js';
 import { WorkspaceRole } from '../dto/index.js';
 import { WorkspaceDocument } from '../schemas/workspace.schema.js';
+
 import {
     Workspace,
     CreateWorkspaceInput,
@@ -47,7 +49,9 @@ export class WorkspaceResolver {
     }
 
     @Query(() => Workspace)
-    async workspaceBySlug(@Args('slug') slug: string): Promise<WorkspaceDocument> {
+    async workspaceBySlug(
+        @Args('slug') slug: string
+    ): Promise<WorkspaceDocument> {
         return this.workspaceService.findBySlug(slug);
     }
 
@@ -126,7 +130,11 @@ export class WorkspaceResolver {
         @Context() context: any
     ): Promise<WorkspaceDocument> {
         const userId = context.req.user.sub;
-        return this.workspaceService.removeMember(workspaceId, memberId, userId);
+        return this.workspaceService.removeMember(
+            workspaceId,
+            memberId,
+            userId
+        );
     }
 
     @Query(() => String, { nullable: true })

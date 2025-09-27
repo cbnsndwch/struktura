@@ -1,10 +1,11 @@
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
 import { Document, Types } from 'mongoose';
 
-export type WorkspaceDocument = Workspace & Document & {
-    createdAt: Date;
-    updatedAt: Date;
-};
+export type WorkspaceDocument = Workspace &
+    Document & {
+        createdAt: Date;
+        updatedAt: Date;
+    };
 
 @Schema({
     timestamps: true,

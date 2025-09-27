@@ -5,10 +5,11 @@ import {
     ForbiddenException
 } from '@nestjs/common';
 import { Reflector } from '@nestjs/core';
-import { WorkspaceService } from '../services/workspace.service.js';
-import { WorkspaceRole } from '../dto/index.js';
 
 import { SetMetadata } from '@nestjs/common';
+
+import { WorkspaceService } from '../services/workspace.service.js';
+import { WorkspaceRole } from '../dto/index.js';
 
 export const WORKSPACE_ROLES_KEY = 'workspaceRoles';
 export const WorkspaceRoles = (roles: WorkspaceRole[]) =>

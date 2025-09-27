@@ -3,9 +3,11 @@ import { getModelToken } from '@nestjs/mongoose';
 import { BadRequestException, NotFoundException } from '@nestjs/common';
 import { Model, Types } from 'mongoose';
 import { describe, it, beforeEach, afterEach, expect, vi } from 'vitest';
-import { WorkspaceService } from './workspace.service.js';
+
 import { Workspace, WorkspaceDocument } from '../schemas/workspace.schema.js';
 import { User, UserDocument } from '../../auth/schemas/user.schema.js';
+
+import { WorkspaceService } from './workspace.service.js';
 
 describe('WorkspaceService', () => {
     let service: WorkspaceService;

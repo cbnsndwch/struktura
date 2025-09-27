@@ -7,6 +7,7 @@ import {
 } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { Model, Types } from 'mongoose';
+
 import { Workspace, WorkspaceDocument } from '../schemas/workspace.schema.js';
 import { User, UserDocument } from '../../auth/schemas/user.schema.js';
 import {
@@ -206,7 +207,7 @@ export class WorkspaceService {
 
         // Check if user is already a member
         const existingMember = workspace.members.find(
-            (member) => member.user.toString() === user._id?.toString()
+            member => member.user.toString() === user._id?.toString()
         );
 
         if (existingMember) {
@@ -242,7 +243,7 @@ export class WorkspaceService {
 
         // Find member
         const member = workspace.members.find(
-            (m) => m.user.toString() === memberId
+            m => m.user.toString() === memberId
         );
 
         if (!member) {
@@ -291,7 +292,7 @@ export class WorkspaceService {
 
         // Remove member
         workspace.members = workspace.members.filter(
-            (member) => member.user.toString() !== memberId
+            member => member.user.toString() !== memberId
         );
 
         return workspace.save();
@@ -320,7 +321,7 @@ export class WorkspaceService {
 
         // Find user in members
         const member = workspace.members.find(
-            (m) => m.user.toString() === userId
+            m => m.user.toString() === userId
         );
 
         return member ? (member.role as WorkspaceRole) : null;

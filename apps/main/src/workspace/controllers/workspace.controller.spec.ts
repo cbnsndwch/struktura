@@ -1,8 +1,10 @@
 import { Test, TestingModule } from '@nestjs/testing';
 import { describe, it, beforeEach, afterEach, expect, vi } from 'vitest';
-import { WorkspaceController } from './workspace.controller.js';
+
 import { WorkspaceService } from '../services/workspace.service.js';
 import { CreateWorkspaceDto, WorkspaceRole } from '../dto/index.js';
+
+import { WorkspaceController } from './workspace.controller.js';
 
 describe('WorkspaceController', () => {
     let controller: WorkspaceController;
@@ -71,7 +73,10 @@ describe('WorkspaceController', () => {
 
             mockWorkspaceService.create.mockResolvedValue(mockWorkspace);
 
-            const result = await controller.create(createWorkspaceDto, mockRequest);
+            const result = await controller.create(
+                createWorkspaceDto,
+                mockRequest
+            );
 
             expect(service.create).toHaveBeenCalledWith(
                 createWorkspaceDto,
@@ -88,7 +93,9 @@ describe('WorkspaceController', () => {
 
             const result = await controller.findAll(mockRequest);
 
-            expect(service.findAllForUser).toHaveBeenCalledWith(mockRequest.user.sub);
+            expect(service.findAllForUser).toHaveBeenCalledWith(
+                mockRequest.user.sub
+            );
             expect(result).toEqual(workspaces);
         });
     });
@@ -108,9 +115,14 @@ describe('WorkspaceController', () => {
     describe('getUserRole', () => {
         it('should return user role in workspace', async () => {
             const workspaceId = 'workspace-id';
-            mockWorkspaceService.getUserRole.mockResolvedValue(WorkspaceRole.OWNER);
+            mockWorkspaceService.getUserRole.mockResolvedValue(
+                WorkspaceRole.OWNER
+            );
 
-            const result = await controller.getUserRole(workspaceId, mockRequest);
+            const result = await controller.getUserRole(
+                workspaceId,
+                mockRequest
+            );
 
             expect(service.getUserRole).toHaveBeenCalledWith(
                 workspaceId,

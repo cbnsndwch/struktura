@@ -9,6 +9,7 @@ import {
     UseGuards,
     Request
 } from '@nestjs/common';
+
 import { WorkspaceService } from '../services/workspace.service.js';
 import {
     CreateWorkspaceDto,
@@ -27,7 +28,10 @@ export class WorkspaceController {
     constructor(private readonly workspaceService: WorkspaceService) {}
 
     @Post()
-    create(@Body() createWorkspaceDto: CreateWorkspaceDto, @Request() req: any) {
+    create(
+        @Body() createWorkspaceDto: CreateWorkspaceDto,
+        @Request() req: any
+    ) {
         return this.workspaceService.create(createWorkspaceDto, req.user.sub);
     }
 
@@ -61,7 +65,11 @@ export class WorkspaceController {
         @Body() updateWorkspaceDto: UpdateWorkspaceDto,
         @Request() req: any
     ) {
-        return this.workspaceService.update(id, updateWorkspaceDto, req.user.sub);
+        return this.workspaceService.update(
+            id,
+            updateWorkspaceDto,
+            req.user.sub
+        );
     }
 
     @Patch(':id/settings')
@@ -72,7 +80,11 @@ export class WorkspaceController {
         @Body() settingsDto: UpdateWorkspaceSettingsDto,
         @Request() req: any
     ) {
-        return this.workspaceService.updateSettings(id, settingsDto, req.user.sub);
+        return this.workspaceService.updateSettings(
+            id,
+            settingsDto,
+            req.user.sub
+        );
     }
 
     @Delete(':id')
@@ -90,7 +102,11 @@ export class WorkspaceController {
         @Body() inviteMemberDto: InviteMemberDto,
         @Request() req: any
     ) {
-        return this.workspaceService.inviteMember(id, inviteMemberDto, req.user.sub);
+        return this.workspaceService.inviteMember(
+            id,
+            inviteMemberDto,
+            req.user.sub
+        );
     }
 
     @Patch(':id/members/:memberId/role')

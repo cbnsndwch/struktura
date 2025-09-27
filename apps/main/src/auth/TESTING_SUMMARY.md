@@ -17,10 +17,11 @@
 - ✅ Uses **port 27118** to avoid dev database conflicts
 - ✅ Full AppModule context for complete dependency injection
 - 📋 **Next**: Enable with local test database for complete workflow testing
+
 ## Testing Philosophy ✅
 
 1. **Unit Tests**: Fast, isolated business logic validation
-2. **E2E Tests**: Complete user workflows with real dependencies  
+2. **E2E Tests**: Complete user workflows with real dependencies
 3. **Clear Separation**: No overlap, complementary coverage
 
 ## Next Steps 📋

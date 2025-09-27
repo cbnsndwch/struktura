@@ -1,4 +1,11 @@
-import { ObjectType, Field, ID, InputType, registerEnumType } from '@nestjs/graphql';
+import {
+    ObjectType,
+    Field,
+    ID,
+    InputType,
+    registerEnumType
+} from '@nestjs/graphql';
+
 import { WorkspaceRole } from '../dto/index.js';
 
 // Register the enum for GraphQL
