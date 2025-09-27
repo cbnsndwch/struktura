@@ -31,7 +31,12 @@
         "changeset:status": "changeset status --verbose",
         "release": "pnpm build && pnpm test && pnpm changeset:publish",
         "vset": "tsx ./scripts/version-bump.ts",
-        "vtag": "tsx ./scripts/create-version-tag.ts"
+        "vtag": "tsx ./scripts/create-version-tag.ts",
+        "docker:up": "docker-compose -f docker-compose.yml -f docker-compose.dev.yml up -d",
+        "docker:down": "docker-compose down",
+        "docker:logs": "docker-compose logs -f",
+        "docker:build": "docker-compose build",
+        "docker:clean": "docker-compose down -v && docker system prune -f"
     },
     "devDependencies": {
         "@changesets/cli": "^2.29.7",

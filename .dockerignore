@@ -41,10 +41,11 @@ coverage
 .tmp
 temp-*
 
-# Docker
-.docker
+# Docker files
 .dockerignore
 Dockerfile*
+docker-compose*
+scripts/test-docker-setup.sh
 
 # CI/CD
 .github

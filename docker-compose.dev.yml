@@ -1,0 +1,36 @@
+version: '3.8'
+
+services:
+  app:
+    build:
+      target: development
+    environment:
+      - NODE_ENV=development
+      - GRAPHQL_PLAYGROUND=true
+    command: ["pnpm", "dev"]
+    volumes:
+      # Additional development volumes
+      - ./.dvmrc.json:/app/.dvmrc.json:ro
+      - ./eslint.config.js:/app/eslint.config.js:ro
+      - ./tsconfig.json:/app/tsconfig.json:ro
+      # Cache directories to speed up development
+      - pnpm_cache:/app/.pnpm-store
+      - node_modules_cache:/app/node_modules
+
+  # Development database with more verbose logging
+  mongodb:
+    command: ["mongod", "--bind_ip_all", "--replSet", "rs0", "--oplogSize", "128"]
+    environment:
+      - MONGO_INITDB_ROOT_USERNAME=mongo-user
+      - MONGO_INITDB_ROOT_PASSWORD=mongo-pass
+      - MONGO_INITDB_DATABASE=struktura-dev
+
+  # Redis with development configuration
+  redis:
+    command: redis-server --appendonly yes --loglevel verbose
+
+volumes:
+  pnpm_cache:
+    driver: local
+  node_modules_cache:
+    driver: local
