@@ -62,7 +62,7 @@ export class CollectionService {
             throw new NotFoundException(`Collection with ID '${id}' not found`);
         }
 
-        return collection;
+        return collection as CollectionDocument;
     }
 
     // Find collection by workspace and slug
@@ -80,7 +80,7 @@ export class CollectionService {
             throw new NotFoundException(`Collection '${slug}' not found in workspace`);
         }
 
-        return collection;
+        return collection as CollectionDocument;
     }
 
     // Update collection

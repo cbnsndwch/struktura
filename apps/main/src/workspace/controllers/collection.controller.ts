@@ -60,8 +60,8 @@ export class CollectionController {
         @Param('slug') slug: string,
         @Body() updateCollectionDto: UpdateCollectionDto
     ) {
-        const collection = await this.collectionService.findBySlug(workspaceId, slug) as CollectionDocument;
-        return this.collectionService.update(collection._id.toString(), updateCollectionDto);
+        const collection = await this.collectionService.findBySlug(workspaceId, slug);
+        return this.collectionService.update((collection as any)._id.toString(), updateCollectionDto);
     }
 
     // Delete collection
@@ -71,8 +71,8 @@ export class CollectionController {
         @Param('workspaceId') workspaceId: string,
         @Param('slug') slug: string
     ) {
-        const collection = await this.collectionService.findBySlug(workspaceId, slug) as CollectionDocument;
-        await this.collectionService.delete(collection._id.toString());
+        const collection = await this.collectionService.findBySlug(workspaceId, slug);
+        await this.collectionService.delete((collection as any)._id.toString());
     }
 
     // Add field to collection
@@ -82,8 +82,8 @@ export class CollectionController {
         @Param('slug') slug: string,
         @Body() fieldDto: FieldDto
     ) {
-        const collection = await this.collectionService.findBySlug(workspaceId, slug) as CollectionDocument;
-        return this.collectionService.addField(collection._id.toString(), fieldDto as any);
+        const collection = await this.collectionService.findBySlug(workspaceId, slug);
+        return this.collectionService.addField((collection as any)._id.toString(), fieldDto as any);
     }
 
     // Update field in collection
@@ -94,8 +94,8 @@ export class CollectionController {
         @Param('fieldId') fieldId: string,
         @Body() fieldUpdate: Partial<FieldDto>
     ) {
-        const collection = await this.collectionService.findBySlug(workspaceId, slug) as CollectionDocument;
-        return this.collectionService.updateField(collection._id.toString(), fieldId, fieldUpdate);
+        const collection = await this.collectionService.findBySlug(workspaceId, slug);
+        return this.collectionService.updateField((collection as any)._id.toString(), fieldId, fieldUpdate);
     }
 
     // Remove field from collection
@@ -106,8 +106,8 @@ export class CollectionController {
         @Param('slug') slug: string,
         @Param('fieldId') fieldId: string
     ) {
-        const collection = await this.collectionService.findBySlug(workspaceId, slug) as CollectionDocument;
-        await this.collectionService.removeField(collection._id.toString(), fieldId);
+        const collection = await this.collectionService.findBySlug(workspaceId, slug);
+        await this.collectionService.removeField((collection as any)._id.toString(), fieldId);
     }
 
     // Reorder fields
@@ -117,8 +117,8 @@ export class CollectionController {
         @Param('slug') slug: string,
         @Body() { fieldOrder }: { fieldOrder: string[] }
     ) {
-        const collection = await this.collectionService.findBySlug(workspaceId, slug) as CollectionDocument;
-        return this.collectionService.reorderFields(collection._id.toString(), fieldOrder);
+        const collection = await this.collectionService.findBySlug(workspaceId, slug);
+        return this.collectionService.reorderFields((collection as any)._id.toString(), fieldOrder);
     }
 }
 

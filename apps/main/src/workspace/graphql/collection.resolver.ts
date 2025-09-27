@@ -14,9 +14,9 @@ import {
     Field,
     FieldType as SchemaFieldType,
     ValidationRule,
-    FieldOptions,
     CollectionDocument
 } from '../schemas/collection.schema.js';
+import type { FieldOptions } from '../schemas/collection.schema.js';
 
 // GraphQL Types
 import { ObjectType, Field as GQLField, InputType, registerEnumType } from '@nestjs/graphql';
@@ -278,8 +278,8 @@ export class CollectionResolver {
         @Args('slug') slug: string,
         @Args('input') input: UpdateCollectionInput
     ): Promise<CollectionType> {
-        const collection = await this.collectionService.findBySlug(workspaceId, slug) as CollectionDocument;
-        const updatedCollection = await this.collectionService.update(collection._id.toString(), input as UpdateCollectionDto);
+        const collection = await this.collectionService.findBySlug(workspaceId, slug);
+        const updatedCollection = await this.collectionService.update((collection as any)._id.toString(), input as UpdateCollectionDto);
         
         // Publish real-time update
         this.pubSub.publish('collectionUpdated', {
@@ -295,12 +295,12 @@ export class CollectionResolver {
         @Args('workspaceId', { type: () => ID }) workspaceId: string,
         @Args('slug') slug: string
     ): Promise<boolean> {
-        const collection = await this.collectionService.findBySlug(workspaceId, slug) as CollectionDocument;
-        await this.collectionService.delete(collection._id.toString());
+        const collection = await this.collectionService.findBySlug(workspaceId, slug);
+        await this.collectionService.delete((collection as any)._id.toString());
         
         // Publish real-time update
         this.pubSub.publish('collectionDeleted', {
-            collectionDeleted: { id: collection._id.toString(), slug },
+            collectionDeleted: { id: (collection as any)._id.toString(), slug },
             workspaceId: workspaceId
         });
 
@@ -313,8 +313,8 @@ export class CollectionResolver {
         @Args('slug') slug: string,
         @Args('field') field: FieldInput
     ): Promise<CollectionType> {
-        const collection = await this.collectionService.findBySlug(workspaceId, slug) as CollectionDocument;
-        const updatedCollection = await this.collectionService.addField(collection._id.toString(), field as any);
+        const collection = await this.collectionService.findBySlug(workspaceId, slug);
+        const updatedCollection = await this.collectionService.addField((collection as any)._id.toString(), field as any);
         
         // Publish real-time update
         this.pubSub.publish('collectionFieldAdded', {
@@ -332,8 +332,8 @@ export class CollectionResolver {
         @Args('fieldId') fieldId: string,
         @Args('field') field: FieldInput
     ): Promise<CollectionType> {
-        const collection = await this.collectionService.findBySlug(workspaceId, slug) as CollectionDocument;
-        const updatedCollection = await this.collectionService.updateField(collection._id.toString(), fieldId, field as any);
+        const collection = await this.collectionService.findBySlug(workspaceId, slug);
+        const updatedCollection = await this.collectionService.updateField((collection as any)._id.toString(), fieldId, field as any);
         
         // Publish real-time update
         this.pubSub.publish('collectionFieldUpdated', {
@@ -350,8 +350,8 @@ export class CollectionResolver {
         @Args('slug') slug: string,
         @Args('fieldId') fieldId: string
     ): Promise<CollectionType> {
-        const collection = await this.collectionService.findBySlug(workspaceId, slug) as CollectionDocument;
-        const updatedCollection = await this.collectionService.removeField(collection._id.toString(), fieldId);
+        const collection = await this.collectionService.findBySlug(workspaceId, slug);
+        const updatedCollection = await this.collectionService.removeField((collection as any)._id.toString(), fieldId);
         
         // Publish real-time update
         this.pubSub.publish('collectionFieldRemoved', {
@@ -368,8 +368,8 @@ export class CollectionResolver {
         @Args('slug') slug: string,
         @Args('fieldOrder', { type: () => [String] }) fieldOrder: string[]
     ): Promise<CollectionType> {
-        const collection = await this.collectionService.findBySlug(workspaceId, slug) as CollectionDocument;
-        const updatedCollection = await this.collectionService.reorderFields(collection._id.toString(), fieldOrder);
+        const collection = await this.collectionService.findBySlug(workspaceId, slug);
+        const updatedCollection = await this.collectionService.reorderFields((collection as any)._id.toString(), fieldOrder);
         
         // Publish real-time update
         this.pubSub.publish('collectionFieldsReordered', {
@@ -389,7 +389,7 @@ export class CollectionResolver {
     collectionCreated(
         @Args('workspaceId', { type: () => ID }) workspaceId: string
     ) {
-        return this.pubSub.asyncIterator('collectionCreated');
+        return this.pubSub.asyncIterableIterator('collectionCreated');
     }
 
     @Subscription(() => CollectionType, {
@@ -400,7 +400,7 @@ export class CollectionResolver {
     collectionUpdated(
         @Args('workspaceId', { type: () => ID }) workspaceId: string
     ) {
-        return this.pubSub.asyncIterator('collectionUpdated');
+        return this.pubSub.asyncIterableIterator('collectionUpdated');
     }
 
     @Subscription(() => String, {
@@ -411,7 +411,7 @@ export class CollectionResolver {
     collectionDeleted(
         @Args('workspaceId', { type: () => ID }) workspaceId: string
     ) {
-        return this.pubSub.asyncIterator('collectionDeleted');
+        return this.pubSub.asyncIterableIterator('collectionDeleted');
     }
 
     @Subscription(() => CollectionType, {
@@ -422,7 +422,7 @@ export class CollectionResolver {
     collectionFieldAdded(
         @Args('workspaceId', { type: () => ID }) workspaceId: string
     ) {
-        return this.pubSub.asyncIterator('collectionFieldAdded');
+        return this.pubSub.asyncIterableIterator('collectionFieldAdded');
     }
 
     @Subscription(() => CollectionType, {
@@ -433,7 +433,7 @@ export class CollectionResolver {
     collectionFieldUpdated(
         @Args('workspaceId', { type: () => ID }) workspaceId: string
     ) {
-        return this.pubSub.asyncIterator('collectionFieldUpdated');
+        return this.pubSub.asyncIterableIterator('collectionFieldUpdated');
     }
 
     @Subscription(() => CollectionType, {
@@ -444,7 +444,7 @@ export class CollectionResolver {
     collectionFieldRemoved(
         @Args('workspaceId', { type: () => ID }) workspaceId: string
     ) {
-        return this.pubSub.asyncIterator('collectionFieldRemoved');
+        return this.pubSub.asyncIterableIterator('collectionFieldRemoved');
     }
 
     @Subscription(() => CollectionType, {
@@ -455,6 +455,6 @@ export class CollectionResolver {
     collectionFieldsReordered(
         @Args('workspaceId', { type: () => ID }) workspaceId: string
     ) {
-        return this.pubSub.asyncIterator('collectionFieldsReordered');
+        return this.pubSub.asyncIterableIterator('collectionFieldsReordered');
     }
 }
