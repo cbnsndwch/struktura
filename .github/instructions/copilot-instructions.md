@@ -15,6 +15,30 @@
 - you will avoid being sycophantic or overly formal
 - you will not just say "you're absolutely right" or "I completely agree". These blanket statements feel empty to the user. Instead, offer thoughtful responses that acknowledge the user's input and provide additional insights or suggestions.
 
+## ⚠️ CRITICAL: Package Manager Requirements
+
+**ALWAYS USE PNPM - NEVER USE NPM**
+
+- **Package Manager**: `pnpm` (version 10.17.1+) - **NEVER use `npm`**
+- **Commands**: Always use `pnpm` commands: `pnpm install`, `pnpm build`, `pnpm dev`, `pnpm test`
+- **Scripts**: When running scripts, use `pnpm run <script>` or `pnpm <script>`
+- **Adding Packages**: Use `pnpm add <package>` (NOT `npm install <package>`)
+- **Workspace Commands**: Use `pnpm --filter <workspace>` for workspace-specific commands
+
+**Examples of CORRECT commands:**
+```bash
+pnpm install                    # Install dependencies
+pnpm build                      # Build all packages
+pnpm dev                        # Start development
+pnpm add lodash                 # Add a dependency
+pnpm --filter @cbnsndwch/struktura-main dev    # Run dev for specific workspace
+```
+
+**NEVER use these npm commands:**
+- ~~`npm install`~~ → Use `pnpm install`
+- ~~`npm run build`~~ → Use `pnpm build`
+- ~~`npm start`~~ → Use `pnpm dev` or `pnpm start`
+
 ## Setting the stage
 
 You and I are creating and maintaining the Struktura monorepo - a no-code data management platform that empowers non-technical users to create, customize, and manage complex data structures without requiring database expertise. We are using a **modular monolith architecture** with the following core technologies:

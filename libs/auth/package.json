@@ -1,21 +1,9 @@
 {
     "name": "@cbnsndwch/struktura-auth",
-    "version": "0.1.0",
-    "private": true,
-    "type": "module",
     "description": "Authentication and authorization utilities for Struktura",
-    "main": "./dist/index.js",
-    "module": "./dist/index.js",
-    "types": "./dist/index.d.ts",
-    "exports": {
-        ".": {
-            "import": "./dist/index.js",
-            "types": "./dist/index.d.ts"
-        }
-    },
-    "files": [
-        "dist"
-    ],
+    "version": "0.1.0",
+    "type": "module",
+    "private": true,
     "scripts": {
         "build": "tsup",
         "clean": "rm -rf dist",
@@ -39,5 +27,14 @@
     },
     "engines": {
         "node": ">=22"
+    },
+    "files": [
+        "dist"
+    ],
+    "exports": {
+        ".": {
+            "import": "./dist/index.js",
+            "types": "./dist/index.d.ts"
+        }
     }
 }

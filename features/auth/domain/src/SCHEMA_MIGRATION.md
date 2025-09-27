@@ -7,18 +7,22 @@ All imports have been successfully updated to use the new consolidated `user.mod
 ## What Was Changed
 
 ### ✅ Updated Imports
+
 All these files now import from `models/user.model.js`:
-- `auth.service.ts` 
+
+- `auth.service.ts`
 - `auth.module.ts`
 - `strategies/google.strategy.ts`
 - `strategies/github.strategy.ts`
 
-### ✅ Field Compatibility  
+### ✅ Field Compatibility
+
 - **Database field**: `emailVerified` (matches existing MongoDB documents)
 - **Interface compliance**: `isVerified` getter/setter (implements IUser contract)
 - **Backward compatibility**: Both field names work in code
 
 ### ✅ Legacy File Status
+
 - `schemas/user.schema.ts` is now **deprecated** with clear warning comments
 - Export removed from `index.ts` (commented out)
 - File can be safely deleted after confirming no external dependencies
@@ -29,7 +33,7 @@ All these files now import from `models/user.model.js`:
 // ✅ OLD (deprecated)
 import { User, UserDocument } from './schemas/user.schema.js';
 
-// ✅ NEW (active)  
+// ✅ NEW (active)
 import { User, UserDocument } from './models/user.model.js';
 ```
 
@@ -47,12 +51,14 @@ if (user.isVerified) { ... }
 ## Next Steps
 
 ### Safe to Delete
+
 After verifying no external packages import `schemas/user.schema.ts`, you can:
 
 1. **Delete the file**: `rm schemas/user.schema.ts`
 2. **Remove from git**: `git rm schemas/user.schema.ts`
 
 ### Benefits Achieved
+
 - ✅ Single source of truth for User structure
 - ✅ No more sync issues between schema/entity/DTO
 - ✅ GraphQL types automatically generated

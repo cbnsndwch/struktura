@@ -10,13 +10,12 @@ import {
     JwtAuthGuard,
     RolesGuard
 } from '@cbnsndwch/struktura-auth-domain';
+import { WorkspaceModule } from '@cbnsndwch/struktura-workspace-domain';
 
 import { AppController } from './app.controller.js';
 import { AppService } from './app.service.js';
 import { DatabaseModule } from './database/database.module.js';
 import { AppResolver } from './graphql/app.resolver.js';
-
-import { WorkspaceModule } from './workspace/workspace.module.js';
 
 @Module({
     imports: [

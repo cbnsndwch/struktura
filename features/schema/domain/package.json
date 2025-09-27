@@ -1,12 +1,9 @@
 {
     "name": "@cbnsndwch/struktura-schema-domain",
-    "version": "0.1.0",
-    "private": true,
-    "type": "module",
     "description": "Schema domain logic for Struktura",
-    "main": "./dist/index.js",
-    "module": "./dist/index.js",
-    "types": "./dist/index.d.ts",
+    "version": "0.1.0",
+    "type": "module",
+    "private": true,
     "scripts": {
         "build": "tsup",
         "dev": "tsup --watch",
@@ -28,13 +25,9 @@
         "vitest": "^3.2.4"
     },
     "files": [
-        "dist/**"
+        "dist"
     ],
     "exports": {
-        ".": {
-            "types": "./dist/index.d.ts",
-            "import": "./dist/index.js",
-            "require": "./dist/index.cjs"
-        }
+        ".": "./dist/index.js"
     }
 }
