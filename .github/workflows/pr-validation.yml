@@ -1,0 +1,239 @@
+name: PR Validation
+
+on:
+  pull_request:
+    types: [opened, synchronize, reopened, ready_for_review]
+    branches: [ main, develop ]
+
+jobs:
+  # Skip validation for draft PRs
+  check-pr-state:
+    runs-on: ubuntu-latest
+    outputs:
+      should-run: ${{ steps.check.outputs.should-run }}
+    steps:
+      - name: Check if PR should run validation
+        id: check
+        run:
+          if [[ "${{ github.event.pull_request.draft }}" == "true" ]]; then
+            echo "should-run=false" >> $GITHUB_OUTPUT
+            echo "Skipping validation for draft PR"
+          else
+            echo "should-run=true" >> $GITHUB_OUTPUT
+            echo "Running validation for ready PR"
+          fi
+
+  # ================================
+  # Lint and Format Validation
+  # ================================
+  lint-and-format:
+    runs-on: ubuntu-latest
+    needs: check-pr-state
+    if: needs.check-pr-state.outputs.should-run == 'true'
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+
+      - name: Install pnpm
+        run: npm install -g pnpm@10.17.1
+
+      - name: Install dependencies
+        run: pnpm install --frozen-lockfile
+
+      - name: Run ESLint
+        run: pnpm lint
+
+      - name: Check Prettier formatting
+        run: |
+          pnpm format
+          if [[ -n $(git diff --name-only) ]]; then
+            echo "❌ Code is not properly formatted"
+            echo "Please run 'pnpm format' to fix formatting issues"
+            git diff
+            exit 1
+          else
+            echo "✅ Code is properly formatted"
+          fi
+
+  # ================================
+  # Test Validation
+  # ================================
+  test-validation:
+    runs-on: ubuntu-latest
+    needs: check-pr-state
+    if: needs.check-pr-state.outputs.should-run == 'true'
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+
+      - name: Install pnpm
+        run: npm install -g pnpm@10.17.1
+
+      - name: Install dependencies
+        run: pnpm install --frozen-lockfile
+
+      - name: Run tests
+        run: pnpm test
+
+      - name: Generate test coverage report
+        run: pnpm test -- --coverage
+        continue-on-error: true
+
+  # ================================
+  # Build Validation
+  # ================================
+  build-validation:
+    runs-on: ubuntu-latest
+    needs: check-pr-state
+    if: needs.check-pr-state.outputs.should-run == 'true'
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+
+      - name: Install pnpm
+        run: npm install -g pnpm@10.17.1
+
+      - name: Install dependencies
+        run: pnpm install --frozen-lockfile
+
+      - name: Build all packages
+        run: pnpm build
+
+      - name: Verify build artifacts
+        run:
+          echo "Checking build outputs..."
+          find . -name "dist" -type d | head -10
+          
+          # Check main app build
+          if [[ -f "apps/main/dist/main.js" ]]; then
+            echo "✅ Main application built successfully"
+          else
+            echo "❌ Main application build failed"
+            exit 1
+          fi
+
+  # ================================
+  # Docker Build Test
+  # ================================
+  docker-build-test:
+    runs-on: ubuntu-latest
+    needs: [lint-and-format, test-validation, build-validation]
+    if: needs.check-pr-state.outputs.should-run == 'true'
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v3
+        with:
+          platforms: linux/arm64
+
+      - name: Build Docker image (test only)
+        uses: docker/build-push-action@v5
+        with:
+          context: .
+          file: .docker/main.dockerfile
+          platforms: linux/arm64
+          push: false
+          cache-from: type=gha
+          cache-to: type=gha,mode=max
+          build-args: |
+            BASE_IMAGE=node:22-alpine
+
+  # ================================
+  # Security Check
+  # ================================
+  security-check:
+    runs-on: ubuntu-latest
+    needs: check-pr-state
+    if: needs.check-pr-state.outputs.should-run == 'true'
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+
+      - name: Install pnpm
+        run: npm install -g pnpm@10.17.1
+
+      - name: Install dependencies
+        run: pnpm install --frozen-lockfile
+
+      - name: Run security audit
+        run:
+          pnpm audit --audit-level high || echo "Security issues found - please review"
+
+  # ================================
+  # PR Status Summary
+  # ================================
+  pr-validation-summary:
+    runs-on: ubuntu-latest
+    needs: [check-pr-state, lint-and-format, test-validation, build-validation, docker-build-test, security-check]
+    if: always() && needs.check-pr-state.outputs.should-run == 'true'
+    steps:
+      - name: PR Validation Summary
+        run:
+          echo "## PR Validation Results" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          
+          if [[ "${{ needs.lint-and-format.result }}" == "success" ]]; then
+            echo "✅ Lint and Format: Passed" >> $GITHUB_STEP_SUMMARY
+          else
+            echo "❌ Lint and Format: Failed" >> $GITHUB_STEP_SUMMARY
+          fi
+          
+          if [[ "${{ needs.test-validation.result }}" == "success" ]]; then
+            echo "✅ Tests: Passed" >> $GITHUB_STEP_SUMMARY
+          else
+            echo "❌ Tests: Failed" >> $GITHUB_STEP_SUMMARY
+          fi
+          
+          if [[ "${{ needs.build-validation.result }}" == "success" ]]; then
+            echo "✅ Build: Passed" >> $GITHUB_STEP_SUMMARY
+          else
+            echo "❌ Build: Failed" >> $GITHUB_STEP_SUMMARY
+          fi
+          
+          if [[ "${{ needs.docker-build-test.result }}" == "success" ]]; then
+            echo "✅ Docker Build: Passed" >> $GITHUB_STEP_SUMMARY
+          else
+            echo "❌ Docker Build: Failed" >> $GITHUB_STEP_SUMMARY
+          fi
+          
+          if [[ "${{ needs.security-check.result }}" == "success" ]]; then
+            echo "✅ Security Check: Passed" >> $GITHUB_STEP_SUMMARY
+          else
+            echo "⚠️ Security Check: Issues Found" >> $GITHUB_STEP_SUMMARY
+          fi
+
+          # Check if all critical checks passed
+          if [[ "${{ needs.lint-and-format.result }}" == "success" && \
+                "${{ needs.test-validation.result }}" == "success" && \
+                "${{ needs.build-validation.result }}" == "success" && \
+                "${{ needs.docker-build-test.result }}" == "success" ]]; then
+            echo "" >> $GITHUB_STEP_SUMMARY
+            echo "🎉 **All validation checks passed!** This PR is ready for review." >> $GITHUB_STEP_SUMMARY
+            exit 0
+          else
+            echo "" >> $GITHUB_STEP_SUMMARY
+            echo "❌ **Some validation checks failed.** Please address the issues before merging." >> $GITHUB_STEP_SUMMARY
+            exit 1
+          fi

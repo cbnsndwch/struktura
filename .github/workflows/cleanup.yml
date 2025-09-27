@@ -1,0 +1,79 @@
+name: Cleanup
+
+on:
+  schedule:
+    # Clean up old images weekly on Sundays at 3 AM UTC
+    - cron: '0 3 * * 0'
+  workflow_dispatch:
+    inputs:
+      dry_run:
+        description: 'Dry run - show what would be deleted without actually deleting'
+        required: false
+        default: 'true'
+        type: boolean
+
+env:
+  REGISTRY: ghcr.io
+
+jobs:
+  cleanup-images:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      packages: write
+    steps:
+      - name: Cleanup old container images
+        uses: actions/delete-package-versions@v5
+        with:
+          package-name: struktura-main
+          package-type: container
+          min-versions-to-keep: 10
+          delete-only-untagged-versions: false
+
+      - name: Cleanup old base images
+        uses: actions/delete-package-versions@v5
+        with:
+          package-name: struktura-base
+          package-type: container
+          min-versions-to-keep: 5
+          delete-only-untagged-versions: false
+
+  cleanup-caches:
+    runs-on: ubuntu-latest
+    permissions:
+      actions: write
+    steps:
+      - name: Cleanup old workflow runs
+        uses: actions/github-script@v7
+        with:
+          script: |
+            const { data: workflows } = await github.rest.actions.listRepoWorkflows({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+            });
+
+            for (const workflow of workflows.workflows) {
+              const { data: runs } = await github.rest.actions.listWorkflowRuns({
+                owner: context.repo.owner,
+                repo: context.repo.repo,
+                workflow_id: workflow.id,
+                status: 'completed',
+                per_page: 100,
+              });
+
+              // Keep the 20 most recent runs per workflow
+              const runsToDelete = runs.workflow_runs.slice(20);
+              
+              for (const run of runsToDelete) {
+                if (run.created_at < new Date(Date.now() - 30 * 24 * 60 * 60 * 1000).toISOString()) {
+                  console.log(`Deleting workflow run ${run.id} from ${run.created_at}`);
+                  if (!inputs.dry_run) {
+                    await github.rest.actions.deleteWorkflowRun({
+                      owner: context.repo.owner,
+                      repo: context.repo.repo,
+                      run_id: run.id,
+                    });
+                  }
+                }
+              }
+            }

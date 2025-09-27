@@ -1,0 +1,61 @@
+# Git
+.git
+.gitignore
+README.md
+
+# Dependencies
+node_modules
+.pnp
+.pnp.js
+
+# Build outputs (will be copied from builder stage)
+dist
+build
+lib
+coverage
+
+# Development files
+.env*
+.vscode
+.idea
+*.log
+*.pid
+*.seed
+*.pid.lock
+
+# OS generated files
+.DS_Store
+.DS_Store?
+._*
+.Spotlight-V100
+.Trashes
+ehthumbs.db
+Thumbs.db
+
+# Testing
+coverage
+.nyc_output
+.coverage
+
+# Temporary files
+.tmp
+temp-*
+
+# Docker
+.docker
+.dockerignore
+Dockerfile*
+
+# CI/CD
+.github
+
+# Documentation
+docs
+*.md
+!package.json
+!pnpm-*.yaml
+!turbo.json
+!.dvmrc.json
+
+# Turborepo
+.turbo
