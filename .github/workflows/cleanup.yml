@@ -67,7 +67,7 @@ jobs:
               for (const run of runsToDelete) {
                 if (run.created_at < new Date(Date.now() - 30 * 24 * 60 * 60 * 1000).toISOString()) {
                   console.log(`Deleting workflow run ${run.id} from ${run.created_at}`);
-                  if (!${{ inputs.dry_run || 'false' }}) {
+                  if (!inputs.dry_run) {
                     await github.rest.actions.deleteWorkflowRun({
                       owner: context.repo.owner,
                       repo: context.repo.repo,
