@@ -9,7 +9,10 @@ import { MongoMemoryServer } from 'mongodb-memory-server';
 
 import { AuthModule } from './auth.module.js';
 import { User, UserSchema } from './schemas/user.schema.js';
-import { RefreshToken, RefreshTokenSchema } from './schemas/refresh-token.schema.js';
+import {
+    RefreshToken,
+    RefreshTokenSchema
+} from './schemas/refresh-token.schema.js';
 
 describe('Auth (e2e)', () => {
     let app: INestApplication;
@@ -25,20 +28,22 @@ describe('Auth (e2e)', () => {
                 MongooseModule.forRoot(mongoUri),
                 MongooseModule.forFeature([
                     { name: User.name, schema: UserSchema },
-                    { name: RefreshToken.name, schema: RefreshTokenSchema },
+                    { name: RefreshToken.name, schema: RefreshTokenSchema }
                 ]),
                 PassportModule,
                 JwtModule.register({
                     secret: 'test-secret',
-                    signOptions: { expiresIn: '15m' },
+                    signOptions: { expiresIn: '15m' }
                 }),
-                ThrottlerModule.forRoot([{
-                    name: 'default',
-                    ttl: 60000,
-                    limit: 100,
-                }]),
-                AuthModule,
-            ],
+                ThrottlerModule.forRoot([
+                    {
+                        name: 'default',
+                        ttl: 60000,
+                        limit: 100
+                    }
+                ]),
+                AuthModule
+            ]
         }).compile();
 
         app = moduleFixture.createNestApplication();
@@ -58,11 +63,13 @@ describe('Auth (e2e)', () => {
                 .send({
                     email: 'test@example.com',
                     name: 'Test User',
-                    password: 'password123',
+                    password: 'password123'
                 })
                 .expect(201)
-                .expect((res) => {
-                    expect(res.body.message).toContain('Registration successful');
+                .expect(res => {
+                    expect(res.body.message).toContain(
+                        'Registration successful'
+                    );
                     expect(res.body.userId).toBeDefined();
                 });
         });
@@ -73,7 +80,7 @@ describe('Auth (e2e)', () => {
                 .send({
                     email: 'invalid-email',
                     name: 'Test User',
-                    password: 'password123',
+                    password: 'password123'
                 })
                 .expect(400);
         });
@@ -84,7 +91,7 @@ describe('Auth (e2e)', () => {
                 .send({
                     email: 'test2@example.com',
                     name: 'Test User',
-                    password: '123',
+                    password: '123'
                 })
                 .expect(400);
         });
@@ -95,7 +102,7 @@ describe('Auth (e2e)', () => {
                 .send({
                     email: 'test@example.com',
                     name: 'Test User',
-                    password: 'password123',
+                    password: 'password123'
                 })
                 .expect(409);
         });
@@ -118,7 +125,7 @@ describe('Auth (e2e)', () => {
                 .post('/auth/login')
                 .send({
                     email: 'test@example.com',
-                    password: 'password123',
+                    password: 'password123'
                 })
                 .expect(200);
 
@@ -136,7 +143,7 @@ describe('Auth (e2e)', () => {
                 .post('/auth/login')
                 .send({
                     email: 'test@example.com',
-                    password: 'wrongpassword',
+                    password: 'wrongpassword'
                 })
                 .expect(401);
         });
@@ -146,7 +153,7 @@ describe('Auth (e2e)', () => {
                 .post('/auth/login')
                 .send({
                     email: 'nonexistent@example.com',
-                    password: 'password123',
+                    password: 'password123'
                 })
                 .expect(401);
         });
@@ -158,7 +165,7 @@ describe('Auth (e2e)', () => {
                 .get('/auth/profile')
                 .set('Authorization', `Bearer ${authToken}`)
                 .expect(200)
-                .expect((res) => {
+                .expect(res => {
                     expect(res.body.email).toBe('test@example.com');
                     expect(res.body.id).toBeDefined();
                 });
@@ -183,10 +190,10 @@ describe('Auth (e2e)', () => {
             return request(app.getHttpServer())
                 .post('/auth/request-password-reset')
                 .send({
-                    email: 'test@example.com',
+                    email: 'test@example.com'
                 })
                 .expect(200)
-                .expect((res) => {
+                .expect(res => {
                     expect(res.body.message).toContain('password reset link');
                 });
         });
@@ -195,10 +202,10 @@ describe('Auth (e2e)', () => {
             return request(app.getHttpServer())
                 .post('/auth/request-password-reset')
                 .send({
-                    email: 'nonexistent@example.com',
+                    email: 'nonexistent@example.com'
                 })
                 .expect(200)
-                .expect((res) => {
+                .expect(res => {
                     expect(res.body.message).toContain('password reset link');
                 });
         });

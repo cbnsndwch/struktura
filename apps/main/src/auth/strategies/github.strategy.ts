@@ -4,16 +4,20 @@ import { Strategy } from 'passport-github2';
 import { InjectModel } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
 import * as mongoose from 'mongoose';
+
 import { User, UserDocument } from '../schemas/user.schema.js';
 
 @Injectable()
 export class GitHubStrategy extends PassportStrategy(Strategy, 'github') {
-    constructor(@InjectModel(User.name) private userModel: Model<UserDocument>) {
+    constructor(
+        @InjectModel(User.name) private userModel: Model<UserDocument>
+    ) {
         super({
             clientID: process.env.GITHUB_CLIENT_ID,
             clientSecret: process.env.GITHUB_CLIENT_SECRET,
-            callbackURL: process.env.GITHUB_CALLBACK_URL || '/auth/github/callback',
-            scope: ['user:email'],
+            callbackURL:
+                process.env.GITHUB_CALLBACK_URL || '/auth/github/callback',
+            scope: ['user:email']
         });
     }
 
@@ -21,7 +25,7 @@ export class GitHubStrategy extends PassportStrategy(Strategy, 'github') {
         accessToken: string,
         refreshToken: string,
         profile: any,
-        done: (error: any, user?: any) => void,
+        done: (error: any, user?: any) => void
     ): Promise<any> {
         const { id, username, displayName, emails, photos } = profile;
         const email = emails?.[0]?.value;
@@ -41,8 +45,8 @@ export class GitHubStrategy extends PassportStrategy(Strategy, 'github') {
                         ...user.oauthProviders,
                         github: {
                             id,
-                            username,
-                        },
+                            username
+                        }
                     };
                     user.emailVerified = true; // GitHub emails are verified
                     await user.save();
@@ -56,14 +60,14 @@ export class GitHubStrategy extends PassportStrategy(Strategy, 'github') {
                     emailVerified: true, // GitHub emails are verified
                     roles: ['editor'],
                     profile: {
-                        avatar: photos?.[0]?.value,
+                        avatar: photos?.[0]?.value
                     },
                     oauthProviders: {
                         github: {
                             id,
-                            username,
-                        },
-                    },
+                            username
+                        }
+                    }
                 });
                 await user.save();
             }
@@ -73,7 +77,7 @@ export class GitHubStrategy extends PassportStrategy(Strategy, 'github') {
                 email: user.email,
                 name: user.name,
                 roles: user.roles,
-                provider: 'github',
+                provider: 'github'
             };
 
             return done(null, userPayload);

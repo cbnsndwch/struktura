@@ -8,11 +8,12 @@ import {
     Req,
     Res,
     HttpCode,
-    HttpStatus,
+    HttpStatus
 } from '@nestjs/common';
 import type { Request, Response } from 'express';
 import { AuthGuard } from '@nestjs/passport';
 import { ThrottlerGuard } from '@nestjs/throttler';
+
 import { AuthService } from './auth.service.js';
 import { JwtAuthGuard } from './guards/jwt-auth.guard.js';
 import { Public } from './decorators/public.decorator.js';
@@ -22,7 +23,7 @@ import {
     LoginDto,
     RequestPasswordResetDto,
     ResetPasswordDto,
-    RefreshTokenDto,
+    RefreshTokenDto
 } from './dto/index.js';
 
 @Controller('auth')
@@ -101,14 +102,14 @@ export class AuthController {
     // @UseGuards(AuthGuard('google'))
     // async googleAuthRedirect(@Req() req: Request, @Res() res: Response) {
     //     const user = req.user as any;
-        
+
     //     // Create a temporary user object to generate tokens
     //     const userDoc = {
     //         _id: user.id,
     //         email: user.email,
     //         roles: user.roles
     //     } as any;
-        
+
     //     // Generate JWT tokens for OAuth user
     //     const tokens = await this.authService.generateTokens(
     //         userDoc,
@@ -134,14 +135,14 @@ export class AuthController {
     // @UseGuards(AuthGuard('github'))
     // async githubAuthRedirect(@Req() req: Request, @Res() res: Response) {
     //     const user = req.user as any;
-        
+
     //     // Create a temporary user object to generate tokens
     //     const userDoc = {
     //         _id: user.id,
     //         email: user.email,
     //         roles: user.roles
     //     } as any;
-        
+
     //     // Generate JWT tokens for OAuth user
     //     const tokens = await this.authService.generateTokens(
     //         userDoc,

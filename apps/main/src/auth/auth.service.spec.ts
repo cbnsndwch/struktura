@@ -22,7 +22,7 @@ describe('AuthService', () => {
         passwordHash: 'hashedPassword',
         emailVerified: true,
         roles: ['editor'],
-        save: vi.fn(),
+        save: vi.fn()
     };
 
     beforeEach(async () => {
@@ -31,7 +31,7 @@ describe('AuthService', () => {
             findById: vi.fn(),
             updateMany: vi.fn(),
             create: vi.fn(),
-            save: vi.fn(),
+            save: vi.fn()
         };
 
         mockRefreshTokenModel = {
@@ -39,11 +39,11 @@ describe('AuthService', () => {
             updateOne: vi.fn(),
             updateMany: vi.fn(),
             create: vi.fn(),
-            save: vi.fn(),
+            save: vi.fn()
         };
 
         mockJwtService = {
-            sign: vi.fn(),
+            sign: vi.fn()
         };
 
         const module: TestingModule = await Test.createTestingModule({
@@ -51,17 +51,17 @@ describe('AuthService', () => {
                 AuthService,
                 {
                     provide: getModelToken(User.name),
-                    useValue: mockUserModel,
+                    useValue: mockUserModel
                 },
                 {
                     provide: getModelToken(RefreshToken.name),
-                    useValue: mockRefreshTokenModel,
+                    useValue: mockRefreshTokenModel
                 },
                 {
                     provide: JwtService,
-                    useValue: mockJwtService,
-                },
-            ],
+                    useValue: mockJwtService
+                }
+            ]
         }).compile();
 
         service = module.get<AuthService>(AuthService);
@@ -72,41 +72,46 @@ describe('AuthService', () => {
             const registerDto = {
                 email: 'test@example.com',
                 name: 'Test User',
-                password: 'password123',
+                password: 'password123'
             };
 
             mockUserModel.findOne.mockResolvedValue(null); // User doesn't exist
-            
+
             const mockSave = vi.fn().mockResolvedValue({
                 _id: 'newUserId',
-                ...registerDto,
+                ...registerDto
             });
 
             // Mock the constructor call
             mockUserModel.mockImplementation(() => ({
                 _id: 'newUserId',
-                save: mockSave,
+                save: mockSave
             }));
 
             const result = await service.register(registerDto);
 
             expect(result).toEqual({
-                message: 'Registration successful. Please check your email to verify your account.',
-                userId: 'newUserId',
+                message:
+                    'Registration successful. Please check your email to verify your account.',
+                userId: 'newUserId'
             });
-            expect(mockUserModel.findOne).toHaveBeenCalledWith({ email: registerDto.email });
+            expect(mockUserModel.findOne).toHaveBeenCalledWith({
+                email: registerDto.email
+            });
         });
 
         it('should throw ConflictException if user already exists', async () => {
             const registerDto = {
                 email: 'test@example.com',
                 name: 'Test User',
-                password: 'password123',
+                password: 'password123'
             };
 
             mockUserModel.findOne.mockResolvedValue(mockUser); // User exists
 
-            await expect(service.register(registerDto)).rejects.toThrow(ConflictException);
+            await expect(service.register(registerDto)).rejects.toThrow(
+                ConflictException
+            );
         });
     });
 
@@ -114,12 +119,12 @@ describe('AuthService', () => {
         it('should login user with valid credentials', async () => {
             const loginDto = {
                 email: 'test@example.com',
-                password: 'password123',
+                password: 'password123'
             };
 
             const userWithSave = {
                 ...mockUser,
-                save: vi.fn(),
+                save: vi.fn()
             };
 
             mockUserModel.findOne.mockResolvedValue(userWithSave);
@@ -129,7 +134,7 @@ describe('AuthService', () => {
             // Mock refresh token creation
             const mockRefreshTokenSave = vi.fn().mockResolvedValue({});
             mockRefreshTokenModel.mockImplementation(() => ({
-                save: mockRefreshTokenSave,
+                save: mockRefreshTokenSave
             }));
 
             const result = await service.login(loginDto);
@@ -144,41 +149,47 @@ describe('AuthService', () => {
         it('should throw UnauthorizedException for invalid credentials', async () => {
             const loginDto = {
                 email: 'test@example.com',
-                password: 'wrongpassword',
+                password: 'wrongpassword'
             };
 
             mockUserModel.findOne.mockResolvedValue(mockUser);
             vi.spyOn(bcrypt, 'compare').mockResolvedValue(false as never);
 
-            await expect(service.login(loginDto)).rejects.toThrow(UnauthorizedException);
+            await expect(service.login(loginDto)).rejects.toThrow(
+                UnauthorizedException
+            );
         });
 
         it('should throw UnauthorizedException if user not found', async () => {
             const loginDto = {
                 email: 'nonexistent@example.com',
-                password: 'password123',
+                password: 'password123'
             };
 
             mockUserModel.findOne.mockResolvedValue(null);
 
-            await expect(service.login(loginDto)).rejects.toThrow(UnauthorizedException);
+            await expect(service.login(loginDto)).rejects.toThrow(
+                UnauthorizedException
+            );
         });
 
         it('should throw UnauthorizedException if email not verified', async () => {
             const loginDto = {
                 email: 'test@example.com',
-                password: 'password123',
+                password: 'password123'
             };
 
             const unverifiedUser = {
                 ...mockUser,
-                emailVerified: false,
+                emailVerified: false
             };
 
             mockUserModel.findOne.mockResolvedValue(unverifiedUser);
             vi.spyOn(bcrypt, 'compare').mockResolvedValue(true as never);
 
-            await expect(service.login(loginDto)).rejects.toThrow(UnauthorizedException);
+            await expect(service.login(loginDto)).rejects.toThrow(
+                UnauthorizedException
+            );
         });
     });
 
@@ -186,7 +197,7 @@ describe('AuthService', () => {
         it('should return user if found', async () => {
             const userId = 'testUserId';
             mockUserModel.findById.mockReturnValue({
-                lean: vi.fn().mockResolvedValue(mockUser),
+                lean: vi.fn().mockResolvedValue(mockUser)
             });
 
             const result = await service.validateUser(userId);
@@ -198,7 +209,7 @@ describe('AuthService', () => {
         it('should return null if user not found', async () => {
             const userId = 'nonexistentUserId';
             mockUserModel.findById.mockReturnValue({
-                lean: vi.fn().mockResolvedValue(null),
+                lean: vi.fn().mockResolvedValue(null)
             });
 
             const result = await service.validateUser(userId);

@@ -46,17 +46,17 @@ import { RolesGuard } from './auth/guards/roles.guard.js';
     ],
     controllers: [AppController],
     providers: [
-        AppService, 
+        AppService,
         AppResolver,
         // Global guards
         {
             provide: APP_GUARD,
-            useClass: JwtAuthGuard,
+            useClass: JwtAuthGuard
         },
         {
             provide: APP_GUARD,
-            useClass: RolesGuard,
-        },
-    ],
+            useClass: RolesGuard
+        }
+    ]
 })
 export class AppModule {}

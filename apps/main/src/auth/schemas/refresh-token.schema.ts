@@ -6,7 +6,7 @@ export type RefreshTokenDocument = RefreshToken & Document;
 
 @Schema({
     timestamps: true,
-    collection: 'refresh_tokens',
+    collection: 'refresh_tokens'
 })
 export class RefreshToken {
     @Prop({ type: mongoose.Schema.Types.ObjectId, ref: 'User', required: true })

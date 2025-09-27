@@ -5,7 +5,7 @@ export type UserDocument = User & Document;
 
 @Schema({
     timestamps: true,
-    collection: 'users',
+    collection: 'users'
 })
 export class User {
     @Prop({ type: String, required: true })
@@ -38,7 +38,7 @@ export class User {
     @Prop({
         type: [String],
         enum: ['admin', 'editor', 'viewer'],
-        default: ['editor'],
+        default: ['editor']
     })
     roles!: string[];
 

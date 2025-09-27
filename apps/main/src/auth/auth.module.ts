@@ -9,7 +9,10 @@ import { AuthService } from './auth.service.js';
 
 // Schemas
 import { User, UserSchema } from './schemas/user.schema.js';
-import { RefreshToken, RefreshTokenSchema } from './schemas/refresh-token.schema.js';
+import {
+    RefreshToken,
+    RefreshTokenSchema
+} from './schemas/refresh-token.schema.js';
 
 // Strategies
 import { JwtStrategy } from './strategies/jwt.strategy.js';
@@ -25,28 +28,31 @@ import { RolesGuard } from './guards/roles.guard.js';
         // MongoDB schemas
         MongooseModule.forFeature([
             { name: User.name, schema: UserSchema },
-            { name: RefreshToken.name, schema: RefreshTokenSchema },
+            { name: RefreshToken.name, schema: RefreshTokenSchema }
         ]),
-        
+
         // Passport
         PassportModule,
-        
+
         // JWT configuration
         JwtModule.register({
             secret: process.env.JWT_SECRET || 'your-secret-key',
-            signOptions: { expiresIn: '15m' },
+            signOptions: { expiresIn: '15m' }
         }),
-        
+
         // Rate limiting
-        ThrottlerModule.forRoot([{
-            name: 'short',
-            ttl: 1000, // 1 second
-            limit: 3, // 3 requests per second
-        }, {
-            name: 'medium',
-            ttl: 60000, // 1 minute
-            limit: 20, // 20 requests per minute for auth endpoints
-        }]),
+        ThrottlerModule.forRoot([
+            {
+                name: 'short',
+                ttl: 1000, // 1 second
+                limit: 3 // 3 requests per second
+            },
+            {
+                name: 'medium',
+                ttl: 60000, // 1 minute
+                limit: 20 // 20 requests per minute for auth endpoints
+            }
+        ])
     ],
     controllers: [AuthController],
     providers: [
@@ -55,8 +61,8 @@ import { RolesGuard } from './guards/roles.guard.js';
         // GoogleStrategy, // Temporarily disabled
         // GitHubStrategy, // Temporarily disabled
         JwtAuthGuard,
-        RolesGuard,
+        RolesGuard
     ],
-    exports: [AuthService, JwtAuthGuard, RolesGuard],
+    exports: [AuthService, JwtAuthGuard, RolesGuard]
 })
 export class AuthModule {}

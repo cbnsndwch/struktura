@@ -1,24 +1,29 @@
+import * as crypto from 'crypto';
+
 import {
     Injectable,
     BadRequestException,
     UnauthorizedException,
     ConflictException,
-    NotFoundException,
+    NotFoundException
 } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { JwtService } from '@nestjs/jwt';
 import { Model } from 'mongoose';
 import * as mongoose from 'mongoose';
 import * as bcrypt from 'bcrypt';
-import * as crypto from 'crypto';
+
 import { User, UserDocument } from './schemas/user.schema.js';
-import { RefreshToken, RefreshTokenDocument } from './schemas/refresh-token.schema.js';
+import {
+    RefreshToken,
+    RefreshTokenDocument
+} from './schemas/refresh-token.schema.js';
 import {
     RegisterDto,
     LoginDto,
     RequestPasswordResetDto,
     ResetPasswordDto,
-    RefreshTokenDto,
+    RefreshTokenDto
 } from './dto/index.js';
 
 export interface AuthTokens {
@@ -42,11 +47,14 @@ export interface AuthResponse {
 export class AuthService {
     constructor(
         @InjectModel(User.name) private userModel: Model<UserDocument>,
-        @InjectModel(RefreshToken.name) private refreshTokenModel: Model<RefreshTokenDocument>,
-        private jwtService: JwtService,
+        @InjectModel(RefreshToken.name)
+        private refreshTokenModel: Model<RefreshTokenDocument>,
+        private jwtService: JwtService
     ) {}
 
-    async register(registerDto: RegisterDto): Promise<{ message: string; userId: string }> {
+    async register(
+        registerDto: RegisterDto
+    ): Promise<{ message: string; userId: string }> {
         const { email, name, password, timezone, language } = registerDto;
 
         // Check if user already exists
@@ -61,7 +69,9 @@ export class AuthService {
 
         // Generate email verification token
         const emailVerificationToken = crypto.randomBytes(32).toString('hex');
-        const emailVerificationExpires = new Date(Date.now() + 24 * 60 * 60 * 1000); // 24 hours
+        const emailVerificationExpires = new Date(
+            Date.now() + 24 * 60 * 60 * 1000
+        ); // 24 hours
 
         // Create user
         const user = new this.userModel({
@@ -72,8 +82,8 @@ export class AuthService {
             emailVerificationExpires,
             profile: {
                 timezone,
-                language: language || 'en',
-            },
+                language: language || 'en'
+            }
         });
 
         await user.save();
@@ -82,12 +92,17 @@ export class AuthService {
         // await this.emailService.sendVerificationEmail(email, name, emailVerificationToken);
 
         return {
-            message: 'Registration successful. Please check your email to verify your account.',
-            userId: (user._id as mongoose.Types.ObjectId).toString(),
+            message:
+                'Registration successful. Please check your email to verify your account.',
+            userId: (user._id as mongoose.Types.ObjectId).toString()
         };
     }
 
-    async login(loginDto: LoginDto, userAgent?: string, ipAddress?: string): Promise<AuthResponse> {
+    async login(
+        loginDto: LoginDto,
+        userAgent?: string,
+        ipAddress?: string
+    ): Promise<AuthResponse> {
         const { email, password } = loginDto;
 
         // Find user by email
@@ -97,7 +112,10 @@ export class AuthService {
         }
 
         // Verify password
-        const isPasswordValid = await bcrypt.compare(password, user.passwordHash);
+        const isPasswordValid = await bcrypt.compare(
+            password,
+            user.passwordHash
+        );
         if (!isPasswordValid) {
             throw new UnauthorizedException('Invalid credentials');
         }
@@ -105,7 +123,7 @@ export class AuthService {
         // Check if email is verified
         if (!user.emailVerified) {
             throw new UnauthorizedException(
-                'Please verify your email before logging in. Check your inbox for verification link.',
+                'Please verify your email before logging in. Check your inbox for verification link.'
             );
         }
 
@@ -122,20 +140,22 @@ export class AuthService {
                 email: user.email,
                 name: user.name,
                 roles: user.roles,
-                emailVerified: user.emailVerified,
+                emailVerified: user.emailVerified
             },
-            tokens,
+            tokens
         };
     }
 
     async verifyEmail(token: string): Promise<{ message: string }> {
         const user = await this.userModel.findOne({
             emailVerificationToken: token,
-            emailVerificationExpires: { $gt: new Date() },
+            emailVerificationExpires: { $gt: new Date() }
         });
 
         if (!user) {
-            throw new BadRequestException('Invalid or expired verification token');
+            throw new BadRequestException(
+                'Invalid or expired verification token'
+            );
         }
 
         user.emailVerified = true;
@@ -146,13 +166,18 @@ export class AuthService {
         return { message: 'Email verified successfully' };
     }
 
-    async requestPasswordReset(dto: RequestPasswordResetDto): Promise<{ message: string }> {
+    async requestPasswordReset(
+        dto: RequestPasswordResetDto
+    ): Promise<{ message: string }> {
         const { email } = dto;
 
         const user = await this.userModel.findOne({ email });
         if (!user) {
             // Don't reveal if email exists or not
-            return { message: 'If an account with that email exists, we sent a password reset link' };
+            return {
+                message:
+                    'If an account with that email exists, we sent a password reset link'
+            };
         }
 
         // Generate reset token
@@ -166,7 +191,10 @@ export class AuthService {
         // TODO: Send password reset email
         // await this.emailService.sendPasswordResetEmail(email, user.name, resetToken);
 
-        return { message: 'If an account with that email exists, we sent a password reset link' };
+        return {
+            message:
+                'If an account with that email exists, we sent a password reset link'
+        };
     }
 
     async resetPassword(dto: ResetPasswordDto): Promise<{ message: string }> {
@@ -174,7 +202,7 @@ export class AuthService {
 
         const user = await this.userModel.findOne({
             passwordResetToken: token,
-            passwordResetExpires: { $gt: new Date() },
+            passwordResetExpires: { $gt: new Date() }
         });
 
         if (!user) {
@@ -200,15 +228,21 @@ export class AuthService {
         return { message: 'Password reset successfully' };
     }
 
-    async refreshTokens(dto: RefreshTokenDto, userAgent?: string, ipAddress?: string): Promise<AuthTokens> {
+    async refreshTokens(
+        dto: RefreshTokenDto,
+        userAgent?: string,
+        ipAddress?: string
+    ): Promise<AuthTokens> {
         const { refreshToken } = dto;
 
         // Find and validate refresh token
-        const tokenDoc = await this.refreshTokenModel.findOne({
-            token: refreshToken,
-            revoked: false,
-            expiresAt: { $gt: new Date() },
-        }).populate('userId');
+        const tokenDoc = await this.refreshTokenModel
+            .findOne({
+                token: refreshToken,
+                revoked: false,
+                expiresAt: { $gt: new Date() }
+            })
+            .populate('userId');
 
         if (!tokenDoc) {
             throw new UnauthorizedException('Invalid refresh token');
@@ -242,21 +276,27 @@ export class AuthService {
         return this.userModel.findById(userId).lean();
     }
 
-    async generateTokens(user: UserDocument, userAgent?: string, ipAddress?: string): Promise<AuthTokens> {
+    async generateTokens(
+        user: UserDocument,
+        userAgent?: string,
+        ipAddress?: string
+    ): Promise<AuthTokens> {
         const payload = {
             sub: (user._id as mongoose.Types.ObjectId).toString(),
             email: user.email,
-            roles: user.roles,
+            roles: user.roles
         };
 
         // Generate access token (15 minutes)
         const accessToken = this.jwtService.sign(payload, {
-            expiresIn: '15m',
+            expiresIn: '15m'
         });
 
         // Generate refresh token (7 days)
         const refreshTokenString = crypto.randomBytes(64).toString('hex');
-        const refreshTokenExpires = new Date(Date.now() + 7 * 24 * 60 * 60 * 1000); // 7 days
+        const refreshTokenExpires = new Date(
+            Date.now() + 7 * 24 * 60 * 60 * 1000
+        ); // 7 days
 
         // Save refresh token
         const refreshToken = new this.refreshTokenModel({
@@ -264,14 +304,14 @@ export class AuthService {
             token: refreshTokenString,
             expiresAt: refreshTokenExpires,
             userAgent,
-            ipAddress,
+            ipAddress
         });
         await refreshToken.save();
 
         return {
             accessToken,
             refreshToken: refreshTokenString,
-            expiresIn: 15 * 60, // 15 minutes in seconds
+            expiresIn: 15 * 60 // 15 minutes in seconds
         };
     }
 }

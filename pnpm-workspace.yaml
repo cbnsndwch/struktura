@@ -12,11 +12,12 @@ ignoredBuiltDependencies:
 
 onlyBuiltDependencies:
   - '@swc/core'
+  - bcrypt
   - esbuild
   - mongodb-memory-server
   - protobufjs
 
-shamefullyHoist: true
-
 overrides:
-  '@conventional-changelog/git-client': ^2
+  '@conventional-changelog/git-client': '^2'
+
+shamefullyHoist: true

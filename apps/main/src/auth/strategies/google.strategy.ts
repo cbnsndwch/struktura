@@ -4,16 +4,20 @@ import { Strategy, VerifyCallback } from 'passport-google-oauth20';
 import { InjectModel } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
 import * as mongoose from 'mongoose';
+
 import { User, UserDocument } from '../schemas/user.schema.js';
 
 @Injectable()
 export class GoogleStrategy extends PassportStrategy(Strategy, 'google') {
-    constructor(@InjectModel(User.name) private userModel: Model<UserDocument>) {
+    constructor(
+        @InjectModel(User.name) private userModel: Model<UserDocument>
+    ) {
         super({
             clientID: process.env.GOOGLE_CLIENT_ID,
             clientSecret: process.env.GOOGLE_CLIENT_SECRET,
-            callbackURL: process.env.GOOGLE_CALLBACK_URL || '/auth/google/callback',
-            scope: ['email', 'profile'],
+            callbackURL:
+                process.env.GOOGLE_CALLBACK_URL || '/auth/google/callback',
+            scope: ['email', 'profile']
         });
     }
 
@@ -21,7 +25,7 @@ export class GoogleStrategy extends PassportStrategy(Strategy, 'google') {
         accessToken: string,
         refreshToken: string,
         profile: any,
-        done: VerifyCallback,
+        done: VerifyCallback
     ): Promise<any> {
         const { id, name, emails, photos } = profile;
         const email = emails[0]?.value;
@@ -41,8 +45,8 @@ export class GoogleStrategy extends PassportStrategy(Strategy, 'google') {
                         ...user.oauthProviders,
                         google: {
                             id,
-                            email,
-                        },
+                            email
+                        }
                     };
                     user.emailVerified = true; // Google emails are pre-verified
                     await user.save();
@@ -56,14 +60,14 @@ export class GoogleStrategy extends PassportStrategy(Strategy, 'google') {
                     emailVerified: true, // Google emails are pre-verified
                     roles: ['editor'],
                     profile: {
-                        avatar: photos[0]?.value,
+                        avatar: photos[0]?.value
                     },
                     oauthProviders: {
                         google: {
                             id,
-                            email,
-                        },
-                    },
+                            email
+                        }
+                    }
                 });
                 await user.save();
             }
@@ -73,7 +77,7 @@ export class GoogleStrategy extends PassportStrategy(Strategy, 'google') {
                 email: user.email,
                 name: user.name,
                 roles: user.roles,
-                provider: 'google',
+                provider: 'google'
             };
 
             return done(null, userPayload);
