@@ -157,7 +157,7 @@ class CollectionTemplateType implements CollectionTemplateDto {
     description!: string;
 
     @GQLField(() => [FieldInput])
-    fields!: FieldDto[];
+    fields!: FieldInput[];
 
     @GQLField({ nullable: true })
     category?: string;
