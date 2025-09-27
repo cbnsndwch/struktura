@@ -1,38 +1,28 @@
-import {
-    Resolver,
-    Query,
-    Mutation,
-    Args,
-    ID,
-    Context,
-    Subscription
-} from '@nestjs/graphql';
 import { UseGuards } from '@nestjs/common';
-import { PubSub } from 'graphql-subscriptions';
+import { Args, Context, ID, Mutation, Query, Resolver } from '@nestjs/graphql';
 
 import {
-    ObjectType,
     Field as GQLField,
     InputType,
+    ObjectType,
     registerEnumType
 } from '@nestjs/graphql';
+import { Types } from 'mongoose';
 
-import { CollectionService } from '../services/collection.service.js';
-import {
-    CreateCollectionDto,
-    UpdateCollectionDto,
-    FieldDto,
-    CollectionTemplateDto
-} from '../dto/collection.dto.js';
 import { JwtAuthGuard } from '../../auth/guards/jwt-auth.guard.js';
 import {
-    Collection,
-    Field,
-    FieldType as SchemaFieldType,
-    ValidationRule,
-    CollectionDocument
-} from '../schemas/collection.schema.js';
+    CollectionTemplateDto,
+    CreateCollectionDto,
+    FieldDto,
+    UpdateCollectionDto
+} from '../dto/collection.dto.js';
 import type { FieldOptions } from '../schemas/collection.schema.js';
+import {
+    CollectionDocument,
+    FieldType as SchemaFieldType,
+    ValidationRule
+} from '../schemas/collection.schema.js';
+import { CollectionService } from '../services/collection.service.js';
 
 // GraphQL Types
 
@@ -56,21 +46,29 @@ class ValidationRuleType {
         | 'url'
         | 'custom';
 
-    @GQLField({ nullable: true })
-    value?: any;
+    @GQLField(() => String, { nullable: true })
+    value?: string;
 
     @GQLField()
     message!: string;
 }
 
 @ObjectType()
+class FieldOptionType {
+    @GQLField()
+    value!: string;
+
+    @GQLField()
+    label!: string;
+
+    @GQLField({ nullable: true })
+    color?: string;
+}
+
+@ObjectType()
 class FieldOptionsType {
-    @GQLField(() => [String], { nullable: true })
-    options?: Array<{
-        value: string;
-        label: string;
-        color?: string;
-    }>;
+    @GQLField(() => [FieldOptionType], { nullable: true })
+    options?: FieldOptionType[];
 
     @GQLField({ nullable: true })
     precision?: number;
@@ -123,11 +121,11 @@ class FieldGQLType {
     @GQLField()
     unique!: boolean;
 
-    @GQLField(() => [ValidationRuleType])
-    validation!: ValidationRule[];
+    @GQLField(() => [ValidationRuleType], { nullable: true })
+    validation?: ValidationRule[];
 
-    @GQLField(() => FieldOptionsType)
-    options!: FieldOptions;
+    @GQLField(() => FieldOptionsType, { nullable: true })
+    options?: FieldOptions;
 
     @GQLField()
     order!: number;
@@ -148,19 +146,19 @@ class CollectionType {
     description?: string;
 
     @GQLField(() => ID)
-    workspace!: any;
+    workspace!: string;
 
     @GQLField(() => ID)
-    createdBy!: any;
+    createdBy!: string;
 
     @GQLField(() => [FieldGQLType])
-    fields!: Field[];
+    fields!: FieldGQLType[];
 
     @GQLField()
     status!: 'draft' | 'active' | 'archived';
 
-    @GQLField()
-    settings!: any;
+    @GQLField(() => String)
+    settings!: string;
 
     @GQLField()
     createdAt!: Date;
@@ -169,49 +167,54 @@ class CollectionType {
     updatedAt!: Date;
 }
 
-@ObjectType()
-class CollectionTemplateType implements CollectionTemplateDto {
-    @GQLField()
-    id!: string;
-
-    @GQLField()
-    name!: string;
-
-    @GQLField()
-    description!: string;
-
-    @GQLField(() => [FieldInput])
-    fields!: FieldInput[];
-
-    @GQLField({ nullable: true })
-    category?: string;
-
-    @GQLField({ nullable: true })
-    icon?: string;
+// Mapper function to convert CollectionDocument to CollectionType
+function mapCollectionDocumentToType(
+    document: CollectionDocument
+): CollectionType {
+    return {
+        _id: (document._id as Types.ObjectId).toString(),
+        name: document.name,
+        slug: document.slug,
+        description: document.description,
+        workspace: (document.workspace as Types.ObjectId).toString(),
+        createdBy: (document.createdBy as Types.ObjectId).toString(),
+        fields:
+            document.fields?.map(field => ({
+                id: field.id,
+                name: field.name,
+                type: field.type,
+                description: field.description,
+                required: field.required,
+                unique: field.unique,
+                order: field.order,
+                options: {
+                    options: field.options.options,
+                    precision: field.options.precision,
+                    linkedCollection: field.options.linkedCollection,
+                    linkedField: field.options.linkedField,
+                    formula: field.options.formula,
+                    allowedFileTypes: field.options.allowedFileTypes,
+                    maxFileSize: field.options.maxFileSize,
+                    itemType: field.options.itemType,
+                    displayFormat: field.options.displayFormat,
+                    helpText: field.options.helpText,
+                    placeholder: field.options.placeholder
+                },
+                validationRules:
+                    field.validation?.map(rule => ({
+                        type: rule.type,
+                        value: rule.value,
+                        message: rule.message
+                    })) || []
+            })) || [],
+        status: document.status,
+        settings: JSON.stringify(document.settings),
+        createdAt: document.createdAt,
+        updatedAt: document.updatedAt
+    };
 }
 
 // Input Types
-@InputType()
-class CreateCollectionInput {
-    @GQLField()
-    name!: string;
-
-    @GQLField({ nullable: true })
-    description?: string;
-
-    @GQLField({ nullable: true })
-    slug?: string;
-
-    @GQLField(() => ID)
-    workspace!: string;
-
-    @GQLField(() => [FieldInput], { nullable: true })
-    fields?: FieldInput[];
-
-    @GQLField({ nullable: true })
-    status?: string;
-}
-
 @InputType()
 class FieldInput {
     @GQLField()
@@ -236,6 +239,94 @@ class FieldInput {
     order!: number;
 }
 
+@ObjectType()
+class TemplateFieldType {
+    @GQLField()
+    id!: string;
+
+    @GQLField()
+    name!: string;
+
+    @GQLField(() => SchemaFieldType)
+    type!: SchemaFieldType;
+
+    @GQLField({ nullable: true })
+    description?: string;
+
+    @GQLField()
+    required!: boolean;
+
+    @GQLField()
+    unique!: boolean;
+
+    @GQLField()
+    order!: number;
+}
+
+@ObjectType()
+class CollectionTemplateType {
+    @GQLField()
+    id!: string;
+
+    @GQLField()
+    name!: string;
+
+    @GQLField()
+    description!: string;
+
+    @GQLField(() => [TemplateFieldType])
+    fields!: TemplateFieldType[];
+
+    @GQLField({ nullable: true })
+    category?: string;
+
+    @GQLField({ nullable: true })
+    icon?: string;
+}
+
+// Mapper function to convert CollectionTemplateDto to CollectionTemplateType
+function mapCollectionTemplateToType(
+    template: CollectionTemplateDto
+): CollectionTemplateType {
+    return {
+        id: template.id,
+        name: template.name,
+        description: template.description,
+        fields: template.fields.map(field => ({
+            id: field.id || '',
+            name: field.name,
+            type: field.type,
+            description: field.description,
+            required: field.required || false,
+            unique: field.unique || false,
+            order: field.order || 0
+        })) as TemplateFieldType[],
+        category: template.category,
+        icon: template.icon
+    };
+}
+
+@InputType()
+class CreateCollectionInput {
+    @GQLField()
+    name!: string;
+
+    @GQLField({ nullable: true })
+    description?: string;
+
+    @GQLField({ nullable: true })
+    slug?: string;
+
+    @GQLField(() => ID)
+    workspace!: string;
+
+    @GQLField(() => [FieldInput], { nullable: true })
+    fields?: FieldInput[];
+
+    @GQLField({ nullable: true })
+    status?: string;
+}
+
 @InputType()
 class UpdateCollectionInput {
     @GQLField({ nullable: true })
@@ -254,8 +345,6 @@ class UpdateCollectionInput {
 @Resolver(() => CollectionType)
 @UseGuards(JwtAuthGuard)
 export class CollectionResolver {
-    private pubSub = new PubSub();
-
     constructor(private readonly collectionService: CollectionService) {}
 
     // Queries
@@ -263,7 +352,9 @@ export class CollectionResolver {
     async collections(
         @Args('workspaceId', { type: () => ID }) workspaceId: string
     ): Promise<CollectionType[]> {
-        return this.collectionService.findByWorkspace(workspaceId) as any;
+        const documents =
+            await this.collectionService.findByWorkspace(workspaceId);
+        return documents.map(doc => mapCollectionDocumentToType(doc));
     }
 
     @Query(() => CollectionType)
@@ -271,32 +362,33 @@ export class CollectionResolver {
         @Args('workspaceId', { type: () => ID }) workspaceId: string,
         @Args('slug') slug: string
     ): Promise<CollectionType> {
-        return this.collectionService.findBySlug(workspaceId, slug) as any;
+        const document = await this.collectionService.findBySlug(
+            workspaceId,
+            slug
+        );
+        return mapCollectionDocumentToType(document);
     }
 
     @Query(() => [CollectionTemplateType])
     async collectionTemplates(): Promise<CollectionTemplateType[]> {
-        return this.collectionService.getTemplates() as any;
+        const templates = await this.collectionService.getTemplates();
+        return templates.map(template => mapCollectionTemplateToType(template));
     }
 
     // Mutations
     @Mutation(() => CollectionType)
     async createCollection(
         @Args('input') input: CreateCollectionInput,
-        @Context() context: any
+        @Context() context: { req: { user: { id: string } } }
     ): Promise<CollectionType> {
-        const collection = await this.collectionService.create(
+        const document = await this.collectionService.create(
             input as CreateCollectionDto,
             context.req.user.id
         );
 
-        // Publish real-time update
-        this.pubSub.publish('collectionCreated', {
-            collectionCreated: collection,
-            workspaceId: input.workspace
-        });
+        const collectionType = mapCollectionDocumentToType(document);
 
-        return collection as any;
+        return collectionType;
     }
 
     @Mutation(() => CollectionType)
@@ -309,18 +401,15 @@ export class CollectionResolver {
             workspaceId,
             slug
         );
-        const updatedCollection = await this.collectionService.update(
-            (collection as any)._id.toString(),
+        const updatedDocument = await this.collectionService.update(
+            (collection._id as Types.ObjectId).toString(),
             input as UpdateCollectionDto
         );
 
-        // Publish real-time update
-        this.pubSub.publish('collectionUpdated', {
-            collectionUpdated: updatedCollection,
-            workspaceId: workspaceId
-        });
+        const updatedCollectionType =
+            mapCollectionDocumentToType(updatedDocument);
 
-        return updatedCollection as any;
+        return updatedCollectionType;
     }
 
     @Mutation(() => Boolean)
@@ -332,13 +421,8 @@ export class CollectionResolver {
             workspaceId,
             slug
         );
-        await this.collectionService.delete((collection as any)._id.toString());
-
-        // Publish real-time update
-        this.pubSub.publish('collectionDeleted', {
-            collectionDeleted: { id: (collection as any)._id.toString(), slug },
-            workspaceId: workspaceId
-        });
+        const collectionId = (collection._id as Types.ObjectId).toString();
+        await this.collectionService.delete(collectionId);
 
         return true;
     }
@@ -353,18 +437,15 @@ export class CollectionResolver {
             workspaceId,
             slug
         );
-        const updatedCollection = await this.collectionService.addField(
-            (collection as any)._id.toString(),
-            field as any
+        const updatedDocument = await this.collectionService.addField(
+            (collection._id as Types.ObjectId).toString(),
+            field as FieldDto
         );
 
-        // Publish real-time update
-        this.pubSub.publish('collectionFieldAdded', {
-            collectionFieldAdded: { collection: updatedCollection, field },
-            workspaceId: workspaceId
-        });
+        const updatedCollectionType =
+            mapCollectionDocumentToType(updatedDocument);
 
-        return updatedCollection as any;
+        return updatedCollectionType;
     }
 
     @Mutation(() => CollectionType)
@@ -378,23 +459,16 @@ export class CollectionResolver {
             workspaceId,
             slug
         );
-        const updatedCollection = await this.collectionService.updateField(
-            (collection as any)._id.toString(),
+        const updatedDocument = await this.collectionService.updateField(
+            (collection._id as Types.ObjectId).toString(),
             fieldId,
-            field as any
+            field as Partial<FieldDto>
         );
 
-        // Publish real-time update
-        this.pubSub.publish('collectionFieldUpdated', {
-            collectionFieldUpdated: {
-                collection: updatedCollection,
-                fieldId,
-                field
-            },
-            workspaceId: workspaceId
-        });
+        const updatedCollectionType =
+            mapCollectionDocumentToType(updatedDocument);
 
-        return updatedCollection as any;
+        return updatedCollectionType;
     }
 
     @Mutation(() => CollectionType)
@@ -407,18 +481,15 @@ export class CollectionResolver {
             workspaceId,
             slug
         );
-        const updatedCollection = await this.collectionService.removeField(
-            (collection as any)._id.toString(),
+        const updatedDocument = await this.collectionService.removeField(
+            (collection._id as Types.ObjectId).toString(),
             fieldId
         );
 
-        // Publish real-time update
-        this.pubSub.publish('collectionFieldRemoved', {
-            collectionFieldRemoved: { collection: updatedCollection, fieldId },
-            workspaceId: workspaceId
-        });
+        const updatedCollectionType =
+            mapCollectionDocumentToType(updatedDocument);
 
-        return updatedCollection as any;
+        return updatedCollectionType;
     }
 
     @Mutation(() => CollectionType)
@@ -431,98 +502,14 @@ export class CollectionResolver {
             workspaceId,
             slug
         );
-        const updatedCollection = await this.collectionService.reorderFields(
-            (collection as any)._id.toString(),
+        const updatedDocument = await this.collectionService.reorderFields(
+            (collection._id as Types.ObjectId).toString(),
             fieldOrder
         );
 
-        // Publish real-time update
-        this.pubSub.publish('collectionFieldsReordered', {
-            collectionFieldsReordered: {
-                collection: updatedCollection,
-                fieldOrder
-            },
-            workspaceId: workspaceId
-        });
+        const updatedCollectionType =
+            mapCollectionDocumentToType(updatedDocument);
 
-        return updatedCollection as any;
-    }
-
-    // Subscriptions for real-time updates
-    @Subscription(() => CollectionType, {
-        filter: (payload, variables) => {
-            return payload.workspaceId === variables.workspaceId;
-        }
-    })
-    collectionCreated(
-        @Args('workspaceId', { type: () => ID }) workspaceId: string
-    ) {
-        return this.pubSub.asyncIterableIterator('collectionCreated');
-    }
-
-    @Subscription(() => CollectionType, {
-        filter: (payload, variables) => {
-            return payload.workspaceId === variables.workspaceId;
-        }
-    })
-    collectionUpdated(
-        @Args('workspaceId', { type: () => ID }) workspaceId: string
-    ) {
-        return this.pubSub.asyncIterableIterator('collectionUpdated');
-    }
-
-    @Subscription(() => String, {
-        filter: (payload, variables) => {
-            return payload.workspaceId === variables.workspaceId;
-        }
-    })
-    collectionDeleted(
-        @Args('workspaceId', { type: () => ID }) workspaceId: string
-    ) {
-        return this.pubSub.asyncIterableIterator('collectionDeleted');
-    }
-
-    @Subscription(() => CollectionType, {
-        filter: (payload, variables) => {
-            return payload.workspaceId === variables.workspaceId;
-        }
-    })
-    collectionFieldAdded(
-        @Args('workspaceId', { type: () => ID }) workspaceId: string
-    ) {
-        return this.pubSub.asyncIterableIterator('collectionFieldAdded');
-    }
-
-    @Subscription(() => CollectionType, {
-        filter: (payload, variables) => {
-            return payload.workspaceId === variables.workspaceId;
-        }
-    })
-    collectionFieldUpdated(
-        @Args('workspaceId', { type: () => ID }) workspaceId: string
-    ) {
-        return this.pubSub.asyncIterableIterator('collectionFieldUpdated');
-    }
-
-    @Subscription(() => CollectionType, {
-        filter: (payload, variables) => {
-            return payload.workspaceId === variables.workspaceId;
-        }
-    })
-    collectionFieldRemoved(
-        @Args('workspaceId', { type: () => ID }) workspaceId: string
-    ) {
-        return this.pubSub.asyncIterableIterator('collectionFieldRemoved');
-    }
-
-    @Subscription(() => CollectionType, {
-        filter: (payload, variables) => {
-            return payload.workspaceId === variables.workspaceId;
-        }
-    })
-    collectionFieldsReordered(
-        @Args('workspaceId', { type: () => ID }) workspaceId: string
-    ) {
-        return this.pubSub.asyncIterableIterator('collectionFieldsReordered');
+        return updatedCollectionType;
     }
 }
