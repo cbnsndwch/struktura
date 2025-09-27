@@ -143,9 +143,16 @@ export class CollectionService {
     // Add field to collection
     async addField(
         collectionId: string,
-        field: Field
+        fieldDto: FieldDto
     ): Promise<CollectionDocument> {
         const collection = await this.findById(collectionId);
+
+        // Process FieldDto to Field
+        const processedFields = this.processFields([fieldDto]);
+        if (processedFields.length === 0 || !processedFields[0]) {
+            throw new BadRequestException('Failed to process field');
+        }
+        const field: Field = processedFields[0];
 
         // Check if field ID is unique
         const existingField = collection.fields.find(f => f.id === field.id);
@@ -154,9 +161,6 @@ export class CollectionService {
                 `Field with ID '${field.id}' already exists`
             );
         }
-
-        // Validate field
-        this.validateField(field);
 
         // Set order if not provided
         if (field.order === undefined || field.order === null) {
@@ -471,8 +475,17 @@ export class CollectionService {
                 field.id = this.generateFieldId(field.name);
             }
 
-            this.validateField(field);
-            return field;
+            // Convert FieldDto to Field by setting required defaults
+            const processedField: Field = {
+                ...field,
+                required: field.required ?? false, // Default to false if undefined
+                unique: field.unique ?? false, // Default to false if undefined
+                validation: field.validation ?? [], // Default to empty array if undefined
+                options: field.options ?? {} // Default to empty object if undefined
+            };
+
+            this.validateField(processedField);
+            return processedField;
         });
     }
 
