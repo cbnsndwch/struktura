@@ -137,9 +137,6 @@ export class CollectionService {
         }
 
         const field = collection.fields[fieldIndex];
-        if (!field) {
-            throw new NotFoundException(`Field with ID '${fieldId}' not found`);
-        }
 
         // Merge updates
         Object.assign(field, fieldUpdate);
