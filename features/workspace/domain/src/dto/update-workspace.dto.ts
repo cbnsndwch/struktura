@@ -2,7 +2,7 @@ import { PartialType, OmitType } from '@nestjs/mapped-types';
 import { IsString, IsOptional, MinLength, MaxLength } from 'class-validator';
 import { InputType, Field } from '@nestjs/graphql';
 
-import { CreateWorkspaceDto, CreateWorkspaceInput } from './create-workspace.dto.js';
+import { CreateWorkspaceDto } from './create-workspace.dto.js';
 
 export class UpdateWorkspaceDto extends PartialType(
     OmitType(CreateWorkspaceDto, ['slug'] as const)
