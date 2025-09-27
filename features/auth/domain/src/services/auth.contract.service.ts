@@ -15,8 +15,6 @@ import type {
 
 import { IPasswordService } from '../../../contracts/src/services/password-service.contract.js';
 
-import { PasswordHash } from './hash.service.js';
-
 export class AuthContractService implements IAuthService {
     constructor(
         private readonly userRepository: IUserService,
@@ -32,7 +30,8 @@ export class AuthContractService implements IAuthService {
         }
 
         // Create user
-        const passwordHash = await PasswordHash.create(data.password);
+        // Note: Password hashing is delegated to the password service via userRepository
+        // The repository implementation should handle password hashing internally
         const user = await this.userRepository.create({
             email: data.email,
             name: data.name,
@@ -99,7 +98,9 @@ export class AuthContractService implements IAuthService {
 
     async verifyEmail(data: IVerifyEmailInput): Promise<void> {
         // Implementation would verify the token and mark user as verified
-        throw new Error('Not implemented');
+        throw new Error(
+            `Email verification not implemented for token: ${data.token || 'unknown'}`
+        );
     }
 
     async logout(userId: string): Promise<void> {

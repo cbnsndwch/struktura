@@ -53,11 +53,13 @@ export class UserResolver {
      * Uses LoginDto for input validation
      */
     @Mutation(() => String) // or create AuthResponse GraphQL type
-    async login(@Args('input') _input: LoginDto): Promise<string> {
+    async login(@Args('input') input: LoginDto): Promise<string> {
         // LoginDto provides validation
         // return this.authService.login(input);
 
         // Placeholder implementation
+        // eslint-disable-next-line @typescript-eslint/no-unused-vars
+        const { email, password } = input;
         return 'jwt-token-here';
     }
 }

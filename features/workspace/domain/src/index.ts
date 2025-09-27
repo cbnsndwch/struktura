@@ -10,7 +10,7 @@ export * from './services/index.js';
 export { WorkspaceModule } from './workspace.module.js';
 
 // Controllers
-export { WorkspaceController } from './controllers/workspace.controller.js';
+export * from './controllers/index.js';
 
 // Guards
 export { WorkspaceGuard, WorkspaceRoles } from './guards/index.js';
@@ -19,4 +19,4 @@ export { WorkspaceGuard, WorkspaceRoles } from './guards/index.js';
 export * from './dto/index.js';
 
 // Resolvers
-export { WorkspaceResolver } from './resolvers/workspace.resolver.js';
+export * from './resolvers/index.js';

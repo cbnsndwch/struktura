@@ -1,7 +1,7 @@
-import { Resolver, Query, Mutation, Args, Context } from '@nestjs/graphql';
+import { Resolver, Query, Mutation, Args } from '@nestjs/graphql';
 import { UseGuards } from '@nestjs/common';
 
-import { JwtAuthGuard } from '@cbnsndwch/struktura-auth-domain';
+import { JwtAuthGuard, CurrentUserId } from '@cbnsndwch/struktura-auth-domain';
 
 import {
     Workspace,
@@ -26,15 +26,15 @@ export class WorkspaceResolver {
     @Mutation(() => Workspace)
     async createWorkspace(
         @Args('input') input: CreateWorkspaceInput,
-        @Context() context: any
+        @CurrentUserId() userId: string
     ): Promise<WorkspaceDocument> {
-        const userId = context.req.user.sub;
         return this.workspaceService.create(input, userId);
     }
 
     @Query(() => [Workspace])
-    async workspaces(@Context() context: any): Promise<WorkspaceDocument[]> {
-        const userId = context.req.user.sub;
+    async workspaces(
+        @CurrentUserId() userId: string
+    ): Promise<WorkspaceDocument[]> {
         return this.workspaceService.findAllForUser(userId);
     }
 
@@ -63,9 +63,8 @@ export class WorkspaceResolver {
     async updateWorkspace(
         @Args('id') id: string,
         @Args('input') input: UpdateWorkspaceInput,
-        @Context() context: any
+        @CurrentUserId() userId: string
     ): Promise<WorkspaceDocument> {
-        const userId = context.req.user.sub;
         return this.workspaceService.update(id, input, userId);
     }
 
@@ -75,9 +74,8 @@ export class WorkspaceResolver {
     async updateWorkspaceSettings(
         @Args('id') id: string,
         @Args('input') input: UpdateWorkspaceSettingsInput,
-        @Context() context: any
+        @CurrentUserId() userId: string
     ): Promise<WorkspaceDocument> {
-        const userId = context.req.user.sub;
         return this.workspaceService.updateSettings(id, input, userId);
     }
 
@@ -86,9 +84,8 @@ export class WorkspaceResolver {
     @WorkspaceRoles([WorkspaceRole.OWNER])
     async deleteWorkspace(
         @Args('id') id: string,
-        @Context() context: any
+        @CurrentUserId() userId: string
     ): Promise<boolean> {
-        const userId = context.req.user.sub;
         await this.workspaceService.remove(id, userId);
         return true;
     }
@@ -99,9 +96,8 @@ export class WorkspaceResolver {
     async inviteMember(
         @Args('workspaceId') workspaceId: string,
         @Args('input') input: InviteMemberInput,
-        @Context() context: any
+        @CurrentUserId() userId: string
     ): Promise<WorkspaceDocument> {
-        const userId = context.req.user.sub;
         return this.workspaceService.inviteMember(workspaceId, input, userId);
     }
 
@@ -112,9 +108,8 @@ export class WorkspaceResolver {
         @Args('workspaceId') workspaceId: string,
         @Args('memberId') memberId: string,
         @Args('input') input: UpdateMemberRoleInput,
-        @Context() context: any
+        @CurrentUserId() userId: string
     ): Promise<WorkspaceDocument> {
-        const userId = context.req.user.sub;
         return this.workspaceService.updateMemberRole(
             workspaceId,
             memberId,
@@ -129,9 +124,8 @@ export class WorkspaceResolver {
     async removeMember(
         @Args('workspaceId') workspaceId: string,
         @Args('memberId') memberId: string,
-        @Context() context: any
+        @CurrentUserId() userId: string
     ): Promise<WorkspaceDocument> {
-        const userId = context.req.user.sub;
         return this.workspaceService.removeMember(
             workspaceId,
             memberId,
@@ -149,9 +143,8 @@ export class WorkspaceResolver {
     ])
     async userRoleInWorkspace(
         @Args('workspaceId') workspaceId: string,
-        @Context() context: any
+        @CurrentUserId() userId: string
     ): Promise<WorkspaceRole | null> {
-        const userId = context.req.user.sub;
         return this.workspaceService.getUserRole(workspaceId, userId);
     }
 }

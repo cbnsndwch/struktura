@@ -15,7 +15,10 @@ export { JwtAuthGuard } from './guards/jwt-auth.guard.js';
 export { RolesGuard } from './guards/roles.guard.js';
 
 // Decorators
-export { CurrentUser } from './decorators/current-user.decorator.js';
+export {
+    CurrentUser,
+    CurrentUserId
+} from './decorators/current-user.decorator.js';
 export { Public } from './decorators/public.decorator.js';
 export { Roles } from './decorators/roles.decorator.js';
 
