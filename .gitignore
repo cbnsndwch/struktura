@@ -67,3 +67,4 @@ tsconfig.tsbuildinfo
 # Changesets
 /IMPLEMENTATION.md
 /changelog-temp.md
+.local
