@@ -1,26 +1,26 @@
 import {
-    Controller,
-    Get,
-    Post,
     Body,
-    Patch,
-    Param,
+    Controller,
     Delete,
-    UseGuards,
-    Request
+    Get,
+    Param,
+    Patch,
+    Post,
+    Request,
+    UseGuards
 } from '@nestjs/common';
 
-import { WorkspaceService } from '../services/workspace.service.js';
+import { JwtAuthGuard } from '../../auth/guards/jwt-auth.guard.js';
 import {
     CreateWorkspaceDto,
-    UpdateWorkspaceDto,
-    UpdateWorkspaceSettingsDto,
     InviteMemberDto,
     UpdateMemberRoleDto,
+    UpdateWorkspaceDto,
+    UpdateWorkspaceSettingsDto,
     WorkspaceRole
 } from '../dto/index.js';
-import { JwtAuthGuard } from '../../auth/guards/jwt-auth.guard.js';
 import { WorkspaceGuard, WorkspaceRoles } from '../guards/workspace.guard.js';
+import { WorkspaceService } from '../services/workspace.service.js';
 
 @Controller('workspaces')
 @UseGuards(JwtAuthGuard)
@@ -30,13 +30,13 @@ export class WorkspaceController {
     @Post()
     create(
         @Body() createWorkspaceDto: CreateWorkspaceDto,
-        @Request() req: any
+        @Request() req: AuthenticatedRequest
     ) {
         return this.workspaceService.create(createWorkspaceDto, req.user.sub);
     }
 
     @Get()
-    findAll(@Request() req: any) {
+    findAll(@Request() req: AuthenticatedRequest) {
         return this.workspaceService.findAllForUser(req.user.sub);
     }
 
@@ -63,7 +63,7 @@ export class WorkspaceController {
     update(
         @Param('id') id: string,
         @Body() updateWorkspaceDto: UpdateWorkspaceDto,
-        @Request() req: any
+        @Request() req: AuthenticatedRequest
     ) {
         return this.workspaceService.update(
             id,
@@ -78,7 +78,7 @@ export class WorkspaceController {
     updateSettings(
         @Param('id') id: string,
         @Body() settingsDto: UpdateWorkspaceSettingsDto,
-        @Request() req: any
+        @Request() req: AuthenticatedRequest
     ) {
         return this.workspaceService.updateSettings(
             id,
@@ -90,7 +90,7 @@ export class WorkspaceController {
     @Delete(':id')
     @UseGuards(WorkspaceGuard)
     @WorkspaceRoles([WorkspaceRole.OWNER])
-    remove(@Param('id') id: string, @Request() req: any) {
+    remove(@Param('id') id: string, @Request() req: AuthenticatedRequest) {
         return this.workspaceService.remove(id, req.user.sub);
     }
 
@@ -100,7 +100,7 @@ export class WorkspaceController {
     inviteMember(
         @Param('id') id: string,
         @Body() inviteMemberDto: InviteMemberDto,
-        @Request() req: any
+        @Request() req: AuthenticatedRequest
     ) {
         return this.workspaceService.inviteMember(
             id,
@@ -116,7 +116,7 @@ export class WorkspaceController {
         @Param('id') id: string,
         @Param('memberId') memberId: string,
         @Body() updateRoleDto: UpdateMemberRoleDto,
-        @Request() req: any
+        @Request() req: AuthenticatedRequest
     ) {
         return this.workspaceService.updateMemberRole(
             id,
@@ -132,7 +132,7 @@ export class WorkspaceController {
     removeMember(
         @Param('id') id: string,
         @Param('memberId') memberId: string,
-        @Request() req: any
+        @Request() req: AuthenticatedRequest
     ) {
         return this.workspaceService.removeMember(id, memberId, req.user.sub);
     }
@@ -145,7 +145,7 @@ export class WorkspaceController {
         WorkspaceRole.EDITOR,
         WorkspaceRole.VIEWER
     ])
-    getUserRole(@Param('id') id: string, @Request() req: any) {
+    getUserRole(@Param('id') id: string, @Request() req: AuthenticatedRequest) {
         return this.workspaceService.getUserRole(id, req.user.sub);
     }
 }

@@ -12,11 +12,35 @@ import {
     IsObject
 } from 'class-validator';
 import { Type } from 'class-transformer';
-import { FieldType, ValidationRule, FieldOptions } from '../schemas/collection.schema.js';
+
+import {
+    FieldType,
+    ValidationRule,
+    FieldOptions
+} from '../schemas/collection.schema.js';
 
 export class ValidationRuleDto implements ValidationRule {
-    @IsEnum(['required', 'minLength', 'maxLength', 'pattern', 'min', 'max', 'email', 'url', 'custom'])
-    type!: 'required' | 'minLength' | 'maxLength' | 'pattern' | 'min' | 'max' | 'email' | 'url' | 'custom';
+    @IsEnum([
+        'required',
+        'minLength',
+        'maxLength',
+        'pattern',
+        'min',
+        'max',
+        'email',
+        'url',
+        'custom'
+    ])
+    type!:
+        | 'required'
+        | 'minLength'
+        | 'maxLength'
+        | 'pattern'
+        | 'min'
+        | 'max'
+        | 'email'
+        | 'url'
+        | 'custom';
 
     @IsOptional()
     value?: any;
@@ -133,7 +157,8 @@ export class CreateCollectionDto {
     @MinLength(3)
     @MaxLength(50)
     @Matches(/^[a-z0-9-]+$/, {
-        message: 'Slug must contain only lowercase letters, numbers, and hyphens'
+        message:
+            'Slug must contain only lowercase letters, numbers, and hyphens'
     })
     slug?: string;
 

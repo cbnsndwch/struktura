@@ -9,32 +9,32 @@ export enum FieldType {
     BOOLEAN = 'boolean',
     DATE = 'date',
     DATETIME = 'datetime',
-    
+
     // Rich Types
     EMAIL = 'email',
     URL = 'url',
     PHONE = 'phone',
     CURRENCY = 'currency',
     PERCENT = 'percent',
-    
+
     // Selection Types
     SELECT = 'select',
     MULTISELECT = 'multiselect',
-    
+
     // File Types
     ATTACHMENT = 'attachment',
     IMAGE = 'image',
-    
+
     // Relationship Types
     REFERENCE = 'reference',
     LOOKUP = 'lookup',
     ROLLUP = 'rollup',
-    
+
     // Advanced Types
     JSON = 'json',
     ARRAY = 'array',
     OBJECT = 'object',
-    
+
     // Computed Types
     FORMULA = 'formula',
     AUTO_INCREMENT = 'autoIncrement',
@@ -46,8 +46,16 @@ export enum FieldType {
 
 // Validation rule interface
 export interface ValidationRule {
-    type: 'required' | 'minLength' | 'maxLength' | 'pattern' | 
-          'min' | 'max' | 'email' | 'url' | 'custom';
+    type:
+        | 'required'
+        | 'minLength'
+        | 'maxLength'
+        | 'pattern'
+        | 'min'
+        | 'max'
+        | 'email'
+        | 'url'
+        | 'custom';
     value?: any;
     message: string;
 }
@@ -60,24 +68,24 @@ export interface FieldOptions {
         label: string;
         color?: string;
     }>;
-    
+
     // For NUMBER, CURRENCY, PERCENT
     precision?: number;
-    
+
     // For REFERENCE
     linkedCollection?: string;
     linkedField?: string;
-    
+
     // For FORMULA
     formula?: string;
-    
+
     // For ATTACHMENT and IMAGE
     allowedFileTypes?: string[];
     maxFileSize?: number;
-    
+
     // For ARRAY
     itemType?: FieldType;
-    
+
     // UI configuration
     displayFormat?: string;
     helpText?: string;
@@ -118,7 +126,7 @@ export class Field {
 export const FieldSchema = SchemaFactory.createForClass(Field);
 
 // Collection document type
-export type CollectionDocument = Collection & 
+export type CollectionDocument = Collection &
     Document & {
         createdAt: Date;
         updatedAt: Date;
@@ -148,7 +156,11 @@ export class Collection {
     @Prop({ type: [FieldSchema], default: [] })
     fields!: Field[];
 
-    @Prop({ type: String, enum: ['draft', 'active', 'archived'], default: 'draft' })
+    @Prop({
+        type: String,
+        enum: ['draft', 'active', 'archived'],
+        default: 'draft'
+    })
     status!: 'draft' | 'active' | 'archived';
 
     @Prop({

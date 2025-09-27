@@ -1,8 +1,24 @@
-import { Injectable, NotFoundException, ConflictException, BadRequestException } from '@nestjs/common';
+import {
+    Injectable,
+    NotFoundException,
+    ConflictException,
+    BadRequestException
+} from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { Model, Types } from 'mongoose';
-import { Collection, CollectionDocument, Field, FieldType } from '../schemas/collection.schema.js';
-import { CreateCollectionDto, UpdateCollectionDto, CollectionTemplateDto } from '../dto/collection.dto.js';
+
+import {
+    Collection,
+    CollectionDocument,
+    Field,
+    FieldType
+} from '../schemas/collection.schema.js';
+import {
+    CreateCollectionDto,
+    UpdateCollectionDto,
+    CollectionTemplateDto,
+    FieldDto
+} from '../dto/collection.dto.js';
 
 @Injectable()
 export class CollectionService {
@@ -12,10 +28,15 @@ export class CollectionService {
     ) {}
 
     // Create a new collection
-    async create(createCollectionDto: CreateCollectionDto, userId: string): Promise<CollectionDocument> {
+    async create(
+        createCollectionDto: CreateCollectionDto,
+        userId: string
+    ): Promise<CollectionDocument> {
         // Generate slug if not provided
         if (!createCollectionDto.slug) {
-            createCollectionDto.slug = this.generateSlug(createCollectionDto.name);
+            createCollectionDto.slug = this.generateSlug(
+                createCollectionDto.name
+            );
         }
 
         // Check if slug is unique within the workspace
@@ -25,11 +46,15 @@ export class CollectionService {
         });
 
         if (existingCollection) {
-            throw new ConflictException(`Collection with slug '${createCollectionDto.slug}' already exists in this workspace`);
+            throw new ConflictException(
+                `Collection with slug '${createCollectionDto.slug}' already exists in this workspace`
+            );
         }
 
         // Validate and process fields
-        const processedFields = this.processFields(createCollectionDto.fields || []);
+        const processedFields = this.processFields(
+            createCollectionDto.fields || []
+        );
 
         const collection = new this.collectionModel({
             ...createCollectionDto,
@@ -66,7 +91,10 @@ export class CollectionService {
     }
 
     // Find collection by workspace and slug
-    async findBySlug(workspaceId: string, slug: string): Promise<CollectionDocument> {
+    async findBySlug(
+        workspaceId: string,
+        slug: string
+    ): Promise<CollectionDocument> {
         const collection = await this.collectionModel
             .findOne({
                 workspace: new Types.ObjectId(workspaceId),
@@ -77,19 +105,26 @@ export class CollectionService {
             .exec();
 
         if (!collection) {
-            throw new NotFoundException(`Collection '${slug}' not found in workspace`);
+            throw new NotFoundException(
+                `Collection '${slug}' not found in workspace`
+            );
         }
 
         return collection as CollectionDocument;
     }
 
     // Update collection
-    async update(id: string, updateCollectionDto: UpdateCollectionDto): Promise<CollectionDocument> {
+    async update(
+        id: string,
+        updateCollectionDto: UpdateCollectionDto
+    ): Promise<CollectionDocument> {
         const collection = await this.findById(id);
 
         // Process fields if provided
         if (updateCollectionDto.fields) {
-            updateCollectionDto.fields = this.processFields(updateCollectionDto.fields);
+            updateCollectionDto.fields = this.processFields(
+                updateCollectionDto.fields
+            );
         }
 
         Object.assign(collection, updateCollectionDto);
@@ -99,20 +134,25 @@ export class CollectionService {
     // Delete collection
     async delete(id: string): Promise<void> {
         const result = await this.collectionModel.deleteOne({ _id: id });
-        
+
         if (result.deletedCount === 0) {
             throw new NotFoundException(`Collection with ID '${id}' not found`);
         }
     }
 
     // Add field to collection
-    async addField(collectionId: string, field: Field): Promise<CollectionDocument> {
+    async addField(
+        collectionId: string,
+        field: Field
+    ): Promise<CollectionDocument> {
         const collection = await this.findById(collectionId);
-        
+
         // Check if field ID is unique
         const existingField = collection.fields.find(f => f.id === field.id);
         if (existingField) {
-            throw new ConflictException(`Field with ID '${field.id}' already exists`);
+            throw new ConflictException(
+                `Field with ID '${field.id}' already exists`
+            );
         }
 
         // Validate field
@@ -128,9 +168,13 @@ export class CollectionService {
     }
 
     // Update field in collection
-    async updateField(collectionId: string, fieldId: string, fieldUpdate: Partial<Field>): Promise<CollectionDocument> {
+    async updateField(
+        collectionId: string,
+        fieldId: string,
+        fieldUpdate: Partial<Field>
+    ): Promise<CollectionDocument> {
         const collection = await this.findById(collectionId);
-        
+
         const fieldIndex = collection.fields.findIndex(f => f.id === fieldId);
         if (fieldIndex === -1) {
             throw new NotFoundException(`Field with ID '${fieldId}' not found`);
@@ -139,18 +183,21 @@ export class CollectionService {
         const field = collection.fields[fieldIndex];
 
         // Merge updates
-        Object.assign(field, fieldUpdate);
-        
+        Object.assign(field!, fieldUpdate);
+
         // Validate updated field
-        this.validateField(field);
+        this.validateField(field!);
 
         return collection.save();
     }
 
     // Remove field from collection
-    async removeField(collectionId: string, fieldId: string): Promise<CollectionDocument> {
+    async removeField(
+        collectionId: string,
+        fieldId: string
+    ): Promise<CollectionDocument> {
         const collection = await this.findById(collectionId);
-        
+
         const fieldIndex = collection.fields.findIndex(f => f.id === fieldId);
         if (fieldIndex === -1) {
             throw new NotFoundException(`Field with ID '${fieldId}' not found`);
@@ -161,21 +208,28 @@ export class CollectionService {
     }
 
     // Reorder fields
-    async reorderFields(collectionId: string, fieldOrder: string[]): Promise<CollectionDocument> {
+    async reorderFields(
+        collectionId: string,
+        fieldOrder: string[]
+    ): Promise<CollectionDocument> {
         const collection = await this.findById(collectionId);
-        
+
         // Validate all field IDs exist
         const fieldIds = collection.fields.map(f => f.id);
         const missingFields = fieldOrder.filter(id => !fieldIds.includes(id));
         if (missingFields.length > 0) {
-            throw new BadRequestException(`Fields not found: ${missingFields.join(', ')}`);
+            throw new BadRequestException(
+                `Fields not found: ${missingFields.join(', ')}`
+            );
         }
 
         // Reorder fields based on provided order
         const reorderedFields = fieldOrder.map((fieldId, index) => {
             const field = collection.fields.find(f => f.id === fieldId);
             if (!field) {
-                throw new NotFoundException(`Field with ID '${fieldId}' not found during reordering`);
+                throw new NotFoundException(
+                    `Field with ID '${fieldId}' not found during reordering`
+                );
             }
             field.order = index;
             return field;
@@ -223,11 +277,31 @@ export class CollectionService {
                         order: 2,
                         options: {
                             options: [
-                                { value: 'planning', label: 'Planning', color: '#gray' },
-                                { value: 'in-progress', label: 'In Progress', color: '#blue' },
-                                { value: 'review', label: 'Review', color: '#yellow' },
-                                { value: 'completed', label: 'Completed', color: '#green' },
-                                { value: 'cancelled', label: 'Cancelled', color: '#red' }
+                                {
+                                    value: 'planning',
+                                    label: 'Planning',
+                                    color: '#gray'
+                                },
+                                {
+                                    value: 'in-progress',
+                                    label: 'In Progress',
+                                    color: '#blue'
+                                },
+                                {
+                                    value: 'review',
+                                    label: 'Review',
+                                    color: '#yellow'
+                                },
+                                {
+                                    value: 'completed',
+                                    label: 'Completed',
+                                    color: '#green'
+                                },
+                                {
+                                    value: 'cancelled',
+                                    label: 'Cancelled',
+                                    color: '#red'
+                                }
                             ]
                         }
                     },
@@ -341,7 +415,11 @@ export class CollectionService {
                         required: true,
                         order: 3,
                         validation: [
-                            { type: 'min', value: 0, message: 'Quantity cannot be negative' }
+                            {
+                                type: 'min',
+                                value: 0,
+                                message: 'Quantity cannot be negative'
+                            }
                         ]
                     },
                     {
@@ -381,7 +459,7 @@ export class CollectionService {
     }
 
     // Helper method to process and validate fields
-    private processFields(fields: any[]): Field[] {
+    private processFields(fields: FieldDto[]): Field[] {
         return fields.map((field, index) => {
             // Set order if not provided
             if (field.order === undefined || field.order === null) {
@@ -413,19 +491,28 @@ export class CollectionService {
         switch (field.type) {
             case FieldType.SELECT:
             case FieldType.MULTISELECT:
-                if (!field.options?.options || field.options.options.length === 0) {
-                    throw new BadRequestException(`Field '${field.name}' of type ${field.type} must have options`);
+                if (
+                    !field.options?.options ||
+                    field.options.options.length === 0
+                ) {
+                    throw new BadRequestException(
+                        `Field '${field.name}' of type ${field.type} must have options`
+                    );
                 }
                 break;
             case FieldType.REFERENCE:
             case FieldType.LOOKUP:
                 if (!field.options?.linkedCollection) {
-                    throw new BadRequestException(`Field '${field.name}' of type ${field.type} must specify a linked collection`);
+                    throw new BadRequestException(
+                        `Field '${field.name}' of type ${field.type} must specify a linked collection`
+                    );
                 }
                 break;
             case FieldType.FORMULA:
                 if (!field.options?.formula) {
-                    throw new BadRequestException(`Field '${field.name}' of type ${field.type} must have a formula`);
+                    throw new BadRequestException(
+                        `Field '${field.name}' of type ${field.type} must have a formula`
+                    );
                 }
                 break;
         }

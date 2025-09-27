@@ -3,8 +3,14 @@ import { getModelToken } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
 import { NotFoundException, ConflictException } from '@nestjs/common';
 import { describe, it, expect, beforeEach, afterEach, vi } from 'vitest';
+
+import {
+    Collection,
+    CollectionDocument,
+    FieldType
+} from '../schemas/collection.schema.js';
+
 import { CollectionService } from './collection.service.js';
-import { Collection, CollectionDocument, FieldType } from '../schemas/collection.schema.js';
 
 describe('CollectionService', () => {
     let service: CollectionService;
@@ -34,12 +40,14 @@ describe('CollectionService', () => {
         save: vi.fn().mockResolvedValue(this)
     };
 
-    const mockCollectionModel = vi.fn().mockImplementation(() => mockCollection);
+    const mockCollectionModel = vi
+        .fn()
+        .mockImplementation(() => mockCollection);
     Object.assign(mockCollectionModel, {
         find: vi.fn(),
         findOne: vi.fn(),
         findById: vi.fn(),
-        deleteOne: vi.fn(),
+        deleteOne: vi.fn()
     });
 
     beforeEach(async () => {
@@ -54,7 +62,9 @@ describe('CollectionService', () => {
         }).compile();
 
         service = module.get<CollectionService>(CollectionService);
-        model = module.get<Model<CollectionDocument>>(getModelToken(Collection.name));
+        model = module.get<Model<CollectionDocument>>(
+            getModelToken(Collection.name)
+        );
     });
 
     afterEach(() => {
@@ -71,7 +81,10 @@ describe('CollectionService', () => {
             mockCollectionModel.findOne.mockResolvedValue(null);
             mockCollection.save.mockResolvedValue(mockCollection);
 
-            const result = await service.create(createCollectionDto, '507f1f77bcf86cd799439012'); // Valid ObjectId
+            const result = await service.create(
+                createCollectionDto,
+                '507f1f77bcf86cd799439012'
+            ); // Valid ObjectId
 
             expect(mockCollectionModel.findOne).toHaveBeenCalledWith({
                 workspace: expect.any(Object),
@@ -88,7 +101,9 @@ describe('CollectionService', () => {
 
             mockCollectionModel.findOne.mockResolvedValue(mockCollection);
 
-            await expect(service.create(createCollectionDto, '507f1f77bcf86cd799439012')) // Valid ObjectId
+            await expect(
+                service.create(createCollectionDto, '507f1f77bcf86cd799439012')
+            ) // Valid ObjectId
                 .rejects.toThrow(ConflictException);
         });
     });
@@ -129,7 +144,9 @@ describe('CollectionService', () => {
 
             const result = await service.findById(collectionId);
 
-            expect(mockCollectionModel.findById).toHaveBeenCalledWith(collectionId);
+            expect(mockCollectionModel.findById).toHaveBeenCalledWith(
+                collectionId
+            );
             expect(result).toEqual(mockCollection);
         });
 
@@ -144,8 +161,9 @@ describe('CollectionService', () => {
                 })
             });
 
-            await expect(service.findById(collectionId))
-                .rejects.toThrow(NotFoundException);
+            await expect(service.findById(collectionId)).rejects.toThrow(
+                NotFoundException
+            );
         });
     });
 
@@ -171,7 +189,10 @@ describe('CollectionService', () => {
             vi.spyOn(service, 'findById').mockResolvedValue(collection as any);
             collection.save = vi.fn().mockResolvedValue(collection);
 
-            const result = await service.addField(collectionId, newField as any);
+            const result = await service.addField(
+                collectionId,
+                newField as any
+            );
 
             expect(collection.fields).toHaveLength(2);
             expect(collection.fields[1]).toEqual(newField);
@@ -191,10 +212,13 @@ describe('CollectionService', () => {
                 order: 1
             };
 
-            vi.spyOn(service, 'findById').mockResolvedValue(mockCollection as any);
+            vi.spyOn(service, 'findById').mockResolvedValue(
+                mockCollection as any
+            );
 
-            await expect(service.addField(collectionId, duplicateField as any))
-                .rejects.toThrow(ConflictException);
+            await expect(
+                service.addField(collectionId, duplicateField as any)
+            ).rejects.toThrow(ConflictException);
         });
     });
 
@@ -206,10 +230,12 @@ describe('CollectionService', () => {
 
             const collection = {
                 ...mockCollection,
-                fields: [{
-                    ...mockCollection.fields[0],
-                    required: true
-                }]
+                fields: [
+                    {
+                        ...mockCollection.fields[0],
+                        required: true
+                    }
+                ]
             };
 
             vi.spyOn(service, 'findById').mockResolvedValue(collection as any);
@@ -226,10 +252,13 @@ describe('CollectionService', () => {
             const fieldId = 'non-existent';
             const fieldUpdate = { required: false };
 
-            vi.spyOn(service, 'findById').mockResolvedValue(mockCollection as any);
+            vi.spyOn(service, 'findById').mockResolvedValue(
+                mockCollection as any
+            );
 
-            await expect(service.updateField(collectionId, fieldId, fieldUpdate))
-                .rejects.toThrow(NotFoundException);
+            await expect(
+                service.updateField(collectionId, fieldId, fieldUpdate)
+            ).rejects.toThrow(NotFoundException);
         });
     });
 
@@ -246,8 +275,10 @@ describe('CollectionService', () => {
 
         it('should include project management template', async () => {
             const templates = await service.getTemplates();
-            
-            const projectTemplate = templates.find(t => t.id === 'project-management');
+
+            const projectTemplate = templates.find(
+                t => t.id === 'project-management'
+            );
             expect(projectTemplate).toBeDefined();
             expect(projectTemplate?.name).toBe('Project Management');
             expect(projectTemplate?.fields.length).toBeGreaterThan(0);

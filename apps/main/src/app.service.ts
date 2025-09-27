@@ -1,7 +1,7 @@
 import { Injectable } from '@nestjs/common';
 import { StringUtils } from '@cbnsndwch/struktura-utils';
 
-const GREETING = 'Wilkommen in Struktura - No-Code Data Management Platform!';
+const GREETING = 'Welcome to Struktura - No-Code Data Management Platform!';
 
 @Injectable()
 export class AppService {

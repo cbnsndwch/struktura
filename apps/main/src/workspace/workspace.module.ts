@@ -10,7 +10,10 @@ import { Workspace, WorkspaceSchema } from './schemas/workspace.schema.js';
 
 // Collection-related imports
 import { CollectionService } from './services/collection.service.js';
-import { CollectionController, CollectionTemplateController } from './controllers/collection.controller.js';
+import {
+    CollectionController,
+    CollectionTemplateController
+} from './controllers/collection.controller.js';
 import { CollectionResolver } from './graphql/collection.resolver.js';
 import { Collection, CollectionSchema } from './schemas/collection.schema.js';
 

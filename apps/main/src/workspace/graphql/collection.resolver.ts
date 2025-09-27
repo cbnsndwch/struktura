@@ -1,15 +1,31 @@
-import { Resolver, Query, Mutation, Args, ID, Context, Subscription } from '@nestjs/graphql';
+import {
+    Resolver,
+    Query,
+    Mutation,
+    Args,
+    ID,
+    Context,
+    Subscription
+} from '@nestjs/graphql';
 import { UseGuards } from '@nestjs/common';
 import { PubSub } from 'graphql-subscriptions';
+
+import {
+    ObjectType,
+    Field as GQLField,
+    InputType,
+    registerEnumType
+} from '@nestjs/graphql';
+
 import { CollectionService } from '../services/collection.service.js';
-import { 
-    CreateCollectionDto, 
-    UpdateCollectionDto, 
-    FieldDto, 
-    CollectionTemplateDto 
+import {
+    CreateCollectionDto,
+    UpdateCollectionDto,
+    FieldDto,
+    CollectionTemplateDto
 } from '../dto/collection.dto.js';
 import { JwtAuthGuard } from '../../auth/guards/jwt-auth.guard.js';
-import { 
+import {
     Collection,
     Field,
     FieldType as SchemaFieldType,
@@ -19,7 +35,6 @@ import {
 import type { FieldOptions } from '../schemas/collection.schema.js';
 
 // GraphQL Types
-import { ObjectType, Field as GQLField, InputType, registerEnumType } from '@nestjs/graphql';
 
 // Register enum for GraphQL
 registerEnumType(SchemaFieldType, {
@@ -30,7 +45,16 @@ registerEnumType(SchemaFieldType, {
 @ObjectType()
 class ValidationRuleType {
     @GQLField()
-    type!: 'required' | 'minLength' | 'maxLength' | 'pattern' | 'min' | 'max' | 'email' | 'url' | 'custom';
+    type!:
+        | 'required'
+        | 'minLength'
+        | 'maxLength'
+        | 'pattern'
+        | 'min'
+        | 'max'
+        | 'email'
+        | 'url'
+        | 'custom';
 
     @GQLField({ nullable: true })
     value?: any;
@@ -261,8 +285,11 @@ export class CollectionResolver {
         @Args('input') input: CreateCollectionInput,
         @Context() context: any
     ): Promise<CollectionType> {
-        const collection = await this.collectionService.create(input as CreateCollectionDto, context.req.user.id);
-        
+        const collection = await this.collectionService.create(
+            input as CreateCollectionDto,
+            context.req.user.id
+        );
+
         // Publish real-time update
         this.pubSub.publish('collectionCreated', {
             collectionCreated: collection,
@@ -278,9 +305,15 @@ export class CollectionResolver {
         @Args('slug') slug: string,
         @Args('input') input: UpdateCollectionInput
     ): Promise<CollectionType> {
-        const collection = await this.collectionService.findBySlug(workspaceId, slug);
-        const updatedCollection = await this.collectionService.update((collection as any)._id.toString(), input as UpdateCollectionDto);
-        
+        const collection = await this.collectionService.findBySlug(
+            workspaceId,
+            slug
+        );
+        const updatedCollection = await this.collectionService.update(
+            (collection as any)._id.toString(),
+            input as UpdateCollectionDto
+        );
+
         // Publish real-time update
         this.pubSub.publish('collectionUpdated', {
             collectionUpdated: updatedCollection,
@@ -295,9 +328,12 @@ export class CollectionResolver {
         @Args('workspaceId', { type: () => ID }) workspaceId: string,
         @Args('slug') slug: string
     ): Promise<boolean> {
-        const collection = await this.collectionService.findBySlug(workspaceId, slug);
+        const collection = await this.collectionService.findBySlug(
+            workspaceId,
+            slug
+        );
         await this.collectionService.delete((collection as any)._id.toString());
-        
+
         // Publish real-time update
         this.pubSub.publish('collectionDeleted', {
             collectionDeleted: { id: (collection as any)._id.toString(), slug },
@@ -313,9 +349,15 @@ export class CollectionResolver {
         @Args('slug') slug: string,
         @Args('field') field: FieldInput
     ): Promise<CollectionType> {
-        const collection = await this.collectionService.findBySlug(workspaceId, slug);
-        const updatedCollection = await this.collectionService.addField((collection as any)._id.toString(), field as any);
-        
+        const collection = await this.collectionService.findBySlug(
+            workspaceId,
+            slug
+        );
+        const updatedCollection = await this.collectionService.addField(
+            (collection as any)._id.toString(),
+            field as any
+        );
+
         // Publish real-time update
         this.pubSub.publish('collectionFieldAdded', {
             collectionFieldAdded: { collection: updatedCollection, field },
@@ -332,12 +374,23 @@ export class CollectionResolver {
         @Args('fieldId') fieldId: string,
         @Args('field') field: FieldInput
     ): Promise<CollectionType> {
-        const collection = await this.collectionService.findBySlug(workspaceId, slug);
-        const updatedCollection = await this.collectionService.updateField((collection as any)._id.toString(), fieldId, field as any);
-        
+        const collection = await this.collectionService.findBySlug(
+            workspaceId,
+            slug
+        );
+        const updatedCollection = await this.collectionService.updateField(
+            (collection as any)._id.toString(),
+            fieldId,
+            field as any
+        );
+
         // Publish real-time update
         this.pubSub.publish('collectionFieldUpdated', {
-            collectionFieldUpdated: { collection: updatedCollection, fieldId, field },
+            collectionFieldUpdated: {
+                collection: updatedCollection,
+                fieldId,
+                field
+            },
             workspaceId: workspaceId
         });
 
@@ -350,9 +403,15 @@ export class CollectionResolver {
         @Args('slug') slug: string,
         @Args('fieldId') fieldId: string
     ): Promise<CollectionType> {
-        const collection = await this.collectionService.findBySlug(workspaceId, slug);
-        const updatedCollection = await this.collectionService.removeField((collection as any)._id.toString(), fieldId);
-        
+        const collection = await this.collectionService.findBySlug(
+            workspaceId,
+            slug
+        );
+        const updatedCollection = await this.collectionService.removeField(
+            (collection as any)._id.toString(),
+            fieldId
+        );
+
         // Publish real-time update
         this.pubSub.publish('collectionFieldRemoved', {
             collectionFieldRemoved: { collection: updatedCollection, fieldId },
@@ -368,12 +427,21 @@ export class CollectionResolver {
         @Args('slug') slug: string,
         @Args('fieldOrder', { type: () => [String] }) fieldOrder: string[]
     ): Promise<CollectionType> {
-        const collection = await this.collectionService.findBySlug(workspaceId, slug);
-        const updatedCollection = await this.collectionService.reorderFields((collection as any)._id.toString(), fieldOrder);
-        
+        const collection = await this.collectionService.findBySlug(
+            workspaceId,
+            slug
+        );
+        const updatedCollection = await this.collectionService.reorderFields(
+            (collection as any)._id.toString(),
+            fieldOrder
+        );
+
         // Publish real-time update
         this.pubSub.publish('collectionFieldsReordered', {
-            collectionFieldsReordered: { collection: updatedCollection, fieldOrder },
+            collectionFieldsReordered: {
+                collection: updatedCollection,
+                fieldOrder
+            },
             workspaceId: workspaceId
         });
 

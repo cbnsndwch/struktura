@@ -40,7 +40,7 @@ describe('WorkspaceController', () => {
             sub: 'user-id',
             email: 'test@example.com'
         }
-    };
+    } as unknown as AuthenticatedRequest;
 
     beforeEach(() => {
         mockWorkspaceService = {
