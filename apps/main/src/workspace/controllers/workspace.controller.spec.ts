@@ -1,27 +1,24 @@
-import { Test, TestingModule } from '@nestjs/testing';
 import { describe, it, beforeEach, afterEach, expect, vi } from 'vitest';
 
-import { WorkspaceService } from '../services/workspace.service.js';
+import type { WorkspaceService } from '../services/workspace.service.js';
 import { CreateWorkspaceDto, WorkspaceRole } from '../dto/index.js';
 
 import { WorkspaceController } from './workspace.controller.js';
 
 describe('WorkspaceController', () => {
     let controller: WorkspaceController;
-    let service: WorkspaceService;
-
-    const mockWorkspaceService = {
-        create: vi.fn(),
-        findAllForUser: vi.fn(),
-        findOne: vi.fn(),
-        findBySlug: vi.fn(),
-        update: vi.fn(),
-        updateSettings: vi.fn(),
-        remove: vi.fn(),
-        inviteMember: vi.fn(),
-        updateMemberRole: vi.fn(),
-        removeMember: vi.fn(),
-        getUserRole: vi.fn()
+    let mockWorkspaceService: {
+        create: ReturnType<typeof vi.fn>;
+        findAllForUser: ReturnType<typeof vi.fn>;
+        findOne: ReturnType<typeof vi.fn>;
+        findBySlug: ReturnType<typeof vi.fn>;
+        update: ReturnType<typeof vi.fn>;
+        updateSettings: ReturnType<typeof vi.fn>;
+        remove: ReturnType<typeof vi.fn>;
+        inviteMember: ReturnType<typeof vi.fn>;
+        updateMemberRole: ReturnType<typeof vi.fn>;
+        removeMember: ReturnType<typeof vi.fn>;
+        getUserRole: ReturnType<typeof vi.fn>;
     };
 
     const mockWorkspace = {
@@ -45,19 +42,25 @@ describe('WorkspaceController', () => {
         }
     };
 
-    beforeEach(async () => {
-        const module: TestingModule = await Test.createTestingModule({
-            controllers: [WorkspaceController],
-            providers: [
-                {
-                    provide: WorkspaceService,
-                    useValue: mockWorkspaceService
-                }
-            ]
-        }).compile();
+    beforeEach(() => {
+        mockWorkspaceService = {
+            create: vi.fn(),
+            findAllForUser: vi.fn(),
+            findOne: vi.fn(),
+            findBySlug: vi.fn(),
+            update: vi.fn(),
+            updateSettings: vi.fn(),
+            remove: vi.fn(),
+            inviteMember: vi.fn(),
+            updateMemberRole: vi.fn(),
+            removeMember: vi.fn(),
+            getUserRole: vi.fn()
+        };
 
-        controller = module.get<WorkspaceController>(WorkspaceController);
-        service = module.get<WorkspaceService>(WorkspaceService);
+        // Create the controller with the mocked service
+        controller = new WorkspaceController(
+            mockWorkspaceService as unknown as WorkspaceService
+        );
     });
 
     afterEach(() => {
@@ -78,7 +81,7 @@ describe('WorkspaceController', () => {
                 mockRequest
             );
 
-            expect(service.create).toHaveBeenCalledWith(
+            expect(mockWorkspaceService.create).toHaveBeenCalledWith(
                 createWorkspaceDto,
                 mockRequest.user.sub
             );
@@ -93,7 +96,7 @@ describe('WorkspaceController', () => {
 
             const result = await controller.findAll(mockRequest);
 
-            expect(service.findAllForUser).toHaveBeenCalledWith(
+            expect(mockWorkspaceService.findAllForUser).toHaveBeenCalledWith(
                 mockRequest.user.sub
             );
             expect(result).toEqual(workspaces);
@@ -107,7 +110,7 @@ describe('WorkspaceController', () => {
 
             const result = await controller.findOne(workspaceId);
 
-            expect(service.findOne).toHaveBeenCalledWith(workspaceId);
+            expect(mockWorkspaceService.findOne).toHaveBeenCalledWith(workspaceId);
             expect(result).toEqual(mockWorkspace);
         });
     });
@@ -124,7 +127,7 @@ describe('WorkspaceController', () => {
                 mockRequest
             );
 
-            expect(service.getUserRole).toHaveBeenCalledWith(
+            expect(mockWorkspaceService.getUserRole).toHaveBeenCalledWith(
                 workspaceId,
                 mockRequest.user.sub
             );
