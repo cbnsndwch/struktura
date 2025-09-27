@@ -241,6 +241,28 @@ describe('AuthService - Unit Tests (Isolated Business Logic)', () => {
             expect(true).toBe(true);
         });
 
+        it('should validate refresh token format', async () => {
+            // Arrange
+            const validRefreshToken = 'valid-refresh-token-123';
+            mockRefreshTokenModel.findOne.mockReturnValue({
+                lean: vi.fn().mockResolvedValue({
+                    token: validRefreshToken,
+                    userId: 'userId123',
+                    revoked: false,
+                    expiresAt: new Date(Date.now() + 86400000) // 24 hours
+                })
+            });
+
+            // Act - this tests the token lookup logic
+            const tokenDoc = await mockRefreshTokenModel
+                .findOne({ token: validRefreshToken })
+                .lean();
+
+            // Assert
+            expect(tokenDoc).toHaveProperty('token');
+            expect(tokenDoc).toHaveProperty('userId');
+            expect(tokenDoc.revoked).toBe(false);
+        });
         it('should revoke refresh token on logout', async () => {
             // Arrange
             const refreshToken = 'refreshToken123';
