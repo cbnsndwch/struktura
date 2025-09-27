@@ -154,8 +154,8 @@ jobs:
             type=ref,event=branch
             type=ref,event=pr
             type=match,pattern=v(.*),group=1
-            type=match,pattern=(.*)-pre\.(.*),group=1-pre.2
-            type=match,pattern=(.*)-rc\.(.*),group=1-rc.2
+            type=match,pattern=(.+)-pre\.(.+)
+            type=match,pattern=(.+)-rc\.(.+)
             type=sha,prefix={{branch}}-
 
       - name: Build and push Docker image
