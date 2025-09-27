@@ -10,6 +10,7 @@ import { AppService } from './app.service.js';
 import { DatabaseModule } from './database/database.module.js';
 import { AppResolver } from './graphql/app.resolver.js';
 import { AuthModule } from './auth/auth.module.js';
+import { WorkspaceModule } from './workspace/workspace.module.js';
 import { JwtAuthGuard } from './auth/guards/jwt-auth.guard.js';
 import { RolesGuard } from './auth/guards/roles.guard.js';
 
@@ -17,6 +18,7 @@ import { RolesGuard } from './auth/guards/roles.guard.js';
     imports: [
         DatabaseModule,
         AuthModule,
+        WorkspaceModule,
         GraphQLModule.forRootAsync<ApolloDriverConfig>({
             driver: ApolloDriver,
             useFactory: async () => {
