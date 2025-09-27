@@ -26,9 +26,6 @@ COPY features/shared/domain/package.json ./features/shared/domain/
 COPY features/shared/ui/package.json ./features/shared/ui/
 COPY libs/auth/package.json ./libs/auth/
 COPY libs/utils/package.json ./libs/utils/
-COPY tools/toolA/package.json ./tools/toolA/
-COPY tools/toolB/package.json ./tools/toolB/
-COPY tools/toolC/package.json ./tools/toolC/
 
 # Install all dependencies
 RUN pnpm install --frozen-lockfile
