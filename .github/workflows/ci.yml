@@ -150,7 +150,7 @@ jobs:
     environment: development
     steps:
       - name: Deploy to Development
-        run:
+        run: |
           echo "🚀 Deploying to DEV environment"
           echo "Branch: ${{ github.ref }}"
           echo "Event: ${{ github.event_name }}"
@@ -173,7 +173,7 @@ jobs:
     environment: staging
     steps:
       - name: Deploy to Staging
-        run:
+        run: |
           echo "🚀 Deploying to STAGING environment"
           echo "Ref: ${{ github.ref }}"
           echo "Ref name: ${{ github.ref_name }}"
@@ -192,7 +192,7 @@ jobs:
     environment: production
     steps:
       - name: Deploy to Production
-        run:
+        run: |
           echo "🚀 Deploying to PRODUCTION environment"
           echo "Tag: ${{ github.ref_name }}"
           echo "Event: ${{ github.event_name }}"

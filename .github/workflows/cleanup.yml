@@ -9,7 +9,7 @@ on:
       dry_run:
         description: 'Dry run - show what would be deleted without actually deleting'
         required: false
-        default: 'true'
+        default: true
         type: boolean
 
 env:

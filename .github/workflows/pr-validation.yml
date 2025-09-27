@@ -115,7 +115,7 @@ jobs:
         run: pnpm build
 
       - name: Verify build artifacts
-        run:
+        run: |
           echo "Checking build outputs..."
           find . -name "dist" -type d | head -10
           
@@ -190,7 +190,7 @@ jobs:
     if: always() && needs.check-pr-state.outputs.should-run == 'true'
     steps:
       - name: PR Validation Summary
-        run:
+        run: |
           echo "## PR Validation Results" >> $GITHUB_STEP_SUMMARY
           echo "" >> $GITHUB_STEP_SUMMARY
           
