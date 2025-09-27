@@ -13,8 +13,8 @@ import { RefreshToken, RefreshTokenSchema } from './schemas/refresh-token.schema
 
 // Strategies
 import { JwtStrategy } from './strategies/jwt.strategy.js';
-import { GoogleStrategy } from './strategies/google.strategy.js';
-import { GitHubStrategy } from './strategies/github.strategy.js';
+// import { GoogleStrategy } from './strategies/google.strategy.js'; // Temporarily disabled - requires env vars
+// import { GitHubStrategy } from './strategies/github.strategy.js'; // Temporarily disabled due to decorator issue
 
 // Guards
 import { JwtAuthGuard } from './guards/jwt-auth.guard.js';
@@ -52,8 +52,8 @@ import { RolesGuard } from './guards/roles.guard.js';
     providers: [
         AuthService,
         JwtStrategy,
-        GoogleStrategy,
-        GitHubStrategy,
+        // GoogleStrategy, // Temporarily disabled
+        // GitHubStrategy, // Temporarily disabled
         JwtAuthGuard,
         RolesGuard,
     ],
