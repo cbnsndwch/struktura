@@ -110,7 +110,9 @@ describe('WorkspaceController', () => {
 
             const result = await controller.findOne(workspaceId);
 
-            expect(mockWorkspaceService.findOne).toHaveBeenCalledWith(workspaceId);
+            expect(mockWorkspaceService.findOne).toHaveBeenCalledWith(
+                workspaceId
+            );
             expect(result).toEqual(mockWorkspace);
         });
     });
