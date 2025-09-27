@@ -17,3 +17,6 @@ onlyBuiltDependencies:
   - protobufjs
 
 shamefullyHoist: true
+
+overrides:
+  '@conventional-changelog/git-client': ^2
