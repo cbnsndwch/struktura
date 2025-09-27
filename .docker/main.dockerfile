@@ -2,22 +2,32 @@
 # Optimized for ARM64 Linux with efficient layer caching and pnpm store caching
 
 ARG BASE_IMAGE=node:22-alpine
+ARG BUILDPLATFORM
+ARG TARGETPLATFORM
 
 # ================================
 # Base stage - pnpm setup and cache
 # ================================
-FROM ${BASE_IMAGE} AS base
+FROM --platform=$TARGETPLATFORM ${BASE_IMAGE} AS base
 
 # Install pnpm globally and configure store
 RUN npm install -g pnpm@10.17.1
 
-# Set pnpm store directory for caching
+# Set environment variables for cross-compilation
 ENV PNPM_HOME="/pnpm"
 ENV PATH="$PNPM_HOME:$PATH"
 ENV STORE_DIR="/app/.pnpm-store"
+ENV npm_config_target_platform="linux"
+ENV npm_config_target_arch="arm64"
+ENV npm_config_disturl="https://nodejs.org/dist"
+ENV npm_config_runtime="node"
+ENV npm_config_cache_lock_stale="60000"
+ENV npm_config_cache_lock_wait="10000"
 
-# Configure pnpm to use the cache directory
-RUN pnpm config set store-dir $STORE_DIR
+# Configure pnpm to use the cache directory and cross-compilation settings
+RUN pnpm config set store-dir $STORE_DIR && \
+    pnpm config set target_arch arm64 && \
+    pnpm config set target_platform linux
 
 WORKDIR /app
 
@@ -41,9 +51,14 @@ COPY libs/auth/package.json ./libs/auth/
 COPY libs/utils/package.json ./libs/utils/
 
 # Install dependencies using pnpm store for caching
-# Use --prefer-frozen-lockfile for better cache utilization
+# Optimize for cross-compilation (ARM64) to avoid QEMU issues
 RUN --mount=type=cache,id=pnpm-store,target=/app/.pnpm-store \
-    pnpm install --frozen-lockfile
+    --mount=type=cache,id=node-gyp,target=/root/.cache/node-gyp \
+    set -e && \
+    pnpm config set target_arch arm64 && \
+    pnpm config set target_platform linux && \
+    pnpm config set cache-dir /app/.pnpm-store && \
+    pnpm install --frozen-lockfile --prefer-offline
 
 # ================================
 # Build stage
@@ -79,8 +94,14 @@ COPY libs/auth/package.json ./libs/auth/
 COPY libs/utils/package.json ./libs/utils/
 
 # Install production dependencies only using cached store
+# Optimize for cross-compilation (ARM64) to avoid QEMU issues
 RUN --mount=type=cache,id=pnpm-store,target=/app/.pnpm-store \
-    pnpm install --prod --frozen-lockfile
+    --mount=type=cache,id=node-gyp,target=/root/.cache/node-gyp \
+    set -e && \
+    pnpm config set target_arch arm64 && \
+    pnpm config set target_platform linux && \
+    pnpm config set cache-dir /app/.pnpm-store && \
+    pnpm install --prod --frozen-lockfile --prefer-offline
 
 # Copy built applications and libraries from builder stage
 COPY --from=builder /app/apps/main/dist ./apps/main/dist
