@@ -176,7 +176,10 @@ export class CollectionService {
 
         // Reorder fields based on provided order
         const reorderedFields = fieldOrder.map((fieldId, index) => {
-            const field = collection.fields.find(f => f.id === fieldId)!;
+            const field = collection.fields.find(f => f.id === fieldId);
+            if (!field) {
+                throw new NotFoundException(`Field with ID '${fieldId}' not found during reordering`);
+            }
             field.order = index;
             return field;
         });
