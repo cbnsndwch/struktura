@@ -8,8 +8,9 @@ import {
 import { InjectModel } from '@nestjs/mongoose';
 import { Model, Types } from 'mongoose';
 
+import { User, UserDocument } from '@cbnsndwch/struktura-auth-domain';
+
 import { Workspace, WorkspaceDocument } from '../schemas/workspace.schema.js';
-import { User, UserDocument } from '../../auth/schemas/user.schema.js';
 import {
     CreateWorkspaceDto,
     UpdateWorkspaceDto,

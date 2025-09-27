@@ -17,6 +17,7 @@
         "GOOGLE_CALLBACK_URL"
     ],
     "ui": "stream",
+    "concurrency": "20",
     "tasks": {
         "clean": {
             "dependsOn": ["^clean"],

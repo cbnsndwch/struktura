@@ -9,7 +9,8 @@ import {
 } from '@nestjs/graphql';
 import { Types } from 'mongoose';
 
-import { JwtAuthGuard } from '../../auth/guards/jwt-auth.guard.js';
+import { JwtAuthGuard } from '@cbnsndwch/struktura-auth-domain';
+
 import {
     CollectionTemplateDto,
     CreateCollectionDto,

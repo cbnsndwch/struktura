@@ -72,6 +72,108 @@ Follow these patterns when working with our feature-based architecture:
 3. **Shared Foundation**: Common code, contracts, and base UI components in `features/shared/`
 4. **Separation of Concerns**: Business logic in `domain/`, interfaces in `contracts/`, UI in `ui/`, docs in `docs/`
 
+### Domain Layer Structure (Standard Pattern)
+
+**CRITICAL**: All feature domain layers MUST follow this exact structure for consistency and maintainability:
+
+```
+features/[feature-name]/domain/src/
+├── entities/                           # Entity/GraphQL Type/API Schema classes
+│   ├── [main].entity.ts               # Consolidated @Schema + @ObjectType + validation
+│   ├── [other].entity.ts              # Additional entities as needed
+│   └── index.ts                       # Export { Entity, EntitySchema, type EntityDocument }
+├── services/                          # Business logic services
+│   ├── [main].service.ts              # Primary business logic (@Injectable)
+│   ├── [main].service.spec.ts         # Tests for main service
+│   ├── [utility].service.ts           # Helper services (e.g., hash, email)
+│   └── index.ts                       # Export all services
+├── controllers/                       # HTTP endpoints  
+│   ├── [feature].controller.ts        # REST API endpoints (@Controller)
+│   └── index.ts                       # Export controllers
+├── dto/                               # Data Transfer Objects
+│   ├── [feature].dto.ts               # Input DTOs extending entities with @InputType
+│   └── index.ts                       # Export DTOs
+├── guards/                            # Authentication & authorization
+│   ├── [feature].guard.ts             # Custom guards (@Injectable, CanActivate)
+│   └── index.ts                       # Export guards
+├── strategies/                        # Authentication strategies
+│   ├── jwt.strategy.ts                # Passport strategies
+│   └── index.ts                       # Export strategies
+├── decorators/                        # Custom decorators
+│   ├── [custom].decorator.ts          # Parameter/method decorators
+│   └── index.ts                       # Export decorators
+├── resolvers/                         # GraphQL resolvers
+│   ├── [feature].resolver.ts          # GraphQL queries/mutations (@Resolver)
+│   └── index.ts                       # Export resolvers
+├── [feature].module.ts                # NestJS module configuration (@Module)
+└── index.ts                           # Main exports (entities, services, module, etc.)
+```
+
+#### Key Architectural Principles
+
+1. **Consolidated Entities**: Use single classes with multiple decorators
+   ```typescript
+   @Schema({ timestamps: true })           // Mongoose schema
+   @ObjectType('User')                     // GraphQL type
+   export class User implements IUser {    // Domain contract
+       @Prop() @Field() @IsEmail()         // All decorators together
+       email!: string;
+       
+       @Prop()                             // Internal field (no @Field = not in GraphQL)
+       passwordHash!: string;
+   }
+   ```
+
+2. **Service Organization**: All business logic in `services/`
+   ```typescript
+   @Injectable()
+   export class UserService {
+       constructor(
+           @InjectModel(User.name) private userModel: Model<UserDocument>
+       ) {}
+       
+       async create(dto: CreateUserDto): Promise<User> { ... }
+   }
+   ```
+
+3. **Controller Separation**: Pure HTTP layer in `controllers/`
+   ```typescript
+   @Controller('users')
+   export class UserController {
+       constructor(private userService: UserService) {}
+       
+       @Post()
+       create(@Body() dto: CreateUserDto) {
+           return this.userService.create(dto);
+       }
+   }
+   ```
+
+4. **Clean Imports**: Folder-based imports for organization
+   ```typescript
+   // ✅ Good - organized by concern
+   import { User } from '../entities/user.entity.js';
+   import { UserService } from '../services/user.service.js';
+   import { CreateUserDto } from '../dto/user.dto.js';
+   
+   // ❌ Bad - everything from root
+   import { User, UserService, CreateUserDto } from '../index.js';
+   ```
+
+5. **Export Structure**: Logical grouping in index files
+   ```typescript
+   // entities/index.ts
+   export { User, UserSchema, type UserDocument } from './user.entity.js';
+   
+   // services/index.ts  
+   export * from './user.service.js';
+   
+   // Main index.ts
+   export * from './entities/index.js';
+   export * from './services/index.js';
+   export { UserModule } from './user.module.js';
+   ```
+
 ## Development Workflows
 
 ### Getting Started
@@ -130,6 +232,126 @@ Follow these patterns when working with our feature-based architecture:
 - Test complete user workflows
 - Use Playwright for browser automation
 - Focus on critical user paths
+
+### Feature Implementation Checklist
+
+When creating or modifying a feature domain, ensure you follow this checklist:
+
+#### ✅ Entities Layer
+- [ ] Create consolidated entity classes with `@Schema`, `@ObjectType`, and validation decorators
+- [ ] Implement domain contracts (e.g., `implements IUser`)
+- [ ] Add domain methods (`fromData()`, `toData()`, helper methods)
+- [ ] Export entities, schemas, and types from `entities/index.ts`
+- [ ] Add appropriate MongoDB indexes in schema definition
+
+#### ✅ Services Layer  
+- [ ] Implement business logic in `@Injectable` services
+- [ ] Use dependency injection for repositories and utilities
+- [ ] Keep services focused on single responsibility
+- [ ] Write unit tests for all service methods
+- [ ] Export services from `services/index.ts`
+
+#### ✅ Controllers Layer
+- [ ] Create thin controllers that delegate to services  
+- [ ] Use proper HTTP status codes and response formats
+- [ ] Apply appropriate guards and decorators
+- [ ] Validate inputs with DTOs
+- [ ] Export controllers from `controllers/index.ts`
+
+#### ✅ DTOs Layer
+- [ ] Create input DTOs using `@InputType` for GraphQL
+- [ ] Extend or pick from entities using `PickType`, `OmitType`
+- [ ] Add appropriate validation decorators
+- [ ] Export DTOs from `dto/index.ts`
+
+#### ✅ Module Configuration
+- [ ] Configure `@Module` with proper imports, providers, exports
+- [ ] Register Mongoose schemas in `MongooseModule.forFeature()`
+- [ ] Export module from main feature index
+- [ ] Ensure proper dependency injection setup
+
+#### ✅ GraphQL Integration (if applicable)
+- [ ] Create resolvers using `@Resolver`, `@Query`, `@Mutation`
+- [ ] Use entity classes directly as GraphQL types  
+- [ ] Implement proper error handling
+- [ ] Export resolvers from `resolvers/index.ts`
+
+### Quick Start: Creating a New Feature Domain
+
+```bash
+# 1. Create feature structure
+mkdir -p features/[feature-name]/domain/src/{entities,services,controllers,dto,guards,strategies,decorators,resolvers}
+
+# 2. Create index files  
+touch features/[feature-name]/domain/src/{entities,services,controllers,dto,guards,strategies,decorators,resolvers}/index.ts
+
+# 3. Copy and adapt from features/auth/domain/src/ structure (GOLD STANDARD)
+```
+
+#### At a Glance - Key Patterns
+
+**Consolidated Entity**: `@Schema() @ObjectType() export class User { @Prop() @Field() @IsEmail() email!: string; }`
+**Service**: `@Injectable() export class UserService { async create(dto) { /* business logic */ } }`  
+**Controller**: `@Controller() export class UserController { constructor(private service: UserService) {} }`
+**Imports**: `import { User } from '../entities/user.entity.js'` (folder-based)
+**Exports**: `entities/index.ts` exports entities, `services/index.ts` exports services, etc.
+
+### Common Patterns
+
+#### Entity Pattern (Consolidated Model)
+```typescript
+// entities/example.entity.ts
+@Schema({ timestamps: true })
+@ObjectType('Example')
+export class Example implements IExample {
+    @Prop({ unique: true }) @Field() @IsEmail()  // unique: true creates index
+    email!: string;
+    
+    @Prop() @Field() @IsString()
+    name!: string;
+    
+    @Prop() // Internal only - no @Field  
+    internalData!: string;
+    
+    static fromData(data: IExample): Example { ... }
+    toData(): IExample { ... }
+}
+
+export const ExampleSchema = SchemaFactory.createForClass(Example);
+
+// Add additional indexes (avoid duplicating @Prop indexes)
+// Note: Don't add .index() for fields that already have unique: true or index: true
+ExampleSchema.index({ createdAt: -1 }); // Additional indexes only
+```
+
+**⚠️ Important**: Avoid duplicate indexes! If you use `unique: true` or `index: true` in `@Prop()`, don't add the same index with `schema.index()`.
+
+#### Service Pattern (Business Logic)
+```typescript  
+// services/example.service.ts
+@Injectable()
+export class ExampleService {
+    constructor(
+        @InjectModel(Example.name) private model: Model<ExampleDocument>
+    ) {}
+    
+    async create(dto: CreateExampleDto): Promise<Example> { ... }
+}
+```
+
+#### Controller Pattern (HTTP Layer)
+```typescript
+// controllers/example.controller.ts  
+@Controller('examples')
+export class ExampleController {
+    constructor(private service: ExampleService) {}
+    
+    @Post()
+    create(@Body() dto: CreateExampleDto) {
+        return this.service.create(dto);
+    }
+}
+```
 
 ## Code Standards & Best Practices
 
@@ -325,6 +547,88 @@ export class User {
 2. **API Documentation**: Keep GraphQL schema documentation current
 3. **Architecture Decisions**: Document significant technical decisions
 4. **Changelog**: Update changelogs for significant changes
+
+### Architectural Consistency Guidelines
+
+#### 🎯 Reference Implementation
+- **Use `features/auth/domain/` as the gold standard** for all feature implementations
+- Follow the exact folder structure and naming conventions established
+- Study the auth implementation before creating new features
+
+#### 🔍 Code Review Focus Areas
+When reviewing code, pay special attention to:
+
+1. **Structure Compliance**: Does the feature follow the standard domain structure?
+2. **Entity Consolidation**: Are entities using the consolidated decorator pattern?
+3. **Service Organization**: Is business logic properly separated in services?
+4. **Import Patterns**: Are imports organized by folder/concern?
+5. **Export Consistency**: Do index files follow the established export patterns?
+
+#### 🚫 Anti-Patterns to Avoid
+
+```typescript
+// ❌ Bad: Separate schema/entity/GraphQL files
+// Don't create: user.schema.ts, user.entity.ts, user.type.ts
+
+// ✅ Good: Consolidated entity file
+// Create: user.entity.ts with all decorators
+
+// ❌ Bad: Business logic in controllers
+@Controller('users')
+export class UserController {
+    @Post()
+    create(@Body() dto: CreateUserDto) {
+        // ❌ Don't put business logic here
+        const user = new User();
+        user.email = dto.email.toLowerCase();
+        return this.userModel.save(user);
+    }
+}
+
+// ✅ Good: Thin controllers delegating to services  
+@Controller('users')
+export class UserController {
+    constructor(private userService: UserService) {}
+    
+    @Post()
+    create(@Body() dto: CreateUserDto) {
+        return this.userService.create(dto); // ✅ Delegate to service
+    }
+}
+
+// ❌ Bad: Scattered imports from various files
+import { User } from '../user.entity.js';
+import { UserService } from '../user.service.js';
+import { CreateUserDto } from '../create-user.dto.js';
+
+// ✅ Good: Organized folder-based imports
+import { User } from '../entities/user.entity.js';  
+import { UserService } from '../services/user.service.js';
+import { CreateUserDto } from '../dto/user.dto.js';
+```
+
+#### 📋 Migration Strategy for Existing Features
+When updating existing features to match the new structure:
+
+1. **Assess Current State**: Identify what exists and what needs reorganization
+2. **Create Folders**: Set up the standard folder structure  
+3. **Consolidate Entities**: Merge schema/entity/GraphQL into single files
+4. **Reorganize Services**: Move business logic to services folder
+5. **Update Imports**: Fix all import paths to match new structure
+6. **Test Thoroughly**: Ensure no functionality is broken
+7. **Update Exports**: Standardize index.ts files
+
+#### 🎯 Quality Gates
+Before merging any feature:
+
+- [ ] Follows exact folder structure from auth domain
+- [ ] Uses consolidated entities with multiple decorators
+- [ ] Has business logic properly organized in services  
+- [ ] Controllers are thin and delegate to services
+- [ ] All imports use folder-based organization
+- [ ] Index files follow standard export patterns
+- [ ] Tests are co-located with implementation files
+- [ ] Build passes without warnings
 
 ## Success Metrics
 

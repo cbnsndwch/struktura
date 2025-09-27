@@ -1,0 +1,68 @@
+import { Module } from '@nestjs/common';
+import { MongooseModule } from '@nestjs/mongoose';
+import { JwtModule } from '@nestjs/jwt';
+import { PassportModule } from '@nestjs/passport';
+import { ThrottlerModule } from '@nestjs/throttler';
+
+import { AuthController } from './controllers/auth.controller.js';
+import { AuthService } from './services/auth.service.js';
+
+// Schemas
+import { User, UserSchema } from './entities/user.entity.js';
+import {
+    RefreshToken,
+    RefreshTokenSchema
+} from './entities/refresh-token.entity.js';
+
+// Strategies
+import { JwtStrategy } from './strategies/jwt.strategy.js';
+// import { GoogleStrategy } from './strategies/google.strategy.js'; // Temporarily disabled - requires env vars
+// import { GitHubStrategy } from './strategies/github.strategy.js'; // Temporarily disabled due to decorator issue
+
+// Guards
+import { JwtAuthGuard } from './guards/jwt-auth.guard.js';
+import { RolesGuard } from './guards/roles.guard.js';
+
+@Module({
+    imports: [
+        // MongoDB schemas
+        MongooseModule.forFeature([
+            { name: User.name, schema: UserSchema },
+            { name: RefreshToken.name, schema: RefreshTokenSchema }
+        ]),
+
+        // Passport
+        PassportModule,
+
+        // JWT configuration
+        JwtModule.register({
+            secret: process.env.JWT_SECRET || 'your-secret-key',
+            signOptions: { expiresIn: '15m' }
+        }),
+
+        // Rate limiting
+        ThrottlerModule.forRoot([
+            {
+                name: 'short',
+                ttl: 1000, // 1 second
+                limit: 3 // 3 requests per second
+            },
+            {
+                name: 'medium',
+                ttl: 60000, // 1 minute
+                limit: 20 // 20 requests per minute for auth endpoints
+            }
+        ])
+    ],
+    controllers: [AuthController],
+    providers: [
+        AuthService,
+        JwtStrategy,
+        // GoogleStrategy, // Temporarily disabled
+        // GitHubStrategy, // Temporarily disabled
+        JwtAuthGuard,
+        RolesGuard
+    ],
+    exports: [AuthService, JwtAuthGuard, RolesGuard]
+})
+export class AuthModule {}

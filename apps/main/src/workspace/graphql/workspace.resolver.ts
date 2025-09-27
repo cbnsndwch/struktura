@@ -1,8 +1,9 @@
 import { Resolver, Query, Mutation, Args, Context } from '@nestjs/graphql';
 import { UseGuards } from '@nestjs/common';
 
+import { JwtAuthGuard } from '@cbnsndwch/struktura-auth-domain';
+
 import { WorkspaceService } from '../services/workspace.service.js';
-import { JwtAuthGuard } from '../../auth/guards/jwt-auth.guard.js';
 import { WorkspaceGuard, WorkspaceRoles } from '../guards/workspace.guard.js';
 import { WorkspaceRole } from '../dto/index.js';
 import { WorkspaceDocument } from '../schemas/workspace.schema.js';

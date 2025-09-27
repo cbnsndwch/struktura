@@ -19,6 +19,8 @@
         "@cbnsndwch/struktura-shared-contracts": "workspace:*",
         "@cbnsndwch/struktura-shared-domain": "workspace:*",
         "@cbnsndwch/struktura-shared-ui": "workspace:*",
+        "@cbnsndwch/struktura-auth-contracts": "workspace:*",
+        "@cbnsndwch/struktura-auth-domain": "workspace:*",
         "@cbnsndwch/struktura-utils": "workspace:*",
         "@nestjs/apollo": "^13.1.0",
         "@nestjs/common": "^11.1.6",

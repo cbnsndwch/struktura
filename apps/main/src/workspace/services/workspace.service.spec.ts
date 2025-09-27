@@ -1,11 +1,12 @@
 import { Test, TestingModule } from '@nestjs/testing';
 import { getModelToken } from '@nestjs/mongoose';
 import { BadRequestException, NotFoundException } from '@nestjs/common';
-import { Model, Types } from 'mongoose';
+import { Types } from 'mongoose';
 import { describe, it, beforeEach, afterEach, expect, vi } from 'vitest';
 
-import { Workspace, WorkspaceDocument } from '../schemas/workspace.schema.js';
-import { User, UserDocument } from '../../auth/schemas/user.schema.js';
+import { User } from '@cbnsndwch/struktura-auth-domain';
+
+import { Workspace } from '../schemas/workspace.schema.js';
 
 import { WorkspaceService } from './workspace.service.js';
 

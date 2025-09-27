@@ -1,7 +1,7 @@
 import { Module } from '@nestjs/common';
 import { MongooseModule } from '@nestjs/mongoose';
 
-import { User, UserSchema } from '../auth/schemas/user.schema.js';
+import { User, UserSchema } from '@cbnsndwch/struktura-auth-domain';
 
 import { WorkspaceService } from './services/workspace.service.js';
 import { WorkspaceController } from './controllers/workspace.controller.js';

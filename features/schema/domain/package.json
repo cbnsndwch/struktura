@@ -1,0 +1,40 @@
+{
+    "name": "@cbnsndwch/struktura-schema-domain",
+    "version": "0.1.0",
+    "private": true,
+    "type": "module",
+    "description": "Schema domain logic for Struktura",
+    "main": "./dist/index.js",
+    "module": "./dist/index.js",
+    "types": "./dist/index.d.ts",
+    "scripts": {
+        "build": "tsup",
+        "dev": "tsup --watch",
+        "test": "vitest --run --passWithNoTests",
+        "test:coverage": "vitest --coverage",
+        "typecheck": "tsc --noEmit"
+    },
+    "dependencies": {
+        "@cbnsndwch/struktura-schema-contracts": "workspace:*",
+        "@cbnsndwch/struktura-shared-domain": "workspace:*"
+    },
+    "devDependencies": {
+        "@cbnsndwch/struktura-eslint-config": "workspace:*",
+        "@cbnsndwch/struktura-tsconfig": "workspace:*",
+        "eslint": "^9.36.0",
+        "prettier": "^3.6.2",
+        "tsup": "^8.5.0",
+        "typescript": "^5.9.2",
+        "vitest": "^3.2.4"
+    },
+    "files": [
+        "dist/**"
+    ],
+    "exports": {
+        ".": {
+            "types": "./dist/index.d.ts",
+            "import": "./dist/index.js",
+            "require": "./dist/index.cjs"
+        }
+    }
+}

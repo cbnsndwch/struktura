@@ -5,14 +5,18 @@ import { Module } from '@nestjs/common';
 import { APP_GUARD } from '@nestjs/core';
 import { GraphQLModule } from '@nestjs/graphql';
 
+import {
+    AuthModule,
+    JwtAuthGuard,
+    RolesGuard
+} from '@cbnsndwch/struktura-auth-domain';
+
 import { AppController } from './app.controller.js';
 import { AppService } from './app.service.js';
 import { DatabaseModule } from './database/database.module.js';
 import { AppResolver } from './graphql/app.resolver.js';
-import { AuthModule } from './auth/auth.module.js';
+
 import { WorkspaceModule } from './workspace/workspace.module.js';
-import { JwtAuthGuard } from './auth/guards/jwt-auth.guard.js';
-import { RolesGuard } from './auth/guards/roles.guard.js';
 
 @Module({
     imports: [

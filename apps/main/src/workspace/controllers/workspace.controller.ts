@@ -10,7 +10,8 @@ import {
     UseGuards
 } from '@nestjs/common';
 
-import { JwtAuthGuard } from '../../auth/guards/jwt-auth.guard.js';
+import { JwtAuthGuard } from '@cbnsndwch/struktura-auth-domain';
+
 import {
     CreateWorkspaceDto,
     InviteMemberDto,

@@ -1,0 +1,65 @@
+{
+    "name": "@cbnsndwch/struktura-auth-domain",
+    "version": "0.1.0",
+    "private": true,
+    "type": "module",
+    "description": "Authentication domain logic for Struktura",
+    "main": "./dist/index.js",
+    "module": "./dist/index.js",
+    "types": "./dist/index.d.ts",
+    "scripts": {
+        "build": "tsup",
+        "clean": "rm -rf dist",
+        "dev": "tsup --watch",
+        "lint": "eslint . --fix",
+        "format": "prettier --write .",
+        "test": "vitest --run --passWithNoTests",
+        "test:watch": "vitest"
+    },
+    "dependencies": {
+        "@cbnsndwch/struktura-auth-contracts": "workspace:*",
+        "@cbnsndwch/struktura-shared-contracts": "workspace:*",
+        "@cbnsndwch/struktura-shared-domain": "workspace:*",
+        "@nestjs/common": "^11.1.6",
+        "@nestjs/core": "^11.1.6",
+        "@nestjs/jwt": "^10.2.0",
+        "@nestjs/mongoose": "^11.0.3",
+        "@nestjs/passport": "^10.0.3",
+        "@nestjs/throttler": "^6.2.1",
+        "bcrypt": "^5.1.1",
+        "class-transformer": "^0.5.1",
+        "class-validator": "^0.14.1",
+        "mongoose": "^8.18.2",
+        "nodemailer": "^6.9.17",
+        "passport": "^0.7.0",
+        "passport-github2": "^0.1.12",
+        "passport-google-oauth20": "^2.0.0",
+        "passport-jwt": "^4.0.1",
+        "reflect-metadata": "^0.2.2",
+        "rxjs": "^7.8.2"
+    },
+    "devDependencies": {
+        "@cbnsndwch/struktura-eslint-config": "workspace:*",
+        "@cbnsndwch/struktura-tsconfig": "workspace:*",
+        "@nestjs/testing": "^11.1.6",
+        "@types/bcrypt": "^5.0.2",
+        "@types/nodemailer": "^6.4.19",
+        "@types/passport-github2": "^1.2.9",
+        "@types/passport-google-oauth20": "^2.0.16",
+        "@types/passport-jwt": "^4.0.1",
+        "eslint": "^9.36.0",
+        "prettier": "^3.6.2",
+        "tsup": "^8.5.0",
+        "typescript": "^5.9.2",
+        "vitest": "^3.2.4"
+    },
+    "files": [
+        "dist"
+    ],
+    "exports": {
+        ".": "./dist/index.js"
+    },
+    "engines": {
+        "node": ">=22"
+    }
+}

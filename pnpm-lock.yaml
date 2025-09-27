@@ -69,6 +69,12 @@ importers:
 
   apps/main:
     dependencies:
+      '@cbnsndwch/struktura-auth-contracts':
+        specifier: workspace:*
+        version: link:../../features/auth/contracts
+      '@cbnsndwch/struktura-auth-domain':
+        specifier: workspace:*
+        version: link:../../features/auth/domain
       '@cbnsndwch/struktura-shared-contracts':
         specifier: workspace:*
         version: link:../../features/shared/contracts
@@ -218,6 +224,192 @@ importers:
         specifier: ^3.2.4
         version: 3.2.4(@types/node@22.18.6)(@vitest/ui@3.2.4)(jiti@2.6.0)(terser@5.44.0)(tsx@4.20.6)(yaml@2.8.1)
 
+  features/auth/contracts:
+    dependencies:
+      '@cbnsndwch/struktura-shared-contracts':
+        specifier: workspace:*
+        version: link:../../shared/contracts
+    devDependencies:
+      '@cbnsndwch/struktura-eslint-config':
+        specifier: workspace:*
+        version: link:../../../tools/eslint-config
+      '@cbnsndwch/struktura-tsconfig':
+        specifier: workspace:*
+        version: link:../../../tools/tsconfig
+      eslint:
+        specifier: ^9.36.0
+        version: 9.36.0(jiti@2.6.0)
+      prettier:
+        specifier: ^3.6.2
+        version: 3.6.2
+      tsup:
+        specifier: ^8.5.0
+        version: 8.5.0(@swc/core@1.13.20)(jiti@2.6.0)(postcss@8.5.6)(tsx@4.20.6)(typescript@5.9.2)(yaml@2.8.1)
+      typescript:
+        specifier: ^5.9.2
+        version: 5.9.2
+      vitest:
+        specifier: ^3.2.4
+        version: 3.2.4(@types/node@22.18.6)(@vitest/ui@3.2.4)(jiti@2.6.0)(terser@5.44.0)(tsx@4.20.6)(yaml@2.8.1)
+
+  features/auth/domain:
+    dependencies:
+      '@cbnsndwch/struktura-auth-contracts':
+        specifier: workspace:*
+        version: link:../contracts
+      '@cbnsndwch/struktura-shared-contracts':
+        specifier: workspace:*
+        version: link:../../shared/contracts
+      '@cbnsndwch/struktura-shared-domain':
+        specifier: workspace:*
+        version: link:../../shared/domain
+      '@nestjs/common':
+        specifier: ^11.1.6
+        version: 11.1.6(class-transformer@0.5.1)(class-validator@0.14.2)(reflect-metadata@0.2.2)(rxjs@7.8.2)
+      '@nestjs/core':
+        specifier: ^11.1.6
+        version: 11.1.6(@nestjs/common@11.1.6(class-transformer@0.5.1)(class-validator@0.14.2)(reflect-metadata@0.2.2)(rxjs@7.8.2))(@nestjs/platform-express@11.1.6)(reflect-metadata@0.2.2)(rxjs@7.8.2)
+      '@nestjs/jwt':
+        specifier: ^10.2.0
+        version: 10.2.0(@nestjs/common@11.1.6(class-transformer@0.5.1)(class-validator@0.14.2)(reflect-metadata@0.2.2)(rxjs@7.8.2))
+      '@nestjs/mongoose':
+        specifier: ^11.0.3
+        version: 11.0.3(@nestjs/common@11.1.6(class-transformer@0.5.1)(class-validator@0.14.2)(reflect-metadata@0.2.2)(rxjs@7.8.2))(@nestjs/core@11.1.6)(mongoose@8.18.2)(rxjs@7.8.2)
+      '@nestjs/passport':
+        specifier: ^10.0.3
+        version: 10.0.3(@nestjs/common@11.1.6(class-transformer@0.5.1)(class-validator@0.14.2)(reflect-metadata@0.2.2)(rxjs@7.8.2))(passport@0.7.0)
+      '@nestjs/throttler':
+        specifier: ^6.2.1
+        version: 6.4.0(@nestjs/common@11.1.6(class-transformer@0.5.1)(class-validator@0.14.2)(reflect-metadata@0.2.2)(rxjs@7.8.2))(@nestjs/core@11.1.6)(reflect-metadata@0.2.2)
+      bcrypt:
+        specifier: ^5.1.1
+        version: 5.1.1
+      class-transformer:
+        specifier: ^0.5.1
+        version: 0.5.1
+      class-validator:
+        specifier: ^0.14.1
+        version: 0.14.2
+      mongoose:
+        specifier: ^8.18.2
+        version: 8.18.2
+      nodemailer:
+        specifier: ^6.9.17
+        version: 6.10.1
+      passport:
+        specifier: ^0.7.0
+        version: 0.7.0
+      passport-github2:
+        specifier: ^0.1.12
+        version: 0.1.12
+      passport-google-oauth20:
+        specifier: ^2.0.0
+        version: 2.0.0
+      passport-jwt:
+        specifier: ^4.0.1
+        version: 4.0.1
+      reflect-metadata:
+        specifier: ^0.2.2
+        version: 0.2.2
+      rxjs:
+        specifier: ^7.8.2
+        version: 7.8.2
+    devDependencies:
+      '@cbnsndwch/struktura-eslint-config':
+        specifier: workspace:*
+        version: link:../../../tools/eslint-config
+      '@cbnsndwch/struktura-tsconfig':
+        specifier: workspace:*
+        version: link:../../../tools/tsconfig
+      '@nestjs/testing':
+        specifier: ^11.1.6
+        version: 11.1.6(@nestjs/common@11.1.6(class-transformer@0.5.1)(class-validator@0.14.2)(reflect-metadata@0.2.2)(rxjs@7.8.2))(@nestjs/core@11.1.6)(@nestjs/platform-express@11.1.6)
+      '@types/bcrypt':
+        specifier: ^5.0.2
+        version: 5.0.2
+      '@types/nodemailer':
+        specifier: ^6.4.19
+        version: 6.4.19
+      '@types/passport-github2':
+        specifier: ^1.2.9
+        version: 1.2.9
+      '@types/passport-google-oauth20':
+        specifier: ^2.0.16
+        version: 2.0.16
+      '@types/passport-jwt':
+        specifier: ^4.0.1
+        version: 4.0.1
+      eslint:
+        specifier: ^9.36.0
+        version: 9.36.0(jiti@2.6.0)
+      prettier:
+        specifier: ^3.6.2
+        version: 3.6.2
+      tsup:
+        specifier: ^8.5.0
+        version: 8.5.0(@swc/core@1.13.20)(jiti@2.6.0)(postcss@8.5.6)(tsx@4.20.6)(typescript@5.9.2)(yaml@2.8.1)
+      typescript:
+        specifier: ^5.9.2
+        version: 5.9.2
+      vitest:
+        specifier: ^3.2.4
+        version: 3.2.4(@types/node@22.18.6)(@vitest/ui@3.2.4)(jiti@2.6.0)(terser@5.44.0)(tsx@4.20.6)(yaml@2.8.1)
+
+  features/schema/contracts:
+    devDependencies:
+      '@cbnsndwch/struktura-eslint-config':
+        specifier: workspace:*
+        version: link:../../../tools/eslint-config
+      '@cbnsndwch/struktura-tsconfig':
+        specifier: workspace:*
+        version: link:../../../tools/tsconfig
+      eslint:
+        specifier: ^9.36.0
+        version: 9.36.0(jiti@2.6.0)
+      prettier:
+        specifier: ^3.6.2
+        version: 3.6.2
+      tsup:
+        specifier: ^8.5.0
+        version: 8.5.0(@swc/core@1.13.20)(jiti@2.6.0)(postcss@8.5.6)(tsx@4.20.6)(typescript@5.9.2)(yaml@2.8.1)
+      typescript:
+        specifier: ^5.9.2
+        version: 5.9.2
+      vitest:
+        specifier: ^3.2.4
+        version: 3.2.4(@types/node@22.18.6)(@vitest/ui@3.2.4)(jiti@2.6.0)(terser@5.44.0)(tsx@4.20.6)(yaml@2.8.1)
+
+  features/schema/domain:
+    dependencies:
+      '@cbnsndwch/struktura-schema-contracts':
+        specifier: workspace:*
+        version: link:../contracts
+      '@cbnsndwch/struktura-shared-domain':
+        specifier: workspace:*
+        version: link:../../shared/domain
+    devDependencies:
+      '@cbnsndwch/struktura-eslint-config':
+        specifier: workspace:*
+        version: link:../../../tools/eslint-config
+      '@cbnsndwch/struktura-tsconfig':
+        specifier: workspace:*
+        version: link:../../../tools/tsconfig
+      eslint:
+        specifier: ^9.36.0
+        version: 9.36.0(jiti@2.6.0)
+      prettier:
+        specifier: ^3.6.2
+        version: 3.6.2
+      tsup:
+        specifier: ^8.5.0
+        version: 8.5.0(@swc/core@1.13.20)(jiti@2.6.0)(postcss@8.5.6)(tsx@4.20.6)(typescript@5.9.2)(yaml@2.8.1)
+      typescript:
+        specifier: ^5.9.2
+        version: 5.9.2
+      vitest:
+        specifier: ^3.2.4
+        version: 3.2.4(@types/node@22.18.6)(@vitest/ui@3.2.4)(jiti@2.6.0)(terser@5.44.0)(tsx@4.20.6)(yaml@2.8.1)
+
   features/shared/contracts:
     devDependencies:
       '@cbnsndwch/struktura-eslint-config':
@@ -276,6 +468,65 @@ importers:
   features/shared/ui:
     dependencies:
       '@cbnsndwch/struktura-shared-contracts':
+        specifier: workspace:*
+        version: link:../contracts
+    devDependencies:
+      '@cbnsndwch/struktura-eslint-config':
+        specifier: workspace:*
+        version: link:../../../tools/eslint-config
+      '@cbnsndwch/struktura-tsconfig':
+        specifier: workspace:*
+        version: link:../../../tools/tsconfig
+      eslint:
+        specifier: ^9.36.0
+        version: 9.36.0(jiti@2.6.0)
+      prettier:
+        specifier: ^3.6.2
+        version: 3.6.2
+      tsup:
+        specifier: ^8.5.0
+        version: 8.5.0(@swc/core@1.13.20)(jiti@2.6.0)(postcss@8.5.6)(tsx@4.20.6)(typescript@5.9.2)(yaml@2.8.1)
+      typescript:
+        specifier: ^5.9.2
+        version: 5.9.2
+      vitest:
+        specifier: ^3.2.4
+        version: 3.2.4(@types/node@22.18.6)(@vitest/ui@3.2.4)(jiti@2.6.0)(terser@5.44.0)(tsx@4.20.6)(yaml@2.8.1)
+
+  features/workspace/contracts:
+    dependencies:
+      '@cbnsndwch/struktura-shared-contracts':
+        specifier: workspace:*
+        version: link:../../shared/contracts
+    devDependencies:
+      '@cbnsndwch/struktura-eslint-config':
+        specifier: workspace:*
+        version: link:../../../tools/eslint-config
+      '@cbnsndwch/struktura-tsconfig':
+        specifier: workspace:*
+        version: link:../../../tools/tsconfig
+      eslint:
+        specifier: ^9.36.0
+        version: 9.36.0(jiti@2.6.0)
+      prettier:
+        specifier: ^3.6.2
+        version: 3.6.2
+      tsup:
+        specifier: ^8.5.0
+        version: 8.5.0(@swc/core@1.13.20)(jiti@2.6.0)(postcss@8.5.6)(tsx@4.20.6)(typescript@5.9.2)(yaml@2.8.1)
+      typescript:
+        specifier: ^5.9.2
+        version: 5.9.2
+      vitest:
+        specifier: ^3.2.4
+        version: 3.2.4(@types/node@22.18.6)(@vitest/ui@3.2.4)(jiti@2.6.0)(terser@5.44.0)(tsx@4.20.6)(yaml@2.8.1)
+
+  features/workspace/domain:
+    dependencies:
+      '@cbnsndwch/struktura-shared-domain':
+        specifier: workspace:*
+        version: link:../../shared/domain
+      '@cbnsndwch/struktura-workspace-contracts':
         specifier: workspace:*
         version: link:../contracts
     devDependencies:

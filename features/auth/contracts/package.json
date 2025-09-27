@@ -1,0 +1,40 @@
+{
+    "name": "@cbnsndwch/struktura-auth-contracts",
+    "version": "0.1.0",
+    "private": true,
+    "type": "module",
+    "description": "Authentication contracts for Struktura",
+    "main": "./dist/index.js",
+    "module": "./dist/index.js",
+    "types": "./dist/index.d.ts",
+    "scripts": {
+        "build": "tsup",
+        "clean": "rm -rf dist",
+        "dev": "tsup --watch",
+        "lint": "eslint . --fix",
+        "format": "prettier --write .",
+        "test": "vitest --run --passWithNoTests",
+        "test:watch": "vitest"
+    },
+    "dependencies": {
+        "@cbnsndwch/struktura-shared-contracts": "workspace:*"
+    },
+    "devDependencies": {
+        "@cbnsndwch/struktura-eslint-config": "workspace:*",
+        "@cbnsndwch/struktura-tsconfig": "workspace:*",
+        "eslint": "^9.36.0",
+        "prettier": "^3.6.2",
+        "tsup": "^8.5.0",
+        "typescript": "^5.9.2",
+        "vitest": "^3.2.4"
+    },
+    "files": [
+        "dist"
+    ],
+    "exports": {
+        ".": "./dist/index.js"
+    },
+    "engines": {
+        "node": ">=22"
+    }
+}
