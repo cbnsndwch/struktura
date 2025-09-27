@@ -1,9 +1,10 @@
 import { Injectable } from '@nestjs/common';
-import { PassportStrategy } from '@nestjs/passport';
-import { Strategy, VerifyCallback } from 'passport-google-oauth20';
 import { InjectModel } from '@nestjs/mongoose';
-import { Model } from 'mongoose';
-import * as mongoose from 'mongoose';
+import { PassportStrategy } from '@nestjs/passport';
+import { Model, Types } from 'mongoose';
+import { Strategy, VerifyCallback } from 'passport-google-oauth20';
+
+import type { Dict } from '@cbnsndwch/struktura-shared-contracts';
 
 import { User, UserDocument } from '../schemas/user.schema.js';
 
@@ -24,9 +25,9 @@ export class GoogleStrategy extends PassportStrategy(Strategy, 'google') {
     async validate(
         accessToken: string,
         refreshToken: string,
-        profile: any,
+        profile: Dict,
         done: VerifyCallback
-    ): Promise<any> {
+    ): Promise<void> {
         const { id, name, emails, photos } = profile;
         const email = emails[0]?.value;
 
@@ -73,7 +74,7 @@ export class GoogleStrategy extends PassportStrategy(Strategy, 'google') {
             }
 
             const userPayload = {
-                id: (user._id as mongoose.Types.ObjectId).toString(),
+                id: (user._id as Types.ObjectId).toString(),
                 email: user.email,
                 name: user.name,
                 roles: user.roles,

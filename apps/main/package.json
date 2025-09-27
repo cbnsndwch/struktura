@@ -13,7 +13,7 @@
         "format": "prettier --write .",
         "test": "vitest --run --passWithNoTests",
         "test:watch": "vitest",
-        "test:e2e": "vitest --config vitest.e2e.config.ts --run"
+        "test:e2e": "vitest --config vitest.e2e.config.ts --run --passWithNoTests"
     },
     "dependencies": {
         "@cbnsndwch/struktura-shared-contracts": "workspace:*",

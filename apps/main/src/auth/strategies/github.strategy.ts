@@ -2,8 +2,9 @@ import { Injectable } from '@nestjs/common';
 import { PassportStrategy } from '@nestjs/passport';
 import { Strategy } from 'passport-github2';
 import { InjectModel } from '@nestjs/mongoose';
-import { Model } from 'mongoose';
-import * as mongoose from 'mongoose';
+import { Model, Types } from 'mongoose';
+
+import type { Dict } from '@cbnsndwch/struktura-shared-contracts';
 
 import { User, UserDocument } from '../schemas/user.schema.js';
 
@@ -24,9 +25,9 @@ export class GitHubStrategy extends PassportStrategy(Strategy, 'github') {
     async validate(
         accessToken: string,
         refreshToken: string,
-        profile: any,
-        done: (error: any, user?: any) => void
-    ): Promise<any> {
+        profile: Dict,
+        done: (error: Error | null, user?: Dict | false) => void
+    ): Promise<void> {
         const { id, username, displayName, emails, photos } = profile;
         const email = emails?.[0]?.value;
 
@@ -73,7 +74,7 @@ export class GitHubStrategy extends PassportStrategy(Strategy, 'github') {
             }
 
             const userPayload = {
-                id: (user._id as mongoose.Types.ObjectId).toString(),
+                id: (user._id as Types.ObjectId).toString(),
                 email: user.email,
                 name: user.name,
                 roles: user.roles,
@@ -82,7 +83,7 @@ export class GitHubStrategy extends PassportStrategy(Strategy, 'github') {
 
             return done(null, userPayload);
         } catch (error) {
-            return done(error, false);
+            return done(error as Error, false);
         }
     }
 }

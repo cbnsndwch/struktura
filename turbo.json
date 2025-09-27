@@ -1,13 +1,20 @@
 {
     "$schema": "https://turborepo.org/schema.json",
     "globalEnv": [
-        "PORT", 
-        "NODE_ENV", 
-        "DATABASE_URL", 
-        "GRAPHQL_PLAYGROUND", 
+        "PORT",
+        "NODE_ENV",
+        "DATABASE_URL",
+        "GRAPHQL_PLAYGROUND",
         "GRAPHQL_INTROSPECTION",
         "CI",
-        "GITHUB_ACTIONS"
+        "GITHUB_ACTIONS",
+        "JWT_SECRET",
+        "GITHUB_CLIENT_ID",
+        "GITHUB_CLIENT_SECRET",
+        "GITHUB_CALLBACK_URL",
+        "GOOGLE_CLIENT_ID",
+        "GOOGLE_CLIENT_SECRET",
+        "GOOGLE_CALLBACK_URL"
     ],
     "ui": "stream",
     "tasks": {
@@ -55,7 +62,7 @@
                 "src/**",
                 "*.js",
                 "*.ts",
-                "*.tsx", 
+                "*.tsx",
                 "*.json",
                 "eslint.config.js",
                 ".eslintrc*"
@@ -99,7 +106,7 @@
             "dependsOn": ["^build"],
             "inputs": [
                 "src/**",
-                "test/**", 
+                "test/**",
                 "e2e/**",
                 "**/*.e2e.*",
                 "vitest.e2e.config.*"

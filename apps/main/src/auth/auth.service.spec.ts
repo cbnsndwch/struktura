@@ -1,13 +1,14 @@
-import { Test, TestingModule } from '@nestjs/testing';
-import { getModelToken } from '@nestjs/mongoose';
-import { JwtService } from '@nestjs/jwt';
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import { ConflictException, UnauthorizedException } from '@nestjs/common';
+import { JwtService } from '@nestjs/jwt';
+import { getModelToken } from '@nestjs/mongoose';
+import { Test, TestingModule } from '@nestjs/testing';
 import * as bcrypt from 'bcrypt';
-import { vi } from 'vitest';
+import { beforeEach, describe, expect, it, vi } from 'vitest';
 
 import { AuthService } from './auth.service.js';
-import { User } from './schemas/user.schema.js';
 import { RefreshToken } from './schemas/refresh-token.schema.js';
+import { User } from './schemas/user.schema.js';
 
 describe('AuthService', () => {
     let service: AuthService;
@@ -149,7 +150,7 @@ describe('AuthService', () => {
         it('should throw UnauthorizedException for invalid credentials', async () => {
             const loginDto = {
                 email: 'test@example.com',
-                password: 'wrongpassword'
+                password: 'wrong_password'
             };
 
             mockUserModel.findOne.mockResolvedValue(mockUser);

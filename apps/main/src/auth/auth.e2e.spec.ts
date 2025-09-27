@@ -1,18 +1,20 @@
-import { Test, TestingModule } from '@nestjs/testing';
 import { INestApplication, ValidationPipe } from '@nestjs/common';
-import { MongooseModule } from '@nestjs/mongoose';
 import { JwtModule } from '@nestjs/jwt';
+import { MongooseModule } from '@nestjs/mongoose';
 import { PassportModule } from '@nestjs/passport';
+import { Test, TestingModule } from '@nestjs/testing';
 import { ThrottlerModule } from '@nestjs/throttler';
-import * as request from 'supertest';
 import { MongoMemoryServer } from 'mongodb-memory-server';
+import mongoose from 'mongoose';
+import request from 'supertest';
+import { afterAll, beforeAll, describe, expect, it } from 'vitest';
 
 import { AuthModule } from './auth.module.js';
-import { User, UserSchema } from './schemas/user.schema.js';
 import {
     RefreshToken,
     RefreshTokenSchema
 } from './schemas/refresh-token.schema.js';
+import { User, UserSchema } from './schemas/user.schema.js';
 
 describe('Auth (e2e)', () => {
     let app: INestApplication;
@@ -112,7 +114,6 @@ describe('Auth (e2e)', () => {
         beforeAll(async () => {
             // First verify the email (in a real scenario this would be done via email link)
             // For now, we'll manually verify the user in the database
-            const mongoose = require('mongoose');
             const userModel = mongoose.model('User');
             await userModel.updateOne(
                 { email: 'test@example.com' },

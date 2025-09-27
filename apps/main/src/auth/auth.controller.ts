@@ -1,30 +1,30 @@
 import {
-    Controller,
-    Post,
     Body,
+    Controller,
     Get,
-    Query,
-    UseGuards,
-    Req,
-    Res,
     HttpCode,
-    HttpStatus
+    HttpStatus,
+    Post,
+    Query,
+    Req,
+    UseGuards
 } from '@nestjs/common';
-import type { Request, Response } from 'express';
-import { AuthGuard } from '@nestjs/passport';
 import { ThrottlerGuard } from '@nestjs/throttler';
+import type { Request } from 'express';
+
+import type { Dict } from '@cbnsndwch/struktura-shared-contracts';
 
 import { AuthService } from './auth.service.js';
-import { JwtAuthGuard } from './guards/jwt-auth.guard.js';
-import { Public } from './decorators/public.decorator.js';
 import { CurrentUser } from './decorators/current-user.decorator.js';
+import { Public } from './decorators/public.decorator.js';
 import {
-    RegisterDto,
     LoginDto,
+    RefreshTokenDto,
+    RegisterDto,
     RequestPasswordResetDto,
-    ResetPasswordDto,
-    RefreshTokenDto
+    ResetPasswordDto
 } from './dto/index.js';
+import { JwtAuthGuard } from './guards/jwt-auth.guard.js';
 
 @Controller('auth')
 @UseGuards(ThrottlerGuard)
@@ -85,7 +85,7 @@ export class AuthController {
 
     @Get('profile')
     @UseGuards(JwtAuthGuard)
-    getProfile(@CurrentUser() user: any) {
+    getProfile(@CurrentUser() user: Dict) {
         return user;
     }
 

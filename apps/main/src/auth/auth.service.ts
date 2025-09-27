@@ -1,30 +1,29 @@
 import * as crypto from 'crypto';
 
 import {
-    Injectable,
     BadRequestException,
-    UnauthorizedException,
     ConflictException,
-    NotFoundException
+    Injectable,
+    UnauthorizedException
 } from '@nestjs/common';
-import { InjectModel } from '@nestjs/mongoose';
 import { JwtService } from '@nestjs/jwt';
-import { Model } from 'mongoose';
-import * as mongoose from 'mongoose';
+import { InjectModel } from '@nestjs/mongoose';
 import * as bcrypt from 'bcrypt';
+import * as mongoose from 'mongoose';
+import { Model } from 'mongoose';
 
-import { User, UserDocument } from './schemas/user.schema.js';
+import {
+    LoginDto,
+    RefreshTokenDto,
+    RegisterDto,
+    RequestPasswordResetDto,
+    ResetPasswordDto
+} from './dto/index.js';
 import {
     RefreshToken,
     RefreshTokenDocument
 } from './schemas/refresh-token.schema.js';
-import {
-    RegisterDto,
-    LoginDto,
-    RequestPasswordResetDto,
-    ResetPasswordDto,
-    RefreshTokenDto
-} from './dto/index.js';
+import { User, UserDocument } from './schemas/user.schema.js';
 
 export interface AuthTokens {
     accessToken: string;
