@@ -10,5 +10,9 @@ export default defineConfig({
     minify: false,
     entry: {
         index: './src/index.ts'
+    },
+    external: ['react', 'react-dom'],
+    banner: {
+        js: '"use client";'
     }
 });
