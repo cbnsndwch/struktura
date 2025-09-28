@@ -9,8 +9,7 @@ import {
     IsOptional,
     IsBoolean,
     IsArray,
-    ValidateNested,
-    IsNumber
+    ValidateNested
 } from 'class-validator';
 import { Schema as MongooseSchema } from 'mongoose';
 
