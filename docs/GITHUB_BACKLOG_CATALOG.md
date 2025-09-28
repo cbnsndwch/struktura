@@ -4,10 +4,10 @@ This file serves as the source of truth for all GitHub issues, epics, and milest
 
 ## Catalog Metadata
 
-- **Last Updated**: 2025-09-26
+- **Last Updated**: 2025-09-28
 - **GitHub Repository**: cbnsndwch/struktura
-- **Total Issues Planned**: TBD
-- **Total Epics Planned**: 8
+- **Total Issues Planned**: 28
+- **Total Epics Completed**: 2 of 8 (Epic 1 & 2 ✅)
 - **Active Milestones**: 3
 
 ## Epic & Issue Tracking
@@ -46,11 +46,12 @@ This file serves as the source of truth for all GitHub issues, epics, and milest
 
 ---
 
-## Epic 1: Project Foundation Setup 🎯
+## Epic 1: Project Foundation Setup 🎯 ✅ **COMPLETED**
 **Milestone**: v0.1.0-mvp  
 **Priority**: Critical  
 **Estimated Duration**: 2 weeks  
-**GitHub Label**: `epic:foundation`
+**GitHub Label**: `epic:foundation`  
+**Status**: ✅ **Completed on September 28, 2025**
 
 ### Epic Description
 Establish the fundamental project infrastructure including development environment, CI/CD, and team workflows.
@@ -58,8 +59,8 @@ Establish the fundamental project infrastructure including development environme
 ### Issues
 
 #### 1.1 Repository Structure & Monorepo Setup 🔧
-**Status**: ⏳ Planned  
-**GitHub Issue**: TBD  
+**Status**: ✅ Complete  
+**GitHub Issue**: #1 (Closed)  
 **Assignee**: Technical Lead  
 **Estimate**: 3 days  
 **Priority**: Critical
@@ -67,19 +68,19 @@ Establish the fundamental project infrastructure including development environme
 **Description**: Set up Turborepo monorepo structure with proper workspace configuration, package.json setup, and dependency management.
 
 **Acceptance Criteria**:
-- [ ] Turborepo configuration with all workspaces defined
-- [ ] PNPM workspace configuration
-- [ ] Shared ESLint, TypeScript, and Prettier configs
-- [ ] Proper import/export structure between packages
-- [ ] Build system working with `pnpm build`
+- [x] Turborepo configuration with all workspaces defined
+- [x] PNPM workspace configuration
+- [x] Shared ESLint, TypeScript, and Prettier configs
+- [x] Proper import/export structure between packages
+- [x] Build system working with `pnpm build`
 
 **Labels**: `type:task`, `priority:critical`, `epic:foundation`
 
 ---
 
 #### 1.2 Development Environment Setup 🔧
-**Status**: ⏳ Planned  
-**GitHub Issue**: TBD  
+**Status**: ✅ Complete  
+**GitHub Issue**: #2 (Closed)  
 **Assignee**: DevOps Specialist  
 **Estimate**: 5 days  
 **Priority**: Critical
@@ -87,20 +88,20 @@ Establish the fundamental project infrastructure including development environme
 **Description**: Create Docker Compose setup for MongoDB, Redis, and application services to enable consistent local development.
 
 **Acceptance Criteria**:
-- [ ] Docker Compose file with MongoDB, Redis, and app services
-- [ ] Environment variable configuration
-- [ ] Health checks for all services
-- [ ] Data persistence configuration
-- [ ] Development hot-reload setup
-- [ ] Documentation for setup process
+- [x] Docker Compose file with MongoDB, Redis, and app services
+- [x] Environment variable configuration
+- [x] Health checks for all services
+- [x] Data persistence configuration
+- [x] Development hot-reload setup
+- [x] Documentation for setup process
 
 **Labels**: `type:task`, `priority:critical`, `epic:foundation`, `component:infrastructure`
 
 ---
 
 #### 1.3 CI/CD Pipeline Setup 🔧
-**Status**: ⏳ Planned  
-**GitHub Issue**: TBD  
+**Status**: ✅ Complete  
+**GitHub Issue**: #3 (Closed)  
 **Assignee**: DevOps Specialist  
 **Estimate**: 4 days  
 **Priority**: High
@@ -108,22 +109,23 @@ Establish the fundamental project infrastructure including development environme
 **Description**: Implement GitHub Actions for automated testing, building, and deployment workflows.
 
 **Acceptance Criteria**:
-- [ ] GitHub Actions workflow for PR validation
-- [ ] Automated testing on push/PR
-- [ ] Build verification for all packages
-- [ ] Lint and format checking
-- [ ] Dependency security scanning
-- [ ] Deployment workflow for staging
+- [x] GitHub Actions workflow for PR validation
+- [x] Automated testing on push/PR
+- [x] Build verification for all packages
+- [x] Lint and format checking
+- [x] Dependency security scanning
+- [x] Deployment workflow for staging
 
 **Labels**: `type:task`, `priority:high`, `epic:foundation`, `component:cicd`
 
 ---
 
-## Epic 2: Core Platform Foundation 🎯
+## Epic 2: Core Platform Foundation 🎯 ✅ **COMPLETED**
 **Milestone**: v0.1.0-mvp  
 **Priority**: Critical  
 **Estimated Duration**: 4 weeks  
-**GitHub Label**: `epic:platform-foundation`
+**GitHub Label**: `epic:platform-foundation`  
+**Status**: ✅ **Completed on September 28, 2025**
 
 ### Epic Description
 Build the core NestJS application structure with authentication, workspace management, and basic data operations.
@@ -131,8 +133,8 @@ Build the core NestJS application structure with authentication, workspace manag
 ### Issues
 
 #### 2.1 NestJS Application Bootstrap 🔧
-**Status**: ⏳ Planned  
-**GitHub Issue**: TBD  
+**Status**: ✅ Complete  
+**GitHub Issue**: #4 (Closed)  
 **Assignee**: Senior Backend Developer  
 **Estimate**: 3 days  
 **Priority**: Critical
@@ -140,20 +142,20 @@ Build the core NestJS application structure with authentication, workspace manag
 **Description**: Set up the main NestJS application with GraphQL, MongoDB connection, and basic module structure.
 
 **Acceptance Criteria**:
-- [ ] NestJS application with GraphQL endpoint
-- [ ] MongoDB connection with Mongoose
-- [ ] Environment configuration management
-- [ ] Health check endpoints
-- [ ] Basic error handling and logging
-- [ ] OpenAPI/GraphQL documentation setup
+- [x] NestJS application with GraphQL endpoint
+- [x] MongoDB connection with Mongoose
+- [x] Environment configuration management
+- [x] Health check endpoints
+- [x] Basic error handling and logging
+- [x] OpenAPI/GraphQL documentation setup
 
 **Labels**: `type:task`, `priority:critical`, `epic:platform-foundation`, `component:backend`
 
 ---
 
 #### 2.2 User Authentication System 📋
-**Status**: ⏳ Planned  
-**GitHub Issue**: TBD  
+**Status**: ✅ Complete  
+**GitHub Issue**: #5, #15 (Closed)  
 **Assignee**: Backend Developer  
 **Estimate**: 5 days  
 **Priority**: Critical
@@ -163,21 +165,21 @@ Build the core NestJS application structure with authentication, workspace manag
 **User Story**: As a new user, I want to create an account and securely access the platform so that I can start managing my data.
 
 **Acceptance Criteria**:
-- [ ] User registration with email/password
-- [ ] Email verification process
-- [ ] Login/logout with JWT tokens
-- [ ] Password reset functionality
-- [ ] OAuth integration (Google, GitHub)
-- [ ] Session management with refresh tokens
-- [ ] Rate limiting for auth endpoints
+- [x] User registration with email/password
+- [x] Email verification process
+- [x] Login/logout with JWT tokens
+- [x] Password reset functionality
+- [x] OAuth integration (Google, GitHub)
+- [x] Session management with refresh tokens
+- [x] Rate limiting for auth endpoints
 
 **Labels**: `type:story`, `priority:critical`, `epic:platform-foundation`, `component:auth`
 
 ---
 
 #### 2.3 Workspace Management 📋
-**Status**: ⏳ Planned  
-**GitHub Issue**: TBD  
+**Status**: ✅ Complete  
+**GitHub Issue**: #6, #16 (Closed)  
 **Assignee**: Backend Developer  
 **Estimate**: 4 days  
 **Priority**: Critical
@@ -187,32 +189,33 @@ Build the core NestJS application structure with authentication, workspace manag
 **User Story**: As a user, I want to create and manage workspaces so that I can organize my projects and collaborate with teams.
 
 **Acceptance Criteria**:
-- [ ] Create new workspace with name and description
-- [ ] Edit workspace settings
-- [ ] Delete workspace (with confirmation)
-- [ ] List user workspaces
-- [ ] Switch between workspaces
-- [ ] Basic member invitation system
-- [ ] Role-based access control (owner, admin, member, viewer)
+- [x] Create new workspace with name and description
+- [x] Edit workspace settings
+- [x] Delete workspace (with confirmation)
+- [x] List user workspaces
+- [x] Switch between workspaces
+- [x] Basic member invitation system
+- [x] Role-based access control (owner, admin, member, viewer)
 
 **Labels**: `type:story`, `priority:critical`, `epic:platform-foundation`, `component:workspaces`
 
 ---
 
-## Epic 3: Schema Management System 🎯
+## Epic 3: Schema Management System 🎯 ✅ **COMPLETED**
 **Milestone**: v0.1.0-mvp  
 **Priority**: Critical  
 **Estimated Duration**: 3 weeks  
-**GitHub Label**: `epic:schema-management`
+**GitHub Label**: `epic:schema-management`  
+**Status**: ✅ **Completed on September 28, 2025**
 
 ### Epic Description
 Create a flexible schema management system that allows users to define collections with various field types and validation rules.
 
 ### Issues
 
-#### 3.1 Basic Field Types Implementation 🔧
-**Status**: ⏳ Planned  
-**GitHub Issue**: TBD  
+#### 3.1 Dynamic Field Types Implementation 🔧
+**Status**: ✅ Complete  
+**GitHub Issue**: #18 (Closed)  
 **Assignee**: Backend Developer  
 **Estimate**: 4 days  
 **Priority**: Critical
@@ -220,22 +223,22 @@ Create a flexible schema management system that allows users to define collectio
 **Description**: Implement core field types for collections including text, number, date, boolean with validation.
 
 **Acceptance Criteria**:
-- [ ] Text field with length validation
-- [ ] Number field with min/max validation
-- [ ] Date and DateTime fields
-- [ ] Boolean field
-- [ ] Email field with format validation
-- [ ] URL field with format validation
-- [ ] Field type registry system
-- [ ] Validation engine architecture
+- [x] Text field with length validation
+- [x] Number field with min/max validation
+- [x] Date and DateTime fields
+- [x] Boolean field
+- [x] Email field with format validation
+- [x] URL field with format validation
+- [x] Field type registry system
+- [x] Validation engine architecture
 
 **Labels**: `type:task`, `priority:critical`, `epic:schema-management`, `component:schema`
 
 ---
 
-#### 3.2 Collection Schema Builder 📋
-**Status**: ⏳ Planned  
-**GitHub Issue**: TBD  
+#### 3.2 Visual Collection Builder 📋
+**Status**: ✅ Complete  
+**GitHub Issue**: #17 (Closed)  
 **Assignee**: Full-stack Developer  
 **Estimate**: 6 days  
 **Priority**: Critical
@@ -245,13 +248,13 @@ Create a flexible schema management system that allows users to define collectio
 **User Story**: As a user, I want to create custom collections with different field types so that I can structure my data according to my needs.
 
 **Acceptance Criteria**:
-- [ ] Collection creation form
-- [ ] Field addition with type selection
-- [ ] Field configuration (required, unique, validation)
-- [ ] Drag-and-drop field reordering
-- [ ] Schema preview and validation
-- [ ] Collection editing and deletion
-- [ ] Field removal with data migration warnings
+- [x] Collection creation form
+- [x] Field addition with type selection
+- [x] Field configuration (required, unique, validation)
+- [x] Drag-and-drop field reordering
+- [x] Schema preview and validation
+- [x] Collection editing and deletion
+- [x] Field removal with data migration warnings
 
 **Labels**: `type:story`, `priority:critical`, `epic:schema-management`, `component:ui`, `component:schema`
 

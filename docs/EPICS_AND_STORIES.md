@@ -1,10 +1,11 @@
 # Project Epics & User Stories
 # Struktura
 
-## Epic 1: Core Platform Foundation
+## Epic 1: Core Platform Foundation ✅ **COMPLETED**
 **Duration**: 8-10 weeks  
 **Team**: 2 Backend Developers, 1 DevOps Engineer  
-**Priority**: Highest
+**Priority**: Highest  
+**Status**: ✅ **Completed on September 28, 2025**
 
 ### Epic Description
 Establish the fundamental platform infrastructure including authentication, workspace management, and basic data operations. This epic creates the foundation that all other features will build upon.
@@ -15,13 +16,13 @@ Establish the fundamental platform infrastructure including authentication, work
 **Story**: As a new user, I want to create an account and securely access the platform so that I can start managing my data.
 
 **Acceptance Criteria**:
-- [ ] User can register with email/password
-- [ ] Email verification process
-- [ ] Login with email/password
-- [ ] OAuth integration (Google, GitHub)
-- [ ] Password reset functionality
-- [ ] JWT token-based authentication
-- [ ] Session management with refresh tokens
+- [x] User can register with email/password
+- [x] Email verification process
+- [x] Login with email/password
+- [x] OAuth integration (Google, GitHub)
+- [x] Password reset functionality
+- [x] JWT token-based authentication
+- [x] Session management with refresh tokens
 
 **Technical Tasks**:
 - Set up NestJS authentication module
@@ -43,13 +44,13 @@ Establish the fundamental platform infrastructure including authentication, work
 **Story**: As a user, I want to create and manage workspaces so that I can organize my projects and collaborate with teams.
 
 **Acceptance Criteria**:
-- [ ] Create new workspace with name and description
-- [ ] Edit workspace settings
-- [ ] Delete workspace (with confirmation)
-- [ ] List user workspaces
-- [ ] Switch between workspaces
-- [ ] Workspace member management
-- [ ] Role-based permissions (owner, admin, editor, viewer)
+- [x] Create new workspace with name and description
+- [x] Edit workspace settings
+- [x] Delete workspace (with confirmation)
+- [x] List user workspaces
+- [x] Switch between workspaces
+- [x] Workspace member management
+- [x] Role-based permissions (owner, admin, editor, viewer)
 
 **Technical Tasks**:
 - Create Workspace schema and service
@@ -70,12 +71,12 @@ Establish the fundamental platform infrastructure including authentication, work
 **Story**: As a developer, I want a reliable connection to MongoDB with basic CRUD operations so that the platform can store and retrieve data efficiently.
 
 **Acceptance Criteria**:
-- [ ] MongoDB connection with connection pooling
-- [ ] Basic CRUD operations for all entities
-- [ ] Database indexing strategy
-- [ ] Connection error handling and retries
-- [ ] Database health monitoring
-- [ ] Backup and restore procedures
+- [x] MongoDB connection with connection pooling
+- [x] Basic CRUD operations for all entities
+- [x] Database indexing strategy
+- [x] Connection error handling and retries
+- [x] Database health monitoring
+- [x] Backup and restore procedures
 
 **Technical Tasks**:
 - Set up MongoDB with Mongoose
@@ -93,10 +94,11 @@ Establish the fundamental platform infrastructure including authentication, work
 
 ---
 
-## Epic 2: Schema Management System
+## Epic 2: Schema Management System ✅ **COMPLETED**
 **Duration**: 6-8 weeks  
 **Team**: 2 Frontend Developers, 1 Backend Developer  
-**Priority**: High
+**Priority**: High  
+**Status**: ✅ **Completed on September 28, 2025**
 
 ### Epic Description
 Build the visual schema builder and field management system that allows users to create and modify collection structures without technical expertise.
@@ -107,13 +109,13 @@ Build the visual schema builder and field management system that allows users to
 **Story**: As a business user, I want to create collections using a drag-and-drop interface so that I can design my data structure without technical knowledge.
 
 **Acceptance Criteria**:
-- [ ] Drag-and-drop collection creation
-- [ ] Visual field type selection
-- [ ] Real-time schema preview
-- [ ] Field configuration panels
-- [ ] Schema validation and error display
-- [ ] Template library for common schemas
-- [ ] Import schema from existing data sources
+- [x] Drag-and-drop collection creation
+- [x] Visual field type selection
+- [x] Real-time schema preview
+- [x] Field configuration panels
+- [x] Schema validation and error display
+- [x] Template library for common schemas
+- [x] Import schema from existing data sources
 
 **Technical Tasks**:
 - Build drag-drop React components
@@ -135,13 +137,13 @@ Build the visual schema builder and field management system that allows users to
 **Story**: As a power user, I want to use advanced field types (relationships, lookups, formulas) so that I can create sophisticated data models.
 
 **Acceptance Criteria**:
-- [ ] Basic types (text, number, date, boolean)
-- [ ] Selection types (single/multi-select)
-- [ ] File attachment support
-- [ ] Reference fields for relationships
-- [ ] Lookup fields for cross-collection data
-- [ ] Formula fields with expression builder
-- [ ] Auto-generated fields (created/modified time/user)
+- [x] Basic types (text, number, date, boolean)
+- [x] Selection types (single/multi-select)
+- [x] File attachment support
+- [x] Reference fields for relationships
+- [x] Lookup fields for cross-collection data
+- [x] Formula fields with expression builder
+- [x] Auto-generated fields (created/modified time/user)
 
 **Technical Tasks**:
 - Implement field type registry
@@ -163,12 +165,12 @@ Build the visual schema builder and field management system that allows users to
 **Story**: As a user, I want to modify my collection schema without losing existing data so that my database can evolve with my needs.
 
 **Acceptance Criteria**:
-- [ ] Non-destructive schema changes
-- [ ] Automatic data migration
-- [ ] Schema version history
-- [ ] Rollback capability
-- [ ] Change impact analysis
-- [ ] Migration status tracking
+- [x] Non-destructive schema changes
+- [x] Automatic data migration
+- [x] Schema version history
+- [x] Rollback capability
+- [x] Change impact analysis
+- [x] Migration status tracking
 
 **Technical Tasks**:
 - Build schema versioning system
