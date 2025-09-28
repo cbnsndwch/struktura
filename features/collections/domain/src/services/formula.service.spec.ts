@@ -6,16 +6,11 @@ import { SecureExpressionEvaluatorService } from './secure-expression-evaluator.
 
 describe('FormulaService', () => {
     let service: FormulaService;
-    let secureEvaluatorService: SecureExpressionEvaluatorService;
-
     beforeEach(async () => {
         const module: TestingModule = await Test.createTestingModule({
             providers: [SecureExpressionEvaluatorService, FormulaService]
         }).compile();
 
-        secureEvaluatorService = module.get<SecureExpressionEvaluatorService>(
-            SecureExpressionEvaluatorService
-        );
         service = module.get<FormulaService>(FormulaService);
     });
 
@@ -24,11 +19,7 @@ describe('FormulaService', () => {
             const formula = '{price} * {quantity}';
             const data = { price: 10, quantity: 5 };
 
-            const result = await service.evaluateFormula(
-                formula,
-                data,
-                'collection-id'
-            );
+            const result = await service.evaluateFormula(formula, data);
             expect(result).toBe(50);
         });
 
@@ -36,11 +27,7 @@ describe('FormulaService', () => {
             const formula = 'SUM({value1}, {value2}, {value3})';
             const data = { value1: 10, value2: 20, value3: 30 };
 
-            const result = await service.evaluateFormula(
-                formula,
-                data,
-                'collection-id'
-            );
+            const result = await service.evaluateFormula(formula, data);
             expect(result).toBe(60);
         });
 
@@ -48,11 +35,7 @@ describe('FormulaService', () => {
             const formula = 'AVERAGE({value1}, {value2}, {value3})';
             const data = { value1: 10, value2: 20, value3: 30 };
 
-            const result = await service.evaluateFormula(
-                formula,
-                data,
-                'collection-id'
-            );
+            const result = await service.evaluateFormula(formula, data);
             expect(result).toBe(20);
         });
 
@@ -60,11 +43,7 @@ describe('FormulaService', () => {
             const formula = '{nonexistent} * 2';
             const data = { price: 10 };
 
-            const result = await service.evaluateFormula(
-                formula,
-                data,
-                'collection-id'
-            );
+            const result = await service.evaluateFormula(formula, data);
             expect(result).toBe(0); // Missing fields should be treated as 0
         });
 
@@ -72,11 +51,7 @@ describe('FormulaService', () => {
             const formula = '{isActive} * {price}';
             const data = { isActive: true, price: 100 };
 
-            const result = await service.evaluateFormula(
-                formula,
-                data,
-                'collection-id'
-            );
+            const result = await service.evaluateFormula(formula, data);
             expect(result).toBe(100); // true should be converted to 1
         });
 
@@ -84,11 +59,7 @@ describe('FormulaService', () => {
             const formula = '{firstName}';
             const data = { firstName: 'John' };
 
-            const result = await service.evaluateFormula(
-                formula,
-                data,
-                'collection-id'
-            );
+            const result = await service.evaluateFormula(formula, data);
             // String fields should return string values
             expect(result).toBe('John');
         });
@@ -97,12 +68,8 @@ describe('FormulaService', () => {
             const formula = '{price} * invalid_syntax}';
             const data = { price: 10 };
 
-            const result = await service.evaluateFormula(
-                formula,
-                data,
-                'collection-id'
-            );
-            // Current implementation returns 0 on errors, not null
+            const result = await service.evaluateFormula(formula, data);
+            // Current implementation returns null on errors
             expect(result).toBe(null);
         });
 
@@ -110,11 +77,7 @@ describe('FormulaService', () => {
             const formula = '{price}';
             const data = { price: 150 };
 
-            const result = await service.evaluateFormula(
-                formula,
-                data,
-                'collection-id'
-            );
+            const result = await service.evaluateFormula(formula, data);
             expect(result).toBe(150); // Simplified implementation doesn't handle complex IF statements
         });
 
@@ -123,11 +86,7 @@ describe('FormulaService', () => {
             const date = new Date('2024-01-01');
             const data = { createdAt: date };
 
-            const result = await service.evaluateFormula(
-                formula,
-                data,
-                'collection-id'
-            );
+            const result = await service.evaluateFormula(formula, data);
             expect(result).toBe(date.getTime() + 86400000);
         });
     });
@@ -220,11 +179,7 @@ describe('FormulaService', () => {
             const formula = '{nullField} * 2';
             const data = { nullField: null };
 
-            const result = await service.evaluateFormula(
-                formula,
-                data,
-                'collection-id'
-            );
+            const result = await service.evaluateFormula(formula, data);
             expect(result).toBe(0);
         });
 
@@ -232,11 +187,7 @@ describe('FormulaService', () => {
             const formula = '{undefinedField} * 2';
             const data = { someOtherField: 'value' };
 
-            const result = await service.evaluateFormula(
-                formula,
-                data,
-                'collection-id'
-            );
+            const result = await service.evaluateFormula(formula, data);
             expect(result).toBe(0);
         });
 
@@ -244,11 +195,7 @@ describe('FormulaService', () => {
             const formula = '{emptyField}';
             const data = { emptyField: '' };
 
-            const result = await service.evaluateFormula(
-                formula,
-                data,
-                'collection-id'
-            );
+            const result = await service.evaluateFormula(formula, data);
             // Current implementation converts empty strings differently
             expect(result).toBeDefined();
         });
@@ -257,11 +204,7 @@ describe('FormulaService', () => {
             const formula = '{numerator} / {denominator}';
             const data = { numerator: 10, denominator: 0 };
 
-            const result = await service.evaluateFormula(
-                formula,
-                data,
-                'collection-id'
-            );
+            const result = await service.evaluateFormula(formula, data);
             expect(result).toBe(Infinity);
         });
     });

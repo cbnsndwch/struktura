@@ -5,6 +5,37 @@ import {
     ExpressionEvaluationError
 } from './secure-expression-evaluator.service.js';
 
+// Type definitions for formula evaluation
+interface FieldDefinition {
+    name: string;
+    type: string;
+}
+
+interface FormulaValidationResult {
+    isValid: boolean;
+    errors: string[];
+}
+
+// More specific type for record data - values can be various types
+type RecordData = Record<string, FormulaSupportedValue>;
+
+// Union type for values that can be used in formulas
+type FormulaSupportedValue =
+    | string
+    | number
+    | boolean
+    | null
+    | undefined
+    | Date
+    | Array<string | number>;
+
+// Result type for formula evaluation
+type FormulaResult = string | number | boolean | null;
+
+/**
+
+
+
 /**
  * Service for evaluating formula expressions in formula fields
  */
@@ -29,9 +60,8 @@ export class FormulaService {
      */
     async evaluateFormula(
         formula: string,
-        recordData: Record<string, unknown>,
-        collectionId: string
-    ): Promise<unknown> {
+        recordData: RecordData
+    ): Promise<FormulaResult> {
         try {
             // Basic formula evaluation - supports simple expressions and functions
             return this.parseAndEvaluate(formula, recordData);
@@ -46,8 +76,8 @@ export class FormulaService {
      */
     validateFormula(
         formula: string,
-        availableFields: Array<{ name: string; type: string }>
-    ): { isValid: boolean; errors: string[] } {
+        availableFields: FieldDefinition[]
+    ): FormulaValidationResult {
         const errors: string[] = [];
 
         try {
@@ -163,10 +193,7 @@ export class FormulaService {
         return processed;
     }
 
-    private parseAndEvaluate(
-        formula: string,
-        data: Record<string, unknown>
-    ): unknown {
+    private parseAndEvaluate(formula: string, data: RecordData): FormulaResult {
         // Replace field references with actual values
         let processedFormula = formula;
         const fieldReferences = this.extractFieldReferences(formula);
@@ -194,7 +221,7 @@ export class FormulaService {
         return matches.map(match => match.slice(1, -1)); // Remove { and }
     }
 
-    private convertToFormulaValue(value: unknown): string {
+    private convertToFormulaValue(value: FormulaSupportedValue): string {
         if (value === null || value === undefined) {
             return '0';
         }
@@ -219,10 +246,7 @@ export class FormulaService {
         return '0';
     }
 
-    private processFunctions(
-        formula: string,
-        data: Record<string, unknown>
-    ): string {
+    private processFunctions(formula: string, data: RecordData): string {
         // Handle built-in functions
         let processed = formula;
 
@@ -262,7 +286,7 @@ export class FormulaService {
         return processed;
     }
 
-    private parseValue(arg: string, data: Record<string, unknown>): unknown {
+    private parseValue(arg: string, data: RecordData): FormulaSupportedValue {
         const trimmed = arg.trim();
 
         // Check if it's a field reference
@@ -281,10 +305,33 @@ export class FormulaService {
         return trimmed.replace(/"/g, '');
     }
 
-    private safeEvaluate(expression: string): unknown {
+    /**
+     * Convert evaluation result to FormulaResult type
+     */
+    private toFormulaResult(value: unknown): FormulaResult {
+        if (
+            typeof value === 'string' ||
+            typeof value === 'number' ||
+            typeof value === 'boolean' ||
+            value === null
+        ) {
+            return value;
+        }
+        // Convert other types to appropriate defaults
+        if (value === undefined) {
+            return null;
+        }
+        if (typeof value === 'object' && value !== null) {
+            return String(value);
+        }
+        return null;
+    }
+
+    private safeEvaluate(expression: string): FormulaResult {
         try {
             // Use secure expression evaluator instead of unsafe Function constructor
-            return this.expressionEvaluator.safeEvaluate(expression);
+            const result = this.expressionEvaluator.safeEvaluate(expression);
+            return this.toFormulaResult(result);
         } catch (error) {
             if (error instanceof ExpressionEvaluationError) {
                 // Handle division by zero specially - return Infinity

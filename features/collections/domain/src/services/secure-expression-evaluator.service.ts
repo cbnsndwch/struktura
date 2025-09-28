@@ -1,9 +1,80 @@
 import { Injectable, Logger } from '@nestjs/common';
 import jsep, { Expression } from 'jsep';
 
+// Type definitions for expression evaluation
 type Scope = Record<string, unknown>;
 
-export class ExpressionEvaluationError extends Error {}
+// More specific types for jsep Expression nodes
+interface LiteralExpression extends Expression {
+    type: 'Literal';
+    value: string | number | boolean | null;
+}
+
+interface IdentifierExpression extends Expression {
+    type: 'Identifier';
+    name: string;
+}
+
+interface UnaryExpression extends Expression {
+    type: 'UnaryExpression';
+    operator: '-' | '+' | '!';
+    argument: Expression;
+}
+
+interface BinaryExpression extends Expression {
+    type: 'BinaryExpression';
+    operator:
+        | '+'
+        | '-'
+        | '*'
+        | '/'
+        | '%'
+        | '==='
+        | '!=='
+        | '=='
+        | '!='
+        | '>'
+        | '<'
+        | '>='
+        | '<='
+        | '&&'
+        | '||';
+    left: Expression;
+    right: Expression;
+}
+
+interface LogicalExpression extends Expression {
+    type: 'LogicalExpression';
+    operator: '&&' | '||';
+    left: Expression;
+    right: Expression;
+}
+
+interface ConditionalExpression extends Expression {
+    type: 'ConditionalExpression';
+    test: Expression;
+    consequent: Expression;
+    alternate: Expression;
+}
+
+// Validation result type
+interface ValidationResult {
+    isValid: boolean;
+    errors: string[];
+}
+
+// Evaluation result can be more specific than unknown
+type EvaluationResult = string | number | boolean | null;
+
+export class ExpressionEvaluationError extends Error {
+    constructor(
+        message: string,
+        public readonly expression?: string
+    ) {
+        super(message);
+        this.name = 'ExpressionEvaluationError';
+    }
+}
 
 /**
  * Secure expression evaluator using jsep for safe parsing
@@ -15,6 +86,28 @@ export class SecureExpressionEvaluatorService {
 
     constructor() {
         this.configureJsep();
+    }
+
+    /**
+     * Safely cast unknown value to EvaluationResult
+     */
+    private toEvaluationResult(value: unknown): EvaluationResult {
+        if (
+            typeof value === 'string' ||
+            typeof value === 'number' ||
+            typeof value === 'boolean' ||
+            value === null
+        ) {
+            return value;
+        }
+        // Convert other types to appropriate defaults
+        if (value === undefined) {
+            return null;
+        }
+        if (typeof value === 'object' && value !== null) {
+            return String(value);
+        }
+        return null;
     }
 
     /**
@@ -51,7 +144,7 @@ export class SecureExpressionEvaluatorService {
     /**
      * Safely evaluate an expression with given scope
      */
-    safeEvaluate(expression: string, scope: Scope = {}): unknown {
+    safeEvaluate(expression: string, scope: Scope = {}): EvaluationResult {
         try {
             // Pre-validation: allow safe characters including quotes, dots, and common operators
             if (!/^[\s\w.<>=!&|()+\-*/%?:"']*$/.test(expression)) {
@@ -79,23 +172,28 @@ export class SecureExpressionEvaluatorService {
     /**
      * Recursively evaluate AST nodes
      */
-    private evaluateAst(node: Expression, scope: Scope): unknown {
+    private evaluateAst(node: Expression, scope: Scope): EvaluationResult {
         switch (node.type) {
-            case 'Literal':
-                return (node as any).value;
+            case 'Literal': {
+                const literalNode = node as LiteralExpression;
+                return this.toEvaluationResult(literalNode.value);
+            }
 
             case 'Identifier': {
-                const name = (node as any).name as string;
+                const identifierNode = node as IdentifierExpression;
+                const name = identifierNode.name;
                 if (!Object.prototype.hasOwnProperty.call(scope, name)) {
                     throw new ExpressionEvaluationError(
-                        `Unknown identifier: ${name}`
+                        `Unknown identifier: ${name}`,
+                        name
                     );
                 }
-                return scope[name];
+                return this.toEvaluationResult(scope[name]);
             }
 
             case 'UnaryExpression': {
-                const { operator, argument } = node as any;
+                const unaryNode = node as UnaryExpression;
+                const { operator, argument } = unaryNode;
                 const value = this.evaluateAst(argument, scope);
 
                 if (operator === '-') {
@@ -113,12 +211,14 @@ export class SecureExpressionEvaluatorService {
                 }
 
                 throw new ExpressionEvaluationError(
-                    `Unary operator not allowed: ${operator}`
+                    `Unary operator not allowed: ${operator}`,
+                    String(operator)
                 );
             }
 
             case 'BinaryExpression': {
-                const { operator, left, right } = node as any;
+                const binaryNode = node as BinaryExpression;
+                const { operator, left, right } = binaryNode;
                 const leftValue = this.evaluateAst(left, scope);
                 const rightValue = this.evaluateAst(right, scope);
 
@@ -197,7 +297,8 @@ export class SecureExpressionEvaluatorService {
             }
 
             case 'LogicalExpression': {
-                const { operator, left, right } = node as any;
+                const logicalNode = node as LogicalExpression;
+                const { operator, left, right } = logicalNode;
 
                 if (operator === '&&') {
                     const leftTruthy = this.isTruthy(
@@ -218,12 +319,14 @@ export class SecureExpressionEvaluatorService {
                 }
 
                 throw new ExpressionEvaluationError(
-                    `Logical operator not allowed: ${operator}`
+                    `Logical operator not allowed: ${operator}`,
+                    String(operator)
                 );
             }
 
             case 'ConditionalExpression': {
-                const { test, consequent, alternate } = node as any;
+                const conditionalNode = node as ConditionalExpression;
+                const { test, consequent, alternate } = conditionalNode;
                 const testValue = this.evaluateAst(test, scope);
 
                 if (this.isTruthy(testValue)) {
@@ -250,7 +353,7 @@ export class SecureExpressionEvaluatorService {
     /**
      * Convert value to number with validation
      */
-    private toNumber(value: unknown): number {
+    private toNumber(value: EvaluationResult): number {
         if (typeof value === 'number' && Number.isFinite(value)) {
             return value;
         }
@@ -274,7 +377,7 @@ export class SecureExpressionEvaluatorService {
     /**
      * Determine truthiness of a value
      */
-    private isTruthy(value: unknown): boolean {
+    private isTruthy(value: EvaluationResult): boolean {
         return !!value;
     }
 
@@ -284,10 +387,7 @@ export class SecureExpressionEvaluatorService {
     validateExpression(
         expression: string,
         availableIdentifiers: string[] = []
-    ): {
-        isValid: boolean;
-        errors: string[];
-    } {
+    ): ValidationResult {
         const errors: string[] = [];
 
         try {
@@ -338,19 +438,25 @@ export class SecureExpressionEvaluatorService {
 
         const traverse = (n: Expression) => {
             if (n.type === 'Identifier') {
-                identifiers.push((n as any).name);
+                const identifierNode = n as IdentifierExpression;
+                identifiers.push(identifierNode.name);
             } else if (n.type === 'UnaryExpression') {
-                traverse((n as any).argument);
+                const unaryNode = n as UnaryExpression;
+                traverse(unaryNode.argument);
             } else if (
                 n.type === 'BinaryExpression' ||
                 n.type === 'LogicalExpression'
             ) {
-                traverse((n as any).left);
-                traverse((n as any).right);
+                const binaryOrLogicalNode = n as
+                    | BinaryExpression
+                    | LogicalExpression;
+                traverse(binaryOrLogicalNode.left);
+                traverse(binaryOrLogicalNode.right);
             } else if (n.type === 'ConditionalExpression') {
-                traverse((n as any).test);
-                traverse((n as any).consequent);
-                traverse((n as any).alternate);
+                const conditionalNode = n as ConditionalExpression;
+                traverse(conditionalNode.test);
+                traverse(conditionalNode.consequent);
+                traverse(conditionalNode.alternate);
             }
         };
 
@@ -369,17 +475,22 @@ export class SecureExpressionEvaluatorService {
             }
 
             if (n.type === 'UnaryExpression') {
-                traverse((n as any).argument);
+                const unaryNode = n as UnaryExpression;
+                traverse(unaryNode.argument);
             } else if (
                 n.type === 'BinaryExpression' ||
                 n.type === 'LogicalExpression'
             ) {
-                traverse((n as any).left);
-                traverse((n as any).right);
+                const binaryOrLogicalNode = n as
+                    | BinaryExpression
+                    | LogicalExpression;
+                traverse(binaryOrLogicalNode.left);
+                traverse(binaryOrLogicalNode.right);
             } else if (n.type === 'ConditionalExpression') {
-                traverse((n as any).test);
-                traverse((n as any).consequent);
-                traverse((n as any).alternate);
+                const conditionalNode = n as ConditionalExpression;
+                traverse(conditionalNode.test);
+                traverse(conditionalNode.consequent);
+                traverse(conditionalNode.alternate);
             }
         };
 

@@ -1,4 +1,5 @@
 import { Injectable, Logger } from '@nestjs/common';
+
 import { FieldType } from '@cbnsndwch/struktura-schema-contracts';
 
 export interface FieldTypeCapabilities {
