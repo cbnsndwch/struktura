@@ -57,6 +57,30 @@ export interface FieldOptions {
     // File/attachment options
     allowedTypes?: string[];
     maxSize?: number;
+
+    // Formula field options
+    formula?: string;
+
+    // Lookup field options
+    lookupCollection?: string;
+    lookupField?: string;
+    displayField?: string;
+
+    // Auto-increment field options
+    startValue?: number;
+    increment?: number;
+
+    // Display format for date/time fields
+    displayFormat?: string;
+
+    // Rollup field options
+    rollupCollection?: string;
+    rollupField?: string;
+    aggregateFunction?: string;
+
+    // Additional validation options
+    placeholder?: string;
+    helpText?: string;
 }
 
 export interface FieldValidationRule {
