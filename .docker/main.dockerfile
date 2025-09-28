@@ -8,13 +8,14 @@ ARG TARGETPLATFORM
 # ================================
 # Base stage - pnpm setup and cache
 # ================================
-FROM --platform=$TARGETPLATFORM ${BASE_IMAGE} AS base
+FROM ${BASE_IMAGE} AS base
 
 WORKDIR /app
 
 # Set environment variables for pnpm path and cache
-ENV PNPM_HOME="/pnpm" \
-    PATH="$PNPM_HOME:$PATH"
+ENV PNPM_HOME=/pnpm
+ENV PATH=$PNPM_HOME:$PATH
+ENV CI=true
 
 # Install/activate pnpm via corepack and set store dir once here
 RUN corepack enable && \
