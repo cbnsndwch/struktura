@@ -1,5 +1,9 @@
 import { Injectable, Logger } from '@nestjs/common';
-import { SecureExpressionEvaluatorService, ExpressionEvaluationError } from './secure-expression-evaluator.service.js';
+
+import {
+    SecureExpressionEvaluatorService,
+    ExpressionEvaluationError
+} from './secure-expression-evaluator.service.js';
 
 /**
  * Service for evaluating formula expressions in formula fields
@@ -8,7 +12,17 @@ import { SecureExpressionEvaluatorService, ExpressionEvaluationError } from './s
 export class FormulaService {
     private readonly logger = new Logger(FormulaService.name);
 
-    constructor(private readonly expressionEvaluator: SecureExpressionEvaluatorService) {}
+    private _expressionEvaluator: SecureExpressionEvaluatorService;
+
+    constructor(expressionEvaluator?: SecureExpressionEvaluatorService) {
+        // Initialize with provided evaluator or create a new one
+        this._expressionEvaluator =
+            expressionEvaluator ?? new SecureExpressionEvaluatorService();
+    }
+
+    private get expressionEvaluator(): SecureExpressionEvaluatorService {
+        return this._expressionEvaluator;
+    }
 
     /**
      * Evaluate a formula expression with given context data
@@ -54,16 +68,35 @@ export class FormulaService {
             }
 
             // Process formula to replace field references with dummy values for validation
-            const processedFormula = this.prepareFormulaForValidation(formula, fieldReferences);
-            
-            // Use secure expression evaluator for validation
-            const validationResult = this.expressionEvaluator.validateExpression(
-                processedFormula,
+            const processedFormula = this.prepareFormulaForValidation(
+                formula,
                 fieldReferences
             );
-            
-            errors.push(...validationResult.errors);
 
+            // Check for balanced braces
+            const braceCount =
+                (formula.match(/\{/g) || []).length -
+                (formula.match(/\}/g) || []).length;
+            if (braceCount !== 0) {
+                errors.push('Mismatched braces in formula');
+            }
+
+            // Check for invalid characters (allow basic math, comparisons, field refs, quotes, functions)
+            if (!/^[\w\s{}()+\-*/.,?:"'=!&|<>]+$/.test(formula)) {
+                errors.push('Invalid characters in formula');
+            }
+
+            // Try to evaluate the processed formula to check for syntax errors
+            try {
+                this.expressionEvaluator.safeEvaluate(processedFormula);
+            } catch (error) {
+                if (error instanceof ExpressionEvaluationError) {
+                    // Only add validation errors if they're about actual syntax issues
+                    if (!error.message.includes('Unknown identifier')) {
+                        errors.push(error.message);
+                    }
+                }
+            }
         } catch (error) {
             errors.push(
                 `Syntax error: ${error instanceof Error ? error.message : 'Unknown error'}`
@@ -79,9 +112,12 @@ export class FormulaService {
     /**
      * Prepare formula for validation by replacing field references with dummy values
      */
-    private prepareFormulaForValidation(formula: string, fieldReferences: string[]): string {
+    private prepareFormulaForValidation(
+        formula: string,
+        fieldReferences: string[]
+    ): string {
         let processedFormula = formula;
-        
+
         // Replace field references with dummy numeric values for validation
         for (const fieldRef of fieldReferences) {
             processedFormula = processedFormula.replace(
@@ -114,10 +150,15 @@ export class FormulaService {
             return `(${argList.join(' + ')}) / ${argList.length}`;
         });
 
-        // Replace IF with conditional (convert to simple boolean check)
-        processed = processed.replace(/IF\(([^,]+),([^,]+),([^)]+)\)/g, (match, condition, trueVal, falseVal) => {
-            return `(${condition.trim()}) ? ${trueVal.trim()} : ${falseVal.trim()}`;
-        });
+        // Replace IF with simpler expression for validation (just check the condition is valid)
+        processed = processed.replace(
+            /IF\(([^,]+),([^,]+),([^)]+)\)/g,
+            (match, condition, trueVal, falseVal) => {
+                // For validation, just check that the condition and values are valid separately
+                // Return a simple expression that can be validated
+                return `(${condition.trim()}) && (${trueVal.trim()}) || (${falseVal.trim()})`;
+            }
+        );
 
         return processed;
     }
@@ -164,7 +205,12 @@ export class FormulaService {
             return value ? '1' : '0';
         }
         if (typeof value === 'string') {
-            // Escape quotes and return as string literal
+            // For strings that are numbers, return the numeric value
+            const num = parseFloat(value);
+            if (!isNaN(num) && isFinite(num)) {
+                return num.toString();
+            }
+            // For non-numeric strings, escape quotes and return as string literal
             return `"${value.replace(/"/g, '\\"')}"`;
         }
         if (value instanceof Date) {
@@ -241,11 +287,23 @@ export class FormulaService {
             return this.expressionEvaluator.safeEvaluate(expression);
         } catch (error) {
             if (error instanceof ExpressionEvaluationError) {
-                this.logger.warn(`Expression evaluation error: ${error.message}`);
+                // Handle division by zero specially - return Infinity
+                if (
+                    error.message.includes('Division by zero') ||
+                    error.message.includes('Modulo by zero')
+                ) {
+                    return Infinity;
+                }
+                this.logger.warn(
+                    `Expression evaluation error: ${error.message}`
+                );
             } else {
-                this.logger.warn(`Failed to evaluate expression: ${expression}`, error);
+                this.logger.warn(
+                    `Failed to evaluate expression: ${expression}`,
+                    error
+                );
             }
-            return 0;
+            return null;
         }
     }
 }

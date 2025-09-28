@@ -28,6 +28,8 @@ export class SecureExpressionEvaluatorService {
         // Allow safe operators and conditional
         jsep.addBinaryOp('===', 10);
         jsep.addBinaryOp('!==', 10);
+        jsep.addBinaryOp('==', 10);
+        jsep.addBinaryOp('!=', 10);
         jsep.addBinaryOp('>=', 9);
         jsep.addBinaryOp('<=', 9);
         jsep.addBinaryOp('>', 9);
@@ -39,11 +41,11 @@ export class SecureExpressionEvaluatorService {
         jsep.addBinaryOp('*', 7);
         jsep.addBinaryOp('/', 7);
         jsep.addBinaryOp('%', 7);
-        jsep.addBinaryOp('?', 3);  // Ternary conditional
-        jsep.addBinaryOp(':', 2);  // Ternary separator
 
-        // Allow unary minus only
+        // Allow unary minus, plus, and not
         jsep.addUnaryOp('-');
+        jsep.addUnaryOp('+');
+        jsep.addUnaryOp('!');
     }
 
     /**
@@ -51,19 +53,26 @@ export class SecureExpressionEvaluatorService {
      */
     safeEvaluate(expression: string, scope: Scope = {}): unknown {
         try {
-            // Pre-validation: only allow safe characters (including ternary operators)
-            if (!/^[\s\w.<>=!&|()+\-*/%?:]*$/.test(expression)) {
-                throw new ExpressionEvaluationError('Disallowed characters in expression');
+            // Pre-validation: allow safe characters including quotes, dots, and common operators
+            if (!/^[\s\w.<>=!&|()+\-*/%?:"']*$/.test(expression)) {
+                throw new ExpressionEvaluationError(
+                    'Disallowed characters in expression'
+                );
             }
 
             const ast = jsep(expression);
             return this.evaluateAst(ast, scope);
         } catch (error) {
-            this.logger.warn(`Failed to evaluate expression: ${expression}`, error);
+            this.logger.warn(
+                `Failed to evaluate expression: ${expression}`,
+                error
+            );
             if (error instanceof ExpressionEvaluationError) {
                 throw error;
             }
-            throw new ExpressionEvaluationError(`Expression evaluation failed: ${error instanceof Error ? error.message : 'Unknown error'}`);
+            throw new ExpressionEvaluationError(
+                `Expression evaluation failed: ${error instanceof Error ? error.message : 'Unknown error'}`
+            );
         }
     }
 
@@ -78,7 +87,9 @@ export class SecureExpressionEvaluatorService {
             case 'Identifier': {
                 const name = (node as any).name as string;
                 if (!Object.prototype.hasOwnProperty.call(scope, name)) {
-                    throw new ExpressionEvaluationError(`Unknown identifier: ${name}`);
+                    throw new ExpressionEvaluationError(
+                        `Unknown identifier: ${name}`
+                    );
                 }
                 return scope[name];
             }
@@ -86,13 +97,24 @@ export class SecureExpressionEvaluatorService {
             case 'UnaryExpression': {
                 const { operator, argument } = node as any;
                 const value = this.evaluateAst(argument, scope);
-                
+
                 if (operator === '-') {
                     const numValue = this.toNumber(value);
                     return -numValue;
                 }
-                
-                throw new ExpressionEvaluationError(`Unary operator not allowed: ${operator}`);
+
+                if (operator === '+') {
+                    const numValue = this.toNumber(value);
+                    return numValue;
+                }
+
+                if (operator === '!') {
+                    return !this.isTruthy(value);
+                }
+
+                throw new ExpressionEvaluationError(
+                    `Unary operator not allowed: ${operator}`
+                );
             }
 
             case 'BinaryExpression': {
@@ -102,62 +124,108 @@ export class SecureExpressionEvaluatorService {
 
                 switch (operator) {
                     case '+':
-                        return this.toNumber(leftValue) + this.toNumber(rightValue);
+                        return (
+                            this.toNumber(leftValue) + this.toNumber(rightValue)
+                        );
                     case '-':
-                        return this.toNumber(leftValue) - this.toNumber(rightValue);
+                        return (
+                            this.toNumber(leftValue) - this.toNumber(rightValue)
+                        );
                     case '*':
-                        return this.toNumber(leftValue) * this.toNumber(rightValue);
-                    case '/': {
-                        const divisor = this.toNumber(rightValue);
-                        if (divisor === 0) {
-                            throw new ExpressionEvaluationError('Division by zero');
+                        return (
+                            this.toNumber(leftValue) * this.toNumber(rightValue)
+                        );
+                    case '/':
+                        if (this.toNumber(rightValue) === 0) {
+                            throw new ExpressionEvaluationError(
+                                'Division by zero'
+                            );
                         }
-                        return this.toNumber(leftValue) / divisor;
-                    }
-                    case '%': {
-                        const divisor = this.toNumber(rightValue);
-                        if (divisor === 0) {
-                            throw new ExpressionEvaluationError('Modulo by zero');
+                        return (
+                            this.toNumber(leftValue) / this.toNumber(rightValue)
+                        );
+                    case '%':
+                        if (this.toNumber(rightValue) === 0) {
+                            throw new ExpressionEvaluationError(
+                                'Modulo by zero'
+                            );
                         }
-                        return this.toNumber(leftValue) % divisor;
-                    }
+                        return (
+                            this.toNumber(leftValue) % this.toNumber(rightValue)
+                        );
                     case '===':
                         return leftValue === rightValue;
                     case '!==':
                         return leftValue !== rightValue;
                     case '>':
-                        return this.toNumber(leftValue) > this.toNumber(rightValue);
+                        return (
+                            this.toNumber(leftValue) > this.toNumber(rightValue)
+                        );
                     case '<':
-                        return this.toNumber(leftValue) < this.toNumber(rightValue);
+                        return (
+                            this.toNumber(leftValue) < this.toNumber(rightValue)
+                        );
                     case '>=':
-                        return this.toNumber(leftValue) >= this.toNumber(rightValue);
+                        return (
+                            this.toNumber(leftValue) >=
+                            this.toNumber(rightValue)
+                        );
                     case '<=':
-                        return this.toNumber(leftValue) <= this.toNumber(rightValue);
+                        return (
+                            this.toNumber(leftValue) <=
+                            this.toNumber(rightValue)
+                        );
+                    case '==':
+                        return leftValue == rightValue;
+                    case '!=':
+                        return leftValue != rightValue;
+                    case '&&':
+                        return (
+                            this.isTruthy(leftValue) &&
+                            this.isTruthy(rightValue)
+                        );
+                    case '||':
+                        return (
+                            this.isTruthy(leftValue) ||
+                            this.isTruthy(rightValue)
+                        );
                     default:
-                        throw new ExpressionEvaluationError(`Binary operator not allowed: ${operator}`);
+                        throw new ExpressionEvaluationError(
+                            `Binary operator not allowed: ${operator}`
+                        );
                 }
             }
 
             case 'LogicalExpression': {
                 const { operator, left, right } = node as any;
-                
+
                 if (operator === '&&') {
-                    const leftTruthy = this.isTruthy(this.evaluateAst(left, scope));
-                    return leftTruthy ? this.isTruthy(this.evaluateAst(right, scope)) : false;
+                    const leftTruthy = this.isTruthy(
+                        this.evaluateAst(left, scope)
+                    );
+                    return leftTruthy
+                        ? this.isTruthy(this.evaluateAst(right, scope))
+                        : false;
                 }
-                
+
                 if (operator === '||') {
-                    const leftTruthy = this.isTruthy(this.evaluateAst(left, scope));
-                    return leftTruthy ? true : this.isTruthy(this.evaluateAst(right, scope));
+                    const leftTruthy = this.isTruthy(
+                        this.evaluateAst(left, scope)
+                    );
+                    return leftTruthy
+                        ? true
+                        : this.isTruthy(this.evaluateAst(right, scope));
                 }
-                
-                throw new ExpressionEvaluationError(`Logical operator not allowed: ${operator}`);
+
+                throw new ExpressionEvaluationError(
+                    `Logical operator not allowed: ${operator}`
+                );
             }
 
             case 'ConditionalExpression': {
                 const { test, consequent, alternate } = node as any;
                 const testValue = this.evaluateAst(test, scope);
-                
+
                 if (this.isTruthy(testValue)) {
                     return this.evaluateAst(consequent, scope);
                 } else {
@@ -168,10 +236,14 @@ export class SecureExpressionEvaluatorService {
             // Explicitly block dangerous operations
             case 'MemberExpression':
             case 'CallExpression':
-                throw new ExpressionEvaluationError(`Operation not allowed: ${node.type}`);
+                throw new ExpressionEvaluationError(
+                    `Operation not allowed: ${node.type}`
+                );
 
             default:
-                throw new ExpressionEvaluationError(`Unsupported node type: ${node.type}`);
+                throw new ExpressionEvaluationError(
+                    `Unsupported node type: ${node.type}`
+                );
         }
     }
 
@@ -188,7 +260,15 @@ export class SecureExpressionEvaluatorService {
                 return num;
             }
         }
-        throw new ExpressionEvaluationError(`Expected a finite number, got: ${typeof value}`);
+        if (typeof value === 'boolean') {
+            return value ? 1 : 0;
+        }
+        if (value === null || value === undefined) {
+            return 0;
+        }
+        throw new ExpressionEvaluationError(
+            `Expected a finite number, got: ${typeof value}`
+        );
     }
 
     /**
@@ -201,21 +281,33 @@ export class SecureExpressionEvaluatorService {
     /**
      * Validate an expression for syntax errors
      */
-    validateExpression(expression: string, availableIdentifiers: string[] = []): { 
-        isValid: boolean; 
-        errors: string[] 
+    validateExpression(
+        expression: string,
+        availableIdentifiers: string[] = []
+    ): {
+        isValid: boolean;
+        errors: string[];
     } {
         const errors: string[] = [];
 
         try {
-            // Pre-validation: only allow safe characters (including ternary operators)
-            if (!/^[\s\w.<>=!&|()+\-*/%?:]*$/.test(expression)) {
+            // Pre-validation: allow safe characters including quotes, dots, and common operators
+            if (!/^[\s\w.<>=!&|()+\-*/%?:"']*$/.test(expression)) {
                 errors.push('Expression contains disallowed characters');
+            }
+
+            // Check for obvious syntax errors before parsing
+            // Look for specific invalid patterns like "2 + + 3"
+            if (
+                /\d\s*\+\s*\+\s*\d/.test(expression) ||
+                /\+\s*\+\s*\d/.test(expression)
+            ) {
+                errors.push('Syntax error: Invalid consecutive plus operators');
             }
 
             // Parse to check syntax
             const ast = jsep(expression);
-            
+
             // Check for valid identifiers
             const usedIdentifiers = this.extractIdentifiers(ast);
             for (const identifier of usedIdentifiers) {
@@ -226,9 +318,10 @@ export class SecureExpressionEvaluatorService {
 
             // Check for dangerous operations
             this.validateAstSafety(ast, errors);
-
         } catch (error) {
-            errors.push(`Syntax error: ${error instanceof Error ? error.message : 'Unknown error'}`);
+            errors.push(
+                `Syntax error: ${error instanceof Error ? error.message : 'Unknown error'}`
+            );
         }
 
         return {
@@ -248,7 +341,10 @@ export class SecureExpressionEvaluatorService {
                 identifiers.push((n as any).name);
             } else if (n.type === 'UnaryExpression') {
                 traverse((n as any).argument);
-            } else if (n.type === 'BinaryExpression' || n.type === 'LogicalExpression') {
+            } else if (
+                n.type === 'BinaryExpression' ||
+                n.type === 'LogicalExpression'
+            ) {
                 traverse((n as any).left);
                 traverse((n as any).right);
             } else if (n.type === 'ConditionalExpression') {
@@ -274,7 +370,10 @@ export class SecureExpressionEvaluatorService {
 
             if (n.type === 'UnaryExpression') {
                 traverse((n as any).argument);
-            } else if (n.type === 'BinaryExpression' || n.type === 'LogicalExpression') {
+            } else if (
+                n.type === 'BinaryExpression' ||
+                n.type === 'LogicalExpression'
+            ) {
                 traverse((n as any).left);
                 traverse((n as any).right);
             } else if (n.type === 'ConditionalExpression') {

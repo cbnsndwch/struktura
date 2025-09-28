@@ -6,12 +6,16 @@ import { SecureExpressionEvaluatorService } from './secure-expression-evaluator.
 
 describe('FormulaService', () => {
     let service: FormulaService;
+    let secureEvaluatorService: SecureExpressionEvaluatorService;
 
     beforeEach(async () => {
         const module: TestingModule = await Test.createTestingModule({
-            providers: [FormulaService, SecureExpressionEvaluatorService]
+            providers: [SecureExpressionEvaluatorService, FormulaService]
         }).compile();
 
+        secureEvaluatorService = module.get<SecureExpressionEvaluatorService>(
+            SecureExpressionEvaluatorService
+        );
         service = module.get<FormulaService>(FormulaService);
     });
 
@@ -85,8 +89,8 @@ describe('FormulaService', () => {
                 data,
                 'collection-id'
             );
-            // The current implementation has issues with string evaluation
-            expect(typeof result).toBe('number'); // This is what it currently returns
+            // String fields should return string values
+            expect(result).toBe('John');
         });
 
         it('should handle formula errors gracefully', async () => {
@@ -174,7 +178,7 @@ describe('FormulaService', () => {
         });
 
         it('should detect invalid characters', () => {
-            const formula = '{price} < {quantity}'; // < is not allowed
+            const formula = '{price} $ {quantity}'; // $ is not allowed
             const fields = [
                 { name: 'price', type: 'number' },
                 { name: 'quantity', type: 'number' }
