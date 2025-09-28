@@ -5,9 +5,14 @@
             "name": "Debug Main Application",
             "type": "node",
             "request": "launch",
-            "runtimeArgs": ["start:debug"],
+            "runtimeArgs": [
+                "start:debug"
+            ],
             "runtimeExecutable": "pnpm",
-            "skipFiles": ["<node_internals>/**", "**/node_modules/@nestjs/**"],
+            "skipFiles": [
+                "<node_internals>/**",
+                "**/node_modules/@nestjs/**"
+            ],
             "env": {
                 "LOG_LEVEL": "VERBOSE"
             },
@@ -18,10 +23,14 @@
             "name": "Start Main Application",
             "type": "node",
             "request": "launch",
-            "skipFiles": ["<node_internals>/**"],
+            "skipFiles": [
+                "<node_internals>/**"
+            ],
             "runtimeExecutable": "pnpm",
             "cwd": "${workspaceRoot}/apps/main",
-            "runtimeArgs": ["start"]
+            "runtimeArgs": [
+                "start"
+            ]
         },
         {
             "name": "Main App - Chrome Debug",
@@ -42,7 +51,9 @@
             "type": "node",
             "request": "launch",
             "program": "${file}",
-            "skipFiles": ["<node_internals>/**"]
+            "skipFiles": [
+                "<node_internals>/**"
+            ]
         }
     ]
 }

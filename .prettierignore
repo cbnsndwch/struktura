@@ -42,10 +42,6 @@ libs/*/coverage
 
 # IDE - VSCode
 .vscode/*
-!.vscode/settings.json
-!.vscode/tasks.json
-!.vscode/launch.json
-!.vscode/extensions.json
 
 # Environments and credentials
 **/.env*
