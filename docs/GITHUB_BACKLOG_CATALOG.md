@@ -6,7 +6,7 @@ This file serves as the source of truth for all GitHub issues, epics, and milest
 
 - **Last Updated**: 2025-09-28
 - **GitHub Repository**: cbnsndwch/struktura
-- **Total Issues Planned**: 28
+- **Total Issues Planned**: 35 (7 new issues added to Epic 3)
 - **Total Epics Completed**: 2 of 8 (Epic 1 & 2 ✅)
 - **Active Milestones**: 3
 
@@ -201,66 +201,210 @@ Build the core NestJS application structure with authentication, workspace manag
 
 ---
 
-## Epic 3: Schema Management System 🎯 ✅ **COMPLETED**
+## Epic 3: Data Management Interface 🎯
 **Milestone**: v0.1.0-mvp  
-**Priority**: Critical  
-**Estimated Duration**: 3 weeks  
-**GitHub Label**: `epic:schema-management`  
-**Status**: ✅ **Completed on September 28, 2025**
+**Priority**: High  
+**Estimated Duration**: 12-14 weeks (extended for design system foundation)  
+**GitHub Label**: `epic:epic-3`  
+**GitHub Issue**: #10
 
 ### Epic Description
-Create a flexible schema management system that allows users to define collections with various field types and validation rules.
+Create intuitive interfaces for data entry, editing, and management that feel familiar to spreadsheet users while supporting MongoDB's document flexibility. This epic includes foundational design system work that must be completed before building specific UI features.
 
-### Issues
+### Foundation & Design System Issues (Complete First)
 
-#### 3.1 Dynamic Field Types Implementation 🔧
-**Status**: ✅ Complete  
-**GitHub Issue**: #18 (Closed)  
-**Assignee**: Backend Developer  
+#### 3.1 Initialize shadcn/ui Design System in Shared UI Workspace 🔧
+**Status**: 🔄 Synced  
+**GitHub Issue**: #46  
+**Assignee**: Frontend Developer  
+**Estimate**: 3 days  
+**Priority**: High
+
+**Description**: Set up shadcn/ui in the features/shared/ui workspace for centralized component management across the monorepo.
+
+**Acceptance Criteria**:
+- [ ] shadcn/ui CLI initialized in features/shared/ui workspace
+- [ ] All registry components installed except legacy toaster (use sonner)
+- [ ] TypeScript configuration and build outputs configured
+- [ ] Component export structure for workspace consumption
+- [ ] Sonner toast system integrated
+
+**Labels**: `type:task`, `priority:high`, `epic:epic-3`, `component:frontend`
+
+---
+
+#### 3.2 Integrate Main App with Shared UI Component Workspace 🔧
+**Status**: 🔄 Synced  
+**GitHub Issue**: #47  
+**Assignee**: Frontend Developer  
+**Estimate**: 2 days  
+**Priority**: High
+
+**Description**: Configure the main application to properly consume UI components from the shared workspace.
+
+**Acceptance Criteria**:
+- [ ] Workspace dependency added to main app package.json
+- [ ] TypeScript path mapping configured for shared UI imports
+- [ ] Vite configuration supports workspace dependencies
+- [ ] Hot reload works for shared component changes
+- [ ] Example components integrated and functional
+
+**Labels**: `type:task`, `priority:high`, `epic:epic-3`, `component:frontend`
+
+---
+
+#### 3.3 Refactor UI Theme System with shadcn/ui CSS Variables and Dark Mode 🔧
+**Status**: 🔄 Synced  
+**GitHub Issue**: #48  
+**Assignee**: Frontend Developer  
 **Estimate**: 4 days  
-**Priority**: Critical
+**Priority**: High
 
-**Description**: Implement core field types for collections including text, number, date, boolean with validation.
+**Description**: Implement comprehensive theme system using shadcn/ui CSS variables with light and dark mode support.
 
 **Acceptance Criteria**:
-- [x] Text field with length validation
-- [x] Number field with min/max validation
-- [x] Date and DateTime fields
-- [x] Boolean field
-- [x] Email field with format validation
-- [x] URL field with format validation
-- [x] Field type registry system
-- [x] Validation engine architecture
+- [ ] CSS custom properties defined for all theme tokens
+- [ ] Light and dark mode themes configured
+- [ ] Theme toggle functionality implemented
+- [ ] Smooth transitions between modes
+- [ ] Theme persistence across sessions
 
-**Labels**: `type:task`, `priority:critical`, `epic:schema-management`, `component:schema`
+**Labels**: `type:task`, `priority:high`, `epic:epic-3`, `component:frontend`
 
 ---
 
-#### 3.2 Visual Collection Builder 📋
-**Status**: ✅ Complete  
-**GitHub Issue**: #17 (Closed)  
-**Assignee**: Full-stack Developer  
+#### 3.4 Browser Theme Detection with User Override Capability 🔧
+**Status**: 🔄 Synced  
+**GitHub Issue**: #49  
+**Assignee**: Frontend Developer  
+**Estimate**: 2 days  
+**Priority**: Medium
+
+**Description**: Implement automatic system theme detection with user override capabilities.
+
+**Acceptance Criteria**:
+- [ ] Automatic prefers-color-scheme detection
+- [ ] Three-state system (light/dark/auto)
+- [ ] User preferences stored in localStorage
+- [ ] Real-time updates for system preference changes
+- [ ] SSR-safe implementation
+
+**Labels**: `type:task`, `priority:medium`, `epic:epic-3`, `component:frontend`
+
+---
+
+#### 3.5 Add User Preferences Dictionary to Database for Theme Storage �
+**Status**: 🔄 Synced  
+**GitHub Issue**: #50  
+**Assignee**: Backend Developer  
+**Estimate**: 3 days  
+**Priority**: Medium
+
+**Description**: Extend user model with preferences dictionary for cross-device theme synchronization.
+
+**Acceptance Criteria**:
+- [ ] User model extended with preferences dictionary
+- [ ] API endpoints for reading/updating preferences
+- [ ] SSR applies user's stored theme preference
+- [ ] Client synchronizes local theme with database
+- [ ] Migration script for existing users
+
+**Labels**: `type:task`, `priority:medium`, `epic:epic-3`, `component:backend`
+
+---
+
+#### 3.6 Document Frimousse Emoji Picker Integration Strategy 📚
+**Status**: 🔄 Synced  
+**GitHub Issue**: #51  
+**Assignee**: Documentation Specialist  
+**Estimate**: 1 day  
+**Priority**: Low
+
+**Description**: Create documentation for frimousse emoji picker integration for future rich content features.
+
+**Acceptance Criteria**:
+- [ ] Frimousse integration guide created
+- [ ] Installation and setup instructions
+- [ ] TypeScript integration examples
+- [ ] Theme integration documented
+- [ ] Performance and accessibility guidelines
+
+**Labels**: `type:docs`, `priority:low`, `epic:epic-3`
+
+---
+
+#### 3.7 Build Data Visualization Components Based on Tablecn (Vendor Implementation) 🔧
+**Status**: 🔄 Synced  
+**GitHub Issue**: #52  
+**Assignee**: Frontend Developer  
+**Estimate**: 5 days  
+**Priority**: High
+
+**Description**: Vendor and adapt tablecn components for robust data table functionality without external dependencies.
+
+**Acceptance Criteria**:
+- [ ] Tablecn source code vendored and adapted
+- [ ] DiceUI dependencies removed
+- [ ] NUQS dependency avoided
+- [ ] Core table with sorting, filtering, pagination
+- [ ] Theme integration with shadcn/ui
+- [ ] TypeScript types comprehensive
+
+**Labels**: `type:task`, `priority:high`, `epic:epic-3`, `component:frontend`
+
+---
+
+### Core Data Management Features (Complete After Foundation)
+
+#### 3.8 Grid View for Data Management 📋
+**Status**: 🔄 Synced  
+**GitHub Issue**: #19  
+**Assignee**: Frontend Developer  
+**Estimate**: 7 days  
+**Priority**: High
+
+**Description**: Create spreadsheet-like grid interface for viewing and editing records.
+
+**User Story**: As a user familiar with spreadsheets, I want a grid interface for managing my data so that I can efficiently enter and edit records.
+
+**Acceptance Criteria**:
+- [ ] Spreadsheet-like grid interface
+- [ ] Inline editing with type validation
+- [ ] Column sorting and filtering
+- [ ] Row selection and bulk operations
+- [ ] Keyboard navigation (arrow keys, tab)
+- [ ] Column resizing and reordering
+- [ ] Frozen columns for large datasets
+
+**Labels**: `type:story`, `priority:high`, `epic:epic-3`, `component:frontend`
+
+---
+
+#### 3.9 Record Detail Forms 📋
+**Status**: 🔄 Synced  
+**GitHub Issue**: #20  
+**Assignee**: Frontend Developer  
 **Estimate**: 6 days  
-**Priority**: Critical
+**Priority**: High
 
-**Description**: Create UI and API for building collection schemas with drag-and-drop field management.
+**Description**: Create detailed forms for complex record management with nested data support.
 
-**User Story**: As a user, I want to create custom collections with different field types so that I can structure my data according to my needs.
+**User Story**: As a user, I want detailed forms for complex records so that I can manage nested data and relationships effectively.
 
 **Acceptance Criteria**:
-- [x] Collection creation form
-- [x] Field addition with type selection
-- [x] Field configuration (required, unique, validation)
-- [x] Drag-and-drop field reordering
-- [x] Schema preview and validation
-- [x] Collection editing and deletion
-- [x] Field removal with data migration warnings
+- [ ] Auto-generated forms from schema
+- [ ] Nested object/array editing
+- [ ] File upload with preview
+- [ ] Relationship field selectors
+- [ ] Form validation with error messages
+- [ ] Conditional field display
+- [ ] Form templates and customization
 
-**Labels**: `type:story`, `priority:critical`, `epic:schema-management`, `component:ui`, `component:schema`
+**Labels**: `type:story`, `priority:high`, `epic:epic-3`, `component:frontend`
 
 ---
 
-## Epic 4: Data Management Foundation 🎯
+## Epic 4: Multiple Views & Visualization 🎯
 **Milestone**: v0.1.0-mvp  
 **Priority**: Critical  
 **Estimated Duration**: 3 weeks  
@@ -479,10 +623,34 @@ The following scripts are available for managing this catalog:
 
 ## Sync Status
 
-**Last GitHub Sync**: 2025-09-26  
-**Issues Created**: 6/6  
+**Last GitHub Sync**: 2025-09-28  
+**Issues Created**: 13/13 (7 new issues added for Epic 3 design system foundation)  
 **Milestones Created**: 3/3  
 **Labels Created**: 27/27  
+
+## Recent Updates
+
+### 2025-09-28: Epic 3 Design System Foundation Expansion
+- Added 7 new foundational issues to Epic 3 (#46-52)
+- Reordered Epic 3 to prioritize design system setup before UI features
+- Updated Epic 3 scope and timeline (12-14 weeks vs 8-10 weeks)
+- All new issues linked as sub-issues of Epic 3 (#10)
+- Issues added:
+  - #46: Initialize shadcn/ui Design System
+  - #47: Integrate Main App with Shared UI
+  - #48: Theme System with CSS Variables & Dark Mode  
+  - #49: Browser Theme Detection with Override
+  - #50: User Preferences Database Storage
+  - #51: Frimousse Emoji Picker Documentation
+  - #52: Data Visualization Components (Tablecn Vendor)
+
+#### Key Technical Decisions Documented
+- **Rich Text Editor**: Lexical (https://lexical.dev/) specified for all rich text editing features
+- **Design System**: shadcn/ui with all components except legacy toaster (use sonner)
+- **Theme System**: CSS variables, light/dark/auto modes, database persistence
+- **Data Tables**: Vendored tablecn code, avoid NUQS dependency  
+- **Emoji Picker**: frimousse integration when needed
+- **Architecture**: Shared UI workspace for component reuse across features
 
 ---
 
