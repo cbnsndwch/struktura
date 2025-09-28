@@ -7,7 +7,7 @@ import { WorkspaceRole } from '@cbnsndwch/struktura-workspace-contracts';
 import {
     Collection,
     CollectionDocument
-} from '../entities/collection.entity.js';
+} from '../entities/collections/collection.entity.js';
 import {
     CreateCollectionDto,
     UpdateCollectionDto,

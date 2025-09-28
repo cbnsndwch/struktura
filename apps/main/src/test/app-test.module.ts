@@ -3,9 +3,9 @@ import { GraphQLModule } from '@nestjs/graphql';
 import { ApolloDriver, ApolloDriverConfig } from '@nestjs/apollo';
 
 import { AppTestController } from './app-test.controller.js';
-import { AppService } from './app.service.js';
-import { DatabaseTestModule } from './database/database-test.module.js';
-import { AppResolver } from './graphql/app.resolver.js';
+import { AppService } from '../demo/app.service.js';
+import { DatabaseTestModule } from './database-test.module.js';
+import { AppResolver } from '../demo/app.resolver.js';
 
 @Module({
     imports: [

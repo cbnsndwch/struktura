@@ -90,7 +90,11 @@ export class CollectionController {
      * Update collection
      */
     @Put(':id')
-    @WorkspaceRoles([WorkspaceRole.OWNER, WorkspaceRole.ADMIN, WorkspaceRole.EDITOR])
+    @WorkspaceRoles([
+        WorkspaceRole.OWNER,
+        WorkspaceRole.ADMIN,
+        WorkspaceRole.EDITOR
+    ])
     async update(
         @Param('id') id: string,
         @Body() updateCollectionDto: UpdateCollectionDto,
@@ -120,7 +124,11 @@ export class CollectionController {
      * Add field to collection
      */
     @Post(':id/fields')
-    @WorkspaceRoles([WorkspaceRole.OWNER, WorkspaceRole.ADMIN, WorkspaceRole.EDITOR])
+    @WorkspaceRoles([
+        WorkspaceRole.OWNER,
+        WorkspaceRole.ADMIN,
+        WorkspaceRole.EDITOR
+    ])
     async addField(
         @Param('id') id: string,
         @Body() fieldDto: FieldDefinitionDto,
@@ -133,14 +141,23 @@ export class CollectionController {
      * Update field in collection
      */
     @Put(':id/fields/:fieldName')
-    @WorkspaceRoles([WorkspaceRole.OWNER, WorkspaceRole.ADMIN, WorkspaceRole.EDITOR])
+    @WorkspaceRoles([
+        WorkspaceRole.OWNER,
+        WorkspaceRole.ADMIN,
+        WorkspaceRole.EDITOR
+    ])
     async updateField(
         @Param('id') id: string,
         @Param('fieldName') fieldName: string,
         @Body() fieldDto: FieldDefinitionDto,
         @Request() req: AuthenticatedRequest
     ) {
-        return this.collectionService.updateField(id, fieldName, fieldDto, req.user.sub);
+        return this.collectionService.updateField(
+            id,
+            fieldName,
+            fieldDto,
+            req.user.sub
+        );
     }
 
     /**

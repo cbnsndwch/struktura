@@ -12,14 +12,15 @@ import {
 } from '@cbnsndwch/struktura-auth-domain';
 import { WorkspaceModule } from '@cbnsndwch/struktura-workspace-domain';
 
-import { AppController } from './app.controller.js';
-import { AppService } from './app.service.js';
-import { DatabaseModule } from './database/database.module.js';
-import { AppResolver } from './graphql/app.resolver.js';
+import { AppController } from './demo/app.controller.js';
+import { AppResolver } from './demo/app.resolver.js';
+import { AppService } from './demo/app.service.js';
+
+import { DbModule } from './features/database.module.js';
 
 @Module({
     imports: [
-        DatabaseModule,
+        DbModule,
         AuthModule,
         WorkspaceModule,
         GraphQLModule.forRootAsync<ApolloDriverConfig>({

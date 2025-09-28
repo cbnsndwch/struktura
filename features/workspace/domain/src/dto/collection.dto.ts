@@ -11,52 +11,26 @@ import {
     ValidateNested
 } from 'class-validator';
 import { Type } from 'class-transformer';
-import { InputType, Field } from '@nestjs/graphql';
+import { InputType, Field, ObjectType } from '@nestjs/graphql';
 
-import {
-    FieldType,
-    ValidationRule,
-    FieldOptions
-} from '../entities/collection.entity.js';
+import { FieldType } from '../entities/collections/field-type.enum.js';
+import { FieldValidationRule } from '../entities/collections/field-validation-rule.entity.js';
+import { FieldOptions } from '../entities/collections/field-options.entity.js';
 
-@InputType()
-export class ValidationRuleDto implements ValidationRule {
-    @Field()
-    @IsEnum([
-        'required',
-        'minLength',
-        'maxLength',
-        'pattern',
-        'min',
-        'max',
-        'email',
-        'url',
-        'phone',
-        'unique',
-        'custom'
-    ])
-    type!:
-        | 'required'
-        | 'minLength'
-        | 'maxLength'
-        | 'pattern'
-        | 'min'
-        | 'max'
-        | 'email'
-        | 'url'
-        | 'phone'
-        | 'unique'
-        | 'custom';
+// @InputType()
+// export class FieldValidationRuleDto {
+//     @Field(() => String)
+//     @IsString()
+//     type!: string;
 
-    @Field({ nullable: true })
-    @IsOptional()
-    value?: unknown;
+//     @Field(() => String, { name: 'ruleData' })
+//     @IsString()
+//     ruleValue!: string;
 
-    @Field({ nullable: true })
-    @IsOptional()
-    @IsString()
-    message?: string;
-}
+//     @Field(() => String)
+//     @IsString()
+//     message!: string;
+// }
 
 @InputType()
 export class FieldOptionsDto implements FieldOptions {
@@ -145,16 +119,16 @@ export class FieldDefinitionDto {
     @IsBoolean()
     unique!: boolean;
 
-    @Field({ nullable: true })
+    @Field(() => String, { nullable: true })
     @IsOptional()
-    defaultValue?: unknown;
+    @IsString()
+    defaultValue?: string;
 
-    @Field(() => [ValidationRuleDto], { nullable: true })
-    @IsOptional()
+    // Validations field for service compatibility (not exposed to GraphQL)
     @IsArray()
     @ValidateNested({ each: true })
-    @Type(() => ValidationRuleDto)
-    validations?: ValidationRuleDto[];
+    @Type(() => FieldValidationRule)
+    validations?: FieldValidationRule[];
 
     @Field(() => FieldOptionsDto, { nullable: true })
     @IsOptional()
@@ -185,17 +159,20 @@ export class ViewDefinitionDto {
     @IsString({ each: true })
     visibleFields?: string[];
 
-    @Field({ nullable: true })
+    @Field(() => String, { nullable: true })
     @IsOptional()
-    filters?: Record<string, unknown>;
+    @IsString()
+    filters?: string;
 
-    @Field({ nullable: true })
+    @Field(() => String, { nullable: true })
     @IsOptional()
-    sorting?: Record<string, 'asc' | 'desc'>;
+    @IsString()
+    sorting?: string;
 
-    @Field({ nullable: true })
+    @Field(() => String, { nullable: true })
     @IsOptional()
-    grouping?: Record<string, unknown>;
+    @IsString()
+    grouping?: string;
 }
 
 @InputType()
@@ -223,8 +200,8 @@ export class CreateCollectionDto {
     })
     slug?: string;
 
-    @Field()
     @IsString()
+    @Field(() => String)
     workspaceId!: string;
 
     @Field({ nullable: true })
@@ -326,25 +303,32 @@ export class FieldTemplateDto {
 }
 
 // Collection template response
+@ObjectType()
 export class CollectionTemplateDto {
+    @Field()
     @IsString()
     id!: string;
 
+    @Field()
     @IsString()
     name!: string;
 
+    @Field()
     @IsString()
     description!: string;
 
+    @Field(() => [FieldDefinitionDto])
     @IsArray()
     @ValidateNested({ each: true })
     @Type(() => FieldDefinitionDto)
     fields!: FieldDefinitionDto[];
 
+    @Field({ nullable: true })
     @IsOptional()
     @IsString()
     category?: string;
 
+    @Field({ nullable: true })
     @IsOptional()
     @IsString()
     icon?: string;

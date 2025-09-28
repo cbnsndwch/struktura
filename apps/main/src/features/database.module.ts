@@ -23,4 +23,4 @@ import { MongooseModule } from '@nestjs/mongoose';
     ],
     exports: [MongooseModule]
 })
-export class DatabaseModule {}
+export class DbModule {}

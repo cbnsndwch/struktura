@@ -8,9 +8,8 @@ import { Model, Types } from 'mongoose';
 
 import {
     Collection,
-    CollectionDocument,
-    FieldType
-} from '../entities/collection.entity.js';
+    CollectionDocument} from '../entities/collections/collection.entity.js';
+import { FieldType } from '../entities/collections/field-type.enum.js';
 import {
     CreateCollectionDto,
     UpdateCollectionDto,
@@ -148,7 +147,10 @@ export class CollectionService {
         }
 
         if (updateCollectionDto.fields) {
-            collection.fields = updateCollectionDto.fields;
+            collection.fields = updateCollectionDto.fields.map(field => ({
+                ...field,
+                validations: field.validations ?? []
+            }));
         }
 
         if (updateCollectionDto.views) {
@@ -173,10 +175,10 @@ export class CollectionService {
      */
     async remove(id: string, userId: string): Promise<void> {
         const collection = await this.findOne(id);
-        
+
         collection.isActive = false;
         collection.modifiedBy = new Types.ObjectId(userId);
-        
+
         await collection.save();
     }
 
@@ -202,7 +204,10 @@ export class CollectionService {
         }
 
         // Add the new field
-        collection.fields.push(fieldDto);
+        collection.fields.push({
+            ...fieldDto,
+            validations: fieldDto.validations ?? []
+        });
         collection.modifiedBy = new Types.ObjectId(userId);
 
         return collection.save();
@@ -230,7 +235,8 @@ export class CollectionService {
         // Update the field
         collection.fields[fieldIndex] = {
             ...collection.fields[fieldIndex],
-            ...fieldDto
+            ...fieldDto,
+            validations: fieldDto.validations ?? []
         };
 
         collection.modifiedBy = new Types.ObjectId(userId);

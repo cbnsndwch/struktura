@@ -52,9 +52,11 @@ export interface ValidationRule {
         | 'max'
         | 'email'
         | 'url'
+        | 'phone'
+        | 'unique'
         | 'custom';
     value?: unknown;
-    message: string;
+    message?: string;
 }
 
 export interface FieldOptions {
@@ -204,12 +206,19 @@ export interface CollectionServiceContract {
     findByWorkspace(workspaceId: string): Promise<Collection[]>;
     update(id: string, data: UpdateCollectionData): Promise<Collection>;
     delete(id: string): Promise<void>;
-    
+
     // Field management
     addField(collectionId: string, data: CreateFieldData): Promise<Collection>;
-    updateField(collectionId: string, fieldId: string, data: UpdateFieldData): Promise<Collection>;
+    updateField(
+        collectionId: string,
+        fieldId: string,
+        data: UpdateFieldData
+    ): Promise<Collection>;
     removeField(collectionId: string, fieldId: string): Promise<Collection>;
-    reorderFields(collectionId: string, fieldOrders: Array<{ id: string; order: number }>): Promise<Collection>;
+    reorderFields(
+        collectionId: string,
+        fieldOrders: Array<{ id: string; order: number }>
+    ): Promise<Collection>;
 }
 
 export interface RecordServiceContract {
@@ -218,8 +227,14 @@ export interface RecordServiceContract {
         data: CreateRecordData,
         userId: string
     ): Promise<CollectionRecord>;
-    findById(collectionId: string, id: string): Promise<CollectionRecord | null>;
-    findMany(collectionId: string, options?: QueryOptions): Promise<CollectionRecord[]>;
+    findById(
+        collectionId: string,
+        id: string
+    ): Promise<CollectionRecord | null>;
+    findMany(
+        collectionId: string,
+        options?: QueryOptions
+    ): Promise<CollectionRecord[]>;
     count(
         collectionId: string,
         filter?: { [key: string]: unknown }
@@ -248,7 +263,9 @@ export interface CollectionRepositoryContract {
     findById(id: string): Promise<Collection | null>;
     findBySlug(workspaceId: string, slug: string): Promise<Collection | null>;
     findByWorkspaceId(workspaceId: string): Promise<Collection[]>;
-    create(collection: Omit<Collection, 'id' | 'createdAt' | 'updatedAt'>): Promise<Collection>;
+    create(
+        collection: Omit<Collection, 'id' | 'createdAt' | 'updatedAt'>
+    ): Promise<Collection>;
     update(id: string, updates: Partial<Collection>): Promise<Collection>;
     delete(id: string): Promise<void>;
 }
