@@ -5,6 +5,7 @@ import { NestExpressApplication } from '@nestjs/platform-express';
 import { printStartupBanner } from '@cbnsndwch/struktura-shared-domain';
 
 import { AppModule } from './app.module.js';
+import { mountReactRouterHandler } from './react-router.js';
 
 const logger = new Logger('Bootstrap');
 
@@ -13,6 +14,9 @@ async function bootstrap() {
 
     // Enable CORS for development
     app.enableCors();
+
+    // Mount React Router handler for all non-API routes
+    await mountReactRouterHandler(app);
 
     const port = process.env.PORT || 3000;
     await app.listen(port);

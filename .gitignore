@@ -10,7 +10,7 @@
 # Dependencies & compiled output
 **/node_modules
 **/.pnp.*
-lib
+features/**/lib
 build
 dist
 
@@ -67,4 +67,9 @@ tsconfig.tsbuildinfo
 # Changesets
 /IMPLEMENTATION.md
 /changelog-temp.md
+
+# Local files
 .local
+
+# RR7
+.react-router/

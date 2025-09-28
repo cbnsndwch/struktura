@@ -15,7 +15,7 @@
     },
     "scripts": {
         "build": "turbo run build",
-        "build:feat": "turbo run build --filter='@cbnsndwch/struktura-*-contracts' --filter='@cbnsndwch/struktura-*-domain' --filter='@cbnsndwch/struktura-*-ui'",
+        "build:feat": "turbo run build --filter=\"./features/**/*\"",
         "clean": "turbo run clean",
         "clog": "conventional-changelog -p angular -i CHANGELOG.md -o changelog-temp.md",
         "deps": "node tools/dep-version-map.js && tools/dep-version-map.json",
@@ -40,7 +40,7 @@
         "@types/node": "^22.18.6",
         "change-case": "^5.4.4",
         "conventional-changelog-cli": "^5.0.0",
-        "dotenv": "^16.0.3",
+        "dotenv": "^17.2.2",
         "eslint": "^9.36.0",
         "eslint-config-prettier": "^10.1.8",
         "eslint-import-resolver-typescript": "^4.4.4",

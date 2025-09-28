@@ -1,9 +1,12 @@
 {
     "chat.agent.maxRequests": 100,
     "cSpell.words": [
+        "Airtable",
         "Buildx",
         "dvmrc",
+        "isbot",
         "jsep",
+        "Pipeable",
         "postinstalls",
         "Struktura",
         "tini",

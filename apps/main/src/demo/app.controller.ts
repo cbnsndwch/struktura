@@ -14,7 +14,7 @@ export class AppController {
     ) {}
 
     @Public()
-    @Get()
+    @Get('api/hello')
     getHello(): string {
         return this.appService.getHello();
     }
