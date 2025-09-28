@@ -16,9 +16,33 @@ env:
 
 jobs:
   # ================================
+  # Circuit Breaker - Skip CI Check
+  # ================================
+  check-skip-ci:
+    runs-on: ubuntu-24.04
+    outputs:
+      should-skip: ${{ steps.skip-check.outputs.should-skip }}
+    steps:
+      - name: Check for skip CI directive
+        id: skip-check
+        run: |
+          COMMIT_MESSAGE="${{ github.event.head_commit.message || github.event.pull_request.title }}"
+          echo "Commit message: $COMMIT_MESSAGE"
+          
+          if echo "$COMMIT_MESSAGE" | grep -q "#skip-ci"; then
+            echo "🛑 Found #skip-ci in commit message - stopping workflow"
+            echo "should-skip=true" >> $GITHUB_OUTPUT
+            exit 1
+          else
+            echo "✅ No #skip-ci found - continuing workflow"
+            echo "should-skip=false" >> $GITHUB_OUTPUT
+          fi
+
+  # ================================
   # Code Quality & Testing
   # ================================
   quality-checks:
+    needs: check-skip-ci
     runs-on: ubuntu-24.04
     steps:
       - name: Checkout repository
@@ -54,6 +78,7 @@ jobs:
   security-scan:
     runs-on: ubuntu-24.04
     needs:
+      - check-skip-ci
       - quality-checks
     permissions:
       contents: read
@@ -95,6 +120,7 @@ jobs:
   build-and-push:
     runs-on: ubuntu-24.04-arm
     needs: 
+      - check-skip-ci
       - quality-checks
       - security-scan
     if: github.event_name == 'push'
@@ -218,6 +244,7 @@ jobs:
   notify:
     runs-on: ubuntu-24.04
     needs: 
+      - check-skip-ci
       - quality-checks
       - security-scan
       - build-and-push
@@ -262,7 +289,7 @@ jobs:
           
           📦 **Repository:** \`${{ github.repository }}\`
           🌿 **Branch:** \`${{ github.ref_name }}\`
-          🔗 **Commit:** [\`${{ github.sha }}\`](${{ github.server_url }}/${{ github.repository }}/commit/${{ github.sha }})
+          🔗 **Commit:** [${{ github.sha }}](${{ github.server_url }}/${{ github.repository }}/commit/${{ github.sha }})
           👤 **Author:** ${{ github.actor }}
           📝 **Message:** ${{ github.event.head_commit.message }}
           
