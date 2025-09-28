@@ -7,6 +7,6 @@
         "rootDir": ".",
         "jsx": "react-jsx",
         "declaration": true,
-        "declarationDir": "./dist/types"
+        "declarationDir": "./dist"
     }
 }
