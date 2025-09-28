@@ -14,8 +14,12 @@
         "test:watch": "vitest"
     },
     "dependencies": {
+        "@cbnsndwch/struktura-auth-domain": "workspace:*",
+        "@cbnsndwch/struktura-shared-domain": "workspace:*",
         "@cbnsndwch/struktura-workspace-contracts": "workspace:*",
-        "@cbnsndwch/struktura-shared-domain": "workspace:*"
+        "class-transformer": "^0.5.1",
+        "class-validator": "^0.14.2",
+        "mongoose": "^8.18.2"
     },
     "devDependencies": {
         "@cbnsndwch/struktura-eslint-config": "workspace:*",

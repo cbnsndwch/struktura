@@ -69,6 +69,9 @@ importers:
 
   apps/main:
     dependencies:
+      '@apollo/server':
+        specifier: ^4.12.0
+        version: 4.12.2(graphql@16.11.0)
       '@cbnsndwch/struktura-auth-contracts':
         specifier: workspace:*
         version: link:../../features/auth/contracts
@@ -615,12 +618,24 @@ importers:
 
   features/workspace/domain:
     dependencies:
+      '@cbnsndwch/struktura-auth-domain':
+        specifier: workspace:*
+        version: link:../../auth/domain
       '@cbnsndwch/struktura-shared-domain':
         specifier: workspace:*
         version: link:../../shared/domain
       '@cbnsndwch/struktura-workspace-contracts':
         specifier: workspace:*
         version: link:../contracts
+      class-transformer:
+        specifier: ^0.5.1
+        version: 0.5.1
+      class-validator:
+        specifier: ^0.14.2
+        version: 0.14.2
+      mongoose:
+        specifier: ^8.18.2
+        version: 8.18.2
     devDependencies:
       '@cbnsndwch/struktura-eslint-config':
         specifier: workspace:*

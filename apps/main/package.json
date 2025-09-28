@@ -26,6 +26,7 @@
         "@cbnsndwch/struktura-utils": "workspace:*",
         "@cbnsndwch/struktura-workspace-contracts": "workspace:*",
         "@cbnsndwch/struktura-workspace-domain": "workspace:*",
+        "@apollo/server": "^4.12.0",
         "@nestjs/apollo": "^13.1.0",
         "@nestjs/common": "^11.1.6",
         "@nestjs/core": "^11.1.6",
