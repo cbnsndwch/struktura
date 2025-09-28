@@ -4,6 +4,19 @@ import { IsOptional, IsArray, IsString, IsNumber } from 'class-validator';
 
 import { FieldOptions as IFieldOptions } from '@cbnsndwch/struktura-collections-contracts';
 
+// Field choice type for select/multiselect fields
+@ObjectType()
+export class FieldChoice {
+    @Field()
+    label!: string;
+
+    @Field()
+    value!: string;
+
+    @Field({ nullable: true })
+    color?: string;
+}
+
 // Field options for different field types
 
 @ObjectType()
@@ -11,7 +24,7 @@ import { FieldOptions as IFieldOptions } from '@cbnsndwch/struktura-collections-
 export class FieldOptions implements IFieldOptions {
     // For select/multiselect fields
     @Prop({ type: [{ label: String, value: String, color: String }] })
-    @Field(() => [String], { nullable: true })
+    @Field(() => [FieldChoice], { nullable: true })
     @IsOptional()
     @IsArray()
     choices?: Array<{ label: string; value: string; color?: string }>;

@@ -306,7 +306,6 @@ export class Workspace implements IWorkspace {
 export const WorkspaceSchema = SchemaFactory.createForClass(Workspace);
 
 // Add indexes for performance
-WorkspaceSchema.index({ slug: 1 }, { unique: true });
 WorkspaceSchema.index({ owner: 1 });
 WorkspaceSchema.index({ 'members.user': 1 });
 WorkspaceSchema.index({ createdAt: -1 });

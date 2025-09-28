@@ -15,6 +15,7 @@
     "dependencies": {
         "@cbnsndwch/struktura-collections-contracts": "workspace:*",
         "@cbnsndwch/struktura-shared-contracts": "workspace:*",
+        "@cbnsndwch/struktura-schema-contracts": "workspace:*",
         "@nestjs/common": "^11.1.6",
         "@nestjs/core": "^11.1.6",
         "@nestjs/graphql": "^13.1.0",

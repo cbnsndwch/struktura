@@ -30,6 +30,11 @@ export class CollectionService {
         private readonly collectionModel: Model<CollectionDocument>
     ) {}
 
+    async findAll(workspaceId?: string): Promise<CollectionDocument[]> {
+        const filter = workspaceId ? { workspaceId } : {};
+        return await this.collectionModel.find(filter).exec();
+    }
+
     async findByWorkspace(workspaceId: string): Promise<CollectionDocument[]> {
         return await this.collectionModel.find({ workspaceId }).exec();
     }
@@ -164,7 +169,7 @@ export class CollectionService {
             field => field.name === fieldName
         );
         if (fieldIndex === undefined || fieldIndex === -1) {
-            throw new FieldNotFoundError(fieldName);
+            throw new FieldNotFoundError(fieldName, id);
         }
 
         try {
@@ -178,10 +183,32 @@ export class CollectionService {
                 }
             }
 
-            // Update the field
+            // Update the field - ensure all required fields are present
+            const currentField = collection.fields![fieldIndex];
+            if (!currentField) {
+                throw new FieldNotFoundError(fieldName, id);
+            }
+
             const updatedField = {
-                ...collection.fields![fieldIndex],
-                ...fieldData
+                name: fieldData.name || currentField.name,
+                type: fieldData.type || currentField.type,
+                description:
+                    fieldData.description !== undefined
+                        ? fieldData.description
+                        : currentField.description,
+                required:
+                    fieldData.required !== undefined
+                        ? fieldData.required
+                        : currentField.required,
+                defaultValue:
+                    fieldData.defaultValue !== undefined
+                        ? fieldData.defaultValue
+                        : currentField.defaultValue,
+                validations: fieldData.validations || currentField.validations,
+                options:
+                    fieldData.options !== undefined
+                        ? fieldData.options
+                        : currentField.options
             };
             collection.fields![fieldIndex] = updatedField;
             collection.updatedAt = new Date();
@@ -206,7 +233,7 @@ export class CollectionService {
             field => field.name === fieldName
         );
         if (fieldIndex === undefined || fieldIndex === -1) {
-            throw new FieldNotFoundError(fieldName);
+            throw new FieldNotFoundError(fieldName, id);
         }
 
         try {

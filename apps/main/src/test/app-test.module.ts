@@ -2,10 +2,12 @@ import { Module } from '@nestjs/common';
 import { GraphQLModule } from '@nestjs/graphql';
 import { ApolloDriver, ApolloDriverConfig } from '@nestjs/apollo';
 
-import { AppTestController } from './app-test.controller.js';
 import { AppService } from '../demo/app.service.js';
-import { DatabaseTestModule } from './database-test.module.js';
+
 import { AppResolver } from '../demo/app.resolver.js';
+
+import { AppTestController } from './app-test.controller.js';
+import { DatabaseTestModule } from './database-test.module.js';
 
 @Module({
     imports: [

@@ -15,6 +15,7 @@ import {
 import { Schema as MongooseSchema } from 'mongoose';
 
 import { FieldDefinition as IFieldDefinition } from '@cbnsndwch/struktura-collections-contracts';
+
 import { FIELD_TYPES, FieldType } from './field-type.enum.js';
 import {
     FieldValidationRule,

@@ -11,6 +11,7 @@ import {
     RolesGuard
 } from '@cbnsndwch/struktura-auth-domain';
 import { WorkspaceModule } from '@cbnsndwch/struktura-workspace-domain';
+import { CollectionsModule } from '@cbnsndwch/struktura-collections-domain';
 
 import { AppController } from './demo/app.controller.js';
 import { AppResolver } from './demo/app.resolver.js';
@@ -23,6 +24,7 @@ import { DbModule } from './features/database.module.js';
         DbModule,
         AuthModule,
         WorkspaceModule,
+        CollectionsModule,
         GraphQLModule.forRootAsync<ApolloDriverConfig>({
             driver: ApolloDriver,
             useFactory: async () => {

@@ -13,6 +13,7 @@ import { Type } from 'class-transformer';
 import { Document, Types } from 'mongoose';
 
 import { Collection as ICollection } from '@cbnsndwch/struktura-collections-contracts';
+
 import {
     FieldDefinition,
     FieldDefinitionSchema

@@ -13,10 +13,10 @@ export class FieldValidationRule implements IFieldValidationRule {
     type!: 'required' | 'unique' | 'min' | 'max' | 'pattern' | 'custom';
 
     @Prop({ type: String })
-    @Field({ nullable: true })
+    @Field(() => String, { nullable: true })
     @IsOptional()
     @IsString()
-    value?: string | number;
+    value?: string;
 
     @Prop({ type: String })
     @Field({ nullable: true })

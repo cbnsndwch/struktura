@@ -9,7 +9,7 @@ import {
     AddFieldDto,
     UpdateFieldDto,
     CollectionTemplateDto
-} from '../dto/collection.dto.js';
+} from '../dto/index.js';
 
 @Resolver(() => Collection)
 export class CollectionResolver {

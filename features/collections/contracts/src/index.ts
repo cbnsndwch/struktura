@@ -1,4 +1,8 @@
-// Collections core interfaces and types
+// Collections domain interfaces and contracts
+
+// Import from shared schema contracts
+import { FieldType } from '@cbnsndwch/struktura-schema-contracts';
+export { FieldType };
 
 export interface Collection {
     id: string;
@@ -57,45 +61,8 @@ export interface FieldOptions {
 
 export interface FieldValidationRule {
     type: 'required' | 'unique' | 'min' | 'max' | 'pattern' | 'custom';
-    value?: string | number;
+    value?: string;
     message?: string;
-}
-
-export enum FieldType {
-    // Basic Types
-    TEXT = 'text',
-    NUMBER = 'number',
-    BOOLEAN = 'boolean',
-    DATE = 'date',
-    DATETIME = 'datetime',
-
-    // Rich Types
-    EMAIL = 'email',
-    URL = 'url',
-    PHONE = 'phone',
-    CURRENCY = 'currency',
-    PERCENT = 'percent',
-
-    // Selection Types
-    SELECT = 'select',
-    MULTISELECT = 'multiselect',
-
-    // File Types
-    ATTACHMENT = 'attachment',
-    IMAGE = 'image',
-
-    // Relationship Types
-    REFERENCE = 'reference',
-    LOOKUP = 'lookup',
-    ROLLUP = 'rollup',
-
-    // Advanced Types
-    FORMULA = 'formula',
-    BARCODE = 'barcode',
-    QR_CODE = 'qr_code',
-    RATING = 'rating',
-    PROGRESS = 'progress',
-    JSON = 'json'
 }
 
 // Collection Template for predefined schemas
@@ -143,9 +110,6 @@ export interface CollectionServiceContract {
     // Template operations
     getTemplates(): Promise<CollectionTemplate[]>;
 }
-
-// Service interface alias for backward compatibility
-export interface CollectionService extends CollectionServiceContract {}
 
 export interface CollectionRepositoryContract {
     findById(id: string): Promise<Collection | null>;
