@@ -47,8 +47,23 @@ COPY apps/main/package.json ./apps/main/
 COPY features/shared/contracts/package.json ./features/shared/contracts/
 COPY features/shared/domain/package.json ./features/shared/domain/
 COPY features/shared/ui/package.json ./features/shared/ui/
+COPY features/auth/contracts/package.json ./features/auth/contracts/
+COPY features/auth/domain/package.json ./features/auth/domain/
+COPY features/collections/contracts/package.json ./features/collections/contracts/
+COPY features/collections/domain/package.json ./features/collections/domain/
+COPY features/schema/contracts/package.json ./features/schema/contracts/
+COPY features/schema/domain/package.json ./features/schema/domain/
+COPY features/workspace/contracts/package.json ./features/workspace/contracts/
+COPY features/workspace/domain/package.json ./features/workspace/domain/
 COPY libs/auth/package.json ./libs/auth/
 COPY libs/utils/package.json ./libs/utils/
+COPY tools/tsconfig/package.json ./tools/tsconfig/
+COPY tools/eslint-config/package.json ./tools/eslint-config/
+COPY tools/dep-version-map/package.json ./tools/dep-version-map/
+
+# Copy the actual tool configurations needed for build
+COPY tools/tsconfig/ ./tools/tsconfig/
+COPY tools/eslint-config/ ./tools/eslint-config/
 
 # Install dependencies using pnpm store for caching
 # Optimize for cross-compilation (ARM64) to avoid QEMU issues
@@ -90,8 +105,23 @@ COPY apps/main/package.json ./apps/main/
 COPY features/shared/contracts/package.json ./features/shared/contracts/
 COPY features/shared/domain/package.json ./features/shared/domain/
 COPY features/shared/ui/package.json ./features/shared/ui/
+COPY features/auth/contracts/package.json ./features/auth/contracts/
+COPY features/auth/domain/package.json ./features/auth/domain/
+COPY features/collections/contracts/package.json ./features/collections/contracts/
+COPY features/collections/domain/package.json ./features/collections/domain/
+COPY features/schema/contracts/package.json ./features/schema/contracts/
+COPY features/schema/domain/package.json ./features/schema/domain/
+COPY features/workspace/contracts/package.json ./features/workspace/contracts/
+COPY features/workspace/domain/package.json ./features/workspace/domain/
 COPY libs/auth/package.json ./libs/auth/
 COPY libs/utils/package.json ./libs/utils/
+COPY tools/tsconfig/package.json ./tools/tsconfig/
+COPY tools/eslint-config/package.json ./tools/eslint-config/
+COPY tools/dep-version-map/package.json ./tools/dep-version-map/
+
+# Copy the actual tool configurations needed for production
+COPY tools/tsconfig/ ./tools/tsconfig/
+COPY tools/eslint-config/ ./tools/eslint-config/
 
 # Install production dependencies only using cached store
 # Optimize for cross-compilation (ARM64) to avoid QEMU issues
@@ -108,6 +138,14 @@ COPY --from=builder /app/apps/main/dist ./apps/main/dist
 COPY --from=builder /app/features/shared/contracts/dist ./features/shared/contracts/dist
 COPY --from=builder /app/features/shared/domain/dist ./features/shared/domain/dist
 COPY --from=builder /app/features/shared/ui/dist ./features/shared/ui/dist
+COPY --from=builder /app/features/auth/contracts/dist ./features/auth/contracts/dist
+COPY --from=builder /app/features/auth/domain/dist ./features/auth/domain/dist
+COPY --from=builder /app/features/collections/contracts/dist ./features/collections/contracts/dist
+COPY --from=builder /app/features/collections/domain/dist ./features/collections/domain/dist
+COPY --from=builder /app/features/schema/contracts/dist ./features/schema/contracts/dist
+COPY --from=builder /app/features/schema/domain/dist ./features/schema/domain/dist
+COPY --from=builder /app/features/workspace/contracts/dist ./features/workspace/contracts/dist
+COPY --from=builder /app/features/workspace/domain/dist ./features/workspace/domain/dist
 COPY --from=builder /app/libs/auth/dist ./libs/auth/dist
 COPY --from=builder /app/libs/utils/dist ./libs/utils/dist
 
