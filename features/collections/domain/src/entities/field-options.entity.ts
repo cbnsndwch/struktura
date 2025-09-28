@@ -81,6 +81,84 @@ export class FieldOptions implements IFieldOptions {
     @IsOptional()
     @IsNumber()
     maxSize?: number;
+
+    // Formula field options
+    @Prop({ type: String })
+    @Field({ nullable: true })
+    @IsOptional()
+    @IsString()
+    formula?: string;
+
+    // Lookup field options
+    @Prop({ type: String })
+    @Field({ nullable: true })
+    @IsOptional()
+    @IsString()
+    lookupCollection?: string;
+
+    @Prop({ type: String })
+    @Field({ nullable: true })
+    @IsOptional()
+    @IsString()
+    lookupField?: string;
+
+    @Prop({ type: String })
+    @Field({ nullable: true })
+    @IsOptional()
+    @IsString()
+    displayField?: string;
+
+    // Auto-increment field options
+    @Prop({ type: Number })
+    @Field({ nullable: true })
+    @IsOptional()
+    @IsNumber()
+    startValue?: number;
+
+    @Prop({ type: Number })
+    @Field({ nullable: true })
+    @IsOptional()
+    @IsNumber()
+    increment?: number;
+
+    // Display format for date/time fields
+    @Prop({ type: String })
+    @Field({ nullable: true })
+    @IsOptional()
+    @IsString()
+    displayFormat?: string;
+
+    // Rollup field options
+    @Prop({ type: String })
+    @Field({ nullable: true })
+    @IsOptional()
+    @IsString()
+    rollupCollection?: string;
+
+    @Prop({ type: String })
+    @Field({ nullable: true })
+    @IsOptional()
+    @IsString()
+    rollupField?: string;
+
+    @Prop({ type: String })
+    @Field({ nullable: true })
+    @IsOptional()
+    @IsString()
+    aggregateFunction?: string;
+
+    // Additional validation options
+    @Prop({ type: String })
+    @Field({ nullable: true })
+    @IsOptional()
+    @IsString()
+    placeholder?: string;
+
+    @Prop({ type: String })
+    @Field({ nullable: true })
+    @IsOptional()
+    @IsString()
+    helpText?: string;
 }
 
 export const FieldOptionsSchema = SchemaFactory.createForClass(FieldOptions);
