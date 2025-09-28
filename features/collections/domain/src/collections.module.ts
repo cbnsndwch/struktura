@@ -2,7 +2,7 @@ import { Module } from '@nestjs/common';
 import { MongooseModule } from '@nestjs/mongoose';
 
 import { Collection, CollectionSchema } from './entities/collection.entity.js';
-import { 
+import {
     CollectionService,
     FormulaService,
     LookupService,

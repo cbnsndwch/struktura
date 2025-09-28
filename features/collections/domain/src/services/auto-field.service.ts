@@ -20,12 +20,20 @@ export class AutoFieldService {
 
         for (const field of fields) {
             try {
-                const value = await this.generateFieldValue(field.type, field.options, userId, existingData);
+                const value = await this.generateFieldValue(
+                    field.type,
+                    field.options,
+                    userId,
+                    existingData
+                );
                 if (value !== undefined) {
                     autoValues[field.name] = value;
                 }
             } catch (error) {
-                this.logger.error(`Failed to generate auto value for field ${field.name}`, error);
+                this.logger.error(
+                    `Failed to generate auto value for field ${field.name}`,
+                    error
+                );
             }
         }
 
@@ -46,12 +54,20 @@ export class AutoFieldService {
             // Only update certain auto fields on modification
             if (this.shouldUpdateOnModification(field.type)) {
                 try {
-                    const value = await this.generateFieldValue(field.type, field.options, userId, existingData);
+                    const value = await this.generateFieldValue(
+                        field.type,
+                        field.options,
+                        userId,
+                        existingData
+                    );
                     if (value !== undefined) {
                         autoValues[field.name] = value;
                     }
                 } catch (error) {
-                    this.logger.error(`Failed to update auto value for field ${field.name}`, error);
+                    this.logger.error(
+                        `Failed to update auto value for field ${field.name}`,
+                        error
+                    );
                 }
             }
         }
@@ -82,7 +98,10 @@ export class AutoFieldService {
                 return userId;
 
             case FieldType.AUTO_INCREMENT:
-                return await this.generateAutoIncrementValue(options, existingData);
+                return await this.generateAutoIncrementValue(
+                    options,
+                    existingData
+                );
 
             default:
                 return undefined;
@@ -93,7 +112,10 @@ export class AutoFieldService {
      * Check if a field type should be updated on record modification
      */
     private shouldUpdateOnModification(fieldType: FieldType): boolean {
-        return fieldType === FieldType.MODIFIED_TIME || fieldType === FieldType.MODIFIED_BY;
+        return (
+            fieldType === FieldType.MODIFIED_TIME ||
+            fieldType === FieldType.MODIFIED_BY
+        );
     }
 
     /**
@@ -107,10 +129,10 @@ export class AutoFieldService {
         // 1. Query the database for the highest existing value
         // 2. Add the increment amount (default 1)
         // 3. Handle concurrent updates safely
-        
+
         const startValue = options.startValue || 1;
         const increment = options.increment || 1;
-        
+
         // Placeholder implementation - would need database integration
         // For now, return a mock incremented value
         return startValue;
@@ -127,17 +149,28 @@ export class AutoFieldService {
 
         switch (fieldType) {
             case FieldType.AUTO_INCREMENT:
-                if (options.startValue !== undefined && (!Number.isInteger(options.startValue) || options.startValue < 0)) {
+                if (
+                    options.startValue !== undefined &&
+                    (!Number.isInteger(options.startValue) ||
+                        options.startValue < 0)
+                ) {
                     errors.push('Start value must be a non-negative integer');
                 }
-                if (options.increment !== undefined && (!Number.isInteger(options.increment) || options.increment <= 0)) {
+                if (
+                    options.increment !== undefined &&
+                    (!Number.isInteger(options.increment) ||
+                        options.increment <= 0)
+                ) {
                     errors.push('Increment must be a positive integer');
                 }
                 break;
 
             case FieldType.CREATED_TIME:
             case FieldType.MODIFIED_TIME:
-                if (options.displayFormat && !this.isValidDateFormat(options.displayFormat)) {
+                if (
+                    options.displayFormat &&
+                    !this.isValidDateFormat(options.displayFormat)
+                ) {
                     errors.push('Invalid date format specified');
                 }
                 break;
@@ -232,7 +265,7 @@ export class AutoFieldService {
         const processedRecords: Array<Record<string, unknown>> = [];
 
         for (const record of records) {
-            const autoValues = isUpdate 
+            const autoValues = isUpdate
                 ? await this.updateAutoFields(fields, userId, record)
                 : await this.generateAutoFields(fields, userId, record);
 
@@ -251,12 +284,17 @@ export class AutoFieldService {
         editable: boolean;
         category: string;
     } | null {
-        const metadata: Partial<Record<FieldType, {
-            displayName: string;
-            description: string;
-            editable: boolean;
-            category: string;
-        }>> = {
+        const metadata: Partial<
+            Record<
+                FieldType,
+                {
+                    displayName: string;
+                    description: string;
+                    editable: boolean;
+                    category: string;
+                }
+            >
+        > = {
             [FieldType.CREATED_TIME]: {
                 displayName: 'Created Time',
                 description: 'Automatically set when a record is created',

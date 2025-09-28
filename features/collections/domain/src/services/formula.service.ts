@@ -42,7 +42,9 @@ export class FormulaService {
             // Check for field references
             const fieldReferences = this.extractFieldReferences(formula);
             for (const fieldRef of fieldReferences) {
-                const fieldExists = availableFields.some(f => f.name === fieldRef);
+                const fieldExists = availableFields.some(
+                    f => f.name === fieldRef
+                );
                 if (!fieldExists) {
                     errors.push(`Field '${fieldRef}' does not exist`);
                 }
@@ -51,7 +53,9 @@ export class FormulaService {
             // Try to parse the formula
             this.parseFormula(formula);
         } catch (error) {
-            errors.push(`Syntax error: ${error instanceof Error ? error.message : 'Unknown error'}`);
+            errors.push(
+                `Syntax error: ${error instanceof Error ? error.message : 'Unknown error'}`
+            );
         }
 
         return {
@@ -60,11 +64,14 @@ export class FormulaService {
         };
     }
 
-    private parseAndEvaluate(formula: string, data: Record<string, unknown>): unknown {
+    private parseAndEvaluate(
+        formula: string,
+        data: Record<string, unknown>
+    ): unknown {
         // Replace field references with actual values
         let processedFormula = formula;
         const fieldReferences = this.extractFieldReferences(formula);
-        
+
         for (const fieldRef of fieldReferences) {
             const value = data[fieldRef];
             const stringValue = this.convertToFormulaValue(value);
@@ -85,7 +92,7 @@ export class FormulaService {
         // Basic syntax validation
         const openBraces = (formula.match(/\{/g) || []).length;
         const closeBraces = (formula.match(/\}/g) || []).length;
-        
+
         if (openBraces !== closeBraces) {
             throw new Error('Mismatched braces in formula');
         }
@@ -100,7 +107,7 @@ export class FormulaService {
     private extractFieldReferences(formula: string): string[] {
         const matches = formula.match(/\{([^}]+)\}/g);
         if (!matches) return [];
-        
+
         return matches.map(match => match.slice(1, -1)); // Remove { and }
     }
 
@@ -124,34 +131,36 @@ export class FormulaService {
         return '0';
     }
 
-    private processFunctions(formula: string, data: Record<string, unknown>): string {
+    private processFunctions(
+        formula: string,
+        data: Record<string, unknown>
+    ): string {
         // Handle built-in functions
         let processed = formula;
 
         // SUM function: SUM({field1}, {field2}, ...)
-        processed = processed.replace(
-            /SUM\(([^)]+)\)/g,
-            (match, args) => {
-                const argList = args.split(',').map((arg: string) => arg.trim());
-                const sum = argList.reduce((acc: number, arg: string) => {
-                    const value = this.parseValue(arg, data);
-                    return acc + (typeof value === 'number' ? value : 0);
-                }, 0);
-                return sum.toString();
-            }
-        );
+        processed = processed.replace(/SUM\(([^)]+)\)/g, (match, args) => {
+            const argList = args.split(',').map((arg: string) => arg.trim());
+            const sum = argList.reduce((acc: number, arg: string) => {
+                const value = this.parseValue(arg, data);
+                return acc + (typeof value === 'number' ? value : 0);
+            }, 0);
+            return sum.toString();
+        });
 
         // AVERAGE function: AVERAGE({field1}, {field2}, ...)
-        processed = processed.replace(
-            /AVERAGE\(([^)]+)\)/g,
-            (match, args) => {
-                const argList = args.split(',').map((arg: string) => arg.trim());
-                const values = argList.map((arg: string) => this.parseValue(arg, data))
-                    .filter((v: unknown): v is number => typeof v === 'number');
-                const average = values.length > 0 ? values.reduce((a: number, b: number) => a + b, 0) / values.length : 0;
-                return average.toString();
-            }
-        );
+        processed = processed.replace(/AVERAGE\(([^)]+)\)/g, (match, args) => {
+            const argList = args.split(',').map((arg: string) => arg.trim());
+            const values = argList
+                .map((arg: string) => this.parseValue(arg, data))
+                .filter((v: unknown): v is number => typeof v === 'number');
+            const average =
+                values.length > 0
+                    ? values.reduce((a: number, b: number) => a + b, 0) /
+                      values.length
+                    : 0;
+            return average.toString();
+        });
 
         // IF function: IF(condition, trueValue, falseValue)
         processed = processed.replace(
@@ -167,19 +176,19 @@ export class FormulaService {
 
     private parseValue(arg: string, data: Record<string, unknown>): unknown {
         const trimmed = arg.trim();
-        
+
         // Check if it's a field reference
         if (trimmed.startsWith('{') && trimmed.endsWith('}')) {
             const fieldName = trimmed.slice(1, -1);
             return data[fieldName];
         }
-        
+
         // Check if it's a number
         const numValue = parseFloat(trimmed);
         if (!isNaN(numValue)) {
             return numValue;
         }
-        
+
         // Return as string
         return trimmed.replace(/"/g, '');
     }
@@ -197,7 +206,10 @@ export class FormulaService {
             const func = new Function('return ' + expression);
             return func();
         } catch (error) {
-            this.logger.warn(`Failed to evaluate expression: ${expression}`, error);
+            this.logger.warn(
+                `Failed to evaluate expression: ${expression}`,
+                error
+            );
             return 0;
         }
     }

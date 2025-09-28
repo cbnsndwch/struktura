@@ -2,7 +2,10 @@ import { Injectable, Logger } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
 
-import { Collection, CollectionDocument } from '../entities/collection.entity.js';
+import {
+    Collection,
+    CollectionDocument
+} from '../entities/collection.entity.js';
 
 /**
  * Service for resolving lookup fields that reference data from other collections
@@ -39,7 +42,7 @@ export class LookupService {
                     recordData[lookupField.name],
                     lookupField.displayField
                 );
-                
+
                 resolvedData[`${lookupField.name}_resolved`] = lookupValue;
             } catch (error) {
                 this.logger.error(
@@ -70,7 +73,7 @@ export class LookupService {
             // This would typically query the records collection for the target collection
             // For now, we'll simulate the lookup resolution
             // In a real implementation, this would use a RecordService to query the target collection
-            
+
             // Placeholder implementation - would need integration with record storage
             const lookupResult = await this.performLookupQuery(
                 targetCollectionId,
@@ -102,9 +105,13 @@ export class LookupService {
 
         try {
             // Check if target collection exists
-            const targetCollection = await this.collectionModel.findById(targetCollectionId).exec();
+            const targetCollection = await this.collectionModel
+                .findById(targetCollectionId)
+                .exec();
             if (!targetCollection) {
-                errors.push(`Target collection ${targetCollectionId} does not exist`);
+                errors.push(
+                    `Target collection ${targetCollectionId} does not exist`
+                );
                 return { isValid: false, errors };
             }
 
@@ -113,7 +120,9 @@ export class LookupService {
                 field => field.name === lookupFieldName
             );
             if (!lookupFieldExists) {
-                errors.push(`Lookup field '${lookupFieldName}' does not exist in target collection`);
+                errors.push(
+                    `Lookup field '${lookupFieldName}' does not exist in target collection`
+                );
             }
 
             // Check if display field exists in target collection
@@ -121,16 +130,21 @@ export class LookupService {
                 field => field.name === displayFieldName
             );
             if (!displayFieldExists) {
-                errors.push(`Display field '${displayFieldName}' does not exist in target collection`);
+                errors.push(
+                    `Display field '${displayFieldName}' does not exist in target collection`
+                );
             }
 
             // Prevent circular references
             if (sourceCollectionId === targetCollectionId) {
-                errors.push('Circular reference: source and target collections cannot be the same');
+                errors.push(
+                    'Circular reference: source and target collections cannot be the same'
+                );
             }
-
         } catch (error) {
-            errors.push(`Error validating lookup field: ${error instanceof Error ? error.message : 'Unknown error'}`);
+            errors.push(
+                `Error validating lookup field: ${error instanceof Error ? error.message : 'Unknown error'}`
+            );
         }
 
         return {
@@ -142,13 +156,17 @@ export class LookupService {
     /**
      * Get available fields for lookup from a target collection
      */
-    async getAvailableLookupFields(collectionId: string): Promise<Array<{
-        name: string;
-        type: string;
-        description?: string;
-    }>> {
+    async getAvailableLookupFields(collectionId: string): Promise<
+        Array<{
+            name: string;
+            type: string;
+            description?: string;
+        }>
+    > {
         try {
-            const collection = await this.collectionModel.findById(collectionId).exec();
+            const collection = await this.collectionModel
+                .findById(collectionId)
+                .exec();
             if (!collection || !collection.fields) {
                 return [];
             }
@@ -178,7 +196,7 @@ export class LookupService {
         // 1. Query the records collection for the target collection
         // 2. Find records where lookupFieldName matches lookupValue
         // 3. Return the value of displayFieldName from the found record(s)
-        
+
         // For now, return a mock result
         return `Lookup result for ${lookupValue} from ${targetCollectionId}`;
     }
@@ -223,11 +241,11 @@ export class LookupService {
             // 1. Find all collections that have lookup fields referencing the target collection
             // 2. Find all records in those collections that reference the changed record
             // 3. Refresh the lookup values for those records
-            
+
             this.logger.debug(
                 `Refreshing lookup values for changes in collection ${targetCollectionId}, record ${changedRecordId}`
             );
-            
+
             // Placeholder for actual refresh implementation
         } catch (error) {
             this.logger.error(

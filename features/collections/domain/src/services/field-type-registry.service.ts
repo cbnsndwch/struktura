@@ -24,7 +24,10 @@ export interface FieldTypeHandler {
     /** Process field value before saving */
     processValue?(value: unknown, options?: any): unknown;
     /** Validate field value */
-    validateValue?(value: unknown, options?: any): { isValid: boolean; error?: string };
+    validateValue?(
+        value: unknown,
+        options?: any
+    ): { isValid: boolean; error?: string };
     /** Generate default value */
     generateDefaultValue?(options?: any): unknown;
     /** Format field value for display */
@@ -47,24 +50,33 @@ export class FieldTypeService {
     /**
      * Get capabilities for a specific field type
      */
-    getFieldTypeCapabilities(fieldType: FieldType): FieldTypeCapabilities | null {
+    getFieldTypeCapabilities(
+        fieldType: FieldType
+    ): FieldTypeCapabilities | null {
         return this.registry.get(fieldType) || null;
     }
 
     /**
      * Get all registered field types
      */
-    getAllFieldTypes(): Array<{ type: FieldType; capabilities: FieldTypeCapabilities }> {
-        return Array.from(this.registry.entries()).map(([type, capabilities]) => ({
-            type,
-            capabilities
-        }));
+    getAllFieldTypes(): Array<{
+        type: FieldType;
+        capabilities: FieldTypeCapabilities;
+    }> {
+        return Array.from(this.registry.entries()).map(
+            ([type, capabilities]) => ({
+                type,
+                capabilities
+            })
+        );
     }
 
     /**
      * Get field types by category
      */
-    getFieldTypesByCategory(category: FieldTypeCapabilities['category']): FieldType[] {
+    getFieldTypesByCategory(
+        category: FieldTypeCapabilities['category']
+    ): FieldType[] {
         return Array.from(this.registry.entries())
             .filter(([_, capabilities]) => capabilities.category === category)
             .map(([type]) => type);
@@ -73,10 +85,13 @@ export class FieldTypeService {
     /**
      * Check if a field type supports a specific capability
      */
-    supportsCapability(fieldType: FieldType, capability: keyof FieldTypeCapabilities): boolean {
+    supportsCapability(
+        fieldType: FieldType,
+        capability: keyof FieldTypeCapabilities
+    ): boolean {
         const capabilities = this.registry.get(fieldType);
         if (!capabilities) return false;
-        
+
         return Boolean(capabilities[capability]);
     }
 
@@ -93,7 +108,10 @@ export class FieldTypeService {
             try {
                 return await handler.processValue(value, options);
             } catch (error) {
-                this.logger.error(`Error processing value for field type ${fieldType}`, error);
+                this.logger.error(
+                    `Error processing value for field type ${fieldType}`,
+                    error
+                );
                 return value;
             }
         }
@@ -113,7 +131,10 @@ export class FieldTypeService {
             try {
                 return handler.validateValue(value, options);
             } catch (error) {
-                this.logger.error(`Error validating value for field type ${fieldType}`, error);
+                this.logger.error(
+                    `Error validating value for field type ${fieldType}`,
+                    error
+                );
                 return { isValid: false, error: 'Validation error' };
             }
         }
@@ -129,7 +150,10 @@ export class FieldTypeService {
             try {
                 return handler.generateDefaultValue(options);
             } catch (error) {
-                this.logger.error(`Error generating default value for field type ${fieldType}`, error);
+                this.logger.error(
+                    `Error generating default value for field type ${fieldType}`,
+                    error
+                );
                 return null;
             }
         }
@@ -139,13 +163,20 @@ export class FieldTypeService {
     /**
      * Format field value for display
      */
-    formatFieldValue(fieldType: FieldType, value: unknown, options?: any): string {
+    formatFieldValue(
+        fieldType: FieldType,
+        value: unknown,
+        options?: any
+    ): string {
         const handler = this.handlers.get(fieldType);
         if (handler?.formatValue) {
             try {
                 return handler.formatValue(value, options);
             } catch (error) {
-                this.logger.error(`Error formatting value for field type ${fieldType}`, error);
+                this.logger.error(
+                    `Error formatting value for field type ${fieldType}`,
+                    error
+                );
                 return String(value || '');
             }
         }
@@ -306,7 +337,12 @@ export class FieldTypeService {
             isComputed: false,
             supportsIndexing: false,
             requiresProcessing: true,
-            availableOptions: ['allowedTypes', 'maxSize', 'maxWidth', 'maxHeight'],
+            availableOptions: [
+                'allowedTypes',
+                'maxSize',
+                'maxWidth',
+                'maxHeight'
+            ],
             description: 'Image upload with preview',
             category: 'file'
         });
@@ -329,7 +365,11 @@ export class FieldTypeService {
             isComputed: true,
             supportsIndexing: false,
             requiresProcessing: true,
-            availableOptions: ['lookupCollection', 'lookupField', 'displayField'],
+            availableOptions: [
+                'lookupCollection',
+                'lookupField',
+                'displayField'
+            ],
             description: 'Display value from a referenced record',
             category: 'relationship'
         });
@@ -340,7 +380,11 @@ export class FieldTypeService {
             isComputed: true,
             supportsIndexing: false,
             requiresProcessing: true,
-            availableOptions: ['rollupCollection', 'rollupField', 'aggregateFunction'],
+            availableOptions: [
+                'rollupCollection',
+                'rollupField',
+                'aggregateFunction'
+            ],
             description: 'Aggregate values from related records',
             category: 'relationship'
         });
@@ -456,7 +500,7 @@ export class FieldTypeService {
             generateDefaultValue: () => new Date(),
             formatValue: (value: unknown, options?: any) => {
                 if (value instanceof Date) {
-                    return options?.displayFormat 
+                    return options?.displayFormat
                         ? this.formatDate(value, options.displayFormat)
                         : value.toISOString();
                 }
@@ -469,7 +513,7 @@ export class FieldTypeService {
             processValue: () => new Date(),
             formatValue: (value: unknown, options?: any) => {
                 if (value instanceof Date) {
-                    return options?.displayFormat 
+                    return options?.displayFormat
                         ? this.formatDate(value, options.displayFormat)
                         : value.toISOString();
                 }
@@ -494,20 +538,26 @@ export class FieldTypeService {
                     return { isValid: false, error: 'Invalid currency value' };
                 }
                 if (options?.min !== undefined && numValue < options.min) {
-                    return { isValid: false, error: `Value must be at least ${options.min}` };
+                    return {
+                        isValid: false,
+                        error: `Value must be at least ${options.min}`
+                    };
                 }
                 if (options?.max !== undefined && numValue > options.max) {
-                    return { isValid: false, error: `Value must be at most ${options.max}` };
+                    return {
+                        isValid: false,
+                        error: `Value must be at most ${options.max}`
+                    };
                 }
                 return { isValid: true };
             },
             formatValue: (value: unknown, options?: any) => {
                 const numValue = Number(value);
                 if (isNaN(numValue)) return '0';
-                
+
                 const currency = options?.currency || 'USD';
                 const precision = options?.precision || 2;
-                
+
                 return new Intl.NumberFormat('en-US', {
                     style: 'currency',
                     currency: currency,
@@ -523,9 +573,12 @@ export class FieldTypeService {
             'YYYY-MM-DD': date.toISOString().split('T')[0] || '',
             'MM/DD/YYYY': date.toLocaleDateString('en-US'),
             'DD/MM/YYYY': date.toLocaleDateString('en-GB'),
-            'YYYY-MM-DD HH:mm': date.toISOString().slice(0, 16).replace('T', ' ')
+            'YYYY-MM-DD HH:mm': date
+                .toISOString()
+                .slice(0, 16)
+                .replace('T', ' ')
         };
-        
+
         return formats[format] || date.toISOString();
     }
 }
