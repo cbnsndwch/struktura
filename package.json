@@ -31,7 +31,8 @@
         "changeset:status": "changeset status --verbose",
         "release": "pnpm build && pnpm test && pnpm changeset:publish",
         "vset": "tsx ./scripts/version-bump.ts",
-        "vtag": "tsx ./scripts/create-version-tag.ts"
+        "vtag": "tsx ./scripts/create-version-tag.ts",
+        "test:telegram": "tsx ./scripts/test-telegram-bot.ts"
     },
     "devDependencies": {
         "@changesets/cli": "^2.29.7",
@@ -39,6 +40,7 @@
         "@types/node": "^22.18.6",
         "change-case": "^5.4.4",
         "conventional-changelog-cli": "^5.0.0",
+        "dotenv": "^16.0.3",
         "eslint": "^9.36.0",
         "eslint-config-prettier": "^10.1.8",
         "eslint-import-resolver-typescript": "^4.4.4",

@@ -94,6 +94,7 @@ export default [
             '**/dist/**',
             '**/build/**',
             '**/coverage/**',
+            'scripts/**', // Ignore all script files
             'eslint.config.js', // Ignore this config file itself
             '.eslintrc.js' // Ignore legacy config during transition
         ]
