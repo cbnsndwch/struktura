@@ -29,6 +29,7 @@ pnpm add react react-dom
 ## 🎨 Available Components
 
 ### Core Components
+
 - **Button** - Versatile button component with multiple variants
 - **Card** - Flexible card container with header, content, and footer
 - **Input** - Form input with consistent styling
@@ -37,9 +38,11 @@ pnpm add react react-dom
 - **Dialog** - Modal dialogs and overlays
 
 ### Toast Notifications
+
 - **Toaster** - Modern toast notifications powered by Sonner
 
 ### Utilities
+
 - **cn()** - Tailwind class name merger with conflict resolution
 
 ## 🔧 Usage
@@ -47,19 +50,25 @@ pnpm add react react-dom
 ### Basic Import
 
 ```tsx
-import { Button, Card, CardHeader, CardTitle, CardContent } from '@cbnsndwch/struktura-shared-ui';
+import {
+    Button,
+    Card,
+    CardHeader,
+    CardTitle,
+    CardContent
+} from '@cbnsndwch/struktura-shared-ui';
 
 function MyComponent() {
-  return (
-    <Card>
-      <CardHeader>
-        <CardTitle>Welcome</CardTitle>
-      </CardHeader>
-      <CardContent>
-        <Button>Get Started</Button>
-      </CardContent>
-    </Card>
-  );
+    return (
+        <Card>
+            <CardHeader>
+                <CardTitle>Welcome</CardTitle>
+            </CardHeader>
+            <CardContent>
+                <Button>Get Started</Button>
+            </CardContent>
+        </Card>
+    );
 }
 ```
 
@@ -79,14 +88,12 @@ import { Toaster } from '@cbnsndwch/struktura-shared-ui';
 import { toast } from 'sonner';
 
 function App() {
-  return (
-    <div>
-      <Toaster />
-      <button onClick={() => toast('Hello World!')}>
-        Show Toast
-      </button>
-    </div>
-  );
+    return (
+        <div>
+            <Toaster />
+            <button onClick={() => toast('Hello World!')}>Show Toast</button>
+        </div>
+    );
 }
 ```
 
@@ -96,17 +103,17 @@ The design system uses CSS custom properties for theming:
 
 ```css
 :root {
-  --background: 0 0% 100%;
-  --foreground: 222.2 84% 4.9%;
-  --primary: 222.2 47.4% 11.2%;
-  --primary-foreground: 210 40% 98%;
-  /* ... more variables */
+    --background: 0 0% 100%;
+    --foreground: 222.2 84% 4.9%;
+    --primary: 222.2 47.4% 11.2%;
+    --primary-foreground: 210 40% 98%;
+    /* ... more variables */
 }
 
 .dark {
-  --background: 222.2 84% 4.9%;
-  --foreground: 210 40% 98%;
-  /* ... dark mode overrides */
+    --background: 222.2 84% 4.9%;
+    --foreground: 210 40% 98%;
+    /* ... dark mode overrides */
 }
 ```
 
@@ -116,17 +123,17 @@ The design system uses CSS custom properties for theming:
 import { cn } from '@cbnsndwch/struktura-shared-ui';
 
 function MyComponent({ className, isActive }) {
-  return (
-    <div 
-      className={cn(
-        'base-styles',
-        isActive && 'active-styles',
-        className
-      )}
-    >
-      Content
-    </div>
-  );
+    return (
+        <div
+            className={cn(
+                'base-styles',
+                isActive && 'active-styles',
+                className
+            )}
+        >
+            Content
+        </div>
+    );
 }
 ```
 
@@ -156,7 +163,7 @@ pnpm lint
 
 ```tsx
 <Button variant="default" size="md">
-  Click me
+    Click me
 </Button>
 
 // Variants: default, destructive, outline, secondary, ghost, link
@@ -167,16 +174,12 @@ pnpm lint
 
 ```tsx
 <Card>
-  <CardHeader>
-    <CardTitle>Title</CardTitle>
-    <CardDescription>Description</CardDescription>
-  </CardHeader>
-  <CardContent>
-    Content goes here
-  </CardContent>
-  <CardFooter>
-    Footer actions
-  </CardFooter>
+    <CardHeader>
+        <CardTitle>Title</CardTitle>
+        <CardDescription>Description</CardDescription>
+    </CardHeader>
+    <CardContent>Content goes here</CardContent>
+    <CardFooter>Footer actions</CardFooter>
 </Card>
 ```
 
@@ -184,16 +187,16 @@ pnpm lint
 
 ```tsx
 <Dialog>
-  <DialogTrigger asChild>
-    <Button>Open Dialog</Button>
-  </DialogTrigger>
-  <DialogContent>
-    <DialogHeader>
-      <DialogTitle>Dialog Title</DialogTitle>
-      <DialogDescription>Dialog description</DialogDescription>
-    </DialogHeader>
-    <p>Dialog content</p>
-  </DialogContent>
+    <DialogTrigger asChild>
+        <Button>Open Dialog</Button>
+    </DialogTrigger>
+    <DialogContent>
+        <DialogHeader>
+            <DialogTitle>Dialog Title</DialogTitle>
+            <DialogDescription>Dialog description</DialogDescription>
+        </DialogHeader>
+        <p>Dialog content</p>
+    </DialogContent>
 </Dialog>
 ```
 

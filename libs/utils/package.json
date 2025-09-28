@@ -28,7 +28,7 @@
     "engines": {
         "node": ">=22"
     },
-        "module": "./dist/index.js",
+    "module": "./dist/index.js",
     "types": "./dist/index.d.ts",
     "files": [
         "dist"

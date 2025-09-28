@@ -22,7 +22,7 @@
         "typescript": "^5.9.2",
         "vitest": "^3.2.4"
     },
-        "module": "./dist/index.js",
+    "module": "./dist/index.js",
     "types": "./dist/index.d.ts",
     "files": [
         "dist"

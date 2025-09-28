@@ -1,10 +1,6 @@
 {
     "extends": "@cbnsndwch/struktura-tsconfig/nest-library",
-    "include": [
-        "src",
-        "app",
-        ".react-router/types/**/*",
-    ],
+    "include": ["src", "app", ".react-router/types/**/*"],
     "exclude": [
         "dist",
         "node_modules",
@@ -13,10 +9,7 @@
         "**/*.test.ts"
     ],
     "compilerOptions": {
-        "lib": [
-            "ES2023",
-            "DOM"
-        ],
+        "lib": ["ES2023", "DOM"],
         "outDir": "./dist",
         "rootDir": "./",
         "strict": true,
@@ -24,14 +17,9 @@
         "jsxImportSource": "react",
         "allowSyntheticDefaultImports": true,
         "esModuleInterop": true,
-        "rootDirs": [
-            ".",
-            "./.react-router/types"
-        ],
+        "rootDirs": [".", "./.react-router/types"],
         "paths": {
-            "@/*": [
-                "./app/*"
-            ]
+            "@/*": ["./app/*"]
         }
     }
 }

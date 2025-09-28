@@ -39,7 +39,7 @@
         "@nestjs/common": "^11.0.0",
         "@nestjs/core": "^11.0.0"
     },
-        "module": "./dist/index.js",
+    "module": "./dist/index.js",
     "types": "./dist/index.d.ts",
     "exports": {
         ".": {
