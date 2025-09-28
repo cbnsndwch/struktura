@@ -248,7 +248,7 @@ jobs:
       - quality-checks
       - security-scan
       - build-and-push
-    if: always()
+    if: always() && needs.check-skip-ci.result == 'success'
     steps:
       - name: Determine notification status
         id: status
