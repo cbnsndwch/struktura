@@ -30,11 +30,10 @@ jobs:
           echo "Commit message: $COMMIT_MESSAGE"
           
           if echo "$COMMIT_MESSAGE" | grep -q "#skip-ci"; then
-            echo "🛑 Found #skip-ci in commit message - stopping workflow"
+            echo "🛑 Found #skip-ci in commit message - skipping CI/CD pipeline"
             echo "should-skip=true" >> $GITHUB_OUTPUT
-            exit 1
           else
-            echo "✅ No #skip-ci found - continuing workflow"
+            echo "✅ No #skip-ci found - continuing with CI/CD pipeline"
             echo "should-skip=false" >> $GITHUB_OUTPUT
           fi
 
@@ -43,6 +42,7 @@ jobs:
   # ================================
   quality-checks:
     needs: check-skip-ci
+    if: needs.check-skip-ci.outputs.should-skip != 'true'
     runs-on: ubuntu-24.04
     steps:
       - name: Checkout repository
@@ -80,6 +80,7 @@ jobs:
     needs:
       - check-skip-ci
       - quality-checks
+    if: needs.check-skip-ci.outputs.should-skip != 'true'
     permissions:
       contents: read
       security-events: write
@@ -123,7 +124,7 @@ jobs:
       - check-skip-ci
       - quality-checks
       - security-scan
-    if: github.event_name == 'push'
+    if: github.event_name == 'push' && needs.check-skip-ci.outputs.should-skip != 'true'
     permissions:
       contents: read
       packages: write
@@ -248,7 +249,7 @@ jobs:
       - quality-checks
       - security-scan
       - build-and-push
-    if: always() && needs.check-skip-ci.result == 'success'
+    if: always() && needs.check-skip-ci.outputs.should-skip != 'true'
     steps:
       - name: Determine notification status
         id: status
