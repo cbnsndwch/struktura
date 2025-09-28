@@ -122,8 +122,7 @@ RUN --mount=type=cache,id=pnpm-store,target=/app/.pnpm-store,sharing=locked \
 
 RUN --mount=type=cache,id=pnpm-store,target=/app/.pnpm-store,sharing=locked \
     --mount=type=cache,id=node-gyp,target=/root/.cache/node-gyp,sharing=locked \
-    pnpm install --prod --frozen-lockfile --offline && \
-    rm -rf /app/.pnpm-store
+    pnpm install --prod --frozen-lockfile --offline
 
 # Copy built artifacts from builder (keep this AFTER installs for better caching)
 COPY --from=builder /app/apps/main/dist                         ./apps/main/dist
