@@ -1,5 +1,5 @@
 {
-    "extends": "@cbnsndwch/struktura-tsconfig/nest-library.json",
+    "extends": "@cbnsndwch/struktura-tsconfig/base.json",
     "compilerOptions": {
         "outDir": "dist"
     },

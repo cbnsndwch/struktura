@@ -1,0 +1,46 @@
+{
+    "name": "@cbnsndwch/struktura-collections-domain",
+    "version": "0.1.0",
+    "description": "Collections domain implementation for Struktura",
+    "type": "module",
+    "scripts": {
+        "build": "tsup",
+        "clean": "rm -rf dist",
+        "dev": "tsup --watch",
+        "lint": "eslint . --fix",
+        "format": "prettier --write .",
+        "test": "vitest --run --passWithNoTests",
+        "test:watch": "vitest"
+    },
+    "dependencies": {
+        "@cbnsndwch/struktura-collections-contracts": "workspace:*",
+        "@cbnsndwch/struktura-shared-contracts": "workspace:*",
+        "@nestjs/common": "^11.1.6",
+        "@nestjs/core": "^11.1.6",
+        "@nestjs/graphql": "^13.1.0",
+        "@nestjs/mongoose": "^11.0.2",
+        "class-transformer": "^0.5.1",
+        "class-validator": "^0.14.1",
+        "graphql": "^16.9.0",
+        "mongoose": "^8.9.5"
+    },
+    "devDependencies": {
+        "@cbnsndwch/struktura-eslint-config": "workspace:*",
+        "@cbnsndwch/struktura-tsconfig": "workspace:*",
+        "@types/node": "^22.10.5",
+        "eslint": "^9.18.0",
+        "tsup": "^8.3.5",
+        "typescript": "^5.7.3",
+        "vitest": "^3.2.4"
+    },
+    "peerDependencies": {
+        "@nestjs/common": "^11.0.0",
+        "@nestjs/core": "^11.0.0"
+    },
+    "main": "./dist/index.cjs",
+    "module": "./dist/index.js",
+    "types": "./dist/index.d.ts",
+    "exports": {
+        ".": "./dist/index.js"
+    }
+}

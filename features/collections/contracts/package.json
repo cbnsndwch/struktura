@@ -1,6 +1,6 @@
 {
-    "name": "@cbnsndwch/struktura-workspace-domain",
-    "description": "Workspace domain logic for Struktura",
+    "name": "@cbnsndwch/struktura-collections-contracts",
+    "description": "Collections contracts for Struktura",
     "version": "0.1.0",
     "type": "module",
     "private": true,
@@ -13,18 +13,15 @@
         "test": "vitest --run --passWithNoTests",
         "test:watch": "vitest"
     },
-    "dependencies": {
-        "@cbnsndwch/struktura-workspace-contracts": "workspace:*",
-        "@cbnsndwch/struktura-shared-domain": "workspace:*"
-    },
     "devDependencies": {
         "@cbnsndwch/struktura-eslint-config": "workspace:*",
         "@cbnsndwch/struktura-tsconfig": "workspace:*",
-        "eslint": "^9.36.0",
-        "prettier": "^3.6.2",
         "tsup": "^8.5.0",
-        "typescript": "^5.9.2",
+        "typescript": "^5.7.0",
         "vitest": "^3.2.4"
+    },
+    "peerDependencies": {
+        "typescript": "^5.7.0"
     },
     "files": [
         "dist"

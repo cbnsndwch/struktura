@@ -8,7 +8,8 @@ import { Model, Types } from 'mongoose';
 
 import {
     Collection,
-    CollectionDocument} from '../entities/collections/collection.entity.js';
+    CollectionDocument
+} from '../entities/collections/collection.entity.js';
 import { FieldType } from '../entities/collections/field-type.enum.js';
 import {
     CreateCollectionDto,
