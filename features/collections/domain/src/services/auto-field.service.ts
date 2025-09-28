@@ -1,6 +1,34 @@
 import { Injectable, Logger } from '@nestjs/common';
 import { FieldType } from '@cbnsndwch/struktura-schema-contracts';
 
+// Type definitions for auto field operations
+interface AutoFieldDefinition {
+    name: string;
+    type: FieldType;
+    options?: AutoFieldOptions;
+}
+
+interface AutoFieldOptions {
+    startValue?: number;
+    increment?: number;
+    displayFormat?: string;
+    [key: string]: unknown;
+}
+
+interface AutoFieldValidationResult {
+    isValid: boolean;
+    errors: string[];
+}
+
+interface AutoFieldMetadata {
+    displayName: string;
+    description: string;
+    editable: boolean;
+    category: string;
+}
+
+type AutoFieldValue = string | number | Date | null;
+
 /**
  * Service for handling auto-generated field values
  */
@@ -12,7 +40,7 @@ export class AutoFieldService {
      * Generate values for auto-generated fields during record creation
      */
     async generateAutoFields(
-        fields: Array<{ name: string; type: FieldType; options?: any }>,
+        fields: AutoFieldDefinition[],
         userId: string,
         existingData: Record<string, unknown> = {}
     ): Promise<Record<string, unknown>> {
@@ -26,7 +54,7 @@ export class AutoFieldService {
                     userId,
                     existingData
                 );
-                if (value !== undefined) {
+                if (value !== null) {
                     autoValues[field.name] = value;
                 }
             } catch (error) {
@@ -44,7 +72,7 @@ export class AutoFieldService {
      * Update auto-generated fields during record modification
      */
     async updateAutoFields(
-        fields: Array<{ name: string; type: FieldType; options?: any }>,
+        fields: AutoFieldDefinition[],
         userId: string,
         existingData: Record<string, unknown> = {}
     ): Promise<Record<string, unknown>> {
@@ -60,7 +88,7 @@ export class AutoFieldService {
                         userId,
                         existingData
                     );
-                    if (value !== undefined) {
+                    if (value !== null) {
                         autoValues[field.name] = value;
                     }
                 } catch (error) {
@@ -80,10 +108,10 @@ export class AutoFieldService {
      */
     private async generateFieldValue(
         fieldType: FieldType,
-        options: any = {},
+        options: AutoFieldOptions = {},
         userId: string,
         existingData: Record<string, unknown>
-    ): Promise<unknown> {
+    ): Promise<AutoFieldValue> {
         switch (fieldType) {
             case FieldType.CREATED_TIME:
                 return new Date();
@@ -104,7 +132,7 @@ export class AutoFieldService {
                 );
 
             default:
-                return undefined;
+                return null;
         }
     }
 
@@ -122,7 +150,7 @@ export class AutoFieldService {
      * Generate auto-increment value
      */
     private async generateAutoIncrementValue(
-        options: any = {},
+        options: AutoFieldOptions = {},
         existingData: Record<string, unknown>
     ): Promise<number> {
         // In a real implementation, this would:
@@ -135,6 +163,8 @@ export class AutoFieldService {
 
         // Placeholder implementation - would need database integration
         // For now, return a mock incremented value
+        // eslint-disable-next-line @typescript-eslint/no-unused-vars
+        const _ = { existingData, increment }; // Will be used in real implementation
         return startValue;
     }
 
@@ -143,8 +173,8 @@ export class AutoFieldService {
      */
     validateAutoFieldConfiguration(
         fieldType: FieldType,
-        options: any = {}
-    ): { isValid: boolean; errors: string[] } {
+        options: AutoFieldOptions = {}
+    ): AutoFieldValidationResult {
         const errors: string[] = [];
 
         switch (fieldType) {
@@ -193,7 +223,7 @@ export class AutoFieldService {
     /**
      * Get default options for auto field types
      */
-    getDefaultAutoFieldOptions(fieldType: FieldType): any {
+    getDefaultAutoFieldOptions(fieldType: FieldType): AutoFieldOptions {
         switch (fieldType) {
             case FieldType.AUTO_INCREMENT:
                 return {
@@ -257,7 +287,7 @@ export class AutoFieldService {
      * Process auto fields for bulk operations
      */
     async processBulkAutoFields(
-        fields: Array<{ name: string; type: FieldType; options?: any }>,
+        fields: AutoFieldDefinition[],
         records: Array<Record<string, unknown>>,
         userId: string,
         isUpdate: boolean = false
@@ -278,23 +308,8 @@ export class AutoFieldService {
         return processedRecords;
     }
 
-    getAutoFieldMetadata(fieldType: FieldType): {
-        displayName: string;
-        description: string;
-        editable: boolean;
-        category: string;
-    } | null {
-        const metadata: Partial<
-            Record<
-                FieldType,
-                {
-                    displayName: string;
-                    description: string;
-                    editable: boolean;
-                    category: string;
-                }
-            >
-        > = {
+    getAutoFieldMetadata(fieldType: FieldType): AutoFieldMetadata | null {
+        const metadata: Partial<Record<FieldType, AutoFieldMetadata>> = {
             [FieldType.CREATED_TIME]: {
                 displayName: 'Created Time',
                 description: 'Automatically set when a record is created',

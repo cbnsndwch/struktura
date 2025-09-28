@@ -7,6 +7,47 @@ import {
     CollectionDocument
 } from '../entities/collection.entity.js';
 
+// Type definitions for lookup operations
+interface RecordData {
+    [fieldName: string]: unknown;
+}
+
+interface LookupFieldDefinition {
+    name: string;
+    lookupCollection: string;
+    lookupField: string;
+    displayField: string;
+}
+
+interface LookupValidationResult {
+    isValid: boolean;
+    errors: string[];
+}
+
+interface LookupFieldInfo {
+    name: string;
+    type: string;
+    description?: string;
+}
+
+type LookupValue = string | number | boolean | null;
+
+// Helper function to safely convert unknown to LookupValue
+function toLookupValue(value: unknown): LookupValue {
+    if (value === null || value === undefined) {
+        return null;
+    }
+    if (
+        typeof value === 'string' ||
+        typeof value === 'number' ||
+        typeof value === 'boolean'
+    ) {
+        return value;
+    }
+    // Convert other types to string representation
+    return String(value);
+}
+
 /**
  * Service for resolving lookup fields that reference data from other collections
  */
@@ -24,14 +65,9 @@ export class LookupService {
      */
     async resolveLookupFields(
         collectionId: string,
-        recordData: Record<string, unknown>,
-        lookupFields: Array<{
-            name: string;
-            lookupCollection: string;
-            lookupField: string;
-            displayField: string;
-        }>
-    ): Promise<Record<string, unknown>> {
+        recordData: RecordData,
+        lookupFields: LookupFieldDefinition[]
+    ): Promise<RecordData> {
         const resolvedData = { ...recordData };
 
         for (const lookupField of lookupFields) {
@@ -39,7 +75,7 @@ export class LookupService {
                 const lookupValue = await this.resolveLookupValue(
                     lookupField.lookupCollection,
                     lookupField.lookupField,
-                    recordData[lookupField.name],
+                    toLookupValue(recordData[lookupField.name]),
                     lookupField.displayField
                 );
 
@@ -62,9 +98,9 @@ export class LookupService {
     async resolveLookupValue(
         targetCollectionId: string,
         lookupFieldName: string,
-        lookupValue: unknown,
+        lookupValue: LookupValue,
         displayFieldName: string
-    ): Promise<unknown> {
+    ): Promise<LookupValue> {
         if (!lookupValue) {
             return null;
         }
@@ -82,7 +118,7 @@ export class LookupService {
                 displayFieldName
             );
 
-            return lookupResult;
+            return toLookupValue(lookupResult);
         } catch (error) {
             this.logger.error(
                 `Failed to resolve lookup value for collection ${targetCollectionId}`,
@@ -100,7 +136,7 @@ export class LookupService {
         targetCollectionId: string,
         lookupFieldName: string,
         displayFieldName: string
-    ): Promise<{ isValid: boolean; errors: string[] }> {
+    ): Promise<LookupValidationResult> {
         const errors: string[] = [];
 
         try {
@@ -156,13 +192,9 @@ export class LookupService {
     /**
      * Get available fields for lookup from a target collection
      */
-    async getAvailableLookupFields(collectionId: string): Promise<
-        Array<{
-            name: string;
-            type: string;
-            description?: string;
-        }>
-    > {
+    async getAvailableLookupFields(
+        collectionId: string
+    ): Promise<LookupFieldInfo[]> {
         try {
             const collection = await this.collectionModel
                 .findById(collectionId)
@@ -188,9 +220,9 @@ export class LookupService {
     private async performLookupQuery(
         targetCollectionId: string,
         lookupFieldName: string,
-        lookupValue: unknown,
+        lookupValue: LookupValue,
         displayFieldName: string
-    ): Promise<unknown> {
+    ): Promise<LookupValue> {
         // Placeholder for actual record query implementation
         // In a real implementation, this would:
         // 1. Query the records collection for the target collection
@@ -198,6 +230,8 @@ export class LookupService {
         // 3. Return the value of displayFieldName from the found record(s)
 
         // For now, return a mock result
+        // eslint-disable-next-line @typescript-eslint/no-unused-vars
+        const _ = displayFieldName; // Will be used in real implementation
         return `Lookup result for ${lookupValue} from ${targetCollectionId}`;
     }
 
@@ -206,15 +240,10 @@ export class LookupService {
      */
     async batchResolveLookupFields(
         collectionId: string,
-        records: Array<Record<string, unknown>>,
-        lookupFields: Array<{
-            name: string;
-            lookupCollection: string;
-            lookupField: string;
-            displayField: string;
-        }>
-    ): Promise<Array<Record<string, unknown>>> {
-        const resolvedRecords: Array<Record<string, unknown>> = [];
+        records: RecordData[],
+        lookupFields: LookupFieldDefinition[]
+    ): Promise<RecordData[]> {
+        const resolvedRecords: RecordData[] = [];
 
         for (const record of records) {
             const resolved = await this.resolveLookupFields(

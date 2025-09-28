@@ -2,6 +2,23 @@ import { Injectable, Logger } from '@nestjs/common';
 
 import { FieldType } from '@cbnsndwch/struktura-schema-contracts';
 
+// Type definitions for field values and options
+type FieldValue =
+    | string
+    | number
+    | boolean
+    | Date
+    | null
+    | Array<string | number>;
+
+type FieldOptionsMap = Record<string, unknown>;
+
+// Validation result interface
+interface FieldValidationResult {
+    isValid: boolean;
+    error?: string;
+}
+
 export interface FieldTypeCapabilities {
     /** Whether this field type supports validation rules */
     supportsValidation: boolean;
@@ -23,16 +40,16 @@ export interface FieldTypeCapabilities {
 
 export interface FieldTypeHandler {
     /** Process field value before saving */
-    processValue?(value: unknown, options?: any): unknown;
+    processValue?(value: FieldValue, options?: FieldOptionsMap): FieldValue;
     /** Validate field value */
     validateValue?(
-        value: unknown,
-        options?: any
-    ): { isValid: boolean; error?: string };
+        value: FieldValue,
+        options?: FieldOptionsMap
+    ): FieldValidationResult;
     /** Generate default value */
-    generateDefaultValue?(options?: any): unknown;
+    generateDefaultValue?(options?: FieldOptionsMap): FieldValue;
     /** Format field value for display */
-    formatValue?(value: unknown, options?: any): string;
+    formatValue?(value: FieldValue, options?: FieldOptionsMap): string;
 }
 
 /**
@@ -46,6 +63,33 @@ export class FieldTypeService {
 
     constructor() {
         this.initializeRegistry();
+    }
+
+    /**
+     * Safely convert unknown value to FieldValue type
+     */
+    private toFieldValue(value: unknown): FieldValue {
+        if (
+            typeof value === 'string' ||
+            typeof value === 'number' ||
+            typeof value === 'boolean' ||
+            value instanceof Date ||
+            value === null
+        ) {
+            return value;
+        }
+        if (Array.isArray(value)) {
+            // Filter array to only include valid field value types
+            return value.filter(
+                (item): item is string | number =>
+                    typeof item === 'string' || typeof item === 'number'
+            );
+        }
+        // Convert other types to string representation or null
+        if (value === undefined) {
+            return null;
+        }
+        return String(value);
     }
 
     /**
@@ -79,7 +123,7 @@ export class FieldTypeService {
         category: FieldTypeCapabilities['category']
     ): FieldType[] {
         return Array.from(this.registry.entries())
-            .filter(([_, capabilities]) => capabilities.category === category)
+            .filter(([, capabilities]) => capabilities.category === category)
             .map(([type]) => type);
     }
 
@@ -102,21 +146,22 @@ export class FieldTypeService {
     async processFieldValue(
         fieldType: FieldType,
         value: unknown,
-        options?: any
-    ): Promise<unknown> {
+        options?: FieldOptionsMap
+    ): Promise<FieldValue> {
+        const fieldValue = this.toFieldValue(value);
         const handler = this.handlers.get(fieldType);
         if (handler?.processValue) {
             try {
-                return await handler.processValue(value, options);
+                return await handler.processValue(fieldValue, options);
             } catch (error) {
                 this.logger.error(
                     `Error processing value for field type ${fieldType}`,
                     error
                 );
-                return value;
+                return fieldValue;
             }
         }
-        return value;
+        return fieldValue;
     }
 
     /**
@@ -125,12 +170,13 @@ export class FieldTypeService {
     validateFieldValue(
         fieldType: FieldType,
         value: unknown,
-        options?: any
-    ): { isValid: boolean; error?: string } {
+        options?: FieldOptionsMap
+    ): FieldValidationResult {
+        const fieldValue = this.toFieldValue(value);
         const handler = this.handlers.get(fieldType);
         if (handler?.validateValue) {
             try {
-                return handler.validateValue(value, options);
+                return handler.validateValue(fieldValue, options);
             } catch (error) {
                 this.logger.error(
                     `Error validating value for field type ${fieldType}`,
@@ -145,7 +191,10 @@ export class FieldTypeService {
     /**
      * Generate default value for a field type
      */
-    generateDefaultValue(fieldType: FieldType, options?: any): unknown {
+    generateDefaultValue(
+        fieldType: FieldType,
+        options?: FieldOptionsMap
+    ): FieldValue {
         const handler = this.handlers.get(fieldType);
         if (handler?.generateDefaultValue) {
             try {
@@ -167,21 +216,22 @@ export class FieldTypeService {
     formatFieldValue(
         fieldType: FieldType,
         value: unknown,
-        options?: any
+        options?: FieldOptionsMap
     ): string {
+        const fieldValue = this.toFieldValue(value);
         const handler = this.handlers.get(fieldType);
         if (handler?.formatValue) {
             try {
-                return handler.formatValue(value, options);
+                return handler.formatValue(fieldValue, options);
             } catch (error) {
                 this.logger.error(
                     `Error formatting value for field type ${fieldType}`,
                     error
                 );
-                return String(value || '');
+                return String(fieldValue || '');
             }
         }
-        return String(value || '');
+        return String(fieldValue || '');
     }
 
     private initializeRegistry(): void {
@@ -498,11 +548,17 @@ export class FieldTypeService {
     private initializeHandlers(): void {
         // Handler for CREATED_TIME
         this.handlers.set(FieldType.CREATED_TIME, {
-            generateDefaultValue: () => new Date(),
-            formatValue: (value: unknown, options?: any) => {
+            generateDefaultValue: (): Date => new Date(),
+            formatValue: (
+                value: FieldValue,
+                options?: FieldOptionsMap
+            ): string => {
                 if (value instanceof Date) {
                     return options?.displayFormat
-                        ? this.formatDate(value, options.displayFormat)
+                        ? this.formatDate(
+                              value,
+                              options.displayFormat as string
+                          )
                         : value.toISOString();
                 }
                 return String(value || '');
@@ -511,11 +567,17 @@ export class FieldTypeService {
 
         // Handler for MODIFIED_TIME
         this.handlers.set(FieldType.MODIFIED_TIME, {
-            processValue: () => new Date(),
-            formatValue: (value: unknown, options?: any) => {
+            processValue: (): Date => new Date(),
+            formatValue: (
+                value: FieldValue,
+                options?: FieldOptionsMap
+            ): string => {
                 if (value instanceof Date) {
                     return options?.displayFormat
-                        ? this.formatDate(value, options.displayFormat)
+                        ? this.formatDate(
+                              value,
+                              options.displayFormat as string
+                          )
                         : value.toISOString();
                 }
                 return String(value || '');
@@ -524,27 +586,36 @@ export class FieldTypeService {
 
         // Handler for AUTO_INCREMENT
         this.handlers.set(FieldType.AUTO_INCREMENT, {
-            generateDefaultValue: (options?: any) => {
+            generateDefaultValue: (options?: FieldOptionsMap): number => {
                 // This would need to query the database for the next value
                 // For now, return a placeholder
-                return options?.startValue || 1;
+                return (options?.startValue as number) || 1;
             }
         });
 
         // Handler for CURRENCY
         this.handlers.set(FieldType.CURRENCY, {
-            validateValue: (value: unknown, options?: any) => {
+            validateValue: (
+                value: FieldValue,
+                options?: FieldOptionsMap
+            ): FieldValidationResult => {
                 const numValue = Number(value);
                 if (isNaN(numValue)) {
                     return { isValid: false, error: 'Invalid currency value' };
                 }
-                if (options?.min !== undefined && numValue < options.min) {
+                if (
+                    options?.min !== undefined &&
+                    numValue < (options.min as number)
+                ) {
                     return {
                         isValid: false,
                         error: `Value must be at least ${options.min}`
                     };
                 }
-                if (options?.max !== undefined && numValue > options.max) {
+                if (
+                    options?.max !== undefined &&
+                    numValue > (options.max as number)
+                ) {
                     return {
                         isValid: false,
                         error: `Value must be at most ${options.max}`
@@ -552,16 +623,19 @@ export class FieldTypeService {
                 }
                 return { isValid: true };
             },
-            formatValue: (value: unknown, options?: any) => {
+            formatValue: (
+                value: FieldValue,
+                options?: FieldOptionsMap
+            ): string => {
                 const numValue = Number(value);
                 if (isNaN(numValue)) return '0';
 
-                const currency = options?.currency || 'USD';
-                const precision = options?.precision || 2;
+                const currency = (options?.currency as string) || 'USD';
+                const precision = (options?.precision as number) || 2;
 
                 return new Intl.NumberFormat('en-US', {
                     style: 'currency',
-                    currency: currency,
+                    currency,
                     maximumFractionDigits: precision
                 }).format(numValue);
             }
