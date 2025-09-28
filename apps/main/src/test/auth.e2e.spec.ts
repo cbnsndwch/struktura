@@ -5,7 +5,7 @@ import mongoose from 'mongoose';
 import request from 'supertest';
 import { afterAll, beforeAll, describe, expect, it } from 'vitest';
 
-import { AppModule } from '../../../../apps/main/src/app.module.js';
+import { AppModule } from '../app.module.js';
 
 describe.skip('Auth E2E Workflows (MongoDB Memory Server - Skip for CI)', () => {
     let app: INestApplication;
