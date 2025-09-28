@@ -1,6 +1,5 @@
 // Legacy exports for backward compatibility
 export * from './theme.js';
-export * from './utils.js';
 
 // shadcn/ui components
 export * from './components/index.js';
