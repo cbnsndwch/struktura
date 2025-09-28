@@ -4,6 +4,30 @@ A no-code data management platform that combines the ease-of-use of Airtable wit
 
 ## 🚀 Quick Start
 
+### Option 1: Docker Development (Recommended)
+
+```bash
+# Clone the repository
+git clone https://github.com/cbnsndwch/struktura.git
+cd struktura
+
+# Set up environment variables
+cp .env.example .env
+
+# Start all services (MongoDB, Redis, Application)
+pnpm docker:up
+
+# View logs
+pnpm docker:logs
+```
+
+**Access the application:**
+- Main Application: http://localhost:3000
+- Health Check: http://localhost:3000/health  
+- GraphQL Playground: http://localhost:3000/graphql
+
+### Option 2: Local Development
+
 ```bash
 # Install dependencies
 pnpm install

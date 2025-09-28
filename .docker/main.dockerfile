@@ -70,6 +70,29 @@ RUN --mount=type=cache,id=pnpm-store,target=/app/.pnpm-store,sharing=locked \
     pnpm install --frozen-lockfile --offline
 
 # ================================
+# Development stage (for hot reload)
+# ================================
+FROM dependencies AS development
+
+# Install curl for health checks
+RUN if command -v apk &> /dev/null; then \
+        apk add --no-cache curl || echo "Could not install curl via apk"; \
+    fi
+
+# Copy source code
+COPY . .
+
+# Expose port
+EXPOSE 3000
+
+# Health check for development
+HEALTHCHECK --interval=30s --timeout=10s --start-period=40s --retries=3 \
+    CMD curl -f http://localhost:3000/health || exit 1
+
+# Start development server with hot reload
+CMD ["pnpm", "dev"]
+
+# ================================
 # Build stage
 # ================================
 FROM dependencies AS builder
