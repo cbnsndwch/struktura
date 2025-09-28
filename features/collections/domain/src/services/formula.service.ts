@@ -1,4 +1,5 @@
 import { Injectable, Logger } from '@nestjs/common';
+import { SecureExpressionEvaluatorService, ExpressionEvaluationError } from './secure-expression-evaluator.service.js';
 
 /**
  * Service for evaluating formula expressions in formula fields
@@ -6,6 +7,8 @@ import { Injectable, Logger } from '@nestjs/common';
 @Injectable()
 export class FormulaService {
     private readonly logger = new Logger(FormulaService.name);
+
+    constructor(private readonly expressionEvaluator: SecureExpressionEvaluatorService) {}
 
     /**
      * Evaluate a formula expression with given context data
@@ -50,8 +53,17 @@ export class FormulaService {
                 }
             }
 
-            // Try to parse the formula
-            this.parseFormula(formula);
+            // Process formula to replace field references with dummy values for validation
+            const processedFormula = this.prepareFormulaForValidation(formula, fieldReferences);
+            
+            // Use secure expression evaluator for validation
+            const validationResult = this.expressionEvaluator.validateExpression(
+                processedFormula,
+                fieldReferences
+            );
+            
+            errors.push(...validationResult.errors);
+
         } catch (error) {
             errors.push(
                 `Syntax error: ${error instanceof Error ? error.message : 'Unknown error'}`
@@ -62,6 +74,52 @@ export class FormulaService {
             isValid: errors.length === 0,
             errors
         };
+    }
+
+    /**
+     * Prepare formula for validation by replacing field references with dummy values
+     */
+    private prepareFormulaForValidation(formula: string, fieldReferences: string[]): string {
+        let processedFormula = formula;
+        
+        // Replace field references with dummy numeric values for validation
+        for (const fieldRef of fieldReferences) {
+            processedFormula = processedFormula.replace(
+                new RegExp(`\\{${fieldRef}\\}`, 'g'),
+                '1' // Use 1 as dummy value for validation
+            );
+        }
+
+        // Handle basic functions by replacing them with simple expressions
+        processedFormula = this.replaceFunctionsForValidation(processedFormula);
+
+        return processedFormula;
+    }
+
+    /**
+     * Replace function calls with simple expressions for validation
+     */
+    private replaceFunctionsForValidation(formula: string): string {
+        let processed = formula;
+
+        // Replace SUM with simple addition
+        processed = processed.replace(/SUM\(([^)]+)\)/g, (match, args) => {
+            const argList = args.split(',').map((arg: string) => arg.trim());
+            return argList.join(' + ');
+        });
+
+        // Replace AVERAGE with simple division
+        processed = processed.replace(/AVERAGE\(([^)]+)\)/g, (match, args) => {
+            const argList = args.split(',').map((arg: string) => arg.trim());
+            return `(${argList.join(' + ')}) / ${argList.length}`;
+        });
+
+        // Replace IF with conditional (convert to simple boolean check)
+        processed = processed.replace(/IF\(([^,]+),([^,]+),([^)]+)\)/g, (match, condition, trueVal, falseVal) => {
+            return `(${condition.trim()}) ? ${trueVal.trim()} : ${falseVal.trim()}`;
+        });
+
+        return processed;
     }
 
     private parseAndEvaluate(
@@ -86,22 +144,6 @@ export class FormulaService {
 
         // Evaluate mathematical expressions safely
         return this.safeEvaluate(processedFormula);
-    }
-
-    private parseFormula(formula: string): void {
-        // Basic syntax validation
-        const openBraces = (formula.match(/\{/g) || []).length;
-        const closeBraces = (formula.match(/\}/g) || []).length;
-
-        if (openBraces !== closeBraces) {
-            throw new Error('Mismatched braces in formula');
-        }
-
-        // Check for invalid characters (basic security)
-        const invalidChars = /[<>]/;
-        if (invalidChars.test(formula)) {
-            throw new Error('Invalid characters in formula');
-        }
     }
 
     private extractFieldReferences(formula: string): string[] {
@@ -195,21 +237,14 @@ export class FormulaService {
 
     private safeEvaluate(expression: string): unknown {
         try {
-            // Only allow basic mathematical operations and safe functions
-            const allowedChars = /^[0-9+\-*/(). "]+$/;
-            if (!allowedChars.test(expression)) {
-                throw new Error('Invalid characters in expression');
-            }
-
-            // Use Function constructor for safer evaluation than eval
-            // Still not completely safe, but better than direct eval
-            const func = new Function('return ' + expression);
-            return func();
+            // Use secure expression evaluator instead of unsafe Function constructor
+            return this.expressionEvaluator.safeEvaluate(expression);
         } catch (error) {
-            this.logger.warn(
-                `Failed to evaluate expression: ${expression}`,
-                error
-            );
+            if (error instanceof ExpressionEvaluationError) {
+                this.logger.warn(`Expression evaluation error: ${error.message}`);
+            } else {
+                this.logger.warn(`Failed to evaluate expression: ${expression}`, error);
+            }
             return 0;
         }
     }

@@ -7,7 +7,8 @@ import {
     FormulaService,
     LookupService,
     FieldTypeService,
-    AutoFieldService
+    AutoFieldService,
+    SecureExpressionEvaluatorService
 } from './services/index.js';
 import { CollectionsController } from './controllers/collections.controller.js';
 import { CollectionResolver } from './resolvers/collection.resolver.js';
@@ -25,6 +26,7 @@ import { CollectionResolver } from './resolvers/collection.resolver.js';
         LookupService,
         FieldTypeService,
         AutoFieldService,
+        SecureExpressionEvaluatorService,
         CollectionResolver
     ],
     exports: [
@@ -32,7 +34,8 @@ import { CollectionResolver } from './resolvers/collection.resolver.js';
         FormulaService,
         LookupService,
         FieldTypeService,
-        AutoFieldService
+        AutoFieldService,
+        SecureExpressionEvaluatorService
     ]
 })
 export class CollectionsModule {}

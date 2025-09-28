@@ -2,13 +2,14 @@ import { Test, TestingModule } from '@nestjs/testing';
 import { describe, beforeEach, it, expect } from 'vitest';
 
 import { FormulaService } from './formula.service.js';
+import { SecureExpressionEvaluatorService } from './secure-expression-evaluator.service.js';
 
 describe('FormulaService', () => {
     let service: FormulaService;
 
     beforeEach(async () => {
         const module: TestingModule = await Test.createTestingModule({
-            providers: [FormulaService]
+            providers: [FormulaService, SecureExpressionEvaluatorService]
         }).compile();
 
         service = module.get<FormulaService>(FormulaService);
