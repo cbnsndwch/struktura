@@ -6,6 +6,7 @@ import {
     ScrollRestoration,
     type LoaderFunctionArgs
 } from 'react-router';
+import { ThemeProvider } from '@cbnsndwch/struktura-shared-ui';
 
 import './app.css';
 
@@ -43,6 +44,19 @@ export function meta() {
     ];
 }
 
+function ThemeScript() {
+    const themeScript = `
+        (function() {
+            const theme = localStorage.getItem('struktura-theme') || 'system';
+            const systemTheme = window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';
+            const resolvedTheme = theme === 'system' ? systemTheme : theme;
+            document.documentElement.classList.add(resolvedTheme);
+        })();
+    `;
+    
+    return <script dangerouslySetInnerHTML={{ __html: themeScript }} />;
+}
+
 export function Layout({ children }: { children: React.ReactNode }) {
     return (
         <html lang="en" suppressHydrationWarning>
@@ -55,9 +69,12 @@ export function Layout({ children }: { children: React.ReactNode }) {
                 <link rel="icon" type="image/svg+xml" href="/img/icon.svg" />
                 <Meta />
                 <Links />
+                <ThemeScript />
             </head>
             <body className="flex flex-col min-h-screen">
-                {children}
+                <ThemeProvider>
+                    {children}
+                </ThemeProvider>
                 <ScrollRestoration />
                 <Scripts />
             </body>

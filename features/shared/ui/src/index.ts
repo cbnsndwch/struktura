@@ -42,12 +42,14 @@ export * from './components/ui/switch.js';
 export * from './components/ui/table.js';
 export * from './components/ui/tabs.js';
 export * from './components/ui/textarea.js';
+export * from './components/ui/theme-toggle.js';
 export * from './components/ui/toggle-group.js';
 export * from './components/ui/toggle.js';
 export * from './components/ui/tooltip.js';
 
 // Export hooks
 export * from './hooks/use-mobile.js';
+export * from './hooks/use-theme.js';
 
 // Export lib utilities
 export * from './lib/utils.js';
