@@ -50,8 +50,9 @@ export default function Home() {
                             size="lg"
                             variant="outline"
                             className="px-8 text-lg border-gray-300"
+                            asChild
                         >
-                            View Demo
+                            <a href="/ui-demo">View UI Demo</a>
                         </Button>
                     </div>
                 </div>
