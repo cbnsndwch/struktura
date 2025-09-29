@@ -12,30 +12,35 @@ import {
 
 export const meta: MetaFunction = () => {
     const title = 'Struktura • No-Code Data Management Platform';
-    const description = 'Struktura combines the ease-of-use of apps like Airtable with the schema flexibility of MongoDB. Create, manage, and collaborate on complex data structures without coding.';
-    
+    const description =
+        'Struktura combines the ease-of-use of apps like Airtable with the schema flexibility of MongoDB. Create, manage, and collaborate on complex data structures without coding.';
+
     return [
         { title },
         { name: 'description', content: description },
-        
+
         // Open Graph
         { property: 'og:title', content: title },
         { property: 'og:description', content: description },
         { property: 'og:type', content: 'website' },
         { property: 'og:url', content: 'https://struktura.cbnsndwch.dev' },
         { property: 'og:site_name', content: 'Struktura' },
-        
+
         // Twitter Card
         { name: 'twitter:card', content: 'summary_large_image' },
         { name: 'twitter:title', content: title },
         { name: 'twitter:description', content: description },
         { name: 'twitter:site', content: '@cbnsndwch' },
-        
+
         // Additional SEO
-        { name: 'keywords', content: 'no-code, data management, MongoDB, Airtable alternative, database, schema builder, real-time collaboration' },
+        {
+            name: 'keywords',
+            content:
+                'no-code, data management, MongoDB, Airtable alternative, database, schema builder, real-time collaboration'
+        },
         { name: 'author', content: 'cbnsndwch LLC' },
         { name: 'robots', content: 'index, follow' },
-        
+
         // Schema.org structured data
         {
             'script:ld+json': {
@@ -69,7 +74,9 @@ export default function Home() {
                 <div className="container mx-auto px-4 h-16 flex items-center justify-between">
                     <div className="flex items-center gap-2">
                         <div className="font-bold text-xl">Struktura</div>
-                        <Badge variant="secondary" className="text-xs">Beta</Badge>
+                        <Badge variant="secondary" className="text-xs">
+                            Beta
+                        </Badge>
                     </div>
                     <div className="flex items-center gap-4">
                         <ThemeToggle />
@@ -270,7 +277,8 @@ export default function Home() {
                         Trusted by Teams Worldwide
                     </h2>
                     <p className="text-muted-foreground max-w-2xl mx-auto">
-                        Join hundreds of teams already building better data workflows with Struktura
+                        Join hundreds of teams already building better data
+                        workflows with Struktura
                     </p>
                 </div>
 
@@ -285,8 +293,10 @@ export default function Home() {
                                     ))}
                                 </div>
                                 <p className="text-sm text-muted-foreground">
-                                    "Struktura finally bridges the gap between simple spreadsheets and complex databases. 
-                                    Perfect for our growing startup's data needs."
+                                    "Struktura finally bridges the gap between
+                                    simple spreadsheets and complex databases.
+                                    Perfect for our growing startup's data
+                                    needs."
                                 </p>
                             </div>
                             <div className="flex items-center gap-3">
@@ -294,8 +304,12 @@ export default function Home() {
                                     👨‍💼
                                 </div>
                                 <div>
-                                    <div className="font-semibold text-sm">Alex Chen</div>
-                                    <div className="text-xs text-muted-foreground">CTO, TechFlow</div>
+                                    <div className="font-semibold text-sm">
+                                        Alex Chen
+                                    </div>
+                                    <div className="text-xs text-muted-foreground">
+                                        CTO, TechFlow
+                                    </div>
                                 </div>
                             </div>
                         </CardContent>
@@ -310,7 +324,8 @@ export default function Home() {
                                     ))}
                                 </div>
                                 <p className="text-sm text-muted-foreground">
-                                    "The real-time collaboration features are game-changing. Our team can work 
+                                    "The real-time collaboration features are
+                                    game-changing. Our team can work
                                     simultaneously without any conflicts."
                                 </p>
                             </div>
@@ -319,8 +334,12 @@ export default function Home() {
                                     👩‍💻
                                 </div>
                                 <div>
-                                    <div className="font-semibold text-sm">Sarah Johnson</div>
-                                    <div className="text-xs text-muted-foreground">Product Manager, InnovateCorp</div>
+                                    <div className="font-semibold text-sm">
+                                        Sarah Johnson
+                                    </div>
+                                    <div className="text-xs text-muted-foreground">
+                                        Product Manager, InnovateCorp
+                                    </div>
                                 </div>
                             </div>
                         </CardContent>
@@ -335,8 +354,9 @@ export default function Home() {
                                     ))}
                                 </div>
                                 <p className="text-sm text-muted-foreground">
-                                    "Finally, a no-code solution that doesn't limit our data structure complexity. 
-                                    Highly recommended!"
+                                    "Finally, a no-code solution that doesn't
+                                    limit our data structure complexity. Highly
+                                    recommended!"
                                 </p>
                             </div>
                             <div className="flex items-center gap-3">
@@ -344,8 +364,12 @@ export default function Home() {
                                     👨‍🎨
                                 </div>
                                 <div>
-                                    <div className="font-semibold text-sm">Mike Rodriguez</div>
-                                    <div className="text-xs text-muted-foreground">Lead Designer, CreativeHub</div>
+                                    <div className="font-semibold text-sm">
+                                        Mike Rodriguez
+                                    </div>
+                                    <div className="text-xs text-muted-foreground">
+                                        Lead Designer, CreativeHub
+                                    </div>
                                 </div>
                             </div>
                         </CardContent>
@@ -355,20 +379,36 @@ export default function Home() {
                 {/* Stats */}
                 <div className="grid grid-cols-2 md:grid-cols-4 gap-8 max-w-4xl mx-auto mt-16">
                     <div className="text-center">
-                        <div className="text-2xl md:text-3xl font-bold text-primary mb-2">500+</div>
-                        <div className="text-sm text-muted-foreground">Active Teams</div>
+                        <div className="text-2xl md:text-3xl font-bold text-primary mb-2">
+                            500+
+                        </div>
+                        <div className="text-sm text-muted-foreground">
+                            Active Teams
+                        </div>
                     </div>
                     <div className="text-center">
-                        <div className="text-2xl md:text-3xl font-bold text-primary mb-2">10K+</div>
-                        <div className="text-sm text-muted-foreground">Collections Created</div>
+                        <div className="text-2xl md:text-3xl font-bold text-primary mb-2">
+                            10K+
+                        </div>
+                        <div className="text-sm text-muted-foreground">
+                            Collections Created
+                        </div>
                     </div>
                     <div className="text-center">
-                        <div className="text-2xl md:text-3xl font-bold text-primary mb-2">99.9%</div>
-                        <div className="text-sm text-muted-foreground">Uptime</div>
+                        <div className="text-2xl md:text-3xl font-bold text-primary mb-2">
+                            99.9%
+                        </div>
+                        <div className="text-sm text-muted-foreground">
+                            Uptime
+                        </div>
                     </div>
                     <div className="text-center">
-                        <div className="text-2xl md:text-3xl font-bold text-primary mb-2">24/7</div>
-                        <div className="text-sm text-muted-foreground">Support</div>
+                        <div className="text-2xl md:text-3xl font-bold text-primary mb-2">
+                            24/7
+                        </div>
+                        <div className="text-sm text-muted-foreground">
+                            Support
+                        </div>
                     </div>
                 </div>
             </section>
@@ -425,24 +465,33 @@ export default function Home() {
                         {/* Brand Column */}
                         <div className="space-y-4">
                             <div className="flex items-center gap-2">
-                                <div className="font-bold text-lg">Struktura</div>
-                                <Badge variant="secondary" className="text-xs">Beta</Badge>
+                                <div className="font-bold text-lg">
+                                    Struktura
+                                </div>
+                                <Badge variant="secondary" className="text-xs">
+                                    Beta
+                                </Badge>
                             </div>
                             <p className="text-muted-foreground text-sm">
-                                No-code data management platform that combines the simplicity of Airtable 
-                                with the flexibility of MongoDB.
+                                No-code data management platform that combines
+                                the simplicity of Airtable with the flexibility
+                                of MongoDB.
                             </p>
                             <div className="flex items-center gap-4">
-                                <a href="https://github.com/cbnsndwch/struktura" 
-                                   className="text-muted-foreground hover:text-foreground transition-colors"
-                                   target="_blank" 
-                                   rel="noopener noreferrer">
+                                <a
+                                    href="https://github.com/cbnsndwch/struktura"
+                                    className="text-muted-foreground hover:text-foreground transition-colors"
+                                    target="_blank"
+                                    rel="noopener noreferrer"
+                                >
                                     GitHub
                                 </a>
-                                <a href="https://twitter.com/cbnsndwch" 
-                                   className="text-muted-foreground hover:text-foreground transition-colors"
-                                   target="_blank" 
-                                   rel="noopener noreferrer">
+                                <a
+                                    href="https://twitter.com/cbnsndwch"
+                                    className="text-muted-foreground hover:text-foreground transition-colors"
+                                    target="_blank"
+                                    rel="noopener noreferrer"
+                                >
                                     Twitter
                                 </a>
                             </div>
@@ -452,10 +501,38 @@ export default function Home() {
                         <div className="space-y-4">
                             <h3 className="font-semibold">Product</h3>
                             <ul className="space-y-2 text-sm">
-                                <li><a href="/ui-demo" className="text-muted-foreground hover:text-foreground transition-colors">UI Demo</a></li>
-                                <li><a href="/graphql" className="text-muted-foreground hover:text-foreground transition-colors">GraphQL Playground</a></li>
-                                <li><a href="#features" className="text-muted-foreground hover:text-foreground transition-colors">Features</a></li>
-                                <li><a href="#pricing" className="text-muted-foreground hover:text-foreground transition-colors">Pricing</a></li>
+                                <li>
+                                    <a
+                                        href="/ui-demo"
+                                        className="text-muted-foreground hover:text-foreground transition-colors"
+                                    >
+                                        UI Demo
+                                    </a>
+                                </li>
+                                <li>
+                                    <a
+                                        href="/graphql"
+                                        className="text-muted-foreground hover:text-foreground transition-colors"
+                                    >
+                                        GraphQL Playground
+                                    </a>
+                                </li>
+                                <li>
+                                    <a
+                                        href="#features"
+                                        className="text-muted-foreground hover:text-foreground transition-colors"
+                                    >
+                                        Features
+                                    </a>
+                                </li>
+                                <li>
+                                    <a
+                                        href="#pricing"
+                                        className="text-muted-foreground hover:text-foreground transition-colors"
+                                    >
+                                        Pricing
+                                    </a>
+                                </li>
                             </ul>
                         </div>
 
@@ -463,10 +540,38 @@ export default function Home() {
                         <div className="space-y-4">
                             <h3 className="font-semibold">Resources</h3>
                             <ul className="space-y-2 text-sm">
-                                <li><a href="#documentation" className="text-muted-foreground hover:text-foreground transition-colors">Documentation</a></li>
-                                <li><a href="#api" className="text-muted-foreground hover:text-foreground transition-colors">API Reference</a></li>
-                                <li><a href="#guides" className="text-muted-foreground hover:text-foreground transition-colors">Guides</a></li>
-                                <li><a href="#support" className="text-muted-foreground hover:text-foreground transition-colors">Support</a></li>
+                                <li>
+                                    <a
+                                        href="#documentation"
+                                        className="text-muted-foreground hover:text-foreground transition-colors"
+                                    >
+                                        Documentation
+                                    </a>
+                                </li>
+                                <li>
+                                    <a
+                                        href="#api"
+                                        className="text-muted-foreground hover:text-foreground transition-colors"
+                                    >
+                                        API Reference
+                                    </a>
+                                </li>
+                                <li>
+                                    <a
+                                        href="#guides"
+                                        className="text-muted-foreground hover:text-foreground transition-colors"
+                                    >
+                                        Guides
+                                    </a>
+                                </li>
+                                <li>
+                                    <a
+                                        href="#support"
+                                        className="text-muted-foreground hover:text-foreground transition-colors"
+                                    >
+                                        Support
+                                    </a>
+                                </li>
                             </ul>
                         </div>
 
@@ -474,10 +579,38 @@ export default function Home() {
                         <div className="space-y-4">
                             <h3 className="font-semibold">Company</h3>
                             <ul className="space-y-2 text-sm">
-                                <li><a href="#about" className="text-muted-foreground hover:text-foreground transition-colors">About</a></li>
-                                <li><a href="#blog" className="text-muted-foreground hover:text-foreground transition-colors">Blog</a></li>
-                                <li><a href="#careers" className="text-muted-foreground hover:text-foreground transition-colors">Careers</a></li>
-                                <li><a href="#contact" className="text-muted-foreground hover:text-foreground transition-colors">Contact</a></li>
+                                <li>
+                                    <a
+                                        href="#about"
+                                        className="text-muted-foreground hover:text-foreground transition-colors"
+                                    >
+                                        About
+                                    </a>
+                                </li>
+                                <li>
+                                    <a
+                                        href="#blog"
+                                        className="text-muted-foreground hover:text-foreground transition-colors"
+                                    >
+                                        Blog
+                                    </a>
+                                </li>
+                                <li>
+                                    <a
+                                        href="#careers"
+                                        className="text-muted-foreground hover:text-foreground transition-colors"
+                                    >
+                                        Careers
+                                    </a>
+                                </li>
+                                <li>
+                                    <a
+                                        href="#contact"
+                                        className="text-muted-foreground hover:text-foreground transition-colors"
+                                    >
+                                        Contact
+                                    </a>
+                                </li>
                             </ul>
                         </div>
                     </div>
@@ -487,9 +620,24 @@ export default function Home() {
                             © 2024 cbnsndwch LLC. All rights reserved.
                         </p>
                         <div className="flex items-center gap-6 text-sm">
-                            <a href="#privacy" className="text-muted-foreground hover:text-foreground transition-colors">Privacy Policy</a>
-                            <a href="#terms" className="text-muted-foreground hover:text-foreground transition-colors">Terms of Service</a>
-                            <a href="#cookies" className="text-muted-foreground hover:text-foreground transition-colors">Cookie Policy</a>
+                            <a
+                                href="#privacy"
+                                className="text-muted-foreground hover:text-foreground transition-colors"
+                            >
+                                Privacy Policy
+                            </a>
+                            <a
+                                href="#terms"
+                                className="text-muted-foreground hover:text-foreground transition-colors"
+                            >
+                                Terms of Service
+                            </a>
+                            <a
+                                href="#cookies"
+                                className="text-muted-foreground hover:text-foreground transition-colors"
+                            >
+                                Cookie Policy
+                            </a>
                         </div>
                     </div>
                 </div>
