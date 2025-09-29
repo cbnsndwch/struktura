@@ -15,7 +15,7 @@ The main table component that renders the table structure.
 ```tsx
 import { DataTable } from '@cbnsndwch/struktura-shared-ui';
 
-<DataTable table={table} actionBar={<DataTablePagination table={table} />} />
+<DataTable table={table} actionBar={<DataTablePagination table={table} />} />;
 ```
 
 ### DataTableColumnHeader
@@ -40,7 +40,7 @@ Pagination controls with configurable page sizes.
 ```tsx
 import { DataTablePagination } from '@cbnsndwch/struktura-shared-ui';
 
-<DataTablePagination table={table} />
+<DataTablePagination table={table} />;
 ```
 
 ### DataTableViewOptions
@@ -50,7 +50,7 @@ Column visibility dropdown control.
 ```tsx
 import { DataTableViewOptions } from '@cbnsndwch/struktura-shared-ui';
 
-<DataTableViewOptions table={table} />
+<DataTableViewOptions table={table} />;
 ```
 
 ### DataTableFacetedFilter
@@ -61,15 +61,15 @@ Multi-select faceted filter with badges.
 import { DataTableFacetedFilter } from '@cbnsndwch/struktura-shared-ui';
 
 const statusOptions = [
-  { label: 'Active', value: 'active' },
-  { label: 'Inactive', value: 'inactive' }
+    { label: 'Active', value: 'active' },
+    { label: 'Inactive', value: 'inactive' }
 ];
 
 <DataTableFacetedFilter
-  column={table.getColumn('status')}
-  title="Status"
-  options={statusOptions}
-/>
+    column={table.getColumn('status')}
+    title="Status"
+    options={statusOptions}
+/>;
 ```
 
 ## Complete Example
@@ -77,165 +77,183 @@ const statusOptions = [
 ```tsx
 import * as React from 'react';
 import {
-  DataTable,
-  DataTableColumnHeader,
-  DataTablePagination,
-  DataTableFacetedFilter,
-  DataTableViewOptions,
-  Checkbox,
-  Badge,
-  Button,
-  Input
+    DataTable,
+    DataTableColumnHeader,
+    DataTablePagination,
+    DataTableFacetedFilter,
+    DataTableViewOptions,
+    Checkbox,
+    Badge,
+    Button,
+    Input
 } from '@cbnsndwch/struktura-shared-ui';
 import {
-  createColumnHelper,
-  getCoreRowModel,
-  getFilteredRowModel,
-  getPaginationRowModel,
-  getSortedRowModel,
-  useReactTable,
-  type ColumnDef,
-  type SortingState,
-  type ColumnFiltersState,
-  type VisibilityState
+    createColumnHelper,
+    getCoreRowModel,
+    getFilteredRowModel,
+    getPaginationRowModel,
+    getSortedRowModel,
+    useReactTable,
+    type ColumnDef,
+    type SortingState,
+    type ColumnFiltersState,
+    type VisibilityState
 } from '@tanstack/react-table';
 
 interface User {
-  id: string;
-  name: string;
-  email: string;
-  role: string;
-  status: 'active' | 'inactive';
+    id: string;
+    name: string;
+    email: string;
+    role: string;
+    status: 'active' | 'inactive';
 }
 
 const data: User[] = [
-  // ... your data
+    // ... your data
 ];
 
 export function UserTable() {
-  const [sorting, setSorting] = React.useState<SortingState>([]);
-  const [columnFilters, setColumnFilters] = React.useState<ColumnFiltersState>([]);
-  const [columnVisibility, setColumnVisibility] = React.useState<VisibilityState>({});
-  const [rowSelection, setRowSelection] = React.useState({});
+    const [sorting, setSorting] = React.useState<SortingState>([]);
+    const [columnFilters, setColumnFilters] =
+        React.useState<ColumnFiltersState>([]);
+    const [columnVisibility, setColumnVisibility] =
+        React.useState<VisibilityState>({});
+    const [rowSelection, setRowSelection] = React.useState({});
 
-  const columns: ColumnDef<User>[] = [
-    {
-      id: 'select',
-      header: ({ table }) => (
-        <Checkbox
-          checked={table.getIsAllPageRowsSelected()}
-          onCheckedChange={(value) => table.toggleAllPageRowsSelected(!!value)}
-        />
-      ),
-      cell: ({ row }) => (
-        <Checkbox
-          checked={row.getIsSelected()}
-          onCheckedChange={(value) => row.toggleSelected(!!value)}
-        />
-      ),
-    },
-    {
-      accessorKey: 'name',
-      header: ({ column }) => (
-        <DataTableColumnHeader column={column} title="Name" />
-      ),
-    },
-    {
-      accessorKey: 'email',
-      header: ({ column }) => (
-        <DataTableColumnHeader column={column} title="Email" />
-      ),
-    },
-    {
-      accessorKey: 'role',
-      header: ({ column }) => (
-        <DataTableColumnHeader column={column} title="Role" />
-      ),
-      cell: ({ row }) => <Badge variant="outline">{row.getValue('role')}</Badge>,
-      filterFn: (row, id, value) => value.includes(row.getValue(id)),
-    },
-    {
-      accessorKey: 'status',
-      header: ({ column }) => (
-        <DataTableColumnHeader column={column} title="Status" />
-      ),
-      cell: ({ row }) => (
-        <Badge variant={row.getValue('status') === 'active' ? 'default' : 'secondary'}>
-          {row.getValue('status')}
-        </Badge>
-      ),
-      filterFn: (row, id, value) => value.includes(row.getValue(id)),
-    },
-  ];
+    const columns: ColumnDef<User>[] = [
+        {
+            id: 'select',
+            header: ({ table }) => (
+                <Checkbox
+                    checked={table.getIsAllPageRowsSelected()}
+                    onCheckedChange={value =>
+                        table.toggleAllPageRowsSelected(!!value)
+                    }
+                />
+            ),
+            cell: ({ row }) => (
+                <Checkbox
+                    checked={row.getIsSelected()}
+                    onCheckedChange={value => row.toggleSelected(!!value)}
+                />
+            )
+        },
+        {
+            accessorKey: 'name',
+            header: ({ column }) => (
+                <DataTableColumnHeader column={column} title="Name" />
+            )
+        },
+        {
+            accessorKey: 'email',
+            header: ({ column }) => (
+                <DataTableColumnHeader column={column} title="Email" />
+            )
+        },
+        {
+            accessorKey: 'role',
+            header: ({ column }) => (
+                <DataTableColumnHeader column={column} title="Role" />
+            ),
+            cell: ({ row }) => (
+                <Badge variant="outline">{row.getValue('role')}</Badge>
+            ),
+            filterFn: (row, id, value) => value.includes(row.getValue(id))
+        },
+        {
+            accessorKey: 'status',
+            header: ({ column }) => (
+                <DataTableColumnHeader column={column} title="Status" />
+            ),
+            cell: ({ row }) => (
+                <Badge
+                    variant={
+                        row.getValue('status') === 'active'
+                            ? 'default'
+                            : 'secondary'
+                    }
+                >
+                    {row.getValue('status')}
+                </Badge>
+            ),
+            filterFn: (row, id, value) => value.includes(row.getValue(id))
+        }
+    ];
 
-  const table = useReactTable({
-    data,
-    columns,
-    onSortingChange: setSorting,
-    onColumnFiltersChange: setColumnFilters,
-    getCoreRowModel: getCoreRowModel(),
-    getPaginationRowModel: getPaginationRowModel(),
-    getSortedRowModel: getSortedRowModel(),
-    getFilteredRowModel: getFilteredRowModel(),
-    onColumnVisibilityChange: setColumnVisibility,
-    onRowSelectionChange: setRowSelection,
-    state: {
-      sorting,
-      columnFilters,
-      columnVisibility,
-      rowSelection,
-    },
-  });
+    const table = useReactTable({
+        data,
+        columns,
+        onSortingChange: setSorting,
+        onColumnFiltersChange: setColumnFilters,
+        getCoreRowModel: getCoreRowModel(),
+        getPaginationRowModel: getPaginationRowModel(),
+        getSortedRowModel: getSortedRowModel(),
+        getFilteredRowModel: getFilteredRowModel(),
+        onColumnVisibilityChange: setColumnVisibility,
+        onRowSelectionChange: setRowSelection,
+        state: {
+            sorting,
+            columnFilters,
+            columnVisibility,
+            rowSelection
+        }
+    });
 
-  const statusOptions = [
-    { label: 'Active', value: 'active' },
-    { label: 'Inactive', value: 'inactive' }
-  ];
+    const statusOptions = [
+        { label: 'Active', value: 'active' },
+        { label: 'Inactive', value: 'inactive' }
+    ];
 
-  const roleOptions = [
-    { label: 'Admin', value: 'admin' },
-    { label: 'User', value: 'user' }
-  ];
+    const roleOptions = [
+        { label: 'Admin', value: 'admin' },
+        { label: 'User', value: 'user' }
+    ];
 
-  return (
-    <DataTable 
-      table={table}
-      actionBar={<DataTablePagination table={table} />}
-    >
-      <div className="flex items-center justify-between">
-        <div className="flex flex-1 items-center space-x-2">
-          <Input
-            placeholder="Filter names..."
-            value={(table.getColumn('name')?.getFilterValue() as string) ?? ''}
-            onChange={(event) =>
-              table.getColumn('name')?.setFilterValue(event.target.value)
-            }
-            className="h-8 w-[150px] lg:w-[250px]"
-          />
-          <DataTableFacetedFilter
-            column={table.getColumn('status')}
-            title="Status"
-            options={statusOptions}
-          />
-          <DataTableFacetedFilter
-            column={table.getColumn('role')}
-            title="Role"
-            options={roleOptions}
-          />
-          {table.getState().columnFilters.length > 0 && (
-            <Button
-              variant="ghost"
-              onClick={() => table.resetColumnFilters()}
-              className="h-8 px-2 lg:px-3"
-            >
-              Reset
-            </Button>
-          )}
-        </div>
-        <DataTableViewOptions table={table} />
-      </div>
-    </DataTable>
-  );
+    return (
+        <DataTable
+            table={table}
+            actionBar={<DataTablePagination table={table} />}
+        >
+            <div className="flex items-center justify-between">
+                <div className="flex flex-1 items-center space-x-2">
+                    <Input
+                        placeholder="Filter names..."
+                        value={
+                            (table
+                                .getColumn('name')
+                                ?.getFilterValue() as string) ?? ''
+                        }
+                        onChange={event =>
+                            table
+                                .getColumn('name')
+                                ?.setFilterValue(event.target.value)
+                        }
+                        className="h-8 w-[150px] lg:w-[250px]"
+                    />
+                    <DataTableFacetedFilter
+                        column={table.getColumn('status')}
+                        title="Status"
+                        options={statusOptions}
+                    />
+                    <DataTableFacetedFilter
+                        column={table.getColumn('role')}
+                        title="Role"
+                        options={roleOptions}
+                    />
+                    {table.getState().columnFilters.length > 0 && (
+                        <Button
+                            variant="ghost"
+                            onClick={() => table.resetColumnFilters()}
+                            className="h-8 px-2 lg:px-3"
+                        >
+                            Reset
+                        </Button>
+                    )}
+                </div>
+                <DataTableViewOptions table={table} />
+            </div>
+        </DataTable>
+    );
 }
 ```
 
@@ -275,6 +293,7 @@ pnpm test
 ```
 
 Tests cover:
+
 - Component rendering
 - Data display
 - Filtering functionality

@@ -1,8 +1,9 @@
 import type { ColumnSort, Row, RowData } from '@tanstack/react-table';
+
 import type { DataTableConfig } from '../lib/data-table/config.js';
 
 declare module '@tanstack/react-table' {
-    // biome-ignore lint/correctness/noUnusedVariables: TValue is used in the ColumnMeta interface
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
     interface ColumnMeta<TData extends RowData, TValue> {
         label?: string;
         placeholder?: string;

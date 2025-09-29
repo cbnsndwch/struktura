@@ -1,7 +1,13 @@
 import { render, screen } from '@testing-library/react';
-import { createColumnHelper, getCoreRowModel, useReactTable } from '@tanstack/react-table';
-import { DataTable } from './data-table.js';
+import {
+    createColumnHelper,
+    getCoreRowModel,
+    useReactTable
+} from '@tanstack/react-table';
+
 import { describe, it, expect } from 'vitest';
+
+import { DataTable } from './data-table.js';
 
 interface TestData {
     id: string;
@@ -19,11 +25,11 @@ const columnHelper = createColumnHelper<TestData>();
 const columns = [
     columnHelper.accessor('name', {
         header: 'Name',
-        cell: (info) => info.getValue()
+        cell: info => info.getValue()
     }),
     columnHelper.accessor('email', {
         header: 'Email',
-        cell: (info) => info.getValue()
+        cell: info => info.getValue()
     })
 ];
 
@@ -40,11 +46,11 @@ function TestDataTable() {
 describe('DataTable', () => {
     it('should render table with data', () => {
         render(<TestDataTable />);
-        
+
         // Check that headers are rendered
         expect(screen.getByText('Name')).toBeInTheDocument();
         expect(screen.getByText('Email')).toBeInTheDocument();
-        
+
         // Check that data is rendered
         expect(screen.getByText('John Doe')).toBeInTheDocument();
         expect(screen.getByText('john@example.com')).toBeInTheDocument();
@@ -64,7 +70,7 @@ describe('DataTable', () => {
         }
 
         render(<EmptyTestDataTable />);
-        
+
         expect(screen.getByText('No results.')).toBeInTheDocument();
     });
 });

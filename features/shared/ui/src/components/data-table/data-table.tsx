@@ -1,7 +1,4 @@
-import {
-    flexRender,
-    type Table as TanstackTable
-} from '@tanstack/react-table';
+import { flexRender, type Table as TanstackTable } from '@tanstack/react-table';
 import type * as React from 'react';
 
 import {
@@ -39,9 +36,9 @@ export function DataTable<TData>({
             <div className="overflow-hidden rounded-md border">
                 <Table>
                     <TableHeader>
-                        {table.getHeaderGroups().map((headerGroup) => (
+                        {table.getHeaderGroups().map(headerGroup => (
                             <TableRow key={headerGroup.id}>
-                                {headerGroup.headers.map((header) => (
+                                {headerGroup.headers.map(header => (
                                     <TableHead
                                         key={header.id}
                                         colSpan={header.colSpan}
@@ -54,7 +51,8 @@ export function DataTable<TData>({
                                         {header.isPlaceholder
                                             ? null
                                             : flexRender(
-                                                  header.column.columnDef.header,
+                                                  header.column.columnDef
+                                                      .header,
                                                   header.getContext()
                                               )}
                                     </TableHead>
@@ -64,14 +62,14 @@ export function DataTable<TData>({
                     </TableHeader>
                     <TableBody>
                         {table.getRowModel().rows?.length ? (
-                            table.getRowModel().rows.map((row) => (
+                            table.getRowModel().rows.map(row => (
                                 <TableRow
                                     key={row.id}
                                     data-state={
                                         row.getIsSelected() && 'selected'
                                     }
                                 >
-                                    {row.getVisibleCells().map((cell) => (
+                                    {row.getVisibleCells().map(cell => (
                                         <TableCell
                                             key={cell.id}
                                             style={{

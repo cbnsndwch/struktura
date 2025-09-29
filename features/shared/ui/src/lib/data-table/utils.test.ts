@@ -1,6 +1,8 @@
 import { describe, it, expect } from 'vitest';
-import { getFilterOperators, formatFilterValue, generateId } from './utils.js';
+
 import type { ExtendedColumnFilter } from '../../types/data-table.js';
+
+import { getFilterOperators, formatFilterValue, generateId } from './utils.js';
 
 describe('data-table utils', () => {
     describe('getFilterOperators', () => {

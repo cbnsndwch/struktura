@@ -2,7 +2,6 @@ import type { MetaFunction } from 'react-router';
 
 import * as React from 'react';
 
-// Import components from the shared UI workspace - using multiple import patterns to test integration
 import {
     Button,
     Card,
@@ -20,17 +19,14 @@ import {
     DataTable,
     DataTableColumnHeader,
     DataTablePagination,
-    DataTableToolbar,
     DataTableViewOptions,
     DataTableFacetedFilter,
-    Checkbox
+    Checkbox,
+    cn
 } from '@cbnsndwch/struktura-shared-ui';
-import { cn } from '@cbnsndwch/struktura-shared-ui/lib/utils.js';
 
-// Import React Table functionality  
+// Import React Table functionality
 import {
-    createColumnHelper,
-    flexRender,
     getCoreRowModel,
     getFilteredRowModel,
     getPaginationRowModel,
@@ -128,8 +124,10 @@ export default function UIDemo() {
 
     // Data table state
     const [sorting, setSorting] = React.useState<SortingState>([]);
-    const [columnFilters, setColumnFilters] = React.useState<ColumnFiltersState>([]);
-    const [columnVisibility, setColumnVisibility] = React.useState<VisibilityState>({});
+    const [columnFilters, setColumnFilters] =
+        React.useState<ColumnFiltersState>([]);
+    const [columnVisibility, setColumnVisibility] =
+        React.useState<VisibilityState>({});
     const [rowSelection, setRowSelection] = React.useState({});
 
     // Table column definitions
@@ -142,14 +140,16 @@ export default function UIDemo() {
                         table.getIsAllPageRowsSelected() ||
                         (table.getIsSomePageRowsSelected() && 'indeterminate')
                     }
-                    onCheckedChange={(value) => table.toggleAllPageRowsSelected(!!value)}
+                    onCheckedChange={value =>
+                        table.toggleAllPageRowsSelected(!!value)
+                    }
                     aria-label="Select all"
                 />
             ),
             cell: ({ row }) => (
                 <Checkbox
                     checked={row.getIsSelected()}
-                    onCheckedChange={(value) => row.toggleSelected(!!value)}
+                    onCheckedChange={value => row.toggleSelected(!!value)}
                     aria-label="Select row"
                 />
             ),
@@ -161,7 +161,9 @@ export default function UIDemo() {
             header: ({ column }) => (
                 <DataTableColumnHeader column={column} title="Name" />
             ),
-            cell: ({ row }) => <div className="font-medium">{row.getValue('name')}</div>
+            cell: ({ row }) => (
+                <div className="font-medium">{row.getValue('name')}</div>
+            )
         },
         {
             accessorKey: 'email',
@@ -177,9 +179,7 @@ export default function UIDemo() {
             ),
             cell: ({ row }) => {
                 const role = row.getValue('role') as string;
-                return (
-                    <Badge variant="outline">{role}</Badge>
-                );
+                return <Badge variant="outline">{role}</Badge>;
             },
             filterFn: (row, id, value) => {
                 return value.includes(row.getValue(id));
@@ -193,7 +193,15 @@ export default function UIDemo() {
             cell: ({ row }) => {
                 const status = row.getValue('status') as string;
                 return (
-                    <Badge variant={status === 'active' ? 'default' : status === 'pending' ? 'secondary' : 'destructive'}>
+                    <Badge
+                        variant={
+                            status === 'active'
+                                ? 'default'
+                                : status === 'pending'
+                                  ? 'secondary'
+                                  : 'destructive'
+                        }
+                    >
                         {status}
                     </Badge>
                 );
@@ -461,10 +469,13 @@ export default function UIDemo() {
                 {/* Data Table Demo Section */}
                 <div className="mt-12">
                     <div className="mb-6">
-                        <h2 className="text-2xl font-bold mb-2">📊 Data Table Components</h2>
+                        <h2 className="text-2xl font-bold mb-2">
+                            📊 Data Table Components
+                        </h2>
                         <p className="text-muted-foreground">
-                            Advanced data table with sorting, filtering, pagination, and row selection - 
-                            vendored from tablecn with NUQS dependency removed.
+                            Advanced data table with sorting, filtering,
+                            pagination, and row selection - vendored from
+                            tablecn with NUQS dependency removed.
                         </p>
                     </div>
 
@@ -472,29 +483,41 @@ export default function UIDemo() {
                         <CardHeader>
                             <CardTitle>User Management Table</CardTitle>
                             <CardDescription>
-                                Comprehensive data table example with all features enabled
+                                Comprehensive data table example with all
+                                features enabled
                             </CardDescription>
                         </CardHeader>
                         <CardContent className="space-y-4">
-                            <DataTable 
+                            <DataTable
                                 table={table}
-                                actionBar={<DataTablePagination table={table} />}
+                                actionBar={
+                                    <DataTablePagination table={table} />
+                                }
                             >
                                 <div className="flex items-center justify-between">
                                     <div className="flex flex-1 items-center space-x-2">
                                         <Input
                                             placeholder="Filter names..."
                                             value={
-                                                (table.getColumn('name')?.getFilterValue() as string) ?? ''
+                                                (table
+                                                    .getColumn('name')
+                                                    ?.getFilterValue() as string) ??
+                                                ''
                                             }
-                                            onChange={(event) =>
-                                                table.getColumn('name')?.setFilterValue(event.target.value)
+                                            onChange={event =>
+                                                table
+                                                    .getColumn('name')
+                                                    ?.setFilterValue(
+                                                        event.target.value
+                                                    )
                                             }
                                             className="h-8 w-[150px] lg:w-[250px]"
                                         />
                                         {table.getColumn('status') && (
                                             <DataTableFacetedFilter
-                                                column={table.getColumn('status')}
+                                                column={table.getColumn(
+                                                    'status'
+                                                )}
                                                 title="Status"
                                                 options={statusOptions}
                                             />
@@ -506,10 +529,13 @@ export default function UIDemo() {
                                                 options={roleOptions}
                                             />
                                         )}
-                                        {(table.getState().columnFilters.length > 0) && (
+                                        {table.getState().columnFilters.length >
+                                            0 && (
                                             <Button
                                                 variant="ghost"
-                                                onClick={() => table.resetColumnFilters()}
+                                                onClick={() =>
+                                                    table.resetColumnFilters()
+                                                }
                                                 className="h-8 px-2 lg:px-3"
                                             >
                                                 Reset
@@ -534,7 +560,10 @@ export default function UIDemo() {
                             </CardHeader>
                             <CardContent className="space-y-3">
                                 <div className="flex items-center gap-2">
-                                    <Badge variant="outline" className="bg-green-50 text-green-700 border-green-200 dark:bg-green-900/20 dark:text-green-300 dark:border-green-800">
+                                    <Badge
+                                        variant="outline"
+                                        className="bg-green-50 text-green-700 border-green-200 dark:bg-green-900/20 dark:text-green-300 dark:border-green-800"
+                                    >
                                         ✅ Column Sorting
                                     </Badge>
                                     <span className="text-sm text-muted-foreground">
@@ -542,7 +571,10 @@ export default function UIDemo() {
                                     </span>
                                 </div>
                                 <div className="flex items-center gap-2">
-                                    <Badge variant="outline" className="bg-green-50 text-green-700 border-green-200 dark:bg-green-900/20 dark:text-green-300 dark:border-green-800">
+                                    <Badge
+                                        variant="outline"
+                                        className="bg-green-50 text-green-700 border-green-200 dark:bg-green-900/20 dark:text-green-300 dark:border-green-800"
+                                    >
                                         ✅ Text Filtering
                                     </Badge>
                                     <span className="text-sm text-muted-foreground">
@@ -550,7 +582,10 @@ export default function UIDemo() {
                                     </span>
                                 </div>
                                 <div className="flex items-center gap-2">
-                                    <Badge variant="outline" className="bg-green-50 text-green-700 border-green-200 dark:bg-green-900/20 dark:text-green-300 dark:border-green-800">
+                                    <Badge
+                                        variant="outline"
+                                        className="bg-green-50 text-green-700 border-green-200 dark:bg-green-900/20 dark:text-green-300 dark:border-green-800"
+                                    >
                                         ✅ Faceted Filters
                                     </Badge>
                                     <span className="text-sm text-muted-foreground">
@@ -558,7 +593,10 @@ export default function UIDemo() {
                                     </span>
                                 </div>
                                 <div className="flex items-center gap-2">
-                                    <Badge variant="outline" className="bg-green-50 text-green-700 border-green-200 dark:bg-green-900/20 dark:text-green-300 dark:border-green-800">
+                                    <Badge
+                                        variant="outline"
+                                        className="bg-green-50 text-green-700 border-green-200 dark:bg-green-900/20 dark:text-green-300 dark:border-green-800"
+                                    >
                                         ✅ Row Selection
                                     </Badge>
                                     <span className="text-sm text-muted-foreground">
@@ -566,7 +604,10 @@ export default function UIDemo() {
                                     </span>
                                 </div>
                                 <div className="flex items-center gap-2">
-                                    <Badge variant="outline" className="bg-green-50 text-green-700 border-green-200 dark:bg-green-900/20 dark:text-green-300 dark:border-green-800">
+                                    <Badge
+                                        variant="outline"
+                                        className="bg-green-50 text-green-700 border-green-200 dark:bg-green-900/20 dark:text-green-300 dark:border-green-800"
+                                    >
                                         ✅ Pagination
                                     </Badge>
                                     <span className="text-sm text-muted-foreground">
@@ -574,7 +615,10 @@ export default function UIDemo() {
                                     </span>
                                 </div>
                                 <div className="flex items-center gap-2">
-                                    <Badge variant="outline" className="bg-green-50 text-green-700 border-green-200 dark:bg-green-900/20 dark:text-green-300 dark:border-green-800">
+                                    <Badge
+                                        variant="outline"
+                                        className="bg-green-50 text-green-700 border-green-200 dark:bg-green-900/20 dark:text-green-300 dark:border-green-800"
+                                    >
                                         ✅ Column Visibility
                                     </Badge>
                                     <span className="text-sm text-muted-foreground">
@@ -586,14 +630,19 @@ export default function UIDemo() {
 
                         <Card>
                             <CardHeader>
-                                <CardTitle>🔧 Technical Implementation</CardTitle>
+                                <CardTitle>
+                                    🔧 Technical Implementation
+                                </CardTitle>
                                 <CardDescription>
                                     Integration details and dependencies
                                 </CardDescription>
                             </CardHeader>
                             <CardContent className="space-y-3">
                                 <div className="flex items-center gap-2">
-                                    <Badge variant="outline" className="bg-blue-50 text-blue-700 border-blue-200 dark:bg-blue-900/20 dark:text-blue-300 dark:border-blue-800">
+                                    <Badge
+                                        variant="outline"
+                                        className="bg-blue-50 text-blue-700 border-blue-200 dark:bg-blue-900/20 dark:text-blue-300 dark:border-blue-800"
+                                    >
                                         📦 @tanstack/react-table
                                     </Badge>
                                     <span className="text-sm text-muted-foreground">
@@ -601,7 +650,10 @@ export default function UIDemo() {
                                     </span>
                                 </div>
                                 <div className="flex items-center gap-2">
-                                    <Badge variant="outline" className="bg-purple-50 text-purple-700 border-purple-200 dark:bg-purple-900/20 dark:text-purple-300 dark:border-purple-800">
+                                    <Badge
+                                        variant="outline"
+                                        className="bg-purple-50 text-purple-700 border-purple-200 dark:bg-purple-900/20 dark:text-purple-300 dark:border-purple-800"
+                                    >
                                         🎨 shadcn/ui integration
                                     </Badge>
                                     <span className="text-sm text-muted-foreground">
@@ -609,7 +661,10 @@ export default function UIDemo() {
                                     </span>
                                 </div>
                                 <div className="flex items-center gap-2">
-                                    <Badge variant="outline" className="bg-red-50 text-red-700 border-red-200 dark:bg-red-900/20 dark:text-red-300 dark:border-red-800">
+                                    <Badge
+                                        variant="outline"
+                                        className="bg-red-50 text-red-700 border-red-200 dark:bg-red-900/20 dark:text-red-300 dark:border-red-800"
+                                    >
                                         ❌ NUQS removed
                                     </Badge>
                                     <span className="text-sm text-muted-foreground">
@@ -617,7 +672,10 @@ export default function UIDemo() {
                                     </span>
                                 </div>
                                 <div className="flex items-center gap-2">
-                                    <Badge variant="outline" className="bg-green-50 text-green-700 border-green-200 dark:bg-green-900/20 dark:text-green-300 dark:border-green-800">
+                                    <Badge
+                                        variant="outline"
+                                        className="bg-green-50 text-green-700 border-green-200 dark:bg-green-900/20 dark:text-green-300 dark:border-green-800"
+                                    >
                                         ✅ Fully vendored
                                     </Badge>
                                     <span className="text-sm text-muted-foreground">
@@ -625,7 +683,10 @@ export default function UIDemo() {
                                     </span>
                                 </div>
                                 <div className="flex items-center gap-2">
-                                    <Badge variant="outline" className="bg-indigo-50 text-indigo-700 border-indigo-200 dark:bg-indigo-900/20 dark:text-indigo-300 dark:border-indigo-800">
+                                    <Badge
+                                        variant="outline"
+                                        className="bg-indigo-50 text-indigo-700 border-indigo-200 dark:bg-indigo-900/20 dark:text-indigo-300 dark:border-indigo-800"
+                                    >
                                         🔤 TypeScript strict
                                     </Badge>
                                     <span className="text-sm text-muted-foreground">
@@ -633,7 +694,10 @@ export default function UIDemo() {
                                     </span>
                                 </div>
                                 <div className="flex items-center gap-2">
-                                    <Badge variant="outline" className="bg-orange-50 text-orange-700 border-orange-200 dark:bg-orange-900/20 dark:text-orange-300 dark:border-orange-800">
+                                    <Badge
+                                        variant="outline"
+                                        className="bg-orange-50 text-orange-700 border-orange-200 dark:bg-orange-900/20 dark:text-orange-300 dark:border-orange-800"
+                                    >
                                         📱 Responsive design
                                     </Badge>
                                     <span className="text-sm text-muted-foreground">
@@ -664,10 +728,12 @@ export default function UIDemo() {
                             • Switch between light and dark themes seamlessly
                         </li>
                         <li>
-                            • Advanced data tables with sorting, filtering, and pagination
+                            • Advanced data tables with sorting, filtering, and
+                            pagination
                         </li>
                         <li>
-                            • Vendored tablecn components without NUQS dependency
+                            • Vendored tablecn components without NUQS
+                            dependency
                         </li>
                     </ul>
                 </div>

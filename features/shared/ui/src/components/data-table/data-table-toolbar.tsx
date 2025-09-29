@@ -3,6 +3,7 @@ import { X } from 'lucide-react';
 
 import { Button } from '../ui/button.js';
 import { Input } from '../ui/input.js';
+
 import { DataTableViewOptions } from './data-table-view-options.js';
 
 interface DataTableToolbarProps<TData> {
@@ -32,7 +33,7 @@ export function DataTableToolbar<TData>({
                                 .getColumn(defaultSearchColumn)
                                 ?.getFilterValue() as string) ?? ''
                         }
-                        onChange={(event) =>
+                        onChange={event =>
                             table
                                 .getColumn(defaultSearchColumn)
                                 ?.setFilterValue(event.target.value)
