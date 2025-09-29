@@ -9,16 +9,9 @@
         "outDir": "./dist",
         "jsx": "react-jsx",
         "paths": {
-            "@/*": [
-                "./src"
-            ]
+            "@/*": ["./src"]
         }
     },
-    "include": [
-        "src"
-    ],
-    "exclude": [
-        "dist",
-        "node_modules"
-    ],
+    "include": ["src"],
+    "exclude": ["dist", "node_modules"]
 }

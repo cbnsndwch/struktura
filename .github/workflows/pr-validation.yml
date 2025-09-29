@@ -2,8 +2,14 @@ name: PR Validation
 
 on:
   pull_request:
-    types: [opened, synchronize, reopened, ready_for_review]
-    branches: [ main, develop ]
+    types: 
+      - opened
+      - synchronize
+      - reopened
+      - ready_for_review
+    branches: 
+      - develop
+      - main
 
 jobs:
   # Skip validation for draft PRs
@@ -14,7 +20,7 @@ jobs:
     steps:
       - name: Check if PR should run validation
         id: check
-        run:
+        run: |
           if [[ "${{ github.event.pull_request.draft }}" == "true" ]]; then
             echo "should-run=false" >> $GITHUB_OUTPUT
             echo "Skipping validation for draft PR"
@@ -135,7 +141,10 @@ jobs:
   # ================================
   docker-build-test:
     runs-on: ubuntu-24.04
-    needs: [lint-and-format, test-validation, build-validation]
+    needs: 
+      - lint-and-format
+      - test-validation
+      - build-validation
     if: needs.check-pr-state.outputs.should-run == 'true'
     steps:
       - name: Checkout repository
@@ -190,7 +199,13 @@ jobs:
   # ================================
   pr-validation-summary:
     runs-on: ubuntu-24.04
-    needs: [check-pr-state, lint-and-format, test-validation, build-validation, docker-build-test, security-check]
+    needs: 
+      - check-pr-state
+      - lint-and-format
+      - test-validation
+      - build-validation
+      - docker-build-test
+      - security-check
     if: always() && needs.check-pr-state.outputs.should-run == 'true'
     steps:
       - name: PR Validation Summary
