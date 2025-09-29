@@ -15,11 +15,15 @@ function getSystemTheme(): 'light' | 'dark' {
     return window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';
 }
 
+function isValidTheme(value: any): value is Theme {
+    return value === 'light' || value === 'dark' || value === 'system';
+}
+
 function getStoredTheme(): Theme {
     if (typeof window === 'undefined') return 'system';
     try {
-        const stored = localStorage.getItem('struktura-theme') as Theme;
-        return stored || 'system';
+        const stored = localStorage.getItem('struktura-theme');
+        return isValidTheme(stored) ? stored : 'system';
     } catch {
         return 'system';
     }
