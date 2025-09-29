@@ -204,12 +204,32 @@ Build the core NestJS application structure with authentication, workspace manag
 ## Epic 3: Data Management Interface 🎯
 **Milestone**: v0.1.0-mvp  
 **Priority**: High  
-**Estimated Duration**: 12-14 weeks (extended for design system foundation)  
+**Estimated Duration**: 16-18 weeks (expanded for authentication & layout)  
 **GitHub Label**: `epic:epic-3`  
 **GitHub Issue**: #10
 
 ### Epic Description
-Create intuitive interfaces for data entry, editing, and management that feel familiar to spreadsheet users while supporting MongoDB's document flexibility. This epic includes foundational design system work that must be completed before building specific UI features.
+Create intuitive interfaces for data entry, editing, and management that feel familiar to spreadsheet users while supporting MongoDB's document flexibility. This epic has been expanded to include comprehensive authentication flows and application layout foundation, which are essential for the data management interface.
+
+### User Journey & Domain Mapping
+- **Workspace** → Top-level organizational container (like Slack workspaces)
+- **Collection** → Data tables/spreadsheets within a workspace  
+- **Field** → Column definitions with types and validation rules
+- **View** → Different visualization modes (Grid, Kanban, Calendar, etc.)
+
+### URL Architecture
+```
+/                           → Public landing page
+/auth/signup               → New user registration
+/auth/login                → Existing user login  
+/auth/verify-email         → Email verification
+/onboarding                → New user setup wizard
+/workspaces                → Workspace selection (multi-workspace users)
+/w/[workspace-slug]        → Workspace dashboard
+/w/[workspace]/[collection] → Collection default view (grid)
+/w/[workspace]/[collection]/[view-name] → Specific view type
+/w/[workspace]/[collection]/record/[id] → Record detail modal/page
+```
 
 ### Foundation & Design System Issues (Complete First)
 
@@ -354,53 +374,296 @@ Create intuitive interfaces for data entry, editing, and management that feel fa
 
 ---
 
-### Core Data Management Features (Complete After Foundation)
+### Authentication & Application Layout (Complete After Foundation)
 
-#### 3.8 Grid View for Data Management 📋
+#### 3.10 Public Landing Page with Authentication Entry Points 📋
+**Status**: 🔄 Synced  
+**GitHub Issue**: #60  
+**Assignee**: Frontend Developer  
+**Estimate**: 4 days  
+**Priority**: High
+
+**Description**: Create an engaging public landing page that serves as the entry point for new users and provides clear paths to authentication.
+
+**User Story**: As a potential user visiting Struktura, I want a compelling landing page that clearly explains the value proposition so that I can easily decide to sign up or log in.
+
+**Acceptance Criteria**:
+- [ ] Modern, responsive landing page design
+- [ ] Clear value proposition and feature highlights  
+- [ ] Prominent "Sign Up" and "Log In" buttons in header
+- [ ] Hero section with compelling messaging
+- [ ] Features overview with benefits
+- [ ] Social proof elements (testimonials, logos)
+- [ ] Footer with links and company information
+- [ ] SEO optimized meta tags and structured data
+- [ ] Accessibility compliance (WCAG 2.1 AA)
+
+**Labels**: `type:story`, `priority:high`, `epic:epic-3`, `component:frontend`
+
+---
+
+#### 3.11 Authentication UI Flow with Form Validation 📋
+**Status**: 🔄 Synced  
+**GitHub Issue**: #61  
+**Assignee**: Frontend Developer  
+**Estimate**: 5 days  
+**Priority**: High
+
+**Description**: Implement comprehensive authentication UI flows including signup, login, and form validation.
+
+**User Story**: As a user, I want intuitive signup and login forms with clear validation so that I can easily create an account or access my existing workspace.
+
+**Acceptance Criteria**:
+- [ ] Signup form with email, password, confirm password
+- [ ] Login form with email and password
+- [ ] Real-time form validation with helpful error messages
+- [ ] OAuth buttons for Google, GitHub (consistent with backend)
+- [ ] Password strength indicator on signup
+- [ ] "Forgot Password" flow initiation
+- [ ] Terms of service and privacy policy acceptance
+- [ ] Loading states during authentication
+- [ ] Clear error messaging for failed attempts
+- [ ] Responsive design for mobile and desktop
+
+**Labels**: `type:story`, `priority:high`, `epic:epic-3`, `component:frontend`, `component:auth`
+
+---
+
+#### 3.12 Email Verification & Password Reset Flows 📋
+**Status**: 🔄 Synced  
+**GitHub Issue**: #62  
+**Assignee**: Frontend Developer  
+**Estimate**: 3 days  
+**Priority**: Medium
+
+**Description**: Implement email verification and password reset flows that integrate with the backend authentication system.
+
+**User Story**: As a new user who signed up with email/password, I want to verify my email address through a secure process so that I can complete my account setup.
+
+**Acceptance Criteria**:
+- [ ] Email verification page with token validation
+- [ ] Clear instructions for checking email
+- [ ] Resend verification email option
+- [ ] Password reset request form  
+- [ ] Password reset page with secure token validation
+- [ ] New password creation with confirmation
+- [ ] Success and error states for all flows
+- [ ] Automatic redirect after successful verification
+- [ ] Token expiration handling
+
+**Labels**: `type:story`, `priority:medium`, `epic:epic-3`, `component:frontend`, `component:auth`
+
+---
+
+#### 3.13 New User Onboarding Wizard 📋
+**Status**: 🔄 Synced  
+**GitHub Issue**: #63  
+**Assignee**: Frontend Developer  
+**Estimate**: 6 days  
+**Priority**: High
+
+**Description**: Create a multi-step onboarding wizard that guides new users through workspace creation and provides an introduction to key platform features.
+
+**User Story**: As a new user who just verified my account, I want a guided onboarding experience so that I can quickly create my first workspace and understand how to use Struktura.
+
+**Acceptance Criteria**:
+- [ ] Multi-step onboarding wizard with progress indicator
+- [ ] Welcome screen with platform overview
+- [ ] Workspace creation step with name and description
+- [ ] Optional: Create first collection with suggested templates
+- [ ] Quick feature tour highlighting key areas
+- [ ] Skip options for experienced users
+- [ ] Mobile-optimized onboarding flow
+- [ ] Ability to resume onboarding later
+- [ ] Success celebration and clear next steps
+
+**Labels**: `type:story`, `priority:high`, `epic:epic-3`, `component:frontend`
+
+---
+
+#### 3.14 Workspace Dashboard & Main Application Layout 📋
+**Status**: 🔄 Synced  
+**GitHub Issue**: #64  
+**Assignee**: Frontend Developer  
+**Estimate**: 8 days  
+**Priority**: High
+
+**Description**: Create the main post-authentication interface that serves as the central hub for workspace activity.
+
+**User Story**: As an authenticated user, I want a workspace-centric dashboard that gives me quick access to my collections and recent activity so that I can efficiently navigate and manage my data.
+
+**Acceptance Criteria**:
+- [ ] Workspace dashboard with collections overview
+- [ ] Global navigation with workspace switcher
+- [ ] Collections grid/list with creation shortcuts
+- [ ] Recent activity feed (recently viewed, edited)
+- [ ] Quick actions (create collection, import data)
+- [ ] User menu with profile and logout options
+- [ ] Breadcrumb navigation for deep links
+- [ ] Responsive sidebar navigation
+- [ ] Loading states for all data fetching
+- [ ] Empty states with helpful guidance
+
+**Labels**: `type:story`, `priority:high`, `epic:epic-3`, `component:frontend`
+
+---
+
+#### 3.15 Protected Route System with Authentication Guards 📋
+**Status**: 🔄 Synced  
+**GitHub Issue**: #65  
+**Assignee**: Frontend Developer  
+**Estimate**: 4 days  
+**Priority**: High
+
+**Description**: Implement a comprehensive route protection system that manages authentication state, protects private routes, and provides smooth redirection flows.
+
+**User Story**: As a system administrator, I want robust route protection so that authenticated content is only accessible to logged-in users and unauthenticated users are properly redirected.
+
+**Acceptance Criteria**:
+- [ ] Protected route wrapper component
+- [ ] Authentication state management with React Router
+- [ ] Automatic redirect to login for unauthenticated access
+- [ ] Return to intended page after login
+- [ ] Workspace access validation
+- [ ] Role-based route protection (workspace members only)
+- [ ] Loading states during authentication checks
+- [ ] Graceful handling of expired sessions
+- [ ] Deep link preservation through auth flow
+
+**Labels**: `type:story`, `priority:high`, `epic:epic-3`, `component:frontend`, `component:auth`
+
+---
+
+#### 3.16 Workspace & Collection Navigation Structure 📋
+**Status**: 🔄 Synced  
+**GitHub Issue**: #66  
+**Assignee**: Frontend Developer  
+**Estimate**: 5 days  
+**Priority**: Medium
+
+**Description**: Implement the workspace-level navigation system that allows users to move between collections, switch views, and understand their current location within the application hierarchy.
+
+**User Story**: As a user working within a workspace, I want intuitive navigation between collections and views so that I can efficiently move between different data contexts.
+
+**Acceptance Criteria**:
+- [ ] Workspace sidebar with collections list
+- [ ] Collection views switcher (Grid, Kanban, Calendar, etc.)
+- [ ] Breadcrumb trail showing current location
+- [ ] Quick search for collections and records
+- [ ] Recently accessed collections
+- [ ] Favorite/starred collections
+- [ ] Keyboard shortcuts for navigation
+- [ ] Mobile-optimized navigation drawer
+- [ ] Collection creation from navigation
+
+**Labels**: `type:story`, `priority:medium`, `epic:epic-3`, `component:frontend`
+
+---
+
+#### 3.17 Contextual User Profile & Settings Integration 📋
+**Status**: 🔄 Synced  
+**GitHub Issue**: #67  
+**Assignee**: Frontend Developer  
+**Estimate**: 4 days  
+**Priority**: Medium
+
+**Description**: Integrate user profile management and settings into the main application layout, providing easy access to personal preferences, workspace settings, and account management features.
+
+**User Story**: As a user, I want easy access to my profile settings and workspace preferences so that I can customize my experience and manage my account.
+
+**Acceptance Criteria**:
+- [ ] User profile dropdown with avatar
+- [ ] Profile settings page (name, email, avatar)
+- [ ] Workspace settings integration
+- [ ] Theme preferences (light/dark/auto) - integrate with existing system
+- [ ] Notification preferences
+- [ ] Account security settings
+- [ ] Workspace switching from user menu
+- [ ] Logout functionality with confirmation
+- [ ] Settings search functionality
+
+**Labels**: `type:story`, `priority:medium`, `epic:epic-3`, `component:frontend`
+
+---
+
+### Enhanced Data Management Features (Complete After Authentication & Layout)
+
+#### 3.18 Grid View for Data Management (Enhanced for Layout Integration) 📋
 **Status**: 🔄 Synced  
 **GitHub Issue**: #19  
 **Assignee**: Frontend Developer  
-**Estimate**: 7 days  
+**Estimate**: 8 days  
 **Priority**: High
 
-**Description**: Create spreadsheet-like grid interface for viewing and editing records.
+**Description**: Create spreadsheet-like grid interface for viewing and editing records, integrated with the workspace layout and navigation system.
 
-**User Story**: As a user familiar with spreadsheets, I want a grid interface for managing my data so that I can efficiently enter and edit records.
+**User Story**: As a user familiar with spreadsheets, I want a grid interface for managing my data so that I can efficiently enter and edit records within my workspace context.
 
 **Acceptance Criteria**:
 - [ ] Spreadsheet-like grid interface
+- [ ] Integration with workspace navigation and breadcrumbs
+- [ ] Collection header with view switcher integration
 - [ ] Inline editing with type validation
 - [ ] Column sorting and filtering
 - [ ] Row selection and bulk operations
 - [ ] Keyboard navigation (arrow keys, tab)
 - [ ] Column resizing and reordering
 - [ ] Frozen columns for large datasets
+- [ ] Mobile-responsive grid layout
+- [ ] Integration with workspace permissions
 
 **Labels**: `type:story`, `priority:high`, `epic:epic-3`, `component:frontend`
 
 ---
 
-#### 3.9 Record Detail Forms 📋
+#### 3.19 Record Detail Forms (Enhanced with Navigation Integration) 📋
 **Status**: 🔄 Synced  
 **GitHub Issue**: #20  
 **Assignee**: Frontend Developer  
-**Estimate**: 6 days  
+**Estimate**: 7 days  
 **Priority**: High
 
-**Description**: Create detailed forms for complex record management with nested data support.
+**Description**: Create detailed forms for complex record management with nested data support, integrated with the application layout and navigation structure.
 
-**User Story**: As a user, I want detailed forms for complex records so that I can manage nested data and relationships effectively.
+**User Story**: As a user, I want detailed forms for complex records so that I can manage nested data and relationships effectively while maintaining context within my workspace.
 
 **Acceptance Criteria**:
 - [ ] Auto-generated forms from schema
+- [ ] Integration with workspace navigation context
+- [ ] Modal and full-page form options
 - [ ] Nested object/array editing
 - [ ] File upload with preview
 - [ ] Relationship field selectors
 - [ ] Form validation with error messages
 - [ ] Conditional field display
 - [ ] Form templates and customization
+- [ ] Save state preservation during navigation
+- [ ] Mobile-optimized form layouts
 
 **Labels**: `type:story`, `priority:high`, `epic:epic-3`, `component:frontend`
+
+---
+
+### Epic 3 Success Metrics & Completion Criteria
+
+**User Experience Metrics:**
+- User signup conversion rate >15%
+- Onboarding completion rate >80%
+- Time to first collection creation <5 minutes
+- Navigation task completion rate >95%
+- Mobile usability score >90%
+
+**Development Sequence:**
+1. **Foundation Stories** (✅ COMPLETED): Issues #46-52 - Design system foundation
+2. **Authentication Flow**: Issues #60-62, #65 - Core auth and security
+3. **User Experience**: Issues #63-64 - Onboarding and main layout
+4. **Navigation & Integration**: Issues #66-67 - Navigation and settings
+5. **Enhanced Data Features**: Issues #19-20 - Grid view and forms with layout integration
+
+**Dependencies Satisfied:**
+- ✅ Epic 1: Core Platform Foundation (authentication backend ready)
+- ✅ Epic 2: Schema Management System (collection system ready)
+- ✅ Foundation Stories: Design system and components ready
 
 ---
 
