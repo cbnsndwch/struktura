@@ -17,7 +17,8 @@ import {
     RefreshTokenDto,
     RegisterDto,
     RequestPasswordResetDto,
-    ResetPasswordDto
+    ResetPasswordDto,
+    UpdatePreferencesDto
 } from '../dto/index.js';
 import {
     RefreshToken,
@@ -312,5 +313,46 @@ export class AuthService {
             refreshToken: refreshTokenString,
             expiresIn: 15 * 60 // 15 minutes in seconds
         };
+    }
+
+    /**
+     * Update user preferences
+     */
+    async updatePreferences(
+        userId: string,
+        dto: UpdatePreferencesDto
+    ): Promise<User> {
+        const user = await this.userModel.findById(userId);
+        
+        if (!user) {
+            throw new BadRequestException('User not found');
+        }
+
+        // Initialize preferences if not exists
+        if (!user.preferences) {
+            user.preferences = { theme: 'system' };
+        }
+
+        // Update only provided fields
+        if (dto.theme !== undefined) {
+            user.preferences.theme = dto.theme;
+        }
+
+        await user.save();
+        return user;
+    }
+
+    /**
+     * Get user preferences
+     */
+    async getPreferences(userId: string): Promise<User['preferences']> {
+        const user = await this.userModel.findById(userId).select('preferences');
+        
+        if (!user) {
+            throw new BadRequestException('User not found');
+        }
+
+        // Return default preferences if none exist
+        return user.preferences || { theme: 'system' };
     }
 }

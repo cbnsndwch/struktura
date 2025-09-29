@@ -11,7 +11,7 @@ import {
     IsDate
 } from 'class-validator';
 import { Document } from 'mongoose';
-import type { IUser } from '@cbnsndwch/struktura-auth-contracts';
+import type { IUser, UserPreferences } from '@cbnsndwch/struktura-auth-contracts';
 
 export type UserDocument = User & Document;
 
@@ -69,6 +69,14 @@ export class User implements IUser {
     @IsOptional()
     @IsString()
     language?: string;
+
+    @Prop({ 
+        type: Object,
+        default: () => ({ theme: 'system' })
+    })
+    @Field({ nullable: true })
+    @IsOptional()
+    preferences?: UserPreferences;
 
     @Field()
     @IsDate()
@@ -138,6 +146,7 @@ export class User implements IUser {
         user.updatedAt = data.updatedAt;
         user.timezone = data.timezone;
         user.language = data.language;
+        user.preferences = data.preferences;
         return user;
     }
 
@@ -150,7 +159,8 @@ export class User implements IUser {
             createdAt: this.createdAt,
             updatedAt: this.updatedAt,
             timezone: this.timezone,
-            language: this.language
+            language: this.language,
+            preferences: this.preferences
         };
     }
 
@@ -164,6 +174,7 @@ export class User implements IUser {
             roles: this.roles,
             timezone: this.timezone,
             language: this.language,
+            preferences: this.preferences,
             createdAt: this.createdAt,
             updatedAt: this.updatedAt
         };

@@ -4,7 +4,8 @@ import { UseGuards } from '@nestjs/common';
 import { JwtAuthGuard } from '../guards/jwt-auth.guard.js';
 import { CurrentUser } from '../decorators/current-user.decorator.js';
 import { User } from '../entities/user.entity.js';
-import { RegisterDto, LoginDto } from '../dto/auth.dto.js';
+import { RegisterDto, LoginDto, UpdatePreferencesDto } from '../dto/auth.dto.js';
+import { AuthService } from '../services/auth.service.js';
 
 /**
  * Example GraphQL resolver using the consolidated User model
@@ -12,9 +13,7 @@ import { RegisterDto, LoginDto } from '../dto/auth.dto.js';
  */
 @Resolver(() => User)
 export class UserResolver {
-    constructor() {
-        // private authService: AuthService // Inject your auth service here
-    }
+    constructor(private authService: AuthService) {}
 
     /**
      * Get current user profile
@@ -61,5 +60,26 @@ export class UserResolver {
         // eslint-disable-next-line @typescript-eslint/no-unused-vars
         const { email, password } = input;
         return 'jwt-token-here';
+    }
+
+    /**
+     * Update user preferences
+     */
+    @Mutation(() => User)
+    @UseGuards(JwtAuthGuard)
+    async updatePreferences(
+        @CurrentUser() user: User,
+        @Args('input') input: UpdatePreferencesDto
+    ): Promise<User> {
+        return this.authService.updatePreferences(user.id, input);
+    }
+
+    /**
+     * Get user preferences  
+     */
+    @Query(() => String) // TODO: Create UserPreferences GraphQL type
+    @UseGuards(JwtAuthGuard)
+    async preferences(@CurrentUser() user: User): Promise<any> {
+        return this.authService.getPreferences(user.id);
     }
 }
