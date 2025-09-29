@@ -19,7 +19,8 @@
         "esModuleInterop": true,
         "rootDirs": [".", "./.react-router/types"],
         "paths": {
-            "@/*": ["./app/*"]
+            "@/*": ["./app/*"],
+            "~/*": ["./app/*"]
         }
     }
 }
