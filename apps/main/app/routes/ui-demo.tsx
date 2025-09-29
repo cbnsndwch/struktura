@@ -1,5 +1,7 @@
 import type { MetaFunction } from 'react-router';
 
+import * as React from 'react';
+
 // Import components from the shared UI workspace - using multiple import patterns to test integration
 import {
     Button,
@@ -13,9 +15,32 @@ import {
     Label,
     ThemeToggle,
     SimpleThemeToggle,
-    useTheme
+    useTheme,
+    // Data table components
+    DataTable,
+    DataTableColumnHeader,
+    DataTablePagination,
+    DataTableToolbar,
+    DataTableViewOptions,
+    DataTableFacetedFilter,
+    Checkbox
 } from '@cbnsndwch/struktura-shared-ui';
 import { cn } from '@cbnsndwch/struktura-shared-ui/lib/utils.js';
+
+// Import React Table functionality  
+import {
+    createColumnHelper,
+    flexRender,
+    getCoreRowModel,
+    getFilteredRowModel,
+    getPaginationRowModel,
+    getSortedRowModel,
+    useReactTable,
+    type ColumnDef,
+    type SortingState,
+    type ColumnFiltersState,
+    type VisibilityState
+} from '@tanstack/react-table';
 
 export const meta: MetaFunction = () => {
     return [
@@ -27,8 +52,196 @@ export const meta: MetaFunction = () => {
     ];
 };
 
+// Sample data for the data table demo
+type User = {
+    id: string;
+    name: string;
+    email: string;
+    role: string;
+    status: 'active' | 'inactive' | 'pending';
+    lastLogin: string;
+    projects: number;
+};
+
+const sampleUsers: User[] = [
+    {
+        id: '1',
+        name: 'John Doe',
+        email: 'john@example.com',
+        role: 'Admin',
+        status: 'active',
+        lastLogin: '2024-01-15',
+        projects: 12
+    },
+    {
+        id: '2',
+        name: 'Jane Smith',
+        email: 'jane@example.com',
+        role: 'Editor',
+        status: 'active',
+        lastLogin: '2024-01-14',
+        projects: 8
+    },
+    {
+        id: '3',
+        name: 'Bob Johnson',
+        email: 'bob@example.com',
+        role: 'Viewer',
+        status: 'inactive',
+        lastLogin: '2024-01-10',
+        projects: 3
+    },
+    {
+        id: '4',
+        name: 'Alice Brown',
+        email: 'alice@example.com',
+        role: 'Editor',
+        status: 'pending',
+        lastLogin: '2024-01-12',
+        projects: 5
+    },
+    {
+        id: '5',
+        name: 'Charlie Wilson',
+        email: 'charlie@example.com',
+        role: 'Admin',
+        status: 'active',
+        lastLogin: '2024-01-16',
+        projects: 15
+    }
+];
+
+const statusOptions = [
+    { label: 'Active', value: 'active' },
+    { label: 'Inactive', value: 'inactive' },
+    { label: 'Pending', value: 'pending' }
+];
+
+const roleOptions = [
+    { label: 'Admin', value: 'Admin' },
+    { label: 'Editor', value: 'Editor' },
+    { label: 'Viewer', value: 'Viewer' }
+];
+
 export default function UIDemo() {
     const { theme, resolvedTheme } = useTheme();
+
+    // Data table state
+    const [sorting, setSorting] = React.useState<SortingState>([]);
+    const [columnFilters, setColumnFilters] = React.useState<ColumnFiltersState>([]);
+    const [columnVisibility, setColumnVisibility] = React.useState<VisibilityState>({});
+    const [rowSelection, setRowSelection] = React.useState({});
+
+    // Table column definitions
+    const columns: ColumnDef<User>[] = [
+        {
+            id: 'select',
+            header: ({ table }) => (
+                <Checkbox
+                    checked={
+                        table.getIsAllPageRowsSelected() ||
+                        (table.getIsSomePageRowsSelected() && 'indeterminate')
+                    }
+                    onCheckedChange={(value) => table.toggleAllPageRowsSelected(!!value)}
+                    aria-label="Select all"
+                />
+            ),
+            cell: ({ row }) => (
+                <Checkbox
+                    checked={row.getIsSelected()}
+                    onCheckedChange={(value) => row.toggleSelected(!!value)}
+                    aria-label="Select row"
+                />
+            ),
+            enableSorting: false,
+            enableHiding: false
+        },
+        {
+            accessorKey: 'name',
+            header: ({ column }) => (
+                <DataTableColumnHeader column={column} title="Name" />
+            ),
+            cell: ({ row }) => <div className="font-medium">{row.getValue('name')}</div>
+        },
+        {
+            accessorKey: 'email',
+            header: ({ column }) => (
+                <DataTableColumnHeader column={column} title="Email" />
+            ),
+            cell: ({ row }) => <div>{row.getValue('email')}</div>
+        },
+        {
+            accessorKey: 'role',
+            header: ({ column }) => (
+                <DataTableColumnHeader column={column} title="Role" />
+            ),
+            cell: ({ row }) => {
+                const role = row.getValue('role') as string;
+                return (
+                    <Badge variant="outline">{role}</Badge>
+                );
+            },
+            filterFn: (row, id, value) => {
+                return value.includes(row.getValue(id));
+            }
+        },
+        {
+            accessorKey: 'status',
+            header: ({ column }) => (
+                <DataTableColumnHeader column={column} title="Status" />
+            ),
+            cell: ({ row }) => {
+                const status = row.getValue('status') as string;
+                return (
+                    <Badge variant={status === 'active' ? 'default' : status === 'pending' ? 'secondary' : 'destructive'}>
+                        {status}
+                    </Badge>
+                );
+            },
+            filterFn: (row, id, value) => {
+                return value.includes(row.getValue(id));
+            }
+        },
+        {
+            accessorKey: 'projects',
+            header: ({ column }) => (
+                <DataTableColumnHeader column={column} title="Projects" />
+            ),
+            cell: ({ row }) => {
+                const projects = row.getValue('projects') as number;
+                return <div className="text-right font-mono">{projects}</div>;
+            }
+        },
+        {
+            accessorKey: 'lastLogin',
+            header: ({ column }) => (
+                <DataTableColumnHeader column={column} title="Last Login" />
+            ),
+            cell: ({ row }) => {
+                const date = new Date(row.getValue('lastLogin'));
+                return <div>{date.toLocaleDateString()}</div>;
+            }
+        }
+    ];
+
+    const table = useReactTable({
+        data: sampleUsers,
+        columns,
+        onSortingChange: setSorting,
+        onColumnFiltersChange: setColumnFilters,
+        getCoreRowModel: getCoreRowModel(),
+        getPaginationRowModel: getPaginationRowModel(),
+        getSortedRowModel: getSortedRowModel(),
+        getFilteredRowModel: getFilteredRowModel(),
+        onColumnVisibilityChange: setColumnVisibility,
+        onRowSelectionChange: setRowSelection,
+        state: {
+            sorting,
+            columnFilters,
+            columnVisibility,
+            rowSelection
+        }
+    });
 
     return (
         <div className="container mx-auto px-4 py-8">
@@ -245,6 +458,193 @@ export default function UIDemo() {
                     </Card>
                 </div>
 
+                {/* Data Table Demo Section */}
+                <div className="mt-12">
+                    <div className="mb-6">
+                        <h2 className="text-2xl font-bold mb-2">📊 Data Table Components</h2>
+                        <p className="text-muted-foreground">
+                            Advanced data table with sorting, filtering, pagination, and row selection - 
+                            vendored from tablecn with NUQS dependency removed.
+                        </p>
+                    </div>
+
+                    <Card>
+                        <CardHeader>
+                            <CardTitle>User Management Table</CardTitle>
+                            <CardDescription>
+                                Comprehensive data table example with all features enabled
+                            </CardDescription>
+                        </CardHeader>
+                        <CardContent className="space-y-4">
+                            <DataTable 
+                                table={table}
+                                actionBar={<DataTablePagination table={table} />}
+                            >
+                                <div className="flex items-center justify-between">
+                                    <div className="flex flex-1 items-center space-x-2">
+                                        <Input
+                                            placeholder="Filter names..."
+                                            value={
+                                                (table.getColumn('name')?.getFilterValue() as string) ?? ''
+                                            }
+                                            onChange={(event) =>
+                                                table.getColumn('name')?.setFilterValue(event.target.value)
+                                            }
+                                            className="h-8 w-[150px] lg:w-[250px]"
+                                        />
+                                        {table.getColumn('status') && (
+                                            <DataTableFacetedFilter
+                                                column={table.getColumn('status')}
+                                                title="Status"
+                                                options={statusOptions}
+                                            />
+                                        )}
+                                        {table.getColumn('role') && (
+                                            <DataTableFacetedFilter
+                                                column={table.getColumn('role')}
+                                                title="Role"
+                                                options={roleOptions}
+                                            />
+                                        )}
+                                        {(table.getState().columnFilters.length > 0) && (
+                                            <Button
+                                                variant="ghost"
+                                                onClick={() => table.resetColumnFilters()}
+                                                className="h-8 px-2 lg:px-3"
+                                            >
+                                                Reset
+                                                <span className="ml-2">✕</span>
+                                            </Button>
+                                        )}
+                                    </div>
+                                    <DataTableViewOptions table={table} />
+                                </div>
+                            </DataTable>
+                        </CardContent>
+                    </Card>
+
+                    {/* Additional Demo Cards */}
+                    <div className="grid gap-6 md:grid-cols-2 mt-8">
+                        <Card>
+                            <CardHeader>
+                                <CardTitle>✨ Features Demonstrated</CardTitle>
+                                <CardDescription>
+                                    All vendored tablecn functionality working
+                                </CardDescription>
+                            </CardHeader>
+                            <CardContent className="space-y-3">
+                                <div className="flex items-center gap-2">
+                                    <Badge variant="outline" className="bg-green-50 text-green-700 border-green-200 dark:bg-green-900/20 dark:text-green-300 dark:border-green-800">
+                                        ✅ Column Sorting
+                                    </Badge>
+                                    <span className="text-sm text-muted-foreground">
+                                        Click column headers to sort
+                                    </span>
+                                </div>
+                                <div className="flex items-center gap-2">
+                                    <Badge variant="outline" className="bg-green-50 text-green-700 border-green-200 dark:bg-green-900/20 dark:text-green-300 dark:border-green-800">
+                                        ✅ Text Filtering
+                                    </Badge>
+                                    <span className="text-sm text-muted-foreground">
+                                        Search by name
+                                    </span>
+                                </div>
+                                <div className="flex items-center gap-2">
+                                    <Badge variant="outline" className="bg-green-50 text-green-700 border-green-200 dark:bg-green-900/20 dark:text-green-300 dark:border-green-800">
+                                        ✅ Faceted Filters
+                                    </Badge>
+                                    <span className="text-sm text-muted-foreground">
+                                        Multi-select status & role filters
+                                    </span>
+                                </div>
+                                <div className="flex items-center gap-2">
+                                    <Badge variant="outline" className="bg-green-50 text-green-700 border-green-200 dark:bg-green-900/20 dark:text-green-300 dark:border-green-800">
+                                        ✅ Row Selection
+                                    </Badge>
+                                    <span className="text-sm text-muted-foreground">
+                                        Individual & bulk selection
+                                    </span>
+                                </div>
+                                <div className="flex items-center gap-2">
+                                    <Badge variant="outline" className="bg-green-50 text-green-700 border-green-200 dark:bg-green-900/20 dark:text-green-300 dark:border-green-800">
+                                        ✅ Pagination
+                                    </Badge>
+                                    <span className="text-sm text-muted-foreground">
+                                        Configurable page sizes
+                                    </span>
+                                </div>
+                                <div className="flex items-center gap-2">
+                                    <Badge variant="outline" className="bg-green-50 text-green-700 border-green-200 dark:bg-green-900/20 dark:text-green-300 dark:border-green-800">
+                                        ✅ Column Visibility
+                                    </Badge>
+                                    <span className="text-sm text-muted-foreground">
+                                        Show/hide columns via dropdown
+                                    </span>
+                                </div>
+                            </CardContent>
+                        </Card>
+
+                        <Card>
+                            <CardHeader>
+                                <CardTitle>🔧 Technical Implementation</CardTitle>
+                                <CardDescription>
+                                    Integration details and dependencies
+                                </CardDescription>
+                            </CardHeader>
+                            <CardContent className="space-y-3">
+                                <div className="flex items-center gap-2">
+                                    <Badge variant="outline" className="bg-blue-50 text-blue-700 border-blue-200 dark:bg-blue-900/20 dark:text-blue-300 dark:border-blue-800">
+                                        📦 @tanstack/react-table
+                                    </Badge>
+                                    <span className="text-sm text-muted-foreground">
+                                        Core table functionality
+                                    </span>
+                                </div>
+                                <div className="flex items-center gap-2">
+                                    <Badge variant="outline" className="bg-purple-50 text-purple-700 border-purple-200 dark:bg-purple-900/20 dark:text-purple-300 dark:border-purple-800">
+                                        🎨 shadcn/ui integration
+                                    </Badge>
+                                    <span className="text-sm text-muted-foreground">
+                                        Consistent theme system
+                                    </span>
+                                </div>
+                                <div className="flex items-center gap-2">
+                                    <Badge variant="outline" className="bg-red-50 text-red-700 border-red-200 dark:bg-red-900/20 dark:text-red-300 dark:border-red-800">
+                                        ❌ NUQS removed
+                                    </Badge>
+                                    <span className="text-sm text-muted-foreground">
+                                        Internal state management
+                                    </span>
+                                </div>
+                                <div className="flex items-center gap-2">
+                                    <Badge variant="outline" className="bg-green-50 text-green-700 border-green-200 dark:bg-green-900/20 dark:text-green-300 dark:border-green-800">
+                                        ✅ Fully vendored
+                                    </Badge>
+                                    <span className="text-sm text-muted-foreground">
+                                        No external DiceUI dependencies
+                                    </span>
+                                </div>
+                                <div className="flex items-center gap-2">
+                                    <Badge variant="outline" className="bg-indigo-50 text-indigo-700 border-indigo-200 dark:bg-indigo-900/20 dark:text-indigo-300 dark:border-indigo-800">
+                                        🔤 TypeScript strict
+                                    </Badge>
+                                    <span className="text-sm text-muted-foreground">
+                                        Full type safety maintained
+                                    </span>
+                                </div>
+                                <div className="flex items-center gap-2">
+                                    <Badge variant="outline" className="bg-orange-50 text-orange-700 border-orange-200 dark:bg-orange-900/20 dark:text-orange-300 dark:border-orange-800">
+                                        📱 Responsive design
+                                    </Badge>
+                                    <span className="text-sm text-muted-foreground">
+                                        Mobile & desktop friendly
+                                    </span>
+                                </div>
+                            </CardContent>
+                        </Card>
+                    </div>
+                </div>
+
                 <div className="mt-8 p-4 bg-muted rounded-lg">
                     <p className="text-sm text-muted-foreground mb-2">
                         <strong>Integration Complete!</strong> The main app can
@@ -262,6 +662,12 @@ export default function UIDemo() {
                         <li>• Support hot reload during development</li>
                         <li>
                             • Switch between light and dark themes seamlessly
+                        </li>
+                        <li>
+                            • Advanced data tables with sorting, filtering, and pagination
+                        </li>
+                        <li>
+                            • Vendored tablecn components without NUQS dependency
                         </li>
                     </ul>
                 </div>

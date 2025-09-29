@@ -47,6 +47,9 @@ export * from './components/ui/toggle-group.js';
 export * from './components/ui/toggle.js';
 export * from './components/ui/tooltip.js';
 
+// Export data-table components
+export * from './components/data-table/index.js';
+
 // Export hooks
 export * from './hooks/use-mobile.js';
 export * from './hooks/use-theme.js';
