@@ -1,5 +1,14 @@
 import type { MetaFunction } from 'react-router';
 
+import { Button } from '@cbnsndwch/struktura-shared-ui/components/ui/button.js';
+import { Badge } from '@cbnsndwch/struktura-shared-ui/components/ui/badge.js';
+import {
+    Card,
+    CardContent,
+    CardTitle,
+    CardDescription
+} from '@cbnsndwch/struktura-shared-ui/components/ui/card.js';
+
 export const meta: MetaFunction = () => {
     return [
         { title: 'Struktura • No-Code Document Management Platform' },
@@ -17,9 +26,12 @@ export default function Home() {
             {/* Hero Section */}
             <section className="container mx-auto px-4 pt-20 pb-16">
                 <div className="text-center max-w-4xl mx-auto">
-                    <div className="inline-flex items-center rounded-full border px-3 py-1 text-sm mb-6 bg-blue-50 text-blue-700 border-blue-200">
+                    <Badge
+                        variant="secondary"
+                        className="mb-6 rounded-full px-3 py-1 text-sm bg-blue-50 text-blue-700 border-blue-200"
+                    >
                         🚀 Now in Beta
-                    </div>
+                    </Badge>
                     <h1 className="text-4xl md:text-6xl font-bold tracking-tight mb-6">
                         No-Code Data Management
                         <br />
@@ -31,12 +43,16 @@ export default function Home() {
                         without writing a single line of code.
                     </p>
                     <div className="flex flex-col sm:flex-row gap-4 justify-center">
-                        <button className="inline-flex items-center justify-center rounded-md font-medium ring-offset-white transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-500 focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 bg-blue-600 text-white hover:bg-blue-700 h-11 px-8 text-lg">
+                        <Button size="lg" className="px-8 text-lg">
                             Get Started Free
-                        </button>
-                        <button className="inline-flex items-center justify-center rounded-md font-medium ring-offset-white transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-500 focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 border border-gray-300 bg-white hover:bg-gray-50 h-11 px-8 text-lg">
+                        </Button>
+                        <Button
+                            size="lg"
+                            variant="outline"
+                            className="px-8 text-lg border-gray-300"
+                        >
                             View Demo
-                        </button>
+                        </Button>
                     </div>
                 </div>
             </section>
@@ -54,113 +70,87 @@ export default function Home() {
                 </div>
 
                 <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
-                    <div className="bg-white rounded-xl border p-6 shadow-sm">
-                        <div className="w-12 h-12 bg-blue-100 rounded-lg flex items-center justify-center mb-4">
-                            📄
-                        </div>
-                        <h3 className="text-xl font-semibold mb-2">
-                            Document-First Design
-                        </h3>
-                        <p className="text-gray-600 mb-4">
-                            Store complex, nested data naturally with MongoDB's
-                            flexible document model
-                        </p>
-                        <ul className="text-sm text-gray-500 space-y-2">
-                            <li>• Nested objects and arrays</li>
-                            <li>• Dynamic schemas that evolve</li>
-                            <li>• No artificial data flattening</li>
-                        </ul>
-                    </div>
-
-                    <div className="bg-white rounded-xl border p-6 shadow-sm">
-                        <div className="w-12 h-12 bg-blue-100 rounded-lg flex items-center justify-center mb-4">
-                            🎨
-                        </div>
-                        <h3 className="text-xl font-semibold mb-2">
-                            Visual Schema Builder
-                        </h3>
-                        <p className="text-gray-600 mb-4">
-                            Design your data structure with an intuitive
-                            drag-and-drop interface
-                        </p>
-                        <ul className="text-sm text-gray-500 space-y-2">
-                            <li>• No database expertise required</li>
-                            <li>• Real-time schema validation</li>
-                            <li>• Progressive complexity</li>
-                        </ul>
-                    </div>
-
-                    <div className="bg-white rounded-xl border p-6 shadow-sm">
-                        <div className="w-12 h-12 bg-blue-100 rounded-lg flex items-center justify-center mb-4">
-                            👥
-                        </div>
-                        <h3 className="text-xl font-semibold mb-2">
-                            Real-Time Collaboration
-                        </h3>
-                        <p className="text-gray-600 mb-4">
-                            Work together with live editing, comments, and
-                            instant notifications
-                        </p>
-                        <ul className="text-sm text-gray-500 space-y-2">
-                            <li>• Live editing with conflict resolution</li>
-                            <li>• Permission controls</li>
-                            <li>• Activity tracking</li>
-                        </ul>
-                    </div>
-
-                    <div className="bg-white rounded-xl border p-6 shadow-sm">
-                        <div className="w-12 h-12 bg-blue-100 rounded-lg flex items-center justify-center mb-4">
-                            📊
-                        </div>
-                        <h3 className="text-xl font-semibold mb-2">
-                            Multiple Views
-                        </h3>
-                        <p className="text-gray-600 mb-4">
-                            Switch between grid, calendar, kanban, and gallery
-                            views for different workflows
-                        </p>
-                        <ul className="text-sm text-gray-500 space-y-2">
-                            <li>• Grid view for data entry</li>
-                            <li>• Calendar for time-based data</li>
-                            <li>• Kanban for project tracking</li>
-                        </ul>
-                    </div>
-
-                    <div className="bg-white rounded-xl border p-6 shadow-sm">
-                        <div className="w-12 h-12 bg-blue-100 rounded-lg flex items-center justify-center mb-4">
-                            🔌
-                        </div>
-                        <h3 className="text-xl font-semibold mb-2">
-                            API & Integrations
-                        </h3>
-                        <p className="text-gray-600 mb-4">
-                            Connect with your favorite tools through our GraphQL
-                            API and webhooks
-                        </p>
-                        <ul className="text-sm text-gray-500 space-y-2">
-                            <li>• RESTful and GraphQL APIs</li>
-                            <li>• Webhook notifications</li>
-                            <li>• Third-party integrations</li>
-                        </ul>
-                    </div>
-
-                    <div className="bg-white rounded-xl border p-6 shadow-sm">
-                        <div className="w-12 h-12 bg-blue-100 rounded-lg flex items-center justify-center mb-4">
-                            🏠
-                        </div>
-                        <h3 className="text-xl font-semibold mb-2">
-                            Self-Hosted Option
-                        </h3>
-                        <p className="text-gray-600 mb-4">
-                            Deploy on your infrastructure for complete data
-                            control and privacy
-                        </p>
-                        <ul className="text-sm text-gray-500 space-y-2">
-                            <li>• Docker-based deployment</li>
-                            <li>• Complete data sovereignty</li>
-                            <li>• Enterprise security</li>
-                        </ul>
-                    </div>
+                    {[
+                        {
+                            icon: '📄',
+                            title: 'Document-First Design',
+                            desc: "Store complex, nested data naturally with MongoDB's flexible document model",
+                            bullets: [
+                                'Nested objects and arrays',
+                                'Dynamic schemas that evolve',
+                                'No artificial data flattening'
+                            ]
+                        },
+                        {
+                            icon: '🎨',
+                            title: 'Visual Schema Builder',
+                            desc: 'Design your data structure with an intuitive drag-and-drop interface',
+                            bullets: [
+                                'No database expertise required',
+                                'Real-time schema validation',
+                                'Progressive complexity'
+                            ]
+                        },
+                        {
+                            icon: '👥',
+                            title: 'Real-Time Collaboration',
+                            desc: 'Work together with live editing, comments, and instant notifications',
+                            bullets: [
+                                'Live editing with conflict resolution',
+                                'Permission controls',
+                                'Activity tracking'
+                            ]
+                        },
+                        {
+                            icon: '📊',
+                            title: 'Multiple Views',
+                            desc: 'Switch between grid, calendar, kanban, and gallery views for different workflows',
+                            bullets: [
+                                'Grid view for data entry',
+                                'Calendar for time-based data',
+                                'Kanban for project tracking'
+                            ]
+                        },
+                        {
+                            icon: '🔌',
+                            title: 'API & Integrations',
+                            desc: 'Connect with your favorite tools through our GraphQL API and webhooks',
+                            bullets: [
+                                'RESTful and GraphQL APIs',
+                                'Webhook notifications',
+                                'Third-party integrations'
+                            ]
+                        },
+                        {
+                            icon: '🏠',
+                            title: 'Self-Hosted Option',
+                            desc: 'Deploy on your infrastructure for complete data control and privacy',
+                            bullets: [
+                                'Docker-based deployment',
+                                'Complete data sovereignty',
+                                'Enterprise security'
+                            ]
+                        }
+                    ].map(f => (
+                        <Card key={f.title} className="shadow-sm">
+                            <CardContent className="pt-0">
+                                <div className="w-12 h-12 bg-blue-100 rounded-lg flex items-center justify-center mb-4 text-lg">
+                                    {f.icon}
+                                </div>
+                                <CardTitle className="text-xl font-semibold mb-2">
+                                    {f.title}
+                                </CardTitle>
+                                <CardDescription className="mb-4 text-base leading-relaxed">
+                                    {f.desc}
+                                </CardDescription>
+                                <ul className="text-sm text-gray-500 space-y-2">
+                                    {f.bullets.map(b => (
+                                        <li key={b}>• {b}</li>
+                                    ))}
+                                </ul>
+                            </CardContent>
+                        </Card>
+                    ))}
                 </div>
             </section>
 
@@ -219,21 +209,20 @@ export default function Home() {
             {/* Developer Section */}
             <section className="container mx-auto px-4 py-16">
                 <div className="max-w-4xl mx-auto">
-                    <div className="bg-white rounded-xl border p-8 shadow-sm text-center">
-                        <h3 className="text-2xl md:text-3xl font-bold mb-4">
-                            Explore the API
-                        </h3>
-                        <p className="text-lg text-gray-600 mb-6">
-                            Ready to integrate? Test our GraphQL API in the
-                            interactive playground
-                        </p>
-                        <a
-                            href="/graphql"
-                            className="inline-flex items-center justify-center rounded-md font-medium ring-offset-white transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-500 focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 bg-blue-600 text-white hover:bg-blue-700 h-11 px-8 text-lg"
-                        >
-                            Open GraphQL Playground →
-                        </a>
-                    </div>
+                    <Card className="p-8 text-center">
+                        <CardContent className="p-0">
+                            <CardTitle className="text-2xl md:text-3xl font-bold mb-4">
+                                Explore the API
+                            </CardTitle>
+                            <CardDescription className="text-lg text-gray-600 mb-6">
+                                Ready to integrate? Test our GraphQL API in the
+                                interactive playground
+                            </CardDescription>
+                            <Button asChild size="lg" className="px-8 text-lg">
+                                <a href="/graphql">Open GraphQL Playground →</a>
+                            </Button>
+                        </CardContent>
+                    </Card>
                 </div>
             </section>
 
@@ -248,12 +237,16 @@ export default function Home() {
                         better data workflows
                     </p>
                     <div className="flex flex-col sm:flex-row gap-4 justify-center">
-                        <button className="inline-flex items-center justify-center rounded-md font-medium ring-offset-white transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-500 focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 bg-blue-600 text-white hover:bg-blue-700 h-11 px-8 text-lg">
+                        <Button size="lg" className="px-8 text-lg">
                             Start Your Free Trial
-                        </button>
-                        <button className="inline-flex items-center justify-center rounded-md font-medium ring-offset-white transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-500 focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 border border-gray-300 bg-white hover:bg-gray-50 h-11 px-8 text-lg">
+                        </Button>
+                        <Button
+                            size="lg"
+                            variant="outline"
+                            className="px-8 text-lg border-gray-300"
+                        >
                             Schedule a Demo
-                        </button>
+                        </Button>
                     </div>
                 </div>
             </section>
