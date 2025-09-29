@@ -10,7 +10,10 @@ import {
     CardTitle,
     Badge,
     Input,
-    Label
+    Label,
+    ThemeToggle,
+    SimpleThemeToggle,
+    useTheme
 } from '@cbnsndwch/struktura-shared-ui';
 import { cn } from '@cbnsndwch/struktura-shared-ui/lib/utils.js';
 
@@ -25,23 +28,57 @@ export const meta: MetaFunction = () => {
 };
 
 export default function UIDemo() {
+    const { theme, resolvedTheme } = useTheme();
+    
     return (
         <div className="container mx-auto px-4 py-8">
             <div className="max-w-4xl mx-auto">
                 <div className="mb-8">
-                    <Badge variant="secondary" className="mb-4">
-                        🎨 UI Integration Demo (Hot Reload Test!)
-                    </Badge>
+                    <div className="flex justify-between items-start mb-4">
+                        <Badge variant="secondary">
+                            🎨 UI Integration Demo (Hot Reload Test!)
+                        </Badge>
+                        <div className="flex gap-2">
+                            <SimpleThemeToggle />
+                            <ThemeToggle />
+                        </div>
+                    </div>
                     <h1 className="text-4xl font-bold mb-4">
                         Shared UI Component Integration
                     </h1>
-                    <p className="text-xl text-gray-600">
+                    <p className="text-xl text-muted-foreground">
                         This page demonstrates that the main app successfully
                         integrates with the shared UI component workspace.
                     </p>
                 </div>
 
                 <div className="grid gap-6 md:grid-cols-2">
+                    <Card>
+                        <CardHeader>
+                            <CardTitle>Theme System Test</CardTitle>
+                            <CardDescription>
+                                Dark/light mode switching with smooth transitions
+                            </CardDescription>
+                        </CardHeader>
+                        <CardContent className="space-y-4">
+                            <div className="space-y-2">
+                                <Label>Current theme settings:</Label>
+                                <div className="p-3 bg-muted rounded">
+                                    <p className="text-sm">Theme preference: <Badge variant="outline">{theme}</Badge></p>
+                                    <p className="text-sm">Resolved theme: <Badge variant="outline">{resolvedTheme}</Badge></p>
+                                </div>
+                            </div>
+                            
+                            <div className="space-y-3">
+                                <p className="text-sm font-medium">Test theme switching:</p>
+                                <div className="flex gap-2">
+                                    <SimpleThemeToggle />
+                                    <ThemeToggle />
+                                </div>
+                            </div>
+                        </CardContent>
+                    </Card>
+
                     <Card>
                         <CardHeader>
                             <CardTitle>Component Integration Test</CardTitle>
@@ -84,8 +121,8 @@ export default function UIDemo() {
                             <div
                                 className={cn(
                                     'p-4 rounded border-2 transition-colors',
-                                    'bg-blue-50 border-blue-200 hover:bg-blue-100',
-                                    'text-blue-800'
+                                    'bg-primary/10 border-primary/20 hover:bg-primary/20',
+                                    'text-primary'
                                 )}
                             >
                                 This div uses the `cn()` utility function from
@@ -108,11 +145,11 @@ export default function UIDemo() {
                                 <div className="flex items-center gap-2">
                                     <Badge
                                         variant="outline"
-                                        className="bg-green-50 text-green-700 border-green-200"
+                                        className="bg-green-50 text-green-700 border-green-200 dark:bg-green-900/20 dark:text-green-300 dark:border-green-800"
                                     >
                                         ✅ Workspace dependency
                                     </Badge>
-                                    <span className="text-sm text-gray-600">
+                                    <span className="text-sm text-muted-foreground">
                                         @cbnsndwch/struktura-shared-ui workspace
                                         dependency configured
                                     </span>
@@ -121,11 +158,11 @@ export default function UIDemo() {
                                 <div className="flex items-center gap-2">
                                     <Badge
                                         variant="outline"
-                                        className="bg-green-50 text-green-700 border-green-200"
+                                        className="bg-green-50 text-green-700 border-green-200 dark:bg-green-900/20 dark:text-green-300 dark:border-green-800"
                                     >
                                         ✅ CSS imports
                                     </Badge>
-                                    <span className="text-sm text-gray-600">
+                                    <span className="text-sm text-muted-foreground">
                                         Global styles imported in app.css
                                     </span>
                                 </div>
@@ -133,11 +170,11 @@ export default function UIDemo() {
                                 <div className="flex items-center gap-2">
                                     <Badge
                                         variant="outline"
-                                        className="bg-green-50 text-green-700 border-green-200"
+                                        className="bg-green-50 text-green-700 border-green-200 dark:bg-green-900/20 dark:text-green-300 dark:border-green-800"
                                     >
                                         ✅ Component imports
                                     </Badge>
-                                    <span className="text-sm text-gray-600">
+                                    <span className="text-sm text-muted-foreground">
                                         Components successfully imported and
                                         rendering
                                     </span>
@@ -146,11 +183,11 @@ export default function UIDemo() {
                                 <div className="flex items-center gap-2">
                                     <Badge
                                         variant="outline"
-                                        className="bg-green-50 text-green-700 border-green-200"
+                                        className="bg-green-50 text-green-700 border-green-200 dark:bg-green-900/20 dark:text-green-300 dark:border-green-800"
                                     >
                                         ✅ Utility functions
                                     </Badge>
-                                    <span className="text-sm text-gray-600">
+                                    <span className="text-sm text-muted-foreground">
                                         lib/utils.js (cn function) working
                                         properly
                                     </span>
@@ -159,11 +196,11 @@ export default function UIDemo() {
                                 <div className="flex items-center gap-2">
                                     <Badge
                                         variant="outline"
-                                        className="bg-green-50 text-green-700 border-green-200"
+                                        className="bg-green-50 text-green-700 border-green-200 dark:bg-green-900/20 dark:text-green-300 dark:border-green-800"
                                     >
                                         ✅ Build system
                                     </Badge>
-                                    <span className="text-sm text-gray-600">
+                                    <span className="text-sm text-muted-foreground">
                                         Vite correctly resolves workspace
                                         dependencies
                                     </span>
@@ -172,12 +209,24 @@ export default function UIDemo() {
                                 <div className="flex items-center gap-2">
                                     <Badge
                                         variant="outline"
-                                        className="bg-green-50 text-green-700 border-green-200"
+                                        className="bg-green-50 text-green-700 border-green-200 dark:bg-green-900/20 dark:text-green-300 dark:border-green-800"
                                     >
                                         ✅ TypeScript
                                     </Badge>
-                                    <span className="text-sm text-gray-600">
+                                    <span className="text-sm text-muted-foreground">
                                         Type imports resolve correctly
+                                    </span>
+                                </div>
+
+                                <div className="flex items-center gap-2">
+                                    <Badge
+                                        variant="outline"
+                                        className="bg-green-50 text-green-700 border-green-200 dark:bg-green-900/20 dark:text-green-300 dark:border-green-800"
+                                    >
+                                        ✅ Theme system
+                                    </Badge>
+                                    <span className="text-sm text-muted-foreground">
+                                        Dark/light mode with smooth transitions
                                     </span>
                                 </div>
                             </div>
@@ -185,12 +234,12 @@ export default function UIDemo() {
                     </Card>
                 </div>
 
-                <div className="mt-8 p-4 bg-gray-50 rounded-lg">
-                    <p className="text-sm text-gray-600 mb-2">
+                <div className="mt-8 p-4 bg-muted rounded-lg">
+                    <p className="text-sm text-muted-foreground mb-2">
                         <strong>Integration Complete!</strong> The main app can
                         now:
                     </p>
-                    <ul className="text-sm text-gray-600 space-y-1 ml-4">
+                    <ul className="text-sm text-muted-foreground space-y-1 ml-4">
                         <li>
                             • Import components from the shared UI workspace
                         </li>
@@ -200,6 +249,7 @@ export default function UIDemo() {
                         <li>• Build successfully with all dependencies</li>
                         <li>• Maintain proper TypeScript type checking</li>
                         <li>• Support hot reload during development</li>
+                        <li>• Switch between light and dark themes seamlessly</li>
                     </ul>
                 </div>
             </div>
