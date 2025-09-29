@@ -1,17 +1,18 @@
+import { Field, ID, ObjectType } from '@nestjs/graphql';
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
-import { Field, ObjectType, ID, InputType } from '@nestjs/graphql';
 import {
-    IsEmail,
-    IsString,
-    MinLength,
-    MaxLength,
-    IsOptional,
-    IsBoolean,
     IsArray,
+    IsBoolean,
     IsDate,
-    IsIn
+    IsEmail,
+    IsIn,
+    IsOptional,
+    IsString,
+    MaxLength,
+    MinLength
 } from 'class-validator';
 import { Document } from 'mongoose';
+
 import type {
     IUser,
     UserPreferences
