@@ -1,0 +1,21 @@
+{
+    "$schema": "https://ui.shadcn.com/schema.json",
+    "style": "default",
+    "rsc": false,
+    "tsx": true,
+    "tailwind": {
+        "config": "",
+        "css": "../../features/shared/ui/src/globals.css",
+        "baseColor": "neutral",
+        "cssVariables": true,
+        "prefix": ""
+    },
+    "aliases": {
+        "components": "@cbnsndwch/struktura-shared-ui/components",
+        "hooks": "@cbnsndwch/struktura-shared-ui/hooks",
+        "lib": "@cbnsndwch/struktura-shared-ui/lib",
+        "ui": "@cbnsndwch/struktura-shared-ui/components",
+        "utils": "@cbnsndwch/struktura-shared-ui/lib/utils"
+    },
+    "iconLibrary": "lucide"
+}

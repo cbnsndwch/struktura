@@ -1,12 +1,24 @@
 {
     "extends": "@cbnsndwch/struktura-tsconfig/react-library",
-    "include": ["src"],
-    "exclude": ["dist", "node_modules"],
     "compilerOptions": {
+        "target": "ES2023",
+        "module": "ESNext",
+        "moduleResolution": "bundler",
+        "baseUrl": ".",
+        "rootDir": "src",
         "outDir": "./dist",
-        "rootDir": ".",
         "jsx": "react-jsx",
-        "declaration": true,
-        "declarationDir": "./dist"
-    }
+        "paths": {
+            "@/*": [
+                "./src"
+            ]
+        }
+    },
+    "include": [
+        "src"
+    ],
+    "exclude": [
+        "dist",
+        "node_modules"
+    ],
 }

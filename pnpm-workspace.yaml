@@ -9,6 +9,7 @@ packages:
 ignoredBuiltDependencies:
   - '@nestjs/core'
   - '@scarf/scarf'
+  - core-js
 
 onlyBuiltDependencies:
   - '@swc/core'
@@ -18,6 +19,6 @@ onlyBuiltDependencies:
   - protobufjs
 
 overrides:
-  '@conventional-changelog/git-client': '^2'
+  '@conventional-changelog/git-client': ^2
 
 shamefullyHoist: true

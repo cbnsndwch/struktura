@@ -1,3 +1,3 @@
-import { config } from '@cbnsndwch/struktura-eslint-config/base';
+import { config } from '@cbnsndwch/struktura-eslint-config/react-internal';
 
 export default config;
