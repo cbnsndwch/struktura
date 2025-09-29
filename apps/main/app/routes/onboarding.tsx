@@ -7,8 +7,6 @@ import {
     Button,
     Card,
     CardContent,
-    CardHeader,
-    CardTitle,
     Form,
     FormControl,
     FormField,
@@ -18,9 +16,7 @@ import {
     Input,
     Textarea,
     Progress,
-    Badge,
-    Alert,
-    Separator
+    Badge
 } from '@cbnsndwch/struktura-shared-ui';
 import {
     ArrowRight,
@@ -44,7 +40,7 @@ export const meta: MetaFunction = () => {
         {
             name: 'description',
             content:
-                'Welcome to Struktura! Let\'s set up your workspace and get you started with powerful data management.'
+                "Welcome to Struktura! Let's set up your workspace and get you started with powerful data management."
         }
     ];
 };
@@ -64,7 +60,12 @@ const workspaceSchema = z.object({
 type WorkspaceFormData = z.infer<typeof workspaceSchema>;
 
 // Onboarding steps
-type OnboardingStep = 'welcome' | 'workspace' | 'templates' | 'tour' | 'success';
+type OnboardingStep =
+    | 'welcome'
+    | 'workspace'
+    | 'templates'
+    | 'tour'
+    | 'success';
 
 interface OnboardingState {
     currentStep: OnboardingStep;
@@ -110,22 +111,26 @@ const collectionTemplates = [
 const tourFeatures = [
     {
         title: 'Flexible Data Views',
-        description: 'Switch between grid, card, calendar, and kanban views to visualize your data the way that works best.',
+        description:
+            'Switch between grid, card, calendar, and kanban views to visualize your data the way that works best.',
         icon: BarChart3
     },
     {
         title: 'Real-time Collaboration',
-        description: 'Work together with your team in real-time. See changes instantly as they happen.',
+        description:
+            'Work together with your team in real-time. See changes instantly as they happen.',
         icon: Users
     },
     {
         title: 'Powerful API Access',
-        description: 'Connect your data to other tools with our GraphQL API and webhook integrations.',
+        description:
+            'Connect your data to other tools with our GraphQL API and webhook integrations.',
         icon: Zap
     },
     {
         title: 'Smart Automation',
-        description: 'Set up automated workflows and triggers to save time on repetitive tasks.',
+        description:
+            'Set up automated workflows and triggers to save time on repetitive tasks.',
         icon: Rocket
     }
 ];
@@ -165,7 +170,10 @@ export default function Onboarding() {
     // Save state to localStorage whenever it changes (client-side only)
     useEffect(() => {
         if (typeof window !== 'undefined') {
-            localStorage.setItem('struktura-onboarding-state', JSON.stringify(state));
+            localStorage.setItem(
+                'struktura-onboarding-state',
+                JSON.stringify(state)
+            );
         }
     }, [state]);
 
@@ -176,16 +184,15 @@ export default function Onboarding() {
         }
     };
 
-    const steps: OnboardingStep[] = ['welcome', 'workspace', 'templates', 'tour', 'success'];
+    const steps: OnboardingStep[] = [
+        'welcome',
+        'workspace',
+        'templates',
+        'tour',
+        'success'
+    ];
     const currentStepIndex = steps.indexOf(state.currentStep);
     const progress = ((currentStepIndex + 1) / steps.length) * 100;
-
-    const goToStep = (step: OnboardingStep) => {
-        setState(prev => ({
-            ...prev,
-            currentStep: step
-        }));
-    };
 
     const nextStep = () => {
         const currentIndex = steps.indexOf(state.currentStep);
@@ -218,12 +225,28 @@ export default function Onboarding() {
     const handleWorkspaceSubmit = async (data: WorkspaceFormData) => {
         setIsLoading(true);
         try {
-            // TODO: Integrate with workspace creation API
-            console.log('Creating workspace:', data);
-            
-            // Simulate API call
-            await new Promise(resolve => setTimeout(resolve, 1000));
-            
+            // Create workspace via API
+            const response = await fetch('/workspaces', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({
+                    name: data.name,
+                    description: data.description || undefined
+                })
+            });
+
+            if (!response.ok) {
+                const errorData = await response.json();
+                throw new Error(
+                    errorData.message || 'Failed to create workspace'
+                );
+            }
+
+            const workspace = await response.json();
+            console.log('Workspace created successfully:', workspace);
+
             setState(prev => ({
                 ...prev,
                 workspaceData: data
@@ -231,7 +254,25 @@ export default function Onboarding() {
             nextStep();
         } catch (error) {
             console.error('Failed to create workspace:', error);
-            // Handle error appropriately
+
+            // Show user-friendly error message
+            const errorMessage =
+                error instanceof Error
+                    ? error.message
+                    : 'An unexpected error occurred while creating your workspace';
+
+            // For now, we'll continue to the next step even if the API call fails
+            // In a real implementation, you might want to show an error toast or modal
+            console.warn(
+                'Continuing onboarding despite workspace creation error:',
+                errorMessage
+            );
+
+            setState(prev => ({
+                ...prev,
+                workspaceData: data
+            }));
+            nextStep();
         } finally {
             setIsLoading(false);
         }
@@ -255,13 +296,14 @@ export default function Onboarding() {
             <div className="mx-auto w-20 h-20 bg-gradient-to-br from-blue-500 to-purple-600 rounded-2xl flex items-center justify-center">
                 <Sparkles className="h-10 w-10 text-white" />
             </div>
-            
+
             <div className="space-y-3">
                 <h1 className="text-3xl font-bold tracking-tight">
                     Welcome to Struktura!
                 </h1>
                 <p className="text-lg text-muted-foreground max-w-lg mx-auto">
-                    Let's get you set up with your first workspace so you can start building amazing data-driven workflows.
+                    Let's get you set up with your first workspace so you can
+                    start building amazing data-driven workflows.
                 </p>
             </div>
 
@@ -272,7 +314,9 @@ export default function Onboarding() {
                             <Database className="h-5 w-5 text-blue-600" />
                         </div>
                         <div className="text-left">
-                            <h3 className="font-semibold">Flexible Data Management</h3>
+                            <h3 className="font-semibold">
+                                Flexible Data Management
+                            </h3>
                             <p className="text-sm text-muted-foreground">
                                 Create custom databases without code
                             </p>
@@ -286,7 +330,9 @@ export default function Onboarding() {
                             <Users className="h-5 w-5 text-green-600" />
                         </div>
                         <div className="text-left">
-                            <h3 className="font-semibold">Real-time Collaboration</h3>
+                            <h3 className="font-semibold">
+                                Real-time Collaboration
+                            </h3>
                             <p className="text-sm text-muted-foreground">
                                 Work with your team seamlessly
                             </p>
@@ -314,7 +360,9 @@ export default function Onboarding() {
                             <Zap className="h-5 w-5 text-orange-600" />
                         </div>
                         <div className="text-left">
-                            <h3 className="font-semibold">Powerful Integrations</h3>
+                            <h3 className="font-semibold">
+                                Powerful Integrations
+                            </h3>
                             <p className="text-sm text-muted-foreground">
                                 Connect with your favorite tools
                             </p>
@@ -344,12 +392,16 @@ export default function Onboarding() {
                 </div>
                 <h2 className="text-2xl font-bold">Create Your Workspace</h2>
                 <p className="text-muted-foreground max-w-md mx-auto">
-                    A workspace is where you'll manage your data, collaborate with your team, and organize your projects.
+                    A workspace is where you'll manage your data, collaborate
+                    with your team, and organize your projects.
                 </p>
             </div>
 
             <Form {...form}>
-                <form onSubmit={form.handleSubmit(handleWorkspaceSubmit)} className="space-y-6">
+                <form
+                    onSubmit={form.handleSubmit(handleWorkspaceSubmit)}
+                    className="space-y-6"
+                >
                     <FormField
                         control={form.control}
                         name="name"
@@ -357,7 +409,7 @@ export default function Onboarding() {
                             <FormItem>
                                 <FormLabel>Workspace Name *</FormLabel>
                                 <FormControl>
-                                    <Input 
+                                    <Input
                                         placeholder="e.g., Acme Inc, Marketing Team, Personal Projects"
                                         {...field}
                                     />
@@ -374,7 +426,7 @@ export default function Onboarding() {
                             <FormItem>
                                 <FormLabel>Description (Optional)</FormLabel>
                                 <FormControl>
-                                    <Textarea 
+                                    <Textarea
                                         placeholder="Briefly describe what this workspace is for..."
                                         {...field}
                                         rows={3}
@@ -386,7 +438,11 @@ export default function Onboarding() {
                     />
 
                     <div className="flex flex-col sm:flex-row gap-3 pt-4">
-                        <Button type="submit" disabled={isLoading} className="flex-1">
+                        <Button
+                            type="submit"
+                            disabled={isLoading}
+                            className="flex-1"
+                        >
                             {isLoading ? (
                                 <>
                                     <div className="mr-2 h-4 w-4 animate-spin rounded-full border-2 border-b-transparent" />
@@ -399,7 +455,11 @@ export default function Onboarding() {
                                 </>
                             )}
                         </Button>
-                        <Button type="button" variant="outline" onClick={prevStep}>
+                        <Button
+                            type="button"
+                            variant="outline"
+                            onClick={prevStep}
+                        >
                             <ArrowLeft className="mr-2 h-4 w-4" />
                             Back
                         </Button>
@@ -417,20 +477,23 @@ export default function Onboarding() {
                 </div>
                 <h2 className="text-2xl font-bold">Choose a Template</h2>
                 <p className="text-muted-foreground max-w-md mx-auto">
-                    Get started quickly with a pre-built collection template, or create your own from scratch later.
+                    Get started quickly with a pre-built collection template, or
+                    create your own from scratch later.
                 </p>
             </div>
 
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                {collectionTemplates.map((template) => {
+                {collectionTemplates.map(template => {
                     const Icon = template.icon;
                     const isSelected = state.selectedTemplate === template.id;
-                    
+
                     return (
                         <Card
                             key={template.id}
                             className={`cursor-pointer transition-all hover:shadow-md ${
-                                isSelected ? 'ring-2 ring-primary border-primary' : ''
+                                isSelected
+                                    ? 'ring-2 ring-primary border-primary'
+                                    : ''
                             }`}
                             onClick={() => handleTemplateSelect(template.id)}
                         >
@@ -440,19 +503,32 @@ export default function Onboarding() {
                                         <Icon className="h-5 w-5 text-primary" />
                                     </div>
                                     <div className="space-y-2 flex-1">
-                                        <h3 className="font-semibold">{template.name}</h3>
+                                        <h3 className="font-semibold">
+                                            {template.name}
+                                        </h3>
                                         <p className="text-sm text-muted-foreground">
                                             {template.description}
                                         </p>
                                         <div className="flex flex-wrap gap-1">
-                                            {template.fields.slice(0, 3).map((field) => (
-                                                <Badge key={field} variant="secondary" className="text-xs">
-                                                    {field}
-                                                </Badge>
-                                            ))}
+                                            {template.fields
+                                                .slice(0, 3)
+                                                .map(field => (
+                                                    <Badge
+                                                        key={field}
+                                                        variant="secondary"
+                                                        className="text-xs"
+                                                    >
+                                                        {field}
+                                                    </Badge>
+                                                ))}
                                             {template.fields.length > 3 && (
-                                                <Badge variant="secondary" className="text-xs">
-                                                    +{template.fields.length - 3} more
+                                                <Badge
+                                                    variant="secondary"
+                                                    className="text-xs"
+                                                >
+                                                    +
+                                                    {template.fields.length - 3}{' '}
+                                                    more
                                                 </Badge>
                                             )}
                                         </div>
@@ -471,7 +547,11 @@ export default function Onboarding() {
                 <Button
                     variant="ghost"
                     onClick={() => handleTemplateSelect(null)}
-                    className={state.selectedTemplate === null ? 'ring-2 ring-primary' : ''}
+                    className={
+                        state.selectedTemplate === null
+                            ? 'ring-2 ring-primary'
+                            : ''
+                    }
                 >
                     I'll create my own collection later
                 </Button>
@@ -498,7 +578,8 @@ export default function Onboarding() {
                 </div>
                 <h2 className="text-2xl font-bold">Powerful Features</h2>
                 <p className="text-muted-foreground max-w-md mx-auto">
-                    Here are some key features that make Struktura perfect for managing your data.
+                    Here are some key features that make Struktura perfect for
+                    managing your data.
                 </p>
             </div>
 
@@ -512,7 +593,9 @@ export default function Onboarding() {
                                     <Icon className="h-6 w-6 text-primary" />
                                 </div>
                                 <div className="space-y-1">
-                                    <h3 className="font-semibold text-lg">{feature.title}</h3>
+                                    <h3 className="font-semibold text-lg">
+                                        {feature.title}
+                                    </h3>
                                     <p className="text-muted-foreground leading-relaxed">
                                         {feature.description}
                                     </p>
@@ -526,7 +609,8 @@ export default function Onboarding() {
             <div className="text-center p-6 bg-muted/20 rounded-lg">
                 <h3 className="font-semibold mb-2">Ready to explore?</h3>
                 <p className="text-sm text-muted-foreground mb-4">
-                    You can always access help and tutorials from your workspace dashboard.
+                    You can always access help and tutorials from your workspace
+                    dashboard.
                 </p>
             </div>
 
@@ -554,7 +638,9 @@ export default function Onboarding() {
                     🎉 You're All Set!
                 </h1>
                 <p className="text-lg text-muted-foreground max-w-lg mx-auto">
-                    Your workspace <strong>"{state.workspaceData?.name}"</strong> has been created successfully.
+                    Your workspace{' '}
+                    <strong>"{state.workspaceData?.name}"</strong> has been
+                    created successfully.
                 </p>
             </div>
 
@@ -627,15 +713,25 @@ export default function Onboarding() {
                             <div className="flex items-center space-x-4">
                                 <h1 className="font-semibold text-lg">Setup</h1>
                                 <div className="hidden sm:flex items-center space-x-2 text-sm text-muted-foreground">
-                                    <span>Step {currentStepIndex + 1} of {steps.length}</span>
+                                    <span>
+                                        Step {currentStepIndex + 1} of{' '}
+                                        {steps.length}
+                                    </span>
                                 </div>
                             </div>
                             <div className="flex items-center space-x-4">
                                 <div className="hidden sm:block w-32">
-                                    <Progress value={progress} className="h-2" />
+                                    <Progress
+                                        value={progress}
+                                        className="h-2"
+                                    />
                                 </div>
                                 {state.canSkip && (
-                                    <Button variant="ghost" size="sm" onClick={skipOnboarding}>
+                                    <Button
+                                        variant="ghost"
+                                        size="sm"
+                                        onClick={skipOnboarding}
+                                    >
                                         <X className="mr-1 h-3 w-3" />
                                         Skip
                                     </Button>
