@@ -176,7 +176,10 @@ export class AuthController {
         @CurrentUser() user: any,
         @Body() dto: UpdatePreferencesDto
     ) {
-        const updatedUser = await this.authService.updatePreferences(user.id, dto);
+        const updatedUser = await this.authService.updatePreferences(
+            user.id,
+            dto
+        );
         return updatedUser.toPublicData();
     }
 }

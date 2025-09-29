@@ -1,8 +1,8 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
-import { 
-    ConflictException, 
-    UnauthorizedException, 
-    BadRequestException 
+import {
+    ConflictException,
+    UnauthorizedException,
+    BadRequestException
 } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
 import { getModelToken } from '@nestjs/mongoose';
@@ -442,9 +442,9 @@ describe('AuthService - Unit Tests (Isolated Business Logic)', () => {
             mockUserModel.findById.mockResolvedValue(null);
 
             // Act & Assert
-            await expect(service.updatePreferences(userId, preferences)).rejects.toThrow(
-                BadRequestException
-            );
+            await expect(
+                service.updatePreferences(userId, preferences)
+            ).rejects.toThrow(BadRequestException);
         });
     });
 });

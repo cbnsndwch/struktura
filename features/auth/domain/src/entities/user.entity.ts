@@ -12,7 +12,10 @@ import {
     IsIn
 } from 'class-validator';
 import { Document } from 'mongoose';
-import type { IUser, UserPreferences } from '@cbnsndwch/struktura-auth-contracts';
+import type {
+    IUser,
+    UserPreferences
+} from '@cbnsndwch/struktura-auth-contracts';
 
 export type UserDocument = User & Document;
 
@@ -81,7 +84,7 @@ export class User implements IUser {
     @IsString()
     language?: string;
 
-    @Prop({ 
+    @Prop({
         type: Object,
         default: () => ({ theme: 'system' })
     })

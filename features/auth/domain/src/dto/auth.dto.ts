@@ -1,4 +1,11 @@
-import { IsEmail, IsString, MinLength, MaxLength, IsIn, IsOptional } from 'class-validator';
+import {
+    IsEmail,
+    IsString,
+    MinLength,
+    MaxLength,
+    IsIn,
+    IsOptional
+} from 'class-validator';
 import { PickType } from '@nestjs/mapped-types';
 import { InputType, Field } from '@nestjs/graphql';
 
@@ -91,8 +98,8 @@ export class RefreshTokenDto {
 export class UpdatePreferencesDto {
     @Field({ nullable: true })
     @IsOptional()
-    @IsIn(['light', 'dark', 'system'], { 
-        message: 'Theme must be one of: light, dark, system' 
+    @IsIn(['light', 'dark', 'system'], {
+        message: 'Theme must be one of: light, dark, system'
     })
     theme?: 'light' | 'dark' | 'system';
 }

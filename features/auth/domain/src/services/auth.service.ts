@@ -323,7 +323,7 @@ export class AuthService {
         dto: UpdatePreferencesDto
     ): Promise<User> {
         const user = await this.userModel.findById(userId);
-        
+
         if (!user) {
             throw new BadRequestException('User not found');
         }
@@ -346,8 +346,10 @@ export class AuthService {
      * Get user preferences
      */
     async getPreferences(userId: string): Promise<User['preferences']> {
-        const user = await this.userModel.findById(userId).select('preferences');
-        
+        const user = await this.userModel
+            .findById(userId)
+            .select('preferences');
+
         if (!user) {
             throw new BadRequestException('User not found');
         }

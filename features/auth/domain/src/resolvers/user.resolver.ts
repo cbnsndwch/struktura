@@ -4,7 +4,11 @@ import { UseGuards } from '@nestjs/common';
 import { JwtAuthGuard } from '../guards/jwt-auth.guard.js';
 import { CurrentUser } from '../decorators/current-user.decorator.js';
 import { User, UserPreferencesType } from '../entities/user.entity.js';
-import { RegisterDto, LoginDto, UpdatePreferencesDto } from '../dto/auth.dto.js';
+import {
+    RegisterDto,
+    LoginDto,
+    UpdatePreferencesDto
+} from '../dto/auth.dto.js';
 import { AuthService } from '../services/auth.service.js';
 
 /**
@@ -75,11 +79,13 @@ export class UserResolver {
     }
 
     /**
-     * Get user preferences  
+     * Get user preferences
      */
     @Query(() => UserPreferencesType, { nullable: true })
     @UseGuards(JwtAuthGuard)
-    async preferences(@CurrentUser() user: User): Promise<UserPreferencesType | null> {
+    async preferences(
+        @CurrentUser() user: User
+    ): Promise<UserPreferencesType | null> {
         const prefs = await this.authService.getPreferences(user.id);
         return prefs ? { theme: prefs.theme } : null;
     }

@@ -14,14 +14,14 @@ import './app.css';
 export async function loader({ request }: LoaderFunctionArgs) {
     // TODO: Add authentication check and load user preferences
     // For now, return empty preferences to maintain backward compatibility
-    let userTheme: string | null = null;
-    
+    const userTheme: string | null = null;
+
     // In the future, check for user authentication and load preferences:
     // const user = await getUserFromRequest(request);
     // if (user?.preferences?.theme) {
     //     userTheme = user.preferences.theme;
     // }
-    
+
     return {
         url: request.url,
         userTheme
@@ -86,7 +86,7 @@ function ThemeScript({ userTheme }: { userTheme?: string | null }) {
 
 export function Layout({ children }: { children: React.ReactNode }) {
     const { userTheme } = useLoaderData<typeof loader>();
-    
+
     return (
         <html lang="en" suppressHydrationWarning>
             <head>
