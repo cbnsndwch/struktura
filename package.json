@@ -52,9 +52,7 @@
         "prettier": "^3.6.2",
         "tsx": "^4.20.6",
         "typescript": "^5.9.2",
-        "typescript-eslint": "^8.44.1"
-    },
-    "dependencies": {
+        "typescript-eslint": "^8.44.1",
         "turbo": "^2.5.8"
     },
     "jest": {
