@@ -8,14 +8,23 @@ describe('data-table utils', () => {
     describe('getFilterOperators', () => {
         it('should return text operators for text variant', () => {
             const operators = getFilterOperators('text');
-            expect(operators).toContainEqual({ label: 'Contains', value: 'iLike' });
-            expect(operators).toContainEqual({ label: 'Is empty', value: 'isEmpty' });
+            expect(operators).toContainEqual({
+                label: 'Contains',
+                value: 'iLike'
+            });
+            expect(operators).toContainEqual({
+                label: 'Is empty',
+                value: 'isEmpty'
+            });
         });
 
         it('should return numeric operators for number variant', () => {
             const operators = getFilterOperators('number');
             expect(operators).toContainEqual({ label: 'Is', value: 'eq' });
-            expect(operators).toContainEqual({ label: 'Is greater than', value: 'gt' });
+            expect(operators).toContainEqual({
+                label: 'Is greater than',
+                value: 'gt'
+            });
         });
 
         it('should return boolean operators for boolean variant', () => {
@@ -27,7 +36,7 @@ describe('data-table utils', () => {
 
     describe('formatFilterValue', () => {
         it('should return empty string for isEmpty operator', () => {
-            const filter: ExtendedColumnFilter<any> = {
+            const filter: ExtendedColumnFilter<{ test: string }> = {
                 id: 'test',
                 value: 'any',
                 operator: 'isEmpty'
@@ -36,7 +45,7 @@ describe('data-table utils', () => {
         });
 
         it('should return empty string for isNotEmpty operator', () => {
-            const filter: ExtendedColumnFilter<any> = {
+            const filter: ExtendedColumnFilter<{ test: string }> = {
                 id: 'test',
                 value: 'any',
                 operator: 'isNotEmpty'
@@ -45,7 +54,7 @@ describe('data-table utils', () => {
         });
 
         it('should join array values with " - " for isBetween operator', () => {
-            const filter: ExtendedColumnFilter<any> = {
+            const filter: ExtendedColumnFilter<{ test: number[] }> = {
                 id: 'test',
                 value: [10, 20],
                 operator: 'isBetween'
@@ -54,7 +63,7 @@ describe('data-table utils', () => {
         });
 
         it('should join array values with ", " for other operators', () => {
-            const filter: ExtendedColumnFilter<any> = {
+            const filter: ExtendedColumnFilter<{ test: string[] }> = {
                 id: 'test',
                 value: ['apple', 'banana', 'cherry'],
                 operator: 'inArray'
@@ -63,7 +72,7 @@ describe('data-table utils', () => {
         });
 
         it('should convert single values to string', () => {
-            const filter: ExtendedColumnFilter<any> = {
+            const filter: ExtendedColumnFilter<{ test: number }> = {
                 id: 'test',
                 value: 42,
                 operator: 'eq'

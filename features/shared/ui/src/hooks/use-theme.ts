@@ -19,8 +19,8 @@ function getSystemTheme(): 'light' | 'dark' {
         : 'light';
 }
 
-function isValidTheme(value: any): value is Theme {
-    return value === 'light' || value === 'dark' || value === 'system';
+function isValidTheme(value: unknown): value is Theme {
+    return ['light', 'dark', 'system'].includes(value as Theme);
 }
 
 function getStoredTheme(): Theme {
