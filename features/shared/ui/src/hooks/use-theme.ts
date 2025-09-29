@@ -8,11 +8,15 @@ interface ThemeContextValue {
     resolvedTheme: 'light' | 'dark';
 }
 
-const ThemeContext = React.createContext<ThemeContextValue | undefined>(undefined);
+const ThemeContext = React.createContext<ThemeContextValue | undefined>(
+    undefined
+);
 
 function getSystemTheme(): 'light' | 'dark' {
     if (typeof window === 'undefined') return 'light';
-    return window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';
+    return window.matchMedia('(prefers-color-scheme: dark)').matches
+        ? 'dark'
+        : 'light';
 }
 
 function isValidTheme(value: any): value is Theme {
@@ -40,7 +44,9 @@ function storeTheme(theme: Theme): void {
 
 export function ThemeProvider({ children }: { children: React.ReactNode }) {
     const [theme, setThemeState] = React.useState<Theme>('system');
-    const [resolvedTheme, setResolvedTheme] = React.useState<'light' | 'dark'>('light');
+    const [resolvedTheme, setResolvedTheme] = React.useState<'light' | 'dark'>(
+        'light'
+    );
 
     const setTheme = React.useCallback((newTheme: Theme) => {
         setThemeState(newTheme);
@@ -58,7 +64,7 @@ export function ThemeProvider({ children }: { children: React.ReactNode }) {
         const updateResolvedTheme = () => {
             const resolved = theme === 'system' ? getSystemTheme() : theme;
             setResolvedTheme(resolved);
-            
+
             // Apply theme class to document root
             if (typeof document !== 'undefined') {
                 document.documentElement.classList.remove('light', 'dark');
@@ -70,9 +76,11 @@ export function ThemeProvider({ children }: { children: React.ReactNode }) {
 
         // Listen for system theme changes
         if (theme === 'system' && typeof window !== 'undefined') {
-            const mediaQuery = window.matchMedia('(prefers-color-scheme: dark)');
+            const mediaQuery = window.matchMedia(
+                '(prefers-color-scheme: dark)'
+            );
             const handleChange = () => updateResolvedTheme();
-            
+
             mediaQuery.addEventListener('change', handleChange);
             return () => mediaQuery.removeEventListener('change', handleChange);
         }

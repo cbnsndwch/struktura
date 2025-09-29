@@ -29,7 +29,7 @@ export const meta: MetaFunction = () => {
 
 export default function UIDemo() {
     const { theme, resolvedTheme } = useTheme();
-    
+
     return (
         <div className="container mx-auto px-4 py-8">
             <div className="max-w-4xl mx-auto">
@@ -57,20 +57,31 @@ export default function UIDemo() {
                         <CardHeader>
                             <CardTitle>Theme System Test</CardTitle>
                             <CardDescription>
-                                Dark/light mode switching with smooth transitions
+                                Dark/light mode switching with smooth
+                                transitions
                             </CardDescription>
                         </CardHeader>
                         <CardContent className="space-y-4">
                             <div className="space-y-2">
                                 <Label>Current theme settings:</Label>
                                 <div className="p-3 bg-muted rounded">
-                                    <p className="text-sm">Theme preference: <Badge variant="outline">{theme}</Badge></p>
-                                    <p className="text-sm">Resolved theme: <Badge variant="outline">{resolvedTheme}</Badge></p>
+                                    <p className="text-sm">
+                                        Theme preference:{' '}
+                                        <Badge variant="outline">{theme}</Badge>
+                                    </p>
+                                    <p className="text-sm">
+                                        Resolved theme:{' '}
+                                        <Badge variant="outline">
+                                            {resolvedTheme}
+                                        </Badge>
+                                    </p>
                                 </div>
                             </div>
-                            
+
                             <div className="space-y-3">
-                                <p className="text-sm font-medium">Test theme switching:</p>
+                                <p className="text-sm font-medium">
+                                    Test theme switching:
+                                </p>
                                 <div className="flex gap-2">
                                     <SimpleThemeToggle />
                                     <ThemeToggle />
@@ -249,7 +260,9 @@ export default function UIDemo() {
                         <li>• Build successfully with all dependencies</li>
                         <li>• Maintain proper TypeScript type checking</li>
                         <li>• Support hot reload during development</li>
-                        <li>• Switch between light and dark themes seamlessly</li>
+                        <li>
+                            • Switch between light and dark themes seamlessly
+                        </li>
                     </ul>
                 </div>
             </div>

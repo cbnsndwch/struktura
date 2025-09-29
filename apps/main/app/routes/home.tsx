@@ -1,13 +1,14 @@
 import type { MetaFunction } from 'react-router';
 
-import { Button } from '@cbnsndwch/struktura-shared-ui/components/ui/button.js';
-import { Badge } from '@cbnsndwch/struktura-shared-ui/components/ui/badge.js';
 import {
+    Button,
+    Badge,
     Card,
     CardContent,
     CardTitle,
-    CardDescription
-} from '@cbnsndwch/struktura-shared-ui/components/ui/card.js';
+    CardDescription,
+    ThemeToggle
+} from '@cbnsndwch/struktura-shared-ui';
 
 export const meta: MetaFunction = () => {
     return [
@@ -22,22 +23,27 @@ export const meta: MetaFunction = () => {
 
 export default function Home() {
     return (
-        <div className="min-h-screen bg-gradient-to-b from-white to-gray-50">
+        <div className="min-h-screen bg-gradient-to-b from-background to-muted/20">
             {/* Hero Section */}
             <section className="container mx-auto px-4 pt-20 pb-16">
                 <div className="text-center max-w-4xl mx-auto">
-                    <Badge
-                        variant="secondary"
-                        className="mb-6 rounded-full px-3 py-1 text-sm bg-blue-50 text-blue-700 border-blue-200"
-                    >
-                        🚀 Now in Beta
-                    </Badge>
-                    <h1 className="text-4xl md:text-6xl font-bold tracking-tight mb-6">
+                    <div className="flex justify-center mb-6">
+                        <div className="flex items-center gap-4">
+                            <Badge
+                                variant="secondary"
+                                className="rounded-full px-3 py-1 text-sm"
+                            >
+                                🚀 Now in Beta
+                            </Badge>
+                            <ThemeToggle />
+                        </div>
+                    </div>
+                    <h1 className="text-4xl md:text-6xl font-bold tracking-tight mb-6 text-foreground">
                         No-Code Data Management
                         <br />
-                        <span className="text-blue-600">Made Simple</span>
+                        <span className="text-primary">Made Simple</span>
                     </h1>
-                    <p className="text-xl md:text-2xl text-gray-600 mb-8 leading-relaxed">
+                    <p className="text-xl md:text-2xl text-muted-foreground mb-8 leading-relaxed">
                         Combine the ease-of-use of Airtable with the flexibility
                         of MongoDB. Create and manage complex data structures
                         without writing a single line of code.
@@ -49,7 +55,7 @@ export default function Home() {
                         <Button
                             size="lg"
                             variant="outline"
-                            className="px-8 text-lg border-gray-300"
+                            className="px-8 text-lg"
                             asChild
                         >
                             <a href="/ui-demo">View UI Demo</a>
@@ -64,7 +70,7 @@ export default function Home() {
                     <h2 className="text-3xl md:text-4xl font-bold mb-4">
                         Why Choose Struktura?
                     </h2>
-                    <p className="text-xl text-gray-600 max-w-2xl mx-auto">
+                    <p className="text-xl text-muted-foreground max-w-2xl mx-auto">
                         Built for teams who need more than spreadsheets but less
                         complexity than databases
                     </p>
@@ -135,7 +141,7 @@ export default function Home() {
                     ].map(f => (
                         <Card key={f.title} className="shadow-sm">
                             <CardContent className="pt-0">
-                                <div className="w-12 h-12 bg-blue-100 rounded-lg flex items-center justify-center mb-4 text-lg">
+                                <div className="w-12 h-12 bg-primary/10 rounded-lg flex items-center justify-center mb-4 text-lg">
                                     {f.icon}
                                 </div>
                                 <CardTitle className="text-xl font-semibold mb-2">
@@ -144,7 +150,7 @@ export default function Home() {
                                 <CardDescription className="mb-4 text-base leading-relaxed">
                                     {f.desc}
                                 </CardDescription>
-                                <ul className="text-sm text-gray-500 space-y-2">
+                                <ul className="text-sm text-muted-foreground space-y-2">
                                     {f.bullets.map(b => (
                                         <li key={b}>• {b}</li>
                                     ))}
@@ -156,7 +162,7 @@ export default function Home() {
             </section>
 
             {/* Use Cases Section */}
-            <section className="bg-gray-50 py-16">
+            <section className="bg-muted/50 py-16">
                 <div className="container mx-auto px-4">
                     <div className="text-center mb-12">
                         <h2 className="text-3xl md:text-4xl font-bold mb-4">
@@ -166,39 +172,39 @@ export default function Home() {
 
                     <div className="grid md:grid-cols-3 gap-8 max-w-5xl mx-auto">
                         <div className="text-center">
-                            <div className="w-16 h-16 bg-blue-100 rounded-full flex items-center justify-center mx-auto mb-4">
+                            <div className="w-16 h-16 bg-primary/10 rounded-full flex items-center justify-center mx-auto mb-4">
                                 🏢
                             </div>
                             <h3 className="text-xl font-semibold mb-3">
                                 Small Businesses
                             </h3>
-                            <p className="text-gray-600">
+                            <p className="text-muted-foreground">
                                 Manage customers, inventory, orders, and
                                 projects without complex database setup
                             </p>
                         </div>
 
                         <div className="text-center">
-                            <div className="w-16 h-16 bg-blue-100 rounded-full flex items-center justify-center mx-auto mb-4">
+                            <div className="w-16 h-16 bg-primary/10 rounded-full flex items-center justify-center mx-auto mb-4">
                                 👨‍💻
                             </div>
                             <h3 className="text-xl font-semibold mb-3">
                                 Development Teams
                             </h3>
-                            <p className="text-gray-600">
+                            <p className="text-muted-foreground">
                                 Rapid prototyping and MVP development with
                                 flexible data modeling
                             </p>
                         </div>
 
                         <div className="text-center">
-                            <div className="w-16 h-16 bg-blue-100 rounded-full flex items-center justify-center mx-auto mb-4">
+                            <div className="w-16 h-16 bg-primary/10 rounded-full flex items-center justify-center mx-auto mb-4">
                                 📋
                             </div>
                             <h3 className="text-xl font-semibold mb-3">
                                 Project Managers
                             </h3>
-                            <p className="text-gray-600">
+                            <p className="text-muted-foreground">
                                 Track complex projects with nested tasks,
                                 resources, and stakeholder data
                             </p>
@@ -215,7 +221,7 @@ export default function Home() {
                             <CardTitle className="text-2xl md:text-3xl font-bold mb-4">
                                 Explore the API
                             </CardTitle>
-                            <CardDescription className="text-lg text-gray-600 mb-6">
+                            <CardDescription className="text-lg text-muted-foreground mb-6">
                                 Ready to integrate? Test our GraphQL API in the
                                 interactive playground
                             </CardDescription>
@@ -233,7 +239,7 @@ export default function Home() {
                     <h2 className="text-3xl md:text-4xl font-bold mb-4">
                         Ready to Transform Your Data Management?
                     </h2>
-                    <p className="text-xl text-gray-600 mb-8">
+                    <p className="text-xl text-muted-foreground mb-8">
                         Join hundreds of teams already using Struktura to build
                         better data workflows
                     </p>
@@ -244,7 +250,7 @@ export default function Home() {
                         <Button
                             size="lg"
                             variant="outline"
-                            className="px-8 text-lg border-gray-300"
+                            className="px-8 text-lg"
                         >
                             Schedule a Demo
                         </Button>
