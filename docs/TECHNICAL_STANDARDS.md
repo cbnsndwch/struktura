@@ -292,6 +292,105 @@ export const useWorkspaceStore = create<WorkspaceState & WorkspaceActions>()(
 );
 ```
 
+### 3.4 Emoji Component Development Standards
+
+When developing components that include emoji functionality, follow these guidelines to ensure consistency, performance, and accessibility:
+
+#### Emoji Picker Integration
+
+```typescript
+// ✅ Good: Use lazy loading for emoji pickers
+import { Suspense, lazy } from 'react';
+import { Skeleton } from '@/components/ui/skeleton';
+
+const EmojiPicker = lazy(() => import('./emoji-picker'));
+
+const LazyEmojiPicker = ({ onEmojiSelect }) => (
+  <Suspense fallback={<Skeleton className="h-96 w-80" />}>
+    <EmojiPicker onEmojiSelect={onEmojiSelect} />
+  </Suspense>
+);
+
+// ❌ Bad: Direct import increases bundle size
+import { EmojiPicker } from 'frimousse';
+```
+
+#### Accessibility Requirements
+
+```typescript
+// ✅ Good: Proper accessibility implementation
+export const AccessibleEmojiPicker = ({ onEmojiSelect }) => (
+  <div 
+    role="dialog"
+    aria-label="Emoji picker"
+    aria-describedby="emoji-instructions"
+  >
+    <div id="emoji-instructions" className="sr-only">
+      Use arrow keys to navigate, Enter to select, Escape to close
+    </div>
+    <EmojiPicker onEmojiSelect={onEmojiSelect} />
+  </div>
+);
+
+// ❌ Bad: Missing accessibility features
+export const BadEmojiPicker = ({ onEmojiSelect }) => (
+  <EmojiPicker onEmojiSelect={onEmojiSelect} />
+);
+```
+
+#### Theme Integration
+
+```typescript
+// ✅ Good: Theme-aware emoji picker
+import { useTheme } from '@/hooks/use-theme';
+
+export const ThemedEmojiPicker = (props) => {
+  const { resolvedTheme } = useTheme();
+  
+  return (
+    <EmojiPicker
+      {...props}
+      theme={resolvedTheme === 'dark' ? 'dark' : 'light'}
+      className="border border-border bg-background"
+    />
+  );
+};
+```
+
+#### SSR Compatibility
+
+```typescript
+// ✅ Good: SSR-safe implementation
+import { useEffect, useState } from 'react';
+
+export const SSRSafeEmojiPicker = (props) => {
+  const [isClient, setIsClient] = useState(false);
+  
+  useEffect(() => {
+    setIsClient(true);
+  }, []);
+  
+  if (!isClient) {
+    return <div className="h-96 w-80 animate-pulse bg-muted rounded" />;
+  }
+  
+  return <LazyEmojiPicker {...props} />;
+};
+```
+
+#### Code Review Checklist for Emoji Components
+
+- [ ] Lazy loading implemented for performance
+- [ ] Accessibility features properly implemented (ARIA labels, keyboard navigation)
+- [ ] Theme integration follows shadcn/ui patterns
+- [ ] SSR compatibility ensured
+- [ ] TypeScript types properly defined
+- [ ] Loading states provided
+- [ ] Focus management implemented (for modal usage)
+- [ ] Bundle size impact documented
+
+For detailed emoji picker integration guidelines, see [Frimousse Emoji Picker Integration](./FRIMOUSSE_EMOJI_PICKER_INTEGRATION.md).
+
 ## 4. Backend Standards
 
 ### 4.1 NestJS Module Structure

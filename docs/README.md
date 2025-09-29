@@ -39,6 +39,22 @@ Welcome to the Struktura project documentation. This comprehensive guide will he
    - Testing, security, and documentation standards
    - Development environment setup
 
+#### **🎨 UI & Component Integration**
+7. **[UI Integration Guide](./UI_INTEGRATION_GUIDE.md)**
+   - shadcn/ui component integration patterns
+   - Theme system and design tokens
+   - Component development standards
+
+8. **[Theme System](./THEME_SYSTEM.md)**
+   - Dark/light mode implementation
+   - CSS variable system
+   - Browser theme detection
+
+9. **[Frimousse Emoji Picker Integration](./FRIMOUSSE_EMOJI_PICKER_INTEGRATION.md)** 🆕
+   - Emoji picker integration strategy
+   - TypeScript integration examples
+   - Performance and accessibility guidelines
+
 #### **👥 Team Organization**
 7. **[Team Structure](./TEAM_STRUCTURE.md)**
    - Role definitions and responsibilities
