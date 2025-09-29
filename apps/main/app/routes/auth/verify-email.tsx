@@ -116,11 +116,16 @@ export default function VerifyEmail() {
                 }),
             });
 
-            if (response.ok || response.status === 409) { // 409 = user already exists
+            if (response.ok) {
                 setResendSuccess(true);
                 setVerificationState(prev => ({
                     ...prev,
                     message: 'A new verification email has been sent to your email address.'
+                }));
+            } else if (response.status === 409) { // 409 = user already exists
+                setVerificationState(prev => ({
+                    ...prev,
+                    message: 'Account already exists. Please check your email for a previous verification message or try logging in.'
                 }));
             } else {
                 throw new Error('Failed to resend verification email');
