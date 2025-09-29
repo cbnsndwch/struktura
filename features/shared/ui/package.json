@@ -91,6 +91,7 @@
         "dist"
     ],
     "exports": {
+        ".": "./dist/index.js",
         "./components/*": "./dist/components/*",
         "./hooks/*": "./dist/hooks/*",
         "./lib/*": "./dist/lib/*",
