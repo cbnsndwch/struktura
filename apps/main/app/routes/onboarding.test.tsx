@@ -6,6 +6,16 @@ import Onboarding from './onboarding.js';
 // Mock fetch for API calls
 global.fetch = vi.fn();
 
+// Mock useNavigate hook
+const mockNavigate = vi.fn();
+vi.mock('react-router', async () => {
+    const actual = await vi.importActual('react-router');
+    return {
+        ...actual,
+        useNavigate: () => mockNavigate
+    };
+});
+
 // Mock localStorage for SSR compatibility
 const localStorageMock = {
     getItem: vi.fn(),
@@ -29,11 +39,15 @@ Object.defineProperty(window, 'location', {
 describe('Onboarding Wizard', () => {
     beforeEach(() => {
         vi.clearAllMocks();
+        mockNavigate.mockClear();
         localStorageMock.getItem.mockReturnValue(null);
+
         // Mock successful API response
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
         (global.fetch as any).mockResolvedValue({
             ok: true,
-            json: () => Promise.resolve({ id: 'workspace-123', name: 'Test Workspace' })
+            json: () =>
+                Promise.resolve({ id: 'workspace-123', name: 'Test Workspace' })
         });
     });
 
@@ -150,7 +164,7 @@ describe('Onboarding Wizard', () => {
         const skipButton = screen.getByText('Skip');
         fireEvent.click(skipButton);
 
-        expect(window.location.href).toBe('/workspaces');
+        expect(mockNavigate).toHaveBeenCalledWith('/workspaces');
         expect(localStorageMock.removeItem).toHaveBeenCalledWith(
             'struktura-onboarding-state'
         );
@@ -197,5 +211,43 @@ describe('Onboarding Wizard', () => {
         // Progress should still be visible but in different layout
         expect(screen.getByText('Step 1 of 5')).toBeInTheDocument();
         expect(screen.getAllByRole('progressbar')).toHaveLength(2); // One for desktop, one for mobile
+    });
+
+    it('navigates to workspace on completion', async () => {
+        render(<Onboarding />);
+
+        // Navigate through all steps to completion
+        fireEvent.click(screen.getByText('Get Started'));
+
+        const nameInput = screen.getByPlaceholderText(
+            'e.g., Acme Inc, Marketing Team, Personal Projects'
+        );
+        fireEvent.change(nameInput, { target: { value: 'Test Workspace' } });
+        fireEvent.click(screen.getByText('Create Workspace'));
+
+        await waitFor(() => {
+            expect(screen.getByText('Choose a Template')).toBeInTheDocument();
+        });
+
+        fireEvent.click(screen.getByText('Continue'));
+
+        await waitFor(() => {
+            expect(screen.getByText('Powerful Features')).toBeInTheDocument();
+        });
+
+        fireEvent.click(screen.getByText('Complete Setup'));
+
+        await waitFor(() => {
+            expect(screen.getByText("🎉 You're All Set!")).toBeInTheDocument();
+        });
+
+        // Click the final completion button
+        const goToWorkspaceButton = screen.getByText('Go to My Workspace');
+        fireEvent.click(goToWorkspaceButton);
+
+        expect(mockNavigate).toHaveBeenCalledWith('/workspaces');
+        expect(localStorageMock.removeItem).toHaveBeenCalledWith(
+            'struktura-onboarding-state'
+        );
     });
 });

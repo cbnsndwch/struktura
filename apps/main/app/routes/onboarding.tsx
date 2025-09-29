@@ -1,23 +1,9 @@
 import { useState, useEffect } from 'react';
 import type { MetaFunction } from 'react-router';
+import { useNavigate } from 'react-router';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { z } from 'zod';
-import {
-    Button,
-    Card,
-    CardContent,
-    Form,
-    FormControl,
-    FormField,
-    FormItem,
-    FormLabel,
-    FormMessage,
-    Input,
-    Textarea,
-    Progress,
-    Badge
-} from '@cbnsndwch/struktura-shared-ui';
 import {
     ArrowRight,
     ArrowLeft,
@@ -33,6 +19,22 @@ import {
     SkipForward,
     Sparkles
 } from 'lucide-react';
+
+import {
+    Button,
+    Card,
+    CardContent,
+    Form,
+    FormControl,
+    FormField,
+    FormItem,
+    FormLabel,
+    FormMessage,
+    Input,
+    Textarea,
+    Progress,
+    Badge
+} from '@cbnsndwch/struktura-shared-ui';
 
 export const meta: MetaFunction = () => {
     return [
@@ -136,6 +138,8 @@ const tourFeatures = [
 ];
 
 export default function Onboarding() {
+    const navigate = useNavigate();
+
     const [state, setState] = useState<OnboardingState>({
         currentStep: 'welcome',
         completedSteps: [],
@@ -219,7 +223,7 @@ export default function Onboarding() {
 
     const skipOnboarding = () => {
         clearOnboardingState();
-        window.location.href = '/workspaces';
+        navigate('/workspaces');
     };
 
     const handleWorkspaceSubmit = async (data: WorkspaceFormData) => {
@@ -287,8 +291,8 @@ export default function Onboarding() {
 
     const finishOnboarding = () => {
         clearOnboardingState();
-        // Redirect to workspace dashboard
-        window.location.href = '/workspaces';
+        // Navigate to workspace dashboard
+        navigate('/workspaces');
     };
 
     const renderWelcomeStep = () => (
