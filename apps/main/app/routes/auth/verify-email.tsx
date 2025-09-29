@@ -1,26 +1,33 @@
-import { useState, useEffect } from 'react';
+import { ArrowRight, CheckCircle, Loader2, Mail, XCircle } from 'lucide-react';
+import { useEffect, useState } from 'react';
 import type { MetaFunction } from 'react-router';
+
 import {
+    Alert,
     Button,
     Card,
     CardContent,
     CardHeader,
-    CardTitle,
-    Alert
+    CardTitle
 } from '@cbnsndwch/struktura-shared-ui';
-import { CheckCircle, XCircle, Loader2, Mail, ArrowRight } from 'lucide-react';
 
 export const meta: MetaFunction = () => {
     return [
         { title: 'Verify Email • Struktura' },
         {
             name: 'description',
-            content: 'Verify your email address to complete your Struktura account setup.'
+            content:
+                'Verify your email address to complete your Struktura account setup.'
         }
     ];
 };
 
-type VerificationStatus = 'verifying' | 'success' | 'error' | 'expired' | 'invalid';
+type VerificationStatus =
+    | 'verifying'
+    | 'success'
+    | 'error'
+    | 'expired'
+    | 'invalid';
 
 interface VerificationState {
     status: VerificationStatus;
@@ -29,10 +36,11 @@ interface VerificationState {
 }
 
 export default function VerifyEmail() {
-    const [verificationState, setVerificationState] = useState<VerificationState>({
-        status: 'verifying',
-        message: 'Verifying your email address...'
-    });
+    const [verificationState, setVerificationState] =
+        useState<VerificationState>({
+            status: 'verifying',
+            message: 'Verifying your email address...'
+        });
     const [isResending, setIsResending] = useState(false);
     const [resendSuccess, setResendSuccess] = useState(false);
 
@@ -44,7 +52,8 @@ export default function VerifyEmail() {
         if (!token) {
             setVerificationState({
                 status: 'invalid',
-                message: 'No verification token provided. Please check your email link.'
+                message:
+                    'No verification token provided. Please check your email link.'
             });
             return;
         }
@@ -52,26 +61,33 @@ export default function VerifyEmail() {
         // Verify email with backend
         const verifyEmail = async () => {
             try {
-                const response = await fetch(`/auth/verify-email?token=${encodeURIComponent(token)}`);
-                
+                const response = await fetch(
+                    `/auth/verify-email?token=${encodeURIComponent(token)}`
+                );
+
                 if (response.ok) {
                     const result = await response.json();
                     setVerificationState({
                         status: 'success',
-                        message: result.message || 'Email verified successfully!'
+                        message:
+                            result.message || 'Email verified successfully!'
                     });
 
                     // Redirect to login after a delay
                     setTimeout(() => {
-                        window.location.href = '/auth/login?message=Email verified! You can now sign in.';
+                        window.location.href =
+                            '/auth/login?message=Email verified! You can now sign in.';
                     }, 3000);
                 } else {
                     const errorData = await response.json();
-                    const isExpired = errorData.message?.toLowerCase().includes('expired');
-                    
+                    const isExpired = errorData.message
+                        ?.toLowerCase()
+                        .includes('expired');
+
                     setVerificationState({
                         status: isExpired ? 'expired' : 'error',
-                        message: errorData.message || 'Email verification failed'
+                        message:
+                            errorData.message || 'Email verification failed'
                     });
                 }
             } catch (error) {
@@ -88,12 +104,15 @@ export default function VerifyEmail() {
     const handleResendVerification = async () => {
         // Try to get email from URL parameters or localStorage
         const urlParams = new URLSearchParams(window.location.search);
-        const email = urlParams.get('email') || localStorage.getItem('pendingVerificationEmail');
+        const email =
+            urlParams.get('email') ||
+            localStorage.getItem('pendingVerificationEmail');
 
         if (!email) {
             setVerificationState(prev => ({
                 ...prev,
-                message: 'Cannot resend verification email. Please try signing up again.'
+                message:
+                    'Cannot resend verification email. Please try signing up again.'
             }));
             return;
         }
@@ -107,25 +126,28 @@ export default function VerifyEmail() {
             const response = await fetch('/auth/register', {
                 method: 'POST',
                 headers: {
-                    'Content-Type': 'application/json',
+                    'Content-Type': 'application/json'
                 },
                 body: JSON.stringify({
                     email,
                     name: 'Resend Verification', // Placeholder
                     password: 'temp-password-for-resend' // Placeholder
-                }),
+                })
             });
 
             if (response.ok) {
                 setResendSuccess(true);
                 setVerificationState(prev => ({
                     ...prev,
-                    message: 'A new verification email has been sent to your email address.'
+                    message:
+                        'A new verification email has been sent to your email address.'
                 }));
-            } else if (response.status === 409) { // 409 = user already exists
+            } else if (response.status === 409) {
+                // 409 = user already exists
                 setVerificationState(prev => ({
                     ...prev,
-                    message: 'Account already exists. Please check your email for a previous verification message or try logging in.'
+                    message:
+                        'Account already exists. Please check your email for a previous verification message or try logging in.'
                 }));
             } else {
                 throw new Error('Failed to resend verification email');
@@ -133,7 +155,8 @@ export default function VerifyEmail() {
         } catch (error) {
             setVerificationState(prev => ({
                 ...prev,
-                message: 'Failed to resend verification email. Please try again.'
+                message:
+                    'Failed to resend verification email. Please try again.'
             }));
         } finally {
             setIsResending(false);
@@ -143,7 +166,9 @@ export default function VerifyEmail() {
     const getStatusIcon = () => {
         switch (verificationState.status) {
             case 'verifying':
-                return <Loader2 className="h-12 w-12 animate-spin text-blue-600" />;
+                return (
+                    <Loader2 className="h-12 w-12 animate-spin text-blue-600" />
+                );
             case 'success':
                 return <CheckCircle className="h-12 w-12 text-green-600" />;
             case 'error':
@@ -160,7 +185,9 @@ export default function VerifyEmail() {
             case 'success':
                 return (
                     <div className="text-center space-y-2">
-                        <p className="text-green-700 font-medium">{verificationState.message}</p>
+                        <p className="text-green-700 font-medium">
+                            {verificationState.message}
+                        </p>
                         <p className="text-sm text-muted-foreground">
                             Redirecting you to sign in...
                         </p>
@@ -169,9 +196,12 @@ export default function VerifyEmail() {
             case 'expired':
                 return (
                     <div className="text-center space-y-4">
-                        <p className="text-red-700 font-medium">{verificationState.message}</p>
+                        <p className="text-red-700 font-medium">
+                            {verificationState.message}
+                        </p>
                         <p className="text-sm text-muted-foreground">
-                            Your verification link has expired. You can request a new one below.
+                            Your verification link has expired. You can request
+                            a new one below.
                         </p>
                     </div>
                 );
@@ -179,9 +209,12 @@ export default function VerifyEmail() {
             case 'invalid':
                 return (
                     <div className="text-center space-y-2">
-                        <p className="text-red-700 font-medium">{verificationState.message}</p>
+                        <p className="text-red-700 font-medium">
+                            {verificationState.message}
+                        </p>
                         <p className="text-sm text-muted-foreground">
-                            Please check your email link or contact support if the problem persists.
+                            Please check your email link or contact support if
+                            the problem persists.
                         </p>
                     </div>
                 );
@@ -212,38 +245,52 @@ export default function VerifyEmail() {
                         <Alert>
                             <Mail className="h-4 w-4" />
                             <div>
-                                <p className="font-medium">Verification email sent!</p>
+                                <p className="font-medium">
+                                    Verification email sent!
+                                </p>
                                 <p className="text-sm text-muted-foreground">
-                                    Please check your email and click the verification link.
+                                    Please check your email and click the
+                                    verification link.
                                 </p>
                             </div>
                         </Alert>
                     )}
 
                     <div className="space-y-3">
-                        {(verificationState.status === 'expired' || verificationState.status === 'error') && (
+                        {(verificationState.status === 'expired' ||
+                            verificationState.status === 'error') && (
                             <Button
                                 onClick={handleResendVerification}
                                 disabled={isResending}
                                 className="w-full"
                                 variant="outline"
                             >
-                                {isResending && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
+                                {isResending && (
+                                    <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                                )}
                                 Resend Verification Email
                             </Button>
                         )}
 
                         <Button
-                            onClick={() => window.location.href = '/auth/login'}
+                            onClick={() =>
+                                (window.location.href = '/auth/login')
+                            }
                             className="w-full"
-                            variant={verificationState.status === 'success' ? 'outline' : 'default'}
+                            variant={
+                                verificationState.status === 'success'
+                                    ? 'outline'
+                                    : 'default'
+                            }
                         >
                             Go to Sign In
                             <ArrowRight className="ml-2 h-4 w-4" />
                         </Button>
 
                         <div className="text-center text-sm">
-                            <span className="text-muted-foreground">Need help? </span>
+                            <span className="text-muted-foreground">
+                                Need help?{' '}
+                            </span>
                             <a
                                 href="/support"
                                 className="text-primary underline underline-offset-4 hover:no-underline"

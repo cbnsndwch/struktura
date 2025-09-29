@@ -11,7 +11,8 @@
     "compilerOptions": {
         "lib": ["ES2023", "DOM"],
         "outDir": "./dist",
-        "rootDir": "./",
+        "baseUrl": ".",
+        "rootDir": ".",
         "strict": true,
         "jsx": "react-jsx",
         "jsxImportSource": "react",

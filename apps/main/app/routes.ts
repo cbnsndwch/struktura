@@ -1,10 +1,14 @@
-import { type RouteConfig, index, route } from '@react-router/dev/routes';
+import {
+    type RouteConfig,
+    index,
+    prefix,
+    route
+} from '@react-router/dev/routes';
+
+import authRoutes from './routes/auth/routes.js';
 
 export default [
     index('routes/home.tsx'),
     route('ui-demo', 'routes/ui-demo.tsx'),
-    route('auth/login', 'routes/auth/login.tsx'),
-    route('auth/signup', 'routes/auth/signup.tsx'),
-    route('auth/verify-email', 'routes/auth/verify-email.tsx'),
-    route('auth/reset-password', 'routes/auth/reset-password.tsx')
+    ...prefix('auth', authRoutes)
 ] satisfies RouteConfig;

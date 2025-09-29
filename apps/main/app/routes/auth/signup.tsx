@@ -20,9 +20,13 @@ import {
 } from '@cbnsndwch/struktura-shared-ui';
 import { Eye, EyeOff, Loader2 } from 'lucide-react';
 
-import { signupSchema, type SignupFormData } from '~/lib/validations/auth';
-import { PasswordStrengthIndicator } from '~/components/auth/password-strength-indicator';
-import { OAuthButtons } from '~/components/auth/oauth-buttons';
+import {
+    signupSchema,
+    type SignupFormData
+} from '../../lib/validations/auth.js';
+
+import { PasswordStrengthIndicator } from '../../components/auth/PasswordStrengthIndicator.js';
+import OAuthButtons from '../../components/auth/OAuthButtons.js';
 
 export const meta: MetaFunction = () => {
     return [
@@ -62,13 +66,13 @@ export default function Signup() {
             const response = await fetch('/auth/register', {
                 method: 'POST',
                 headers: {
-                    'Content-Type': 'application/json',
+                    'Content-Type': 'application/json'
                 },
                 body: JSON.stringify({
                     email: data.email,
                     name: data.name,
-                    password: data.password,
-                }),
+                    password: data.password
+                })
             });
 
             if (!response.ok) {
@@ -78,14 +82,19 @@ export default function Signup() {
 
             // Registration successful
             const result = await response.json();
-            
+
             // Store email for potential resend verification
             localStorage.setItem('pendingVerificationEmail', data.email);
-            
+
             // Redirect to login with email verification message
-            window.location.href = '/auth/login?message=Registration successful! Please check your email to verify your account before signing in.';
+            window.location.href =
+                '/auth/login?message=Registration successful! Please check your email to verify your account before signing in.';
         } catch (err) {
-            setError(err instanceof Error ? err.message : 'An unexpected error occurred');
+            setError(
+                err instanceof Error
+                    ? err.message
+                    : 'An unexpected error occurred'
+            );
         } finally {
             setIsLoading(false);
         }
@@ -106,11 +115,12 @@ export default function Signup() {
                     <OAuthButtons disabled={isLoading} />
 
                     <Form {...form}>
-                        <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
+                        <form
+                            onSubmit={form.handleSubmit(onSubmit)}
+                            className="space-y-4"
+                        >
                             {error && (
-                                <Alert variant="destructive">
-                                    {error}
-                                </Alert>
+                                <Alert variant="destructive">{error}</Alert>
                             )}
 
                             <FormField
@@ -161,7 +171,11 @@ export default function Signup() {
                                         <FormControl>
                                             <div className="relative">
                                                 <Input
-                                                    type={showPassword ? 'text' : 'password'}
+                                                    type={
+                                                        showPassword
+                                                            ? 'text'
+                                                            : 'password'
+                                                    }
                                                     placeholder="Create a strong password"
                                                     {...field}
                                                     disabled={isLoading}
@@ -172,7 +186,11 @@ export default function Signup() {
                                                     variant="ghost"
                                                     size="sm"
                                                     className="absolute right-0 top-0 h-full px-3 py-2 hover:bg-transparent"
-                                                    onClick={() => setShowPassword(!showPassword)}
+                                                    onClick={() =>
+                                                        setShowPassword(
+                                                            !showPassword
+                                                        )
+                                                    }
                                                     disabled={isLoading}
                                                     data-testid="toggle-password-visibility"
                                                 >
@@ -186,7 +204,9 @@ export default function Signup() {
                                         </FormControl>
                                         <FormMessage />
                                         {field.value && (
-                                            <PasswordStrengthIndicator password={field.value} />
+                                            <PasswordStrengthIndicator
+                                                password={field.value}
+                                            />
                                         )}
                                     </FormItem>
                                 )}
@@ -201,7 +221,11 @@ export default function Signup() {
                                         <FormControl>
                                             <div className="relative">
                                                 <Input
-                                                    type={showConfirmPassword ? 'text' : 'password'}
+                                                    type={
+                                                        showConfirmPassword
+                                                            ? 'text'
+                                                            : 'password'
+                                                    }
                                                     placeholder="Confirm your password"
                                                     {...field}
                                                     disabled={isLoading}
@@ -212,7 +236,11 @@ export default function Signup() {
                                                     variant="ghost"
                                                     size="sm"
                                                     className="absolute right-0 top-0 h-full px-3 py-2 hover:bg-transparent"
-                                                    onClick={() => setShowConfirmPassword(!showConfirmPassword)}
+                                                    onClick={() =>
+                                                        setShowConfirmPassword(
+                                                            !showConfirmPassword
+                                                        )
+                                                    }
                                                     disabled={isLoading}
                                                     data-testid="toggle-confirm-password-visibility"
                                                 >
@@ -269,20 +297,24 @@ export default function Signup() {
                                 )}
                             />
 
-                            <Button 
-                                type="submit" 
-                                className="w-full" 
+                            <Button
+                                type="submit"
+                                className="w-full"
                                 disabled={isLoading}
                                 data-testid="signup-button"
                             >
-                                {isLoading && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
+                                {isLoading && (
+                                    <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                                )}
                                 Create Account
                             </Button>
                         </form>
                     </Form>
 
                     <div className="text-center text-sm">
-                        <span className="text-muted-foreground">Already have an account? </span>
+                        <span className="text-muted-foreground">
+                            Already have an account?{' '}
+                        </span>
                         <a
                             href="/auth/login"
                             className="text-primary underline underline-offset-4 hover:no-underline"
