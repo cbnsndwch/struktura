@@ -1,5 +1,5 @@
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
-import { Field, ObjectType, ID } from '@nestjs/graphql';
+import { Field, ObjectType, ID, InputType } from '@nestjs/graphql';
 import {
     IsEmail,
     IsString,
@@ -8,12 +8,23 @@ import {
     IsOptional,
     IsBoolean,
     IsArray,
-    IsDate
+    IsDate,
+    IsIn
 } from 'class-validator';
 import { Document } from 'mongoose';
 import type { IUser, UserPreferences } from '@cbnsndwch/struktura-auth-contracts';
 
 export type UserDocument = User & Document;
+
+/**
+ * GraphQL ObjectType for UserPreferences
+ */
+@ObjectType('UserPreferences')
+export class UserPreferencesType implements UserPreferences {
+    @Field(() => String)
+    @IsIn(['light', 'dark', 'system'])
+    theme!: 'light' | 'dark' | 'system';
+}
 
 /**
  * Consolidated User class that serves as:
@@ -74,7 +85,7 @@ export class User implements IUser {
         type: Object,
         default: () => ({ theme: 'system' })
     })
-    @Field({ nullable: true })
+    @Field(() => UserPreferencesType, { nullable: true })
     @IsOptional()
     preferences?: UserPreferences;
 

@@ -4,6 +4,7 @@ import {
     Outlet,
     Scripts,
     ScrollRestoration,
+    useLoaderData,
     type LoaderFunctionArgs
 } from 'react-router';
 import { ThemeProvider } from '@cbnsndwch/struktura-shared-ui';
@@ -11,8 +12,19 @@ import { ThemeProvider } from '@cbnsndwch/struktura-shared-ui';
 import './app.css';
 
 export async function loader({ request }: LoaderFunctionArgs) {
+    // TODO: Add authentication check and load user preferences
+    // For now, return empty preferences to maintain backward compatibility
+    let userTheme: string | null = null;
+    
+    // In the future, check for user authentication and load preferences:
+    // const user = await getUserFromRequest(request);
+    // if (user?.preferences?.theme) {
+    //     userTheme = user.preferences.theme;
+    // }
+    
     return {
-        url: request.url
+        url: request.url,
+        userTheme
     };
 }
 
@@ -44,13 +56,28 @@ export function meta() {
     ];
 }
 
-function ThemeScript() {
+function ThemeScript({ userTheme }: { userTheme?: string | null }) {
     const themeScript = `
         (function() {
-            const theme = localStorage.getItem('struktura-theme') || 'system';
+            // Priority: 1. User preference from server, 2. localStorage, 3. system default
+            const userTheme = ${JSON.stringify(userTheme)};
+            const localTheme = localStorage.getItem('struktura-theme');
+            const theme = userTheme || localTheme || 'system';
+            
             const systemTheme = window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';
             const resolvedTheme = theme === 'system' ? systemTheme : theme;
+            
+            // Apply theme immediately to prevent flash
             document.documentElement.classList.add(resolvedTheme);
+            
+            // Store in localStorage for consistency (if not already there)
+            if (!localTheme && userTheme) {
+                try {
+                    localStorage.setItem('struktura-theme', userTheme);
+                } catch (e) {
+                    // Silently fail if localStorage is not available
+                }
+            }
         })();
     `;
 
@@ -58,6 +85,8 @@ function ThemeScript() {
 }
 
 export function Layout({ children }: { children: React.ReactNode }) {
+    const { userTheme } = useLoaderData<typeof loader>();
+    
     return (
         <html lang="en" suppressHydrationWarning>
             <head>
@@ -69,7 +98,7 @@ export function Layout({ children }: { children: React.ReactNode }) {
                 <link rel="icon" type="image/svg+xml" href="/img/icon.svg" />
                 <Meta />
                 <Links />
-                <ThemeScript />
+                <ThemeScript userTheme={userTheme} />
             </head>
             <body className="flex flex-col min-h-screen">
                 <ThemeProvider>{children}</ThemeProvider>

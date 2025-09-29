@@ -1,5 +1,9 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
-import { ConflictException, UnauthorizedException } from '@nestjs/common';
+import { 
+    ConflictException, 
+    UnauthorizedException, 
+    BadRequestException 
+} from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
 import { getModelToken } from '@nestjs/mongoose';
 import { Test, TestingModule } from '@nestjs/testing';
@@ -350,6 +354,97 @@ describe('AuthService - Unit Tests (Isolated Business Logic)', () => {
             // Assert: Should not reveal whether user exists or not
             expect(result).toHaveProperty('message');
             expect(result.message).toContain('password reset link');
+        });
+    });
+
+    describe('User Preferences', () => {
+        it('should update user preferences successfully', async () => {
+            // Arrange
+            const userId = 'user-123';
+            const preferences = { theme: 'dark' as const };
+            const mockUser = {
+                id: userId,
+                preferences: { theme: 'system' as const },
+                save: vi.fn().mockResolvedValue(true)
+            };
+            mockUserModel.findById.mockResolvedValue(mockUser);
+
+            // Act
+            const result = await service.updatePreferences(userId, preferences);
+
+            // Assert
+            expect(mockUserModel.findById).toHaveBeenCalledWith(userId);
+            expect(mockUser.preferences.theme).toBe('dark');
+            expect(mockUser.save).toHaveBeenCalled();
+            expect(result).toBe(mockUser);
+        });
+
+        it('should initialize preferences for user without existing preferences', async () => {
+            // Arrange
+            const userId = 'user-123';
+            const preferences = { theme: 'light' as const };
+            const mockUser = {
+                id: userId,
+                preferences: undefined,
+                save: vi.fn().mockResolvedValue(true)
+            };
+            mockUserModel.findById.mockResolvedValue(mockUser);
+
+            // Act
+            const result = await service.updatePreferences(userId, preferences);
+
+            // Assert
+            expect(mockUser.preferences).toEqual({ theme: 'light' });
+            expect(mockUser.save).toHaveBeenCalled();
+            expect(result).toBe(mockUser);
+        });
+
+        it('should get user preferences with default fallback', async () => {
+            // Arrange
+            const userId = 'user-123';
+            const mockUser = {
+                id: userId,
+                preferences: undefined
+            };
+            mockUserModel.findById.mockReturnValue({
+                select: vi.fn().mockResolvedValue(mockUser)
+            });
+
+            // Act
+            const result = await service.getPreferences(userId);
+
+            // Assert
+            expect(result).toEqual({ theme: 'system' });
+        });
+
+        it('should get existing user preferences', async () => {
+            // Arrange
+            const userId = 'user-123';
+            const mockUser = {
+                id: userId,
+                preferences: { theme: 'dark' as const }
+            };
+            mockUserModel.findById.mockReturnValue({
+                select: vi.fn().mockResolvedValue(mockUser)
+            });
+
+            // Act
+            const result = await service.getPreferences(userId);
+
+            // Assert
+            expect(result).toEqual({ theme: 'dark' });
+        });
+
+        it('should throw error when updating preferences for non-existent user', async () => {
+            // Arrange
+            const userId = 'non-existent';
+            const preferences = { theme: 'dark' as const };
+            mockUserModel.findById.mockResolvedValue(null);
+
+            // Act & Assert
+            await expect(service.updatePreferences(userId, preferences)).rejects.toThrow(
+                BadRequestException
+            );
         });
     });
 });
