@@ -3,6 +3,11 @@ export interface ISession {
     tokens: IUserTokens;
 }
 
+export interface UserPreferences {
+    theme: 'light' | 'dark' | 'system';
+    // Future: notifications, language, etc.
+}
+
 export interface IUser {
     id: string;
     email: string;
@@ -10,6 +15,7 @@ export interface IUser {
     isVerified: boolean;
     timezone?: string;
     language?: string;
+    preferences?: UserPreferences;
     createdAt: Date;
     updatedAt: Date;
 }

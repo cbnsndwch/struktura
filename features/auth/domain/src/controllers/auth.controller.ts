@@ -5,6 +5,7 @@ import {
     HttpCode,
     HttpStatus,
     Post,
+    Put,
     Query,
     Req,
     UseGuards
@@ -22,7 +23,8 @@ import {
     RefreshTokenDto,
     RegisterDto,
     RequestPasswordResetDto,
-    ResetPasswordDto
+    ResetPasswordDto,
+    UpdatePreferencesDto
 } from '../dto/index.js';
 import { JwtAuthGuard } from '../guards/jwt-auth.guard.js';
 
@@ -154,4 +156,27 @@ export class AuthController {
     //     const redirectUrl = `${process.env.FRONTEND_URL || 'http://localhost:3000'}/auth/callback?token=${tokens.accessToken}&refresh=${tokens.refreshToken}`;
     //     res.redirect(redirectUrl);
     // }
+
+    /**
+     * Get user preferences
+     */
+    @Get('preferences')
+    @UseGuards(JwtAuthGuard)
+    async getPreferences(@CurrentUser() user: any) {
+        return this.authService.getPreferences(user.id);
+    }
+
+    /**
+     * Update user preferences
+     */
+    @Put('preferences')
+    @UseGuards(JwtAuthGuard)
+    @HttpCode(HttpStatus.OK)
+    async updatePreferences(
+        @CurrentUser() user: any,
+        @Body() dto: UpdatePreferencesDto
+    ) {
+        const updatedUser = await this.authService.updatePreferences(user.id, dto);
+        return updatedUser.toPublicData();
+    }
 }
