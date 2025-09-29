@@ -78,8 +78,12 @@ export default function Signup() {
 
             // Registration successful
             const result = await response.json();
-            // Redirect to login or show success message
-            window.location.href = '/auth/login?message=Registration successful! Please sign in.';
+            
+            // Store email for potential resend verification
+            localStorage.setItem('pendingVerificationEmail', data.email);
+            
+            // Redirect to login with email verification message
+            window.location.href = '/auth/login?message=Registration successful! Please check your email to verify your account before signing in.';
         } catch (err) {
             setError(err instanceof Error ? err.message : 'An unexpected error occurred');
         } finally {
