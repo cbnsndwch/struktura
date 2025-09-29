@@ -48,7 +48,7 @@
         "eslint-plugin-prettier": "^5.5.4",
         "globals": "^16.4.0",
         "http-server": "^14.1.1",
-        "npm-check-updates": "^18.3.0",
+        "npm-check-updates": "^19.0.0",
         "prettier": "^3.6.2",
         "tsx": "^4.20.6",
         "typescript": "^5.9.2",

@@ -10,7 +10,6 @@
 # Dependencies & compiled output
 **/node_modules
 **/.pnp.*
-features/**/lib
 build
 dist
 
