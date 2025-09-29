@@ -301,7 +301,9 @@ export default function Login() {
                                 )}
 
                                 <div className="space-y-2">
-                                    <FormLabel>Email Address</FormLabel>
+                                    <label className="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70">
+                                        Email Address
+                                    </label>
                                     <Input
                                         type="email"
                                         placeholder="Enter your email address"

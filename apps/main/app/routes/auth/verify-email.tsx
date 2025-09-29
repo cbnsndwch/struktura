@@ -90,7 +90,7 @@ export default function VerifyEmail() {
                             errorData.message || 'Email verification failed'
                     });
                 }
-            } catch (error) {
+            } catch {
                 setVerificationState({
                     status: 'error',
                     message: 'Network error occurred. Please try again.'
@@ -152,7 +152,7 @@ export default function VerifyEmail() {
             } else {
                 throw new Error('Failed to resend verification email');
             }
-        } catch (error) {
+        } catch {
             setVerificationState(prev => ({
                 ...prev,
                 message:

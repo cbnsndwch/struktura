@@ -56,8 +56,6 @@ export default function Signup() {
         }
     });
 
-    const password = form.watch('password');
-
     const onSubmit = async (data: SignupFormData) => {
         setIsLoading(true);
         setError(null);
@@ -81,7 +79,7 @@ export default function Signup() {
             }
 
             // Registration successful
-            const result = await response.json();
+            await response.json();
 
             // Store email for potential resend verification
             localStorage.setItem('pendingVerificationEmail', data.email);

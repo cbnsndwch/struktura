@@ -30,7 +30,8 @@ export const config = [
                         './libs/*/tsconfig.json',
                         './apps/*/tsconfig.json',
                         './tools/*/tsconfig.json'
-                    ]
+                    ],
+                    extensions: ['.js', '.jsx', '.ts', '.tsx', '.mjs', '.mts']
                 },
                 node: {
                     extensions: ['.js', '.jsx', '.ts', '.tsx', '.mjs', '.mts']
