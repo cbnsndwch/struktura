@@ -1,9 +1,10 @@
 /**
  * @jest-environment jsdom
  */
-import { fireEvent, render, screen } from '@testing-library/react';
-import { MemoryRouter } from 'react-router';
+import { fireEvent, screen } from '@testing-library/react';
 import { beforeEach, describe, expect, it, vi } from 'vitest';
+
+import { renderWithRouter } from '../../../src/test/router-test-utils.js';
 
 import WorkspacesPage, { loader } from './workspaces.js';
 
@@ -126,17 +127,13 @@ describe('WorkspacesPage', () => {
     });
 
     it('renders workspaces list successfully', async () => {
-        const { useLoaderData } = await import('react-router');
-        vi.mocked(useLoaderData).mockReturnValue({
-            workspaces: mockWorkspaces,
-            error: null
+        renderWithRouter(<WorkspacesPage />, {
+            initialEntries: ['/workspaces'],
+            loaderData: {
+                workspaces: mockWorkspaces,
+                error: null
+            }
         });
-
-        render(
-            <MemoryRouter>
-                <WorkspacesPage />
-            </MemoryRouter>
-        );
 
         // Check header content
         expect(screen.getByText('Workspaces')).toBeInTheDocument();
@@ -159,17 +156,13 @@ describe('WorkspacesPage', () => {
     });
 
     it('handles empty workspaces state', async () => {
-        const { useLoaderData } = await import('react-router');
-        vi.mocked(useLoaderData).mockReturnValue({
-            workspaces: [],
-            error: null
+        renderWithRouter(<WorkspacesPage />, {
+            initialEntries: ['/workspaces'],
+            loaderData: {
+                workspaces: [],
+                error: null
+            }
         });
-
-        render(
-            <MemoryRouter>
-                <WorkspacesPage />
-            </MemoryRouter>
-        );
 
         expect(screen.getByText('No workspaces yet')).toBeInTheDocument();
         expect(
@@ -181,17 +174,13 @@ describe('WorkspacesPage', () => {
     });
 
     it('handles error state', async () => {
-        const { useLoaderData } = await import('react-router');
-        vi.mocked(useLoaderData).mockReturnValue({
-            workspaces: [],
-            error: 'Failed to load workspaces'
+        renderWithRouter(<WorkspacesPage />, {
+            initialEntries: ['/workspaces'],
+            loaderData: {
+                workspaces: [],
+                error: 'Failed to load workspaces'
+            }
         });
-
-        render(
-            <MemoryRouter>
-                <WorkspacesPage />
-            </MemoryRouter>
-        );
 
         expect(
             screen.getByText('Unable to load workspaces')
@@ -203,17 +192,13 @@ describe('WorkspacesPage', () => {
     });
 
     it('filters workspaces based on search query', async () => {
-        const { useLoaderData } = await import('react-router');
-        vi.mocked(useLoaderData).mockReturnValue({
-            workspaces: mockWorkspaces,
-            error: null
+        renderWithRouter(<WorkspacesPage />, {
+            initialEntries: ['/workspaces'],
+            loaderData: {
+                workspaces: mockWorkspaces,
+                error: null
+            }
         });
-
-        render(
-            <MemoryRouter>
-                <WorkspacesPage />
-            </MemoryRouter>
-        );
 
         const searchInput = screen.getByPlaceholderText('Search workspaces...');
 
@@ -227,17 +212,13 @@ describe('WorkspacesPage', () => {
     });
 
     it('shows no results when search has no matches', async () => {
-        const { useLoaderData } = await import('react-router');
-        vi.mocked(useLoaderData).mockReturnValue({
-            workspaces: mockWorkspaces,
-            error: null
+        renderWithRouter(<WorkspacesPage />, {
+            initialEntries: ['/workspaces'],
+            loaderData: {
+                workspaces: mockWorkspaces,
+                error: null
+            }
         });
-
-        render(
-            <MemoryRouter>
-                <WorkspacesPage />
-            </MemoryRouter>
-        );
 
         const searchInput = screen.getByPlaceholderText('Search workspaces...');
 
@@ -252,17 +233,13 @@ describe('WorkspacesPage', () => {
     });
 
     it('switches between grid and list view modes', async () => {
-        const { useLoaderData } = await import('react-router');
-        vi.mocked(useLoaderData).mockReturnValue({
-            workspaces: mockWorkspaces,
-            error: null
+        renderWithRouter(<WorkspacesPage />, {
+            initialEntries: ['/workspaces'],
+            loaderData: {
+                workspaces: mockWorkspaces,
+                error: null
+            }
         });
-
-        render(
-            <MemoryRouter>
-                <WorkspacesPage />
-            </MemoryRouter>
-        );
 
         // Find the view toggle buttons (they are in the "flex items-center gap-2" container)
         const buttons = screen.getAllByRole('button');

@@ -16,6 +16,10 @@
         "format": "prettier --write .",
         "test": "vitest --run --passWithNoTests",
         "test:watch": "vitest",
+        "test:unit": "vitest --run app/lib --passWithNoTests",
+        "test:components": "vitest --run app/components --passWithNoTests",
+        "test:features": "vitest --run app/features --passWithNoTests",
+        "test:ci": "pnpm test:unit && pnpm test:components && pnpm test:features",
         "test:e2e": "vitest --config vitest.e2e.config.ts --run --passWithNoTests",
         "types": "react-router typegen && tsc"
     },

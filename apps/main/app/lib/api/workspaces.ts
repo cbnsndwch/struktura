@@ -191,8 +191,8 @@ export class WorkspaceApi {
             return apiClient.get<CollectionSummary[]>(
                 `/workspaces/${workspaceId}/collections`
             );
-        } catch (err) {
-            console.error('Error fetching collections:', err);
+        } catch (error) {
+            console.error('Error fetching collections:', error);
 
             // Fallback to empty array if endpoint doesn't exist
             console.warn(
@@ -211,8 +211,8 @@ export class WorkspaceApi {
             return apiClient.get<RecentActivity[]>(
                 `/workspaces/${workspaceId}/activity`
             );
-        } catch (err) {
-            console.error('Error fetching activity:', err);
+        } catch (error) {
+            console.error('Error fetching activity:', error);
 
             // Fallback to mock data if endpoint doesn't exist
             console.warn(

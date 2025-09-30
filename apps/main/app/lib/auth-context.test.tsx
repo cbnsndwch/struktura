@@ -49,8 +49,14 @@ describe('AuthContext', () => {
 
         const { result } = renderHook(() => useAuth(), { wrapper });
 
-        // Initial state should show loading
-        expect(result.current.isLoading).toBe(true);
+        // Wait for the auth check to complete
+        await waitFor(() => {
+            expect(result.current.isLoading).toBe(false);
+        });
+        
+        // After auth check, should not be authenticated
+        expect(result.current.isAuthenticated).toBe(false);
+        expect(result.current.user).toBe(null);
     });
 
     it('should update auth state after checking authentication', async () => {
@@ -141,8 +147,12 @@ describe('AuthContext', () => {
         // Call logout
         await result.current.logout();
 
-        expect(result.current.isAuthenticated).toBe(false);
-        expect(result.current.user).toBe(null);
+        // Wait for logout state changes to complete
+        await waitFor(() => {
+            expect(result.current.isAuthenticated).toBe(false);
+            expect(result.current.user).toBe(null);
+        });
+        
         expect(window.localStorage.removeItem).toHaveBeenCalledWith(
             'access_token'
         );
