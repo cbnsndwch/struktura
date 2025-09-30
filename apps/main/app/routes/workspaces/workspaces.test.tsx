@@ -1,9 +1,9 @@
 /**
  * @jest-environment jsdom
  */
-import { render, screen, fireEvent } from '@testing-library/react';
-import { vi, describe, it, expect, beforeEach } from 'vitest';
+import { fireEvent, render, screen } from '@testing-library/react';
 import { MemoryRouter } from 'react-router';
+import { beforeEach, describe, expect, it, vi } from 'vitest';
 
 import WorkspacesPage, { loader } from './workspaces.js';
 
@@ -280,13 +280,12 @@ describe('Workspaces loader', () => {
     });
 
     it('loads workspaces successfully', async () => {
-        const { workspaceApi } = await import('../lib/api/index.js');
+        const { workspaceApi } = await import('../../lib/api/index.js');
         workspaceApi.getUserWorkspaces = vi
             .fn()
             .mockResolvedValue(mockWorkspaces);
 
-        const request = new Request('http://localhost/workspaces');
-        const result = await loader({ request, params: {}, context: {} });
+        const result = await loader();
 
         expect(result).toEqual({
             workspaces: mockWorkspaces,
@@ -295,12 +294,11 @@ describe('Workspaces loader', () => {
     });
 
     it('handles API errors gracefully', async () => {
-        const { workspaceApi } = await import('../lib/api/index.js');
+        const { workspaceApi } = await import('../../lib/api/index.js');
         const error = new Error('API Error');
         workspaceApi.getUserWorkspaces = vi.fn().mockRejectedValue(error);
 
-        const request = new Request('http://localhost/workspaces');
-        const result = await loader({ request, params: {}, context: {} });
+        const result = await loader();
 
         expect(result).toEqual({
             workspaces: [],

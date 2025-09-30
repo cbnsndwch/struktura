@@ -1,0 +1,141 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Token Refresh Test</title>
+</head>
+<body>
+    <h1>Token Refresh Test</h1>
+    <div id="output"></div>
+    <button onclick="testLogin()">Test Login</button>
+    <button onclick="testWorkspaces()">Test Workspaces (with auto-refresh)</button>
+    <button onclick="clearTokens()">Clear Tokens</button>
+    
+    <script>
+        const BASE_URL = 'http://localhost:3007';
+        
+        function log(message) {
+            const output = document.getElementById('output');
+            output.innerHTML += '<div>' + new Date().toLocaleTimeString() + ': ' + message + '</div>';
+        }
+        
+        async function testLogin() {
+            try {
+                log('Testing login...');
+                const response = await fetch(`${BASE_URL}/api/auth/login`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({
+                        email: 'test@example.com',
+                        password: 'password123'
+                    })
+                });
+                
+                if (response.ok) {
+                    const data = await response.json();
+                    localStorage.setItem('access_token', data.tokens.accessToken);
+                    localStorage.setItem('refresh_token', data.tokens.refreshToken);
+                    log('Login successful! Tokens stored.');
+                    log(`Access token expires in: ${data.tokens.expiresIn} seconds`);
+                } else {
+                    const error = await response.text();
+                    log('Login failed: ' + error);
+                }
+            } catch (error) {
+                log('Login error: ' + error.message);
+            }
+        }
+        
+        async function refreshTokens() {
+            const refreshToken = localStorage.getItem('refresh_token');
+            if (!refreshToken) {
+                throw new Error('No refresh token available');
+            }
+            
+            log('Refreshing tokens...');
+            const response = await fetch(`${BASE_URL}/api/auth/refresh`, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({ refreshToken }),
+            });
+            
+            if (!response.ok) {
+                throw new Error('Failed to refresh token');
+            }
+            
+            const tokens = await response.json();
+            localStorage.setItem('access_token', tokens.accessToken);
+            localStorage.setItem('refresh_token', tokens.refreshToken);
+            log('Tokens refreshed successfully!');
+            return tokens;
+        }
+        
+        async function makeAuthenticatedRequest(url, options = {}, retryCount = 0) {
+            const accessToken = localStorage.getItem('access_token');
+            
+            const response = await fetch(url, {
+                ...options,
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Authorization': `Bearer ${accessToken}`,
+                    ...options.headers,
+                },
+            });
+            
+            // If we get a 401 and have a refresh token, try to refresh and retry once
+            if (response.status === 401 && retryCount === 0) {
+                const refreshToken = localStorage.getItem('refresh_token');
+                if (refreshToken) {
+                    try {
+                        await refreshTokens();
+                        // Retry the request with the new token
+                        return makeAuthenticatedRequest(url, options, retryCount + 1);
+                    } catch (refreshError) {
+                        log('Token refresh failed: ' + refreshError.message);
+                        localStorage.removeItem('access_token');
+                        localStorage.removeItem('refresh_token');
+                        throw new Error('Authentication failed');
+                    }
+                }
+            }
+            
+            return response;
+        }
+        
+        async function testWorkspaces() {
+            try {
+                log('Testing authenticated workspaces request...');
+                const response = await makeAuthenticatedRequest(`${BASE_URL}/api/workspaces`);
+                
+                if (response.ok) {
+                    const data = await response.json();
+                    log('Workspaces request successful: ' + JSON.stringify(data));
+                } else {
+                    const error = await response.text();
+                    log('Workspaces request failed: ' + error);
+                }
+            } catch (error) {
+                log('Workspaces request error: ' + error.message);
+            }
+        }
+        
+        function clearTokens() {
+            localStorage.removeItem('access_token');
+            localStorage.removeItem('refresh_token');
+            log('Tokens cleared from localStorage');
+        }
+        
+        // Show current token status on load
+        window.addEventListener('load', () => {
+            const accessToken = localStorage.getItem('access_token');
+            const refreshToken = localStorage.getItem('refresh_token');
+            log(`Current token status - Access: ${accessToken ? 'present' : 'none'}, Refresh: ${refreshToken ? 'present' : 'none'}`);
+        });
+    </script>
+</body>
+</html>

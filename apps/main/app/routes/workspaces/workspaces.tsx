@@ -1,44 +1,42 @@
 /**
  * Main workspaces listing page - shows all workspaces for the current user
  */
-import { useState } from 'react';
-import type { MetaFunction, LoaderFunctionArgs } from 'react-router';
-import { useLoaderData, Link, useNavigate } from 'react-router';
 import {
-    Plus,
-    Search,
+    Building2,
+    Calendar,
+    Database,
     Grid3X3,
     List,
-    Users,
-    Calendar,
-    Settings,
     MoreVertical,
-    Building2,
-    Activity,
-    Database
+    Plus,
+    Search,
+    Settings,
+    Users
 } from 'lucide-react';
+import { useState, useEffect } from 'react';
+import type { MetaFunction } from 'react-router';
+import { useLoaderData, useNavigate } from 'react-router';
 
 import {
+    Avatar,
+    AvatarFallback,
+    AvatarImage,
+    Badge,
     Button,
     Card,
     CardContent,
     CardDescription,
     CardHeader,
     CardTitle,
-    Input,
-    Badge,
     DropdownMenu,
     DropdownMenuContent,
     DropdownMenuItem,
     DropdownMenuSeparator,
     DropdownMenuTrigger,
-    Avatar,
-    AvatarFallback,
-    AvatarImage,
-    Skeleton
+    Input
 } from '@cbnsndwch/struktura-shared-ui';
 
-import { workspaceApi, type Workspace } from '../lib/api/index.js';
+import { workspaceApi, type Workspace } from '../../lib/api/index.js';
 
 export const meta: MetaFunction = () => {
     return [
@@ -51,12 +49,33 @@ export const meta: MetaFunction = () => {
     ];
 };
 
-export async function loader({ request }: LoaderFunctionArgs) {
+export async function loader() {
     try {
         const workspaces = await workspaceApi.getUserWorkspaces();
         return { workspaces, error: null };
     } catch (error) {
         console.error('Failed to load workspaces:', error);
+
+        // Handle authentication errors gracefully
+        if (error instanceof Error && error.message.includes('Unauthorized')) {
+            // During SSR, this is expected if user isn't authenticated yet
+            // The client will re-fetch with proper authentication headers
+            if (typeof window === 'undefined') {
+                return {
+                    workspaces: [],
+                    error: null, // Don't show error during SSR
+                    needsAuth: true
+                };
+            } else {
+                // On client side, this means user needs to login
+                return {
+                    workspaces: [],
+                    error: 'Please log in to view your workspaces',
+                    needsAuth: true
+                };
+            }
+        }
+
         return {
             workspaces: [],
             error:
@@ -70,10 +89,57 @@ export async function loader({ request }: LoaderFunctionArgs) {
 type ViewMode = 'grid' | 'list';
 
 export default function WorkspacesPage() {
-    const { workspaces, error } = useLoaderData<typeof loader>();
+    const initialData = useLoaderData<typeof loader>();
     const navigate = useNavigate();
     const [viewMode, setViewMode] = useState<ViewMode>('grid');
     const [searchQuery, setSearchQuery] = useState('');
+    const [workspaces, setWorkspaces] = useState(initialData.workspaces);
+    const [error, setError] = useState(initialData.error);
+    const [isLoading, setIsLoading] = useState(false);
+
+    // Client-side re-fetch if authentication is needed
+    useEffect(() => {
+        if (initialData.needsAuth && typeof window !== 'undefined') {
+            // Check if we have auth token on client side
+            const hasToken = localStorage.getItem('access_token');
+            if (hasToken) {
+                // Re-fetch workspaces with authentication
+                const refetchWorkspaces = async () => {
+                    setIsLoading(true);
+                    try {
+                        const fetchedWorkspaces =
+                            await workspaceApi.getUserWorkspaces();
+                        setWorkspaces(fetchedWorkspaces);
+                        setError(null);
+                    } catch (fetchError) {
+                        console.error(
+                            'Failed to refetch workspaces:',
+                            fetchError
+                        );
+                        if (
+                            fetchError instanceof Error &&
+                            fetchError.message.includes('Unauthorized')
+                        ) {
+                            setError('Please log in to view your workspaces');
+                            // Optionally redirect to login
+                            // navigate('/auth/login');
+                        } else {
+                            setError(
+                                fetchError instanceof Error
+                                    ? fetchError.message
+                                    : 'Failed to load workspaces'
+                            );
+                        }
+                    } finally {
+                        setIsLoading(false);
+                    }
+                };
+                refetchWorkspaces();
+            } else {
+                setError('Please log in to view your workspaces');
+            }
+        }
+    }, [initialData.needsAuth]);
 
     // Filter workspaces based on search query
     const filteredWorkspaces = workspaces.filter(
@@ -100,7 +166,7 @@ export default function WorkspacesPage() {
     };
 
     const formatMemberCount = (members: Workspace['members']) => {
-        const activeMembers = members.filter((m: any) => m.joinedAt).length;
+        const activeMembers = members.filter(m => m.joinedAt).length;
         return activeMembers === 1 ? '1 member' : `${activeMembers} members`;
     };
 
@@ -313,8 +379,7 @@ export default function WorkspacesPage() {
                                                 </div>
                                                 <Badge variant="secondary">
                                                     {workspace.members.find(
-                                                        (m: any) =>
-                                                            m.role === 'owner'
+                                                        m => m.role === 'owner'
                                                     )
                                                         ? 'Owner'
                                                         : 'Member'}
@@ -357,8 +422,7 @@ export default function WorkspacesPage() {
                                             </div>
                                             <Badge variant="secondary">
                                                 {workspace.members.find(
-                                                    (m: any) =>
-                                                        m.role === 'owner'
+                                                    m => m.role === 'owner'
                                                 )
                                                     ? 'Owner'
                                                     : 'Member'}

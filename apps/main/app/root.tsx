@@ -114,7 +114,7 @@ export function Layout({ children }: { children: React.ReactNode }) {
 
 export function ErrorBoundary() {
     const error = useRouteError();
-    
+
     let errorMessage = 'An unexpected error occurred';
     let errorDetails = '';
 

@@ -1,19 +1,16 @@
-import {
-    type RouteConfig,
-    index,
-    prefix,
-    route
-} from '@react-router/dev/routes';
+import { type RouteConfig, prefix } from '@react-router/dev/routes';
 
 import authRoutes from './routes/auth/routes.js';
+import otherRoutes from './routes/other/routes.js';
+import publicRoutes from './routes/public/routes.js';
+import globalRoutes from './routes/global/routes.js';
+import workspaceRoutes from './routes/workspaces/routes.js';
 
 export default [
-    index('routes/home.tsx'),
-    route('dashboard', 'routes/dashboard.tsx'),
-    route('favicon.ico', 'routes/favicon[.]ico.tsx'),
-    route('ui-demo', 'routes/ui-demo.tsx'),
-    route('onboarding', 'routes/onboarding.tsx'),
-    route('workspaces', 'routes/workspaces.tsx'),
-    route('workspaces/:workspaceId', 'routes/workspaces/$workspaceId.tsx'),
+    ...publicRoutes,
+    ...globalRoutes,
+    ...otherRoutes,
+
+    ...prefix('workspaces', workspaceRoutes),
     ...prefix('auth', authRoutes)
 ] satisfies RouteConfig;

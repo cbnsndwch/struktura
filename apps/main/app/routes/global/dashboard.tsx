@@ -11,7 +11,7 @@ export async function loader() {
     // 1. Check if user has a default workspace and redirect there
     // 2. Show a dashboard with recent activity across all workspaces
     // 3. Show workspace selection if user has multiple workspaces
-    
+
     return redirect('/workspaces');
 }
 
