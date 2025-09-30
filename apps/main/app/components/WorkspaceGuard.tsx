@@ -74,12 +74,16 @@ export function WorkspaceGuard({
                 // If a specific role is required, check it
                 if (requiredRole) {
                     // Get user's role in workspace from members array
-                    const currentUser = await fetch('/api/auth/me', {
+                    const response = await fetch('/api/auth/me', {
                         credentials: 'include',
                         headers: {
                             Authorization: `Bearer ${localStorage.getItem('access_token')}`
                         }
-                    }).then(r => r.json());
+                    });
+                    if (!response.ok) {
+                        throw new Error(`Failed to fetch current user: ${response.status} ${response.statusText}`);
+                    }
+                    const currentUser = await response.json();
 
                     const member = workspace.members?.find(
                         (m: { user: string }) => m.user === currentUser.id
