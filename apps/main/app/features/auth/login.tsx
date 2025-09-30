@@ -19,6 +19,7 @@ import { Eye, EyeOff, Loader2 } from 'lucide-react';
 import { useCallback, useEffect, useState, type ChangeEvent } from 'react';
 import { useForm } from 'react-hook-form';
 import type { MetaFunction, LoaderFunctionArgs } from 'react-router';
+import { useNavigate, useSearchParams } from 'react-router';
 import { toast } from 'sonner';
 
 import OAuthButtons from '../../components/auth/OAuthButtons.js';
@@ -47,6 +48,8 @@ export default function Login() {
     const [showPassword, setShowPassword] = useState(false);
     const [error, setError] = useState<string | null>(null);
     const [showForgotPassword, setShowForgotPassword] = useState(false);
+    const navigate = useNavigate();
+    const [searchParams] = useSearchParams();
 
     const form = useForm<LoginFormData>({
         resolver: zodResolver(loginSchema),
@@ -56,52 +59,63 @@ export default function Login() {
         }
     });
 
-    const onSubmit = useCallback(async (data: LoginFormData) => {
-        setIsLoading(true);
-        setError(null);
+    const onSubmit = useCallback(
+        async (data: LoginFormData) => {
+            setIsLoading(true);
+            setError(null);
 
-        try {
-            const response = await fetch('/api/auth/login', {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json'
-                },
-                body: JSON.stringify(data)
-            });
+            try {
+                const response = await fetch('/api/auth/login', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify(data)
+                });
 
-            if (!response.ok) {
-                const errorData = await response.json();
-                throw new Error(errorData.message || 'Login failed');
-            }
-
-            // Login successful
-            const result = await response.json();
-
-            // Store tokens and redirect to dashboard
-            if (result.tokens?.accessToken) {
-                localStorage.setItem('access_token', result.tokens.accessToken);
-                if (result.tokens.refreshToken) {
-                    localStorage.setItem(
-                        'refresh_token',
-                        result.tokens.refreshToken
-                    );
+                if (!response.ok) {
+                    const errorData = await response.json();
+                    throw new Error(errorData.message || 'Login failed');
                 }
-                toast.success('Successfully signed in! Redirecting...');
-                window.location.href = '/dashboard';
-            } else {
-                throw new Error('Invalid response from server');
+
+                // Login successful
+                const result = await response.json();
+
+                // Store tokens and redirect to dashboard or intended destination
+                if (result.tokens?.accessToken) {
+                    localStorage.setItem(
+                        'access_token',
+                        result.tokens.accessToken
+                    );
+                    if (result.tokens.refreshToken) {
+                        localStorage.setItem(
+                            'refresh_token',
+                            result.tokens.refreshToken
+                        );
+                    }
+
+                    // Get redirect URL from query params
+                    const redirectTo =
+                        searchParams.get('redirectTo') || '/dashboard';
+
+                    toast.success('Successfully signed in! Redirecting...');
+                    navigate(redirectTo, { replace: true });
+                } else {
+                    throw new Error('Invalid response from server');
+                }
+            } catch (err) {
+                const errorMessage =
+                    err instanceof Error
+                        ? err.message
+                        : 'An unexpected error occurred';
+                setError(errorMessage);
+                toast.error(errorMessage);
+            } finally {
+                setIsLoading(false);
             }
-        } catch (err) {
-            const errorMessage =
-                err instanceof Error
-                    ? err.message
-                    : 'An unexpected error occurred';
-            setError(errorMessage);
-            toast.error(errorMessage);
-        } finally {
-            setIsLoading(false);
-        }
-    }, []);
+        },
+        [navigate, searchParams]
+    );
 
     const handleForgotPassword = useCallback(async () => {
         const email = form.getValues('email');
@@ -177,11 +191,11 @@ export default function Login() {
 
     // Handle URL parameters on client side only
     useEffect(() => {
-        if (typeof window !== 'undefined') {
-            const urlParams = new URLSearchParams(window.location.search);
-            setSuccessMessage(urlParams.get('message'));
+        const message = searchParams.get('message');
+        if (message) {
+            setSuccessMessage(message);
         }
-    }, []);
+    }, [searchParams]);
 
     return (
         <>

@@ -11,6 +11,7 @@ import {
 } from 'react-router';
 import { ThemeProvider } from '@cbnsndwch/struktura-shared-ui';
 
+import { AuthProvider } from './lib/auth-context.js';
 import './app.css';
 
 export async function loader({ request }: LoaderFunctionArgs) {
@@ -176,5 +177,9 @@ export function ErrorBoundary() {
 }
 
 export default function App() {
-    return <Outlet />;
+    return (
+        <AuthProvider>
+            <Outlet />
+        </AuthProvider>
+    );
 }
