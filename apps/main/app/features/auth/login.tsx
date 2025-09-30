@@ -77,7 +77,7 @@ export default function Login() {
             // Login successful
             const result = await response.json();
 
-            // Store tokens and redirect to dashboard
+            // Store tokens and redirect to dashboard or intended destination
             if (result.tokens?.accessToken) {
                 localStorage.setItem('access_token', result.tokens.accessToken);
                 if (result.tokens.refreshToken) {
@@ -86,8 +86,13 @@ export default function Login() {
                         result.tokens.refreshToken
                     );
                 }
+
+                // Get redirect URL from query params
+                const params = new URLSearchParams(window.location.search);
+                const redirectTo = params.get('redirectTo') || '/dashboard';
+
                 toast.success('Successfully signed in! Redirecting...');
-                window.location.href = '/dashboard';
+                window.location.href = redirectTo;
             } else {
                 throw new Error('Invalid response from server');
             }
