@@ -47,11 +47,13 @@ export function AuthProvider({ children }: AuthProviderProps) {
 
             if (authenticated) {
                 // Fetch user data from API
+                const accessToken = localStorage.getItem('access_token');
+                const headers: HeadersInit = accessToken
+                    ? { 'Authorization': `Bearer ${accessToken}` }
+                    : {};
                 const response = await fetch('/api/auth/me', {
                     credentials: 'include',
-                    headers: {
-                        'Authorization': `Bearer ${localStorage.getItem('access_token')}`
-                    }
+                    headers
                 });
 
                 if (response.ok) {
