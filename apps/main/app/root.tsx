@@ -5,6 +5,8 @@ import {
     Scripts,
     ScrollRestoration,
     useLoaderData,
+    useRouteError,
+    isRouteErrorResponse,
     type LoaderFunctionArgs
 } from 'react-router';
 import { ThemeProvider } from '@cbnsndwch/struktura-shared-ui';
@@ -85,7 +87,8 @@ function ThemeScript({ userTheme }: { userTheme?: string | null }) {
 }
 
 export function Layout({ children }: { children: React.ReactNode }) {
-    const { userTheme } = useLoaderData<typeof loader>();
+    const loaderData = useLoaderData<typeof loader>();
+    const userTheme = loaderData?.userTheme || null;
 
     return (
         <html lang="en" suppressHydrationWarning>
@@ -103,6 +106,69 @@ export function Layout({ children }: { children: React.ReactNode }) {
             <body className="flex flex-col min-h-screen">
                 <ThemeProvider>{children}</ThemeProvider>
                 <ScrollRestoration />
+                <Scripts />
+            </body>
+        </html>
+    );
+}
+
+export function ErrorBoundary() {
+    const error = useRouteError();
+    
+    let errorMessage = 'An unexpected error occurred';
+    let errorDetails = '';
+
+    if (isRouteErrorResponse(error)) {
+        errorMessage = `${error.status} ${error.statusText}`;
+        if (error.status === 404) {
+            errorMessage = 'Page Not Found';
+            errorDetails = 'The page you are looking for does not exist.';
+        }
+    } else if (error instanceof Error) {
+        errorMessage = error.message;
+        errorDetails = error.stack || '';
+    }
+
+    return (
+        <html lang="en">
+            <head>
+                <meta charSet="utf-8" />
+                <meta
+                    name="viewport"
+                    content="width=device-width, initial-scale=1"
+                />
+                <title>Error - Struktura</title>
+                <Meta />
+                <Links />
+            </head>
+            <body className="flex flex-col min-h-screen bg-background text-foreground">
+                <div className="flex-1 flex items-center justify-center p-4">
+                    <div className="max-w-md text-center space-y-4">
+                        <div className="text-6xl font-bold text-red-500">!</div>
+                        <h1 className="text-2xl font-bold">{errorMessage}</h1>
+                        {errorDetails && (
+                            <p className="text-muted-foreground">
+                                {errorDetails}
+                            </p>
+                        )}
+                        <div className="space-y-2">
+                            <a
+                                href="/"
+                                className="inline-block px-4 py-2 bg-primary text-primary-foreground rounded-md hover:bg-primary/90 transition-colors"
+                            >
+                                Go Home
+                            </a>
+                            <div>
+                                <button
+                                    onClick={() => window.history.back()}
+                                    className="text-sm text-muted-foreground hover:text-foreground transition-colors"
+                                >
+                                    ← Go Back
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
                 <Scripts />
             </body>
         </html>

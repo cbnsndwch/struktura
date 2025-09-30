@@ -9,6 +9,8 @@ import authRoutes from './routes/auth/routes.js';
 
 export default [
     index('routes/home.tsx'),
+    route('dashboard', 'routes/dashboard.tsx'),
+    route('favicon.ico', 'routes/favicon[.]ico.tsx'),
     route('ui-demo', 'routes/ui-demo.tsx'),
     route('onboarding', 'routes/onboarding.tsx'),
     route('workspaces', 'routes/workspaces.tsx'),
