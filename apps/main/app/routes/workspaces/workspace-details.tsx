@@ -10,10 +10,8 @@ import {
     Grid3X3,
     List,
     Users,
-    Calendar,
     Settings,
     MoreVertical,
-    Building2,
     Activity,
     Database,
     FileText,
@@ -27,8 +25,7 @@ import {
     Eye,
     Edit,
     Trash2,
-    Star,
-    StarOff
+    Star
 } from 'lucide-react';
 
 import {
@@ -39,7 +36,6 @@ import {
     CardHeader,
     CardTitle,
     Input,
-    Badge,
     DropdownMenu,
     DropdownMenuContent,
     DropdownMenuItem,
@@ -48,7 +44,6 @@ import {
     Avatar,
     AvatarFallback,
     AvatarImage,
-    Skeleton,
     Separator,
     Tabs,
     TabsContent,
@@ -58,10 +53,10 @@ import {
 
 import {
     workspaceApi,
-    type WorkspaceDashboardData,
     type CollectionSummary,
     type RecentActivity
 } from '../../lib/api/index.js';
+import { requireAuth } from '../../lib/auth.js';
 
 export const meta: MetaFunction<typeof loader> = ({ data }) => {
     const workspaceName = data?.dashboardData?.workspace?.name || 'Workspace';
@@ -74,7 +69,10 @@ export const meta: MetaFunction<typeof loader> = ({ data }) => {
     ];
 };
 
-export async function loader({ params }: LoaderFunctionArgs) {
+export async function loader({ params, request }: LoaderFunctionArgs) {
+    // Check authentication - will redirect to login if not authenticated
+    requireAuth(request);
+
     const { workspaceId } = params;
 
     if (!workspaceId) {

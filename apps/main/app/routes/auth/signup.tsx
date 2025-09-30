@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import type { MetaFunction } from 'react-router';
+import type { MetaFunction, LoaderFunctionArgs } from 'react-router';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import {
@@ -27,6 +27,7 @@ import {
 
 import { PasswordStrengthIndicator } from '../../components/auth/PasswordStrengthIndicator.js';
 import OAuthButtons from '../../components/auth/OAuthButtons.js';
+import { redirectIfAuthenticated } from '../../lib/auth.js';
 
 export const meta: MetaFunction = () => {
     return [
@@ -38,6 +39,12 @@ export const meta: MetaFunction = () => {
         }
     ];
 };
+
+export async function loader({ request }: LoaderFunctionArgs) {
+    // Redirect authenticated users to workspaces
+    redirectIfAuthenticated(request);
+    return null;
+}
 
 export default function Signup() {
     const [isLoading, setIsLoading] = useState(false);

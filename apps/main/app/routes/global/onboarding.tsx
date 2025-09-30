@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import type { MetaFunction } from 'react-router';
+import type { MetaFunction, LoaderFunctionArgs } from 'react-router';
 import { useNavigate } from 'react-router';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
@@ -36,6 +36,8 @@ import {
     Badge
 } from '@cbnsndwch/struktura-shared-ui';
 
+import { requireAuth } from '../../lib/auth.js';
+
 export const meta: MetaFunction = () => {
     return [
         { title: 'Get Started • Struktura' },
@@ -46,6 +48,12 @@ export const meta: MetaFunction = () => {
         }
     ];
 };
+
+export async function loader({ request }: LoaderFunctionArgs) {
+    // Ensure user is authenticated before accessing onboarding
+    requireAuth(request);
+    return null;
+}
 
 // Validation schemas
 const workspaceSchema = z.object({

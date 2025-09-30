@@ -7,6 +7,20 @@ import { beforeEach, describe, expect, it, vi } from 'vitest';
 
 import WorkspacesPage, { loader } from './workspaces.js';
 
+// Mock the auth utilities
+vi.mock('../../lib/auth.js', () => ({
+    requireAuth: vi.fn(),
+    useAuthGuard: vi.fn(),
+    isAuthenticated: vi.fn(() => true)
+}));
+
+// Mock the onboarding utilities
+vi.mock('../../lib/onboarding.js', () => ({
+    shouldShowOnboarding: vi.fn(() => false),
+    startOnboarding: vi.fn(),
+    shouldTriggerOnboardingForNewUser: vi.fn(() => false)
+}));
+
 // Mock the useLoaderData hook
 vi.mock('react-router', async () => {
     const actual = await vi.importActual('react-router');
@@ -285,9 +299,16 @@ describe('Workspaces loader', () => {
             .fn()
             .mockResolvedValue(mockWorkspaces);
 
-        const result = await loader();
+        const mockRequest = {
+            url: 'http://localhost:3000/workspaces'
+        } as Request;
+        const result = await loader({
+            request: mockRequest,
+            params: {},
+            context: {}
+        });
 
-        expect(result).toEqual({
+        expect(result).toMatchObject({
             workspaces: mockWorkspaces,
             error: null
         });
@@ -298,9 +319,16 @@ describe('Workspaces loader', () => {
         const error = new Error('API Error');
         workspaceApi.getUserWorkspaces = vi.fn().mockRejectedValue(error);
 
-        const result = await loader();
+        const mockRequest = {
+            url: 'http://localhost:3000/workspaces'
+        } as Request;
+        const result = await loader({
+            request: mockRequest,
+            params: {},
+            context: {}
+        });
 
-        expect(result).toEqual({
+        expect(result).toMatchObject({
             workspaces: [],
             error: 'API Error'
         });

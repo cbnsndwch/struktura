@@ -18,11 +18,12 @@ import { zodResolver } from '@hookform/resolvers/zod';
 import { Eye, EyeOff, Loader2 } from 'lucide-react';
 import { useCallback, useEffect, useState, type ChangeEvent } from 'react';
 import { useForm } from 'react-hook-form';
-import type { MetaFunction } from 'react-router';
+import type { MetaFunction, LoaderFunctionArgs } from 'react-router';
 import { toast } from 'sonner';
 
 import OAuthButtons from '../../components/auth/OAuthButtons.js';
 import { loginSchema, type LoginFormData } from '../../lib/validations/auth.js';
+import { redirectIfAuthenticated } from '../../lib/auth.js';
 
 export const meta: MetaFunction = () => {
     return [
@@ -34,6 +35,12 @@ export const meta: MetaFunction = () => {
         }
     ];
 };
+
+export async function loader({ request }: LoaderFunctionArgs) {
+    // Redirect authenticated users to workspaces
+    redirectIfAuthenticated(request);
+    return null;
+}
 
 export default function Login() {
     const [isLoading, setIsLoading] = useState(false);

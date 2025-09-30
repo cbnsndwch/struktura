@@ -14,7 +14,7 @@ import {
     Users
 } from 'lucide-react';
 import { useState, useEffect } from 'react';
-import type { MetaFunction } from 'react-router';
+import type { MetaFunction, LoaderFunctionArgs } from 'react-router';
 import { useLoaderData, useNavigate } from 'react-router';
 
 import {
@@ -37,6 +37,12 @@ import {
 } from '@cbnsndwch/struktura-shared-ui';
 
 import { workspaceApi, type Workspace } from '../../lib/api/index.js';
+import { requireAuth } from '../../lib/auth.js';
+import {
+    shouldShowOnboarding,
+    startOnboarding,
+    shouldTriggerOnboardingForNewUser
+} from '../../lib/onboarding.js';
 
 export const meta: MetaFunction = () => {
     return [
@@ -49,10 +55,19 @@ export const meta: MetaFunction = () => {
     ];
 };
 
-export async function loader() {
+export async function loader({ request }: LoaderFunctionArgs) {
+    // Check authentication - will redirect to login if not authenticated
+    requireAuth(request);
+
     try {
         const workspaces = await workspaceApi.getUserWorkspaces();
-        return { workspaces, error: null };
+        return {
+            workspaces,
+            error: null,
+            shouldShowOnboardingFlow: shouldTriggerOnboardingForNewUser(
+                workspaces.length
+            )
+        };
     } catch (error) {
         console.error('Failed to load workspaces:', error);
 
@@ -64,14 +79,16 @@ export async function loader() {
                 return {
                     workspaces: [],
                     error: null, // Don't show error during SSR
-                    needsAuth: true
+                    needsAuth: true,
+                    shouldShowOnboardingFlow: false
                 };
             } else {
                 // On client side, this means user needs to login
                 return {
                     workspaces: [],
                     error: 'Please log in to view your workspaces',
-                    needsAuth: true
+                    needsAuth: true,
+                    shouldShowOnboardingFlow: false
                 };
             }
         }
@@ -81,7 +98,8 @@ export async function loader() {
             error:
                 error instanceof Error
                     ? error.message
-                    : 'Failed to load workspaces'
+                    : 'Failed to load workspaces',
+            shouldShowOnboardingFlow: false
         };
     }
 }
@@ -96,6 +114,39 @@ export default function WorkspacesPage() {
     const [workspaces, setWorkspaces] = useState(initialData.workspaces);
     const [error, setError] = useState(initialData.error);
     const [isLoading, setIsLoading] = useState(false);
+
+    // Client-side authentication check and redirect
+    useEffect(() => {
+        if (typeof window !== 'undefined') {
+            import('../../lib/auth.js').then(({ useAuthGuard }) => {
+                useAuthGuard();
+            });
+        }
+    }, []);
+
+    // Check if onboarding should be shown for new users or if it's already active
+    useEffect(() => {
+        if (typeof window !== 'undefined') {
+            // Check if onboarding is already active
+            const isOnboardingActive = shouldShowOnboarding();
+
+            // If onboarding is active, redirect to onboarding
+            if (isOnboardingActive) {
+                navigate('/onboarding');
+                return;
+            }
+
+            // If this is a new user (no workspaces), start onboarding automatically
+            if (
+                initialData.shouldShowOnboardingFlow &&
+                workspaces.length === 0
+            ) {
+                startOnboarding(false); // false = not from workspace button
+                navigate('/onboarding');
+                return;
+            }
+        }
+    }, [initialData.shouldShowOnboardingFlow, workspaces.length, navigate]);
 
     // Client-side re-fetch if authentication is needed
     useEffect(() => {
@@ -151,8 +202,8 @@ export default function WorkspacesPage() {
     );
 
     const handleCreateWorkspace = () => {
-        // For now, redirect to onboarding to create a new workspace
-        // In the future, this could open a modal or dedicated creation flow
+        // Start onboarding flow when user clicks "Create Workspace"
+        startOnboarding(true); // true = triggered from workspace button
         navigate('/onboarding');
     };
 

@@ -1,4 +1,4 @@
-import type { MetaFunction } from 'react-router';
+import type { MetaFunction, LoaderFunctionArgs } from 'react-router';
 
 import {
     Button,
@@ -9,6 +9,8 @@ import {
     CardDescription,
     ThemeToggle
 } from '@cbnsndwch/struktura-shared-ui';
+
+import { redirectIfAuthenticated } from '../../lib/auth.js';
 
 export const meta: MetaFunction = () => {
     const title = 'Struktura • No-Code Data Management Platform';
@@ -65,6 +67,12 @@ export const meta: MetaFunction = () => {
         }
     ];
 };
+
+export async function loader({ request }: LoaderFunctionArgs) {
+    // Redirect authenticated users to their workspaces
+    redirectIfAuthenticated(request);
+    return null;
+}
 
 export default function Home() {
     return (
