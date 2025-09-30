@@ -4,23 +4,14 @@ import mongoose from 'mongoose';
 
 import { Public } from '@cbnsndwch/struktura-auth-domain';
 
-import { AppService } from './app.service.js';
-
-@Controller()
-export class AppController {
+@Public()
+@Controller('api/health')
+export class MonitoringController {
     constructor(
-        private readonly appService: AppService,
         @InjectConnection() private readonly connection: mongoose.Connection
     ) {}
 
-    @Public()
-    @Get('api/hello')
-    getHello(): string {
-        return this.appService.getHello();
-    }
-
-    @Public()
-    @Get('api/health')
+    @Get()
     getHealth() {
         let dbStatus = 'unknown';
         let readyState = 0;

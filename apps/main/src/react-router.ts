@@ -5,7 +5,7 @@ import { static as expressStatic } from 'express';
 import { createRequestHandler } from '@react-router/express';
 
 // Default paths handled by NestJS (excluding specific React Router API routes)
-const DEFAULT_NEST_PATHS = ['/graphql'];
+const DEFAULT_NEST_PATHS = ['/graphql', '/api'];
 
 // Path to the React Router server build
 const BUILD_PATH = join(process.cwd(), 'build', 'server', 'index.js');
@@ -55,16 +55,12 @@ export async function mountReactRouterHandler(
 
     // Mount the React Router handler for all non-Nest paths
     expressApp.use((req, res, next) => {
-        // Handle GraphQL routes with Nest
+        // Handle REST & GraphQL routes with Nest
         if (nestPaths.some(path => req.url.startsWith(path))) {
             return next();
         }
 
-        // Handle most API routes with Nest, but allow specific React Router API routes
-        if (req.url.startsWith('/api') && !req.url.startsWith('/api/search')) {
-            return next();
-        }
-
+        // Let React Router handle everything else
         return reactRouterHandler(req, res, next);
     });
 }

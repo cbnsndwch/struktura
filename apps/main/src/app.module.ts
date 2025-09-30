@@ -1,61 +1,13 @@
-/* eslint-disable @typescript-eslint/no-explicit-any */
-import { ApolloServerPluginLandingPageLocalDefault as ApolloLandingPagePlugin } from '@apollo/server/plugin/landingPage/default';
-import { ApolloDriver, ApolloDriverConfig } from '@nestjs/apollo';
 import { Module } from '@nestjs/common';
 import { APP_GUARD } from '@nestjs/core';
-import { GraphQLModule } from '@nestjs/graphql';
 
-import {
-    AuthModule,
-    JwtAuthGuard,
-    RolesGuard
-} from '@cbnsndwch/struktura-auth-domain';
-import { WorkspaceModule } from '@cbnsndwch/struktura-workspace-domain';
-import { CollectionsModule } from '@cbnsndwch/struktura-collections-domain';
+import { JwtAuthGuard, RolesGuard } from '@cbnsndwch/struktura-auth-domain';
 
-import { AppController } from './demo/app.controller.js';
-import { AppResolver } from './demo/app.resolver.js';
-import { AppService } from './demo/app.service.js';
-
-import { DbModule } from './features/database.module.js';
+import { features } from './features/index.js';
 
 @Module({
-    imports: [
-        DbModule,
-        AuthModule,
-        WorkspaceModule,
-        CollectionsModule,
-        GraphQLModule.forRootAsync<ApolloDriverConfig>({
-            driver: ApolloDriver,
-            useFactory: async () => {
-                const shouldIncludePlayground =
-                    process.env.GRAPHQL_PLAYGROUND !== 'false';
-
-                const plugins: any[] = [];
-                if (shouldIncludePlayground) {
-                    plugins.push(
-                        ApolloLandingPagePlugin({
-                            footer: false,
-                            embed: true
-                        })
-                    );
-                }
-
-                return {
-                    cache: 'bounded',
-                    autoSchemaFile: true,
-                    playground: 0 as any,
-                    introspection: shouldIncludePlayground,
-                    debug: shouldIncludePlayground,
-                    plugins
-                };
-            }
-        })
-    ],
-    controllers: [AppController],
+    imports: features,
     providers: [
-        AppService,
-        AppResolver,
         // Global guards
         {
             provide: APP_GUARD,
