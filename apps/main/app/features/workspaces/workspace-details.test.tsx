@@ -24,6 +24,11 @@ vi.mock('react-router', async () => {
     };
 });
 
+// Mock the authentication module
+vi.mock('../../lib/auth.server.js', () => ({
+    requireServerAuth: vi.fn()
+}));
+
 // Mock the API module
 vi.mock('../../lib/api/index.js', () => ({
     workspaceApi: {

@@ -1,5 +1,6 @@
 import { useEffect, useState } from 'react';
-import type { MetaFunction } from 'react-router';
+import type { MetaFunction, LoaderFunctionArgs } from 'react-router';
+import { useLoaderData } from 'react-router';
 
 import {
     Button,
@@ -12,6 +13,7 @@ import {
 } from '@cbnsndwch/struktura-shared-ui';
 
 import { isAuthenticated } from '../../lib/auth.js';
+import { getServerAuth } from '../../lib/auth.server.js';
 import {
     shouldShowOnboarding,
     startOnboarding,
@@ -75,26 +77,42 @@ export const meta: MetaFunction = () => {
     ];
 };
 
-export async function loader() {
-    // Allow both authenticated and unauthenticated users to see the home page
-    // The component will handle different behaviors based on auth state
-    return null;
+export async function loader({ request }: LoaderFunctionArgs) {
+    // Get server-side authentication state to prevent layout shift
+    const auth = getServerAuth(request);
+
+    return {
+        serverAuth: {
+            isAuthenticated: auth.isAuthenticated,
+            user: auth.user,
+            // Onboarding status will be determined client-side due to localStorage dependency
+            needsOnboarding: false
+        }
+    };
 }
 
 export default function Home() {
+    const loaderData = useLoaderData<typeof loader>();
     const [userAuth, setUserAuth] = useState<{
         isAuthenticated: boolean;
         needsOnboarding: boolean;
         isLoading: boolean;
     }>({
-        isAuthenticated: false,
-        needsOnboarding: false,
-        isLoading: true
+        // Initialize with server data to prevent layout shift
+        isAuthenticated: loaderData?.serverAuth?.isAuthenticated || false,
+        needsOnboarding: loaderData?.serverAuth?.needsOnboarding || false,
+        isLoading: false // Server has already determined auth state
     });
 
-    // Check authentication status and determine redirect destination
+    // Client-side fallback check for users who block cookies
+    // Only runs if server didn't find authentication
     useEffect(() => {
-        const checkAuthStatus = async () => {
+        // If server already found user is authenticated, don't check client-side
+        if (loaderData?.serverAuth?.isAuthenticated) {
+            return;
+        }
+
+        const checkClientSideAuth = async () => {
             const authenticated = isAuthenticated();
 
             if (authenticated) {
@@ -121,7 +139,7 @@ export default function Home() {
                         needsOnboarding,
                         isLoading: false
                     });
-                } catch (error) {
+                } catch {
                     // If API call fails, assume they need onboarding
                     setUserAuth({
                         isAuthenticated: true,
@@ -129,17 +147,12 @@ export default function Home() {
                         isLoading: false
                     });
                 }
-            } else {
-                setUserAuth({
-                    isAuthenticated: false,
-                    needsOnboarding: false,
-                    isLoading: false
-                });
             }
+            // If not authenticated client-side either, keep server state (false)
         };
 
-        checkAuthStatus();
-    }, []);
+        checkClientSideAuth();
+    }, [loaderData?.serverAuth?.isAuthenticated]);
 
     // Smart navigation handler for authenticated users
     const handleEnterApp = () => {

@@ -56,7 +56,7 @@ import {
     type CollectionSummary,
     type RecentActivity
 } from '../../lib/api/index.js';
-import { requireAuth } from '../../lib/auth.js';
+import { requireServerAuth } from '../../lib/auth.server.js';
 
 export const meta: MetaFunction<typeof loader> = ({ data }) => {
     const workspaceName = data?.dashboardData?.workspace?.name || 'Workspace';
@@ -71,7 +71,7 @@ export const meta: MetaFunction<typeof loader> = ({ data }) => {
 
 export async function loader({ params, request }: LoaderFunctionArgs) {
     // Check authentication - will redirect to login if not authenticated
-    requireAuth(request);
+    requireServerAuth(request);
 
     const { workspaceId } = params;
 

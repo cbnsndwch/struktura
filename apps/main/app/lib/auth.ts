@@ -4,7 +4,7 @@
 import { redirect } from 'react-router';
 
 /**
- * Check if user is authenticated by looking for access token
+ * Check if user is authenticated by looking for access token in localStorage or cookies
  */
 export function isAuthenticated(): boolean {
     if (typeof window === 'undefined') {
@@ -13,8 +13,24 @@ export function isAuthenticated(): boolean {
     }
     
     try {
+        // First check localStorage (primary)
         const accessToken = localStorage.getItem('access_token');
-        return !!accessToken;
+        if (accessToken) {
+            return true;
+        }
+        
+        // Fallback: check cookies for users who block localStorage
+        const cookies = document.cookie
+            .split(';')
+            .map(cookie => cookie.trim().split('='))
+            .reduce((acc, [key, value]) => {
+                if (key && value) {
+                    acc[key] = decodeURIComponent(value);
+                }
+                return acc;
+            }, {} as Record<string, string>);
+            
+        return !!cookies.access_token;
     } catch {
         return false;
     }

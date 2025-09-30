@@ -8,10 +8,11 @@ import {
     Put,
     Query,
     Req,
+    Res,
     UseGuards
 } from '@nestjs/common';
 import { ThrottlerGuard } from '@nestjs/throttler';
-import type { Request } from 'express';
+import type { Request, Response } from 'express';
 
 import {
     AuthService,
@@ -50,11 +51,21 @@ export class AuthController {
     @HttpCode(HttpStatus.OK)
     async login(
         @Body() loginDto: LoginDto,
-        @Req() req: Request
+        @Req() req: Request,
+        @Res({ passthrough: true }) res: Response
     ): Promise<AuthResponse> {
         const userAgent = req.get('User-Agent');
         const ipAddress = req.ip;
-        return this.authService.login(loginDto, userAgent, ipAddress);
+        const result = await this.authService.login(
+            loginDto,
+            userAgent,
+            ipAddress
+        );
+
+        // Set HTTP-only cookies for server-side auth
+        this.setCookies(res, result.tokens);
+
+        return result;
     }
 
     @Public()
@@ -88,18 +99,36 @@ export class AuthController {
     @HttpCode(HttpStatus.OK)
     async refreshTokens(
         @Body() dto: RefreshTokenDto,
-        @Req() req: Request
+        @Req() req: Request,
+        @Res({ passthrough: true }) res: Response
     ): Promise<AuthTokens> {
         const userAgent = req.get('User-Agent');
         const ipAddress = req.ip;
-        return this.authService.refreshTokens(dto, userAgent, ipAddress);
+        const tokens = await this.authService.refreshTokens(
+            dto,
+            userAgent,
+            ipAddress
+        );
+
+        // Set HTTP-only cookies for server-side auth
+        this.setCookies(res, tokens);
+
+        return tokens;
     }
 
     @Post('logout')
     @UseGuards(JwtAuthGuard)
     @HttpCode(HttpStatus.OK)
-    async logout(@Body() dto: RefreshTokenDto): Promise<{ message: string }> {
-        return this.authService.logout(dto.refreshToken);
+    async logout(
+        @Body() dto: RefreshTokenDto,
+        @Res({ passthrough: true }) res: Response
+    ): Promise<{ message: string }> {
+        const result = await this.authService.logout(dto.refreshToken);
+
+        // Clear authentication cookies
+        this.clearCookies(res);
+
+        return result;
     }
 
     @Get('profile')
@@ -210,5 +239,47 @@ export class AuthController {
             dto
         );
         return updatedUser.toPublicData();
+    }
+
+    /**
+     * Set authentication cookies
+     */
+    private setCookies(res: Response, tokens: AuthTokens): void {
+        const isProduction = process.env.NODE_ENV === 'production';
+        const cookieOptions = {
+            httpOnly: true,
+            secure: isProduction,
+            sameSite: 'lax' as const,
+            path: '/'
+        };
+
+        // Set access token cookie (expires in 15 minutes)
+        res.cookie('access_token', tokens.accessToken, {
+            ...cookieOptions,
+            maxAge: 15 * 60 * 1000 // 15 minutes
+        });
+
+        // Set refresh token cookie (expires in 7 days)
+        if (tokens.refreshToken) {
+            res.cookie('refresh_token', tokens.refreshToken, {
+                ...cookieOptions,
+                maxAge: 7 * 24 * 60 * 60 * 1000 // 7 days
+            });
+        }
+    }
+
+    /**
+     * Clear authentication cookies
+     */
+    private clearCookies(res: Response): void {
+        const cookieOptions = {
+            httpOnly: true,
+            secure: process.env.NODE_ENV === 'production',
+            sameSite: 'lax' as const,
+            path: '/'
+        };
+
+        res.clearCookie('access_token', cookieOptions);
+        res.clearCookie('refresh_token', cookieOptions);
     }
 }
