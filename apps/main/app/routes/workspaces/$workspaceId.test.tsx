@@ -4,6 +4,7 @@
 import { render, screen, fireEvent, waitFor } from '@testing-library/react';
 import { vi, describe, it, expect, beforeEach } from 'vitest';
 import { createBrowserRouter, RouterProvider } from 'react-router';
+
 import WorkspaceDashboard, { loader } from './$workspaceId.js';
 
 // Mock the API module
@@ -12,7 +13,11 @@ vi.mock('../../lib/api/index.js', () => ({
         getWorkspaceDashboard: vi.fn()
     },
     ApiError: class extends Error {
-        constructor(message: string, public status: number, public statusText: string) {
+        constructor(
+            message: string,
+            public status: number,
+            public statusText: string
+        ) {
             super(message);
         }
     }
@@ -26,8 +31,18 @@ const mockDashboardData = {
         description: 'A test workspace',
         owner: 'user-1',
         members: [
-            { user: 'user-1', role: 'owner', invitedAt: '2023-01-01', joinedAt: '2023-01-01' },
-            { user: 'user-2', role: 'editor', invitedAt: '2023-01-02', joinedAt: '2023-01-02' }
+            {
+                user: 'user-1',
+                role: 'owner',
+                invitedAt: '2023-01-01',
+                joinedAt: '2023-01-01'
+            },
+            {
+                user: 'user-2',
+                role: 'editor',
+                invitedAt: '2023-01-02',
+                joinedAt: '2023-01-02'
+            }
         ],
         settings: {
             timezone: 'UTC',
@@ -107,16 +122,22 @@ const mockDashboardData = {
     }
 };
 
-const createRouter = (loaderData: any, params = { workspaceId: 'workspace-1' }) => {
-    return createBrowserRouter([
+const createRouter = (
+    loaderData: any,
+    params = { workspaceId: 'workspace-1' }
+) => {
+    return createBrowserRouter(
+        [
+            {
+                path: '/workspaces/:workspaceId',
+                Component: WorkspaceDashboard,
+                loader: () => loaderData
+            }
+        ],
         {
-            path: '/workspaces/:workspaceId',
-            Component: WorkspaceDashboard,
-            loader: () => loaderData
+            initialEntries: [`/workspaces/${params.workspaceId}`]
         }
-    ], {
-        initialEntries: [`/workspaces/${params.workspaceId}`]
-    });
+    );
 };
 
 describe('WorkspaceDashboard', () => {
@@ -125,8 +146,11 @@ describe('WorkspaceDashboard', () => {
     });
 
     it('renders workspace dashboard successfully', async () => {
-        const router = createRouter({ dashboardData: mockDashboardData, error: null });
-        
+        const router = createRouter({
+            dashboardData: mockDashboardData,
+            error: null
+        });
+
         render(<RouterProvider router={router} />);
 
         // Check workspace header
@@ -149,7 +173,9 @@ describe('WorkspaceDashboard', () => {
         expect(screen.getByText('Collections')).toBeInTheDocument();
         expect(screen.getByText('Users')).toBeInTheDocument();
         expect(screen.getByText('Products')).toBeInTheDocument();
-        expect(screen.getByText('User management collection')).toBeInTheDocument();
+        expect(
+            screen.getByText('User management collection')
+        ).toBeInTheDocument();
         expect(screen.getByText('Product catalog')).toBeInTheDocument();
     });
 
@@ -157,21 +183,32 @@ describe('WorkspaceDashboard', () => {
         const emptyData = {
             ...mockDashboardData,
             collections: [],
-            stats: { ...mockDashboardData.stats, totalCollections: 0, totalRecords: 0 }
+            stats: {
+                ...mockDashboardData.stats,
+                totalCollections: 0,
+                totalRecords: 0
+            }
         };
-        
+
         const router = createRouter({ dashboardData: emptyData, error: null });
-        
+
         render(<RouterProvider router={router} />);
 
         expect(screen.getByText('No collections yet')).toBeInTheDocument();
-        expect(screen.getByText('Create your first collection to start organizing your data')).toBeInTheDocument();
+        expect(
+            screen.getByText(
+                'Create your first collection to start organizing your data'
+            )
+        ).toBeInTheDocument();
         expect(screen.getByText('Create Collection')).toBeInTheDocument();
     });
 
     it('switches between collections and activity tabs', async () => {
-        const router = createRouter({ dashboardData: mockDashboardData, error: null });
-        
+        const router = createRouter({
+            dashboardData: mockDashboardData,
+            error: null
+        });
+
         render(<RouterProvider router={router} />);
 
         // Should start on collections tab
@@ -179,28 +216,39 @@ describe('WorkspaceDashboard', () => {
         expect(screen.getByText('Products')).toBeInTheDocument();
 
         // Switch to activity tab
-        const activityTab = screen.getAllByText('Recent Activity').find(el => 
-            el.getAttribute('role') === 'tab' || el.closest('[role="tab"]')
-        );
-        
+        const activityTab = screen
+            .getAllByText('Recent Activity')
+            .find(
+                el =>
+                    el.getAttribute('role') === 'tab' ||
+                    el.closest('[role="tab"]')
+            );
+
         if (activityTab) {
             fireEvent.click(activityTab);
         }
 
         // Should show activity content
-        expect(screen.getByText('Created collection "Users"')).toBeInTheDocument();
+        expect(
+            screen.getByText('Created collection "Users"')
+        ).toBeInTheDocument();
         expect(screen.getByText('Added new user record')).toBeInTheDocument();
         expect(screen.getByText('John Doe')).toBeInTheDocument();
         expect(screen.getByText('Jane Smith')).toBeInTheDocument();
     });
 
     it('filters collections based on search', async () => {
-        const router = createRouter({ dashboardData: mockDashboardData, error: null });
-        
+        const router = createRouter({
+            dashboardData: mockDashboardData,
+            error: null
+        });
+
         render(<RouterProvider router={router} />);
 
-        const searchInput = screen.getByPlaceholderText('Search collections...');
-        
+        const searchInput = screen.getByPlaceholderText(
+            'Search collections...'
+        );
+
         // Search for specific collection
         fireEvent.change(searchInput, { target: { value: 'Users' } });
 
@@ -209,29 +257,47 @@ describe('WorkspaceDashboard', () => {
     });
 
     it('shows no collections found when search has no matches', async () => {
-        const router = createRouter({ dashboardData: mockDashboardData, error: null });
-        
+        const router = createRouter({
+            dashboardData: mockDashboardData,
+            error: null
+        });
+
         render(<RouterProvider router={router} />);
 
-        const searchInput = screen.getByPlaceholderText('Search collections...');
-        
+        const searchInput = screen.getByPlaceholderText(
+            'Search collections...'
+        );
+
         // Search for non-existent collection
         fireEvent.change(searchInput, { target: { value: 'nonexistent' } });
 
         expect(screen.getByText('No collections found')).toBeInTheDocument();
-        expect(screen.getByText('Try adjusting your search terms')).toBeInTheDocument();
+        expect(
+            screen.getByText('Try adjusting your search terms')
+        ).toBeInTheDocument();
         expect(screen.getByText('Clear Search')).toBeInTheDocument();
     });
 
     it('switches between grid and list view for collections', async () => {
-        const router = createRouter({ dashboardData: mockDashboardData, error: null });
-        
+        const router = createRouter({
+            dashboardData: mockDashboardData,
+            error: null
+        });
+
         render(<RouterProvider router={router} />);
 
         // Find view toggle buttons
         const buttons = screen.getAllByRole('button');
-        const listButton = buttons.find(btn => btn.querySelector('svg') && btn.getAttribute('aria-label') === 'list view');
-        const gridButton = buttons.find(btn => btn.querySelector('svg') && btn.getAttribute('aria-label') === 'grid view');
+        const listButton = buttons.find(
+            btn =>
+                btn.querySelector('svg') &&
+                btn.getAttribute('aria-label') === 'list view'
+        );
+        const gridButton = buttons.find(
+            btn =>
+                btn.querySelector('svg') &&
+                btn.getAttribute('aria-label') === 'grid view'
+        );
 
         // Both collections should be visible in default grid view
         expect(screen.getByText('Users')).toBeInTheDocument();
@@ -244,12 +310,19 @@ describe('WorkspaceDashboard', () => {
     });
 
     it('handles error state', async () => {
-        const router = createRouter({ dashboardData: null, error: 'Failed to load workspace' });
-        
+        const router = createRouter({
+            dashboardData: null,
+            error: 'Failed to load workspace'
+        });
+
         render(<RouterProvider router={router} />);
 
-        expect(screen.getByText('Unable to load workspace')).toBeInTheDocument();
-        expect(screen.getByText('Failed to load workspace')).toBeInTheDocument();
+        expect(
+            screen.getByText('Unable to load workspace')
+        ).toBeInTheDocument();
+        expect(
+            screen.getByText('Failed to load workspace')
+        ).toBeInTheDocument();
         expect(screen.getByText('Back to Workspaces')).toBeInTheDocument();
         expect(screen.getByText('Try Again')).toBeInTheDocument();
     });
@@ -259,22 +332,33 @@ describe('WorkspaceDashboard', () => {
             ...mockDashboardData,
             recentActivity: []
         };
-        
-        const router = createRouter({ dashboardData: emptyActivityData, error: null });
-        
+
+        const router = createRouter({
+            dashboardData: emptyActivityData,
+            error: null
+        });
+
         render(<RouterProvider router={router} />);
 
         // Switch to activity tab
-        const activityTab = screen.getAllByText('Recent Activity').find(el => 
-            el.getAttribute('role') === 'tab' || el.closest('[role="tab"]')
-        );
-        
+        const activityTab = screen
+            .getAllByText('Recent Activity')
+            .find(
+                el =>
+                    el.getAttribute('role') === 'tab' ||
+                    el.closest('[role="tab"]')
+            );
+
         if (activityTab) {
             fireEvent.click(activityTab);
         }
 
         expect(screen.getByText('No recent activity')).toBeInTheDocument();
-        expect(screen.getByText('Activity will appear here as you and your team work with collections')).toBeInTheDocument();
+        expect(
+            screen.getByText(
+                'Activity will appear here as you and your team work with collections'
+            )
+        ).toBeInTheDocument();
     });
 });
 
@@ -285,21 +369,29 @@ describe('WorkspaceDashboard loader', () => {
 
     it('loads dashboard data successfully', async () => {
         const { workspaceApi } = await import('../../lib/api/index.js');
-        workspaceApi.getWorkspaceDashboard = vi.fn().mockResolvedValue(mockDashboardData);
+        workspaceApi.getWorkspaceDashboard = vi
+            .fn()
+            .mockResolvedValue(mockDashboardData);
 
         const request = new Request('http://localhost/workspaces/workspace-1');
-        const result = await loader({ request, params: { workspaceId: 'workspace-1' }, context: {} });
+        const result = await loader({
+            request,
+            params: { workspaceId: 'workspace-1' },
+            context: {}
+        });
 
         expect(result).toEqual({
             dashboardData: mockDashboardData,
             error: null
         });
-        expect(workspaceApi.getWorkspaceDashboard).toHaveBeenCalledWith('workspace-1');
+        expect(workspaceApi.getWorkspaceDashboard).toHaveBeenCalledWith(
+            'workspace-1'
+        );
     });
 
     it('handles missing workspace ID', async () => {
         const request = new Request('http://localhost/workspaces/');
-        
+
         await expect(
             loader({ request, params: {}, context: {} })
         ).rejects.toThrow('Workspace ID is required');
@@ -311,7 +403,11 @@ describe('WorkspaceDashboard loader', () => {
         workspaceApi.getWorkspaceDashboard = vi.fn().mockRejectedValue(error);
 
         const request = new Request('http://localhost/workspaces/workspace-1');
-        const result = await loader({ request, params: { workspaceId: 'workspace-1' }, context: {} });
+        const result = await loader({
+            request,
+            params: { workspaceId: 'workspace-1' },
+            context: {}
+        });
 
         expect(result).toEqual({
             dashboardData: null,

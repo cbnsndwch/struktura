@@ -4,12 +4,12 @@
 import { useState } from 'react';
 import type { MetaFunction, LoaderFunctionArgs } from 'react-router';
 import { useLoaderData, Link, useNavigate } from 'react-router';
-import { 
-    Plus, 
-    Search, 
-    Grid3X3, 
-    List, 
-    Users, 
+import {
+    Plus,
+    Search,
+    Grid3X3,
+    List,
+    Users,
     Calendar,
     Settings,
     MoreVertical,
@@ -45,7 +45,8 @@ export const meta: MetaFunction = () => {
         { title: 'Workspaces • Struktura' },
         {
             name: 'description',
-            content: 'Manage your workspaces and collaborate with your team on data-driven projects.'
+            content:
+                'Manage your workspaces and collaborate with your team on data-driven projects.'
         }
     ];
 };
@@ -56,9 +57,12 @@ export async function loader({ request }: LoaderFunctionArgs) {
         return { workspaces, error: null };
     } catch (error) {
         console.error('Failed to load workspaces:', error);
-        return { 
-            workspaces: [], 
-            error: error instanceof Error ? error.message : 'Failed to load workspaces' 
+        return {
+            workspaces: [],
+            error:
+                error instanceof Error
+                    ? error.message
+                    : 'Failed to load workspaces'
         };
     }
 }
@@ -72,9 +76,12 @@ export default function WorkspacesPage() {
     const [searchQuery, setSearchQuery] = useState('');
 
     // Filter workspaces based on search query
-    const filteredWorkspaces = workspaces.filter((workspace: Workspace) =>
-        workspace.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
-        workspace.description?.toLowerCase().includes(searchQuery.toLowerCase())
+    const filteredWorkspaces = workspaces.filter(
+        (workspace: Workspace) =>
+            workspace.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
+            workspace.description
+                ?.toLowerCase()
+                .includes(searchQuery.toLowerCase())
     );
 
     const handleCreateWorkspace = () => {
@@ -105,7 +112,9 @@ export default function WorkspacesPage() {
                         <div className="mb-4">
                             <Database className="h-12 w-12 text-muted-foreground mx-auto" />
                         </div>
-                        <h1 className="text-xl font-semibold mb-2">Unable to load workspaces</h1>
+                        <h1 className="text-xl font-semibold mb-2">
+                            Unable to load workspaces
+                        </h1>
                         <p className="text-muted-foreground mb-4">{error}</p>
                         <Button onClick={() => window.location.reload()}>
                             Try Again
@@ -125,7 +134,8 @@ export default function WorkspacesPage() {
                         <div>
                             <h1 className="text-2xl font-bold">Workspaces</h1>
                             <p className="text-muted-foreground">
-                                Manage your workspaces and collaborate with your team
+                                Manage your workspaces and collaborate with your
+                                team
                             </p>
                         </div>
                         <Button onClick={handleCreateWorkspace}>
@@ -145,7 +155,7 @@ export default function WorkspacesPage() {
                         <Input
                             placeholder="Search workspaces..."
                             value={searchQuery}
-                            onChange={(e) => setSearchQuery(e.target.value)}
+                            onChange={e => setSearchQuery(e.target.value)}
                             className="pl-10"
                         />
                     </div>
@@ -173,20 +183,28 @@ export default function WorkspacesPage() {
                         {searchQuery ? (
                             <>
                                 <Search className="h-12 w-12 text-muted-foreground mx-auto mb-4" />
-                                <h3 className="text-lg font-semibold mb-2">No workspaces found</h3>
+                                <h3 className="text-lg font-semibold mb-2">
+                                    No workspaces found
+                                </h3>
                                 <p className="text-muted-foreground mb-4">
                                     Try adjusting your search terms
                                 </p>
-                                <Button variant="outline" onClick={() => setSearchQuery('')}>
+                                <Button
+                                    variant="outline"
+                                    onClick={() => setSearchQuery('')}
+                                >
                                     Clear Search
                                 </Button>
                             </>
                         ) : (
                             <>
                                 <Building2 className="h-12 w-12 text-muted-foreground mx-auto mb-4" />
-                                <h3 className="text-lg font-semibold mb-2">No workspaces yet</h3>
+                                <h3 className="text-lg font-semibold mb-2">
+                                    No workspaces yet
+                                </h3>
                                 <p className="text-muted-foreground mb-4">
-                                    Create your first workspace to get started with Struktura
+                                    Create your first workspace to get started
+                                    with Struktura
                                 </p>
                                 <Button onClick={handleCreateWorkspace}>
                                     <Plus className="h-4 w-4 mr-2" />
@@ -196,18 +214,24 @@ export default function WorkspacesPage() {
                         )}
                     </div>
                 ) : (
-                    <div className={
-                        viewMode === 'grid' 
-                            ? 'grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6'
-                            : 'space-y-4'
-                    }>
+                    <div
+                        className={
+                            viewMode === 'grid'
+                                ? 'grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6'
+                                : 'space-y-4'
+                        }
+                    >
                         {filteredWorkspaces.map((workspace: Workspace) => (
-                            <Card 
-                                key={workspace.id} 
+                            <Card
+                                key={workspace.id}
                                 className={`cursor-pointer hover:shadow-md transition-shadow ${
-                                    viewMode === 'list' ? 'flex items-center' : ''
+                                    viewMode === 'list'
+                                        ? 'flex items-center'
+                                        : ''
                                 }`}
-                                onClick={() => navigate(`/workspaces/${workspace.id}`)}
+                                onClick={() =>
+                                    navigate(`/workspaces/${workspace.id}`)
+                                }
                             >
                                 {viewMode === 'grid' ? (
                                     <>
@@ -215,27 +239,42 @@ export default function WorkspacesPage() {
                                             <div className="flex items-start justify-between">
                                                 <div className="flex items-center gap-3">
                                                     <Avatar className="h-10 w-10">
-                                                        <AvatarImage 
-                                                            src={workspace.settings.branding?.logo} 
-                                                            alt={workspace.name} 
+                                                        <AvatarImage
+                                                            src={
+                                                                workspace
+                                                                    .settings
+                                                                    .branding
+                                                                    ?.logo
+                                                            }
+                                                            alt={workspace.name}
                                                         />
                                                         <AvatarFallback className="bg-primary/10 text-primary font-semibold">
-                                                            {getWorkspaceInitials(workspace.name)}
+                                                            {getWorkspaceInitials(
+                                                                workspace.name
+                                                            )}
                                                         </AvatarFallback>
                                                     </Avatar>
                                                     <div>
-                                                        <CardTitle className="text-lg">{workspace.name}</CardTitle>
+                                                        <CardTitle className="text-lg">
+                                                            {workspace.name}
+                                                        </CardTitle>
                                                         <CardDescription>
-                                                            {workspace.description || 'No description'}
+                                                            {workspace.description ||
+                                                                'No description'}
                                                         </CardDescription>
                                                     </div>
                                                 </div>
                                                 <DropdownMenu>
-                                                    <DropdownMenuTrigger 
-                                                        asChild 
-                                                        onClick={(e) => e.stopPropagation()}
+                                                    <DropdownMenuTrigger
+                                                        asChild
+                                                        onClick={e =>
+                                                            e.stopPropagation()
+                                                        }
                                                     >
-                                                        <Button variant="ghost" size="sm">
+                                                        <Button
+                                                            variant="ghost"
+                                                            size="sm"
+                                                        >
                                                             <MoreVertical className="h-4 w-4" />
                                                         </Button>
                                                     </DropdownMenuTrigger>
@@ -261,15 +300,24 @@ export default function WorkspacesPage() {
                                                 <div className="flex items-center gap-4 text-sm text-muted-foreground">
                                                     <div className="flex items-center gap-1">
                                                         <Users className="h-4 w-4" />
-                                                        {formatMemberCount(workspace.members)}
+                                                        {formatMemberCount(
+                                                            workspace.members
+                                                        )}
                                                     </div>
                                                     <div className="flex items-center gap-1">
                                                         <Calendar className="h-4 w-4" />
-                                                        {new Date(workspace.createdAt).toLocaleDateString()}
+                                                        {new Date(
+                                                            workspace.createdAt
+                                                        ).toLocaleDateString()}
                                                     </div>
                                                 </div>
                                                 <Badge variant="secondary">
-                                                    {workspace.members.find((m: any) => m.role === 'owner') ? 'Owner' : 'Member'}
+                                                    {workspace.members.find(
+                                                        (m: any) =>
+                                                            m.role === 'owner'
+                                                    )
+                                                        ? 'Owner'
+                                                        : 'Member'}
                                                 </Badge>
                                             </div>
                                         </CardContent>
@@ -278,34 +326,54 @@ export default function WorkspacesPage() {
                                     <div className="flex items-center justify-between p-6">
                                         <div className="flex items-center gap-4">
                                             <Avatar className="h-10 w-10">
-                                                <AvatarImage 
-                                                    src={workspace.settings.branding?.logo} 
-                                                    alt={workspace.name} 
+                                                <AvatarImage
+                                                    src={
+                                                        workspace.settings
+                                                            .branding?.logo
+                                                    }
+                                                    alt={workspace.name}
                                                 />
                                                 <AvatarFallback className="bg-primary/10 text-primary font-semibold">
-                                                    {getWorkspaceInitials(workspace.name)}
+                                                    {getWorkspaceInitials(
+                                                        workspace.name
+                                                    )}
                                                 </AvatarFallback>
                                             </Avatar>
                                             <div>
-                                                <h3 className="font-semibold">{workspace.name}</h3>
+                                                <h3 className="font-semibold">
+                                                    {workspace.name}
+                                                </h3>
                                                 <p className="text-sm text-muted-foreground">
-                                                    {workspace.description || 'No description'}
+                                                    {workspace.description ||
+                                                        'No description'}
                                                 </p>
                                             </div>
                                         </div>
                                         <div className="flex items-center gap-4">
                                             <div className="text-sm text-muted-foreground">
-                                                {formatMemberCount(workspace.members)}
+                                                {formatMemberCount(
+                                                    workspace.members
+                                                )}
                                             </div>
                                             <Badge variant="secondary">
-                                                {workspace.members.find((m: any) => m.role === 'owner') ? 'Owner' : 'Member'}
+                                                {workspace.members.find(
+                                                    (m: any) =>
+                                                        m.role === 'owner'
+                                                )
+                                                    ? 'Owner'
+                                                    : 'Member'}
                                             </Badge>
                                             <DropdownMenu>
-                                                <DropdownMenuTrigger 
-                                                    asChild 
-                                                    onClick={(e) => e.stopPropagation()}
+                                                <DropdownMenuTrigger
+                                                    asChild
+                                                    onClick={e =>
+                                                        e.stopPropagation()
+                                                    }
                                                 >
-                                                    <Button variant="ghost" size="sm">
+                                                    <Button
+                                                        variant="ghost"
+                                                        size="sm"
+                                                    >
                                                         <MoreVertical className="h-4 w-4" />
                                                     </Button>
                                                 </DropdownMenuTrigger>
