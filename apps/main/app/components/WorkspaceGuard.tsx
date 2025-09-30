@@ -81,7 +81,9 @@ export function WorkspaceGuard({
                         }
                     });
                     if (!response.ok) {
-                        throw new Error(`Failed to fetch current user: ${response.status} ${response.statusText}`);
+                        throw new Error(
+                            `Failed to fetch current user: ${response.status} ${response.statusText}`
+                        );
                     }
                     const currentUser = await response.json();
 
