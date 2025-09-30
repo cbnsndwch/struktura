@@ -31,7 +31,7 @@ import {
 } from '../dto/index.js';
 import { JwtAuthGuard } from '../guards/jwt-auth.guard.js';
 
-@Controller('auth')
+@Controller('api/auth')
 @UseGuards(ThrottlerGuard)
 export class AuthController {
     constructor(private authService: AuthService) {}

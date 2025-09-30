@@ -123,7 +123,7 @@ export default function VerifyEmail() {
         try {
             // Note: We'll need to add a resend endpoint to the backend
             // For now, we'll use the registration endpoint to trigger a new verification email
-            const response = await fetch('/auth/register', {
+            const response = await fetch('/api/auth/register', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json'

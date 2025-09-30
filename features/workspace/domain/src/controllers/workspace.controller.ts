@@ -32,7 +32,7 @@ interface AuthenticatedRequest extends Request {
     };
 }
 
-@Controller('workspaces')
+@Controller('api/workspaces')
 @UseGuards(JwtAuthGuard)
 export class WorkspaceController {
     constructor(private readonly workspaceService: WorkspaceService) {}

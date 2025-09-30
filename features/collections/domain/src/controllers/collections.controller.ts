@@ -20,7 +20,7 @@ import {
     UpdateFieldDto
 } from '../dto/index.js';
 
-@Controller('collections')
+@Controller('api/collections')
 export class CollectionsController {
     constructor(private readonly collectionService: CollectionService) {}
 

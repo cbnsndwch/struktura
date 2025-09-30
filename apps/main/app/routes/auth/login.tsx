@@ -54,7 +54,7 @@ export default function Login() {
         setError(null);
 
         try {
-            const response = await fetch('/auth/login', {
+            const response = await fetch('/api/auth/login', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json'
@@ -106,7 +106,7 @@ export default function Login() {
         setError(null);
 
         try {
-            const response = await fetch('/auth/password-reset/request', {
+            const response = await fetch('/api/auth/password-reset/request', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json'

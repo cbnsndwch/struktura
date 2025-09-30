@@ -239,7 +239,7 @@ describe('Login Component', () => {
 
         await waitFor(() => {
             expect(mockFetch).toHaveBeenCalledWith(
-                '/auth/password-reset/request',
+                '/api/auth/password-reset/request',
                 {
                     method: 'POST',
                     headers: {

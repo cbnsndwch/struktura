@@ -20,7 +20,7 @@ export class AppController {
     }
 
     @Public()
-    @Get('health')
+    @Get('api/health')
     getHealth() {
         let dbStatus = 'unknown';
         let readyState = 0;

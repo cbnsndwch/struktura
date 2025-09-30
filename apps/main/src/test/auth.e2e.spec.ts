@@ -61,7 +61,7 @@ describe.skip('Auth E2E Workflows (MongoDB Memory Server - Skip for CI)', () => 
         it('should complete full user registration and login workflow', async () => {
             // Step 1: Register a new user
             const registerResponse = await request(app.getHttpServer())
-                .post('/auth/register')
+                .post('/api/auth/register')
                 .send({
                     email: 'user@example.com',
                     name: 'Test User',
@@ -84,7 +84,7 @@ describe.skip('Auth E2E Workflows (MongoDB Memory Server - Skip for CI)', () => 
 
             // Step 3: Login with verified account
             const loginResponse = await request(app.getHttpServer())
-                .post('/auth/login')
+                .post('/api/auth/login')
                 .send({
                     email: 'user@example.com',
                     password: 'SecurePass123!'
@@ -103,7 +103,7 @@ describe.skip('Auth E2E Workflows (MongoDB Memory Server - Skip for CI)', () => 
 
         it('should access protected resources with valid token', async () => {
             const profileResponse = await request(app.getHttpServer())
-                .get('/auth/profile')
+                .get('/api/auth/profile')
                 .set('Authorization', `Bearer ${accessToken}`)
                 .expect(200);
 
@@ -114,7 +114,7 @@ describe.skip('Auth E2E Workflows (MongoDB Memory Server - Skip for CI)', () => 
         it('should handle password reset workflow', async () => {
             // Request password reset
             await request(app.getHttpServer())
-                .post('/auth/request-password-reset')
+                .post('/api/auth/request-password-reset')
                 .send({
                     email: 'user@example.com'
                 })
@@ -123,7 +123,7 @@ describe.skip('Auth E2E Workflows (MongoDB Memory Server - Skip for CI)', () => 
             // In a real app, user would click email link
             // For E2E test, we verify the request doesn't expose user existence
             await request(app.getHttpServer())
-                .post('/auth/request-password-reset')
+                .post('/api/auth/request-password-reset')
                 .send({
                     email: 'nonexistent@example.com'
                 })
@@ -132,7 +132,7 @@ describe.skip('Auth E2E Workflows (MongoDB Memory Server - Skip for CI)', () => 
 
         it('should refresh authentication tokens', async () => {
             const refreshResponse = await request(app.getHttpServer())
-                .post('/auth/refresh')
+                .post('/api/auth/refresh')
                 .send({
                     refreshToken
                 })
@@ -145,13 +145,13 @@ describe.skip('Auth E2E Workflows (MongoDB Memory Server - Skip for CI)', () => 
 
         it('should logout and invalidate tokens', async () => {
             await request(app.getHttpServer())
-                .post('/auth/logout')
+                .post('/api/auth/logout')
                 .set('Authorization', `Bearer ${accessToken}`)
                 .expect(200);
 
             // Verify token is no longer valid
             await request(app.getHttpServer())
-                .get('/auth/profile')
+                .get('/api/auth/profile')
                 .set('Authorization', `Bearer ${accessToken}`)
                 .expect(401);
         });
@@ -161,7 +161,7 @@ describe.skip('Auth E2E Workflows (MongoDB Memory Server - Skip for CI)', () => 
         it('should reject invalid registration data', async () => {
             // Invalid email
             await request(app.getHttpServer())
-                .post('/auth/register')
+                .post('/api/auth/register')
                 .send({
                     email: 'invalid-email',
                     name: 'Test User',
@@ -171,7 +171,7 @@ describe.skip('Auth E2E Workflows (MongoDB Memory Server - Skip for CI)', () => 
 
             // Weak password
             await request(app.getHttpServer())
-                .post('/auth/register')
+                .post('/api/auth/register')
                 .send({
                     email: 'test@example.com',
                     name: 'Test User',
@@ -181,7 +181,7 @@ describe.skip('Auth E2E Workflows (MongoDB Memory Server - Skip for CI)', () => 
 
             // Missing required fields
             await request(app.getHttpServer())
-                .post('/auth/register')
+                .post('/api/auth/register')
                 .send({
                     email: 'test@example.com'
                     // Missing name and password
@@ -192,7 +192,7 @@ describe.skip('Auth E2E Workflows (MongoDB Memory Server - Skip for CI)', () => 
         it('should handle authentication failures gracefully', async () => {
             // Wrong password
             await request(app.getHttpServer())
-                .post('/auth/login')
+                .post('/api/auth/login')
                 .send({
                     email: 'user@example.com',
                     password: 'WrongPassword'
@@ -201,7 +201,7 @@ describe.skip('Auth E2E Workflows (MongoDB Memory Server - Skip for CI)', () => 
 
             // Non-existent user
             await request(app.getHttpServer())
-                .post('/auth/login')
+                .post('/api/auth/login')
                 .send({
                     email: 'nobody@example.com',
                     password: 'password123'
@@ -209,11 +209,13 @@ describe.skip('Auth E2E Workflows (MongoDB Memory Server - Skip for CI)', () => 
                 .expect(401);
 
             // Access protected route without token
-            await request(app.getHttpServer()).get('/auth/profile').expect(401);
+            await request(app.getHttpServer())
+                .get('/api/auth/profile')
+                .expect(401);
 
             // Access with invalid token
             await request(app.getHttpServer())
-                .get('/auth/profile')
+                .get('/api/auth/profile')
                 .set('Authorization', 'Bearer invalid-token')
                 .expect(401);
         });

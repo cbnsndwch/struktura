@@ -230,7 +230,7 @@ export default function Onboarding() {
         setIsLoading(true);
         try {
             // Create workspace via API
-            const response = await fetch('/workspaces', {
+            const response = await fetch('/api/workspaces', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json'
