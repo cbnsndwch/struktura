@@ -55,7 +55,12 @@ export interface UpdateWorkspaceData {
 // Recent Activity Types
 export interface RecentActivity {
     id: string;
-    type: 'collection_created' | 'collection_updated' | 'record_created' | 'record_updated' | 'member_joined';
+    type:
+        | 'collection_created'
+        | 'collection_updated'
+        | 'record_created'
+        | 'record_updated'
+        | 'member_joined';
     description: string;
     timestamp: string;
     user: {
@@ -129,7 +134,10 @@ export class WorkspaceApi {
     /**
      * Update a workspace
      */
-    async updateWorkspace(id: string, data: UpdateWorkspaceData): Promise<Workspace> {
+    async updateWorkspace(
+        id: string,
+        data: UpdateWorkspaceData
+    ): Promise<Workspace> {
         return apiClient.patch<Workspace>(`/workspaces/${id}`, data);
     }
 
@@ -143,7 +151,9 @@ export class WorkspaceApi {
     /**
      * Get workspace dashboard data (collections, activity, stats)
      */
-    async getWorkspaceDashboard(workspaceId: string): Promise<WorkspaceDashboardData> {
+    async getWorkspaceDashboard(
+        workspaceId: string
+    ): Promise<WorkspaceDashboardData> {
         // For now, we'll simulate the dashboard data by making separate calls
         // In the future, this could be a single optimized endpoint
         const [workspace, collections, recentActivity] = await Promise.all([
@@ -154,7 +164,10 @@ export class WorkspaceApi {
 
         const stats = {
             totalCollections: collections.length,
-            totalRecords: collections.reduce((sum, col) => sum + col.recordCount, 0),
+            totalRecords: collections.reduce(
+                (sum, col) => sum + col.recordCount,
+                0
+            ),
             activeMembers: workspace.members.filter(m => m.joinedAt).length
         };
 
@@ -169,14 +182,22 @@ export class WorkspaceApi {
     /**
      * Get collections for a workspace (summary for dashboard)
      */
-    async getWorkspaceCollections(workspaceId: string): Promise<CollectionSummary[]> {
+    async getWorkspaceCollections(
+        workspaceId: string
+    ): Promise<CollectionSummary[]> {
         // This endpoint might not exist yet, so we'll return empty array for now
         // In a real implementation, this would be `/workspaces/${workspaceId}/collections`
         try {
-            return apiClient.get<CollectionSummary[]>(`/workspaces/${workspaceId}/collections`);
-        } catch (error) {
+            return apiClient.get<CollectionSummary[]>(
+                `/workspaces/${workspaceId}/collections`
+            );
+        } catch (err) {
+            console.error('Error fetching collections:', err);
+
             // Fallback to empty array if endpoint doesn't exist
-            console.warn('Collections endpoint not available, returning empty array');
+            console.warn(
+                'Collections endpoint not available, returning empty array:'
+            );
             return [];
         }
     }
@@ -187,10 +208,16 @@ export class WorkspaceApi {
     async getWorkspaceActivity(workspaceId: string): Promise<RecentActivity[]> {
         // This endpoint might not exist yet, so we'll return mock data for now
         try {
-            return apiClient.get<RecentActivity[]>(`/workspaces/${workspaceId}/activity`);
-        } catch (error) {
+            return apiClient.get<RecentActivity[]>(
+                `/workspaces/${workspaceId}/activity`
+            );
+        } catch (err) {
+            console.error('Error fetching activity:', err);
+
             // Fallback to mock data if endpoint doesn't exist
-            console.warn('Activity endpoint not available, returning mock data');
+            console.warn(
+                'Activity endpoint not available, returning mock data'
+            );
             return [];
         }
     }

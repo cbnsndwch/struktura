@@ -242,6 +242,26 @@ export default function WorkspacesPage() {
         );
     }
 
+    if (isLoading) {
+        return (
+            <div className="min-h-screen bg-background">
+                <div className="container mx-auto px-4 py-8">
+                    <div className="max-w-md mx-auto text-center">
+                        <div className="mb-4">
+                            <Database className="h-12 w-12 text-muted-foreground mx-auto animate-pulse" />
+                        </div>
+                        <h1 className="text-xl font-semibold mb-2">
+                            Loading workspaces...
+                        </h1>
+                        <p className="text-muted-foreground">
+                            Please wait while we fetch your workspaces
+                        </p>
+                    </div>
+                </div>
+            </div>
+        );
+    }
+
     return (
         <div className="min-h-screen bg-background">
             {/* Header */}
