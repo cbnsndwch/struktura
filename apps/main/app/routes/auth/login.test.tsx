@@ -297,8 +297,18 @@ describe('Login Component', () => {
             ok: true,
             json: () =>
                 Promise.resolve({
-                    access_token: 'fake-token',
-                    refresh_token: 'fake-refresh-token'
+                    user: {
+                        id: 'test-user-id',
+                        email: 'test@example.com',
+                        name: 'Test User',
+                        roles: ['editor'],
+                        emailVerified: true
+                    },
+                    tokens: {
+                        accessToken: 'fake-token',
+                        refreshToken: 'fake-refresh-token',
+                        expiresIn: 900
+                    }
                 })
         } as Response);
 

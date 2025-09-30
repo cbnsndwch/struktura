@@ -71,10 +71,13 @@ export default function Login() {
             const result = await response.json();
 
             // Store tokens and redirect to dashboard
-            if (result.access_token) {
-                localStorage.setItem('access_token', result.access_token);
-                if (result.refresh_token) {
-                    localStorage.setItem('refresh_token', result.refresh_token);
+            if (result.tokens?.accessToken) {
+                localStorage.setItem('access_token', result.tokens.accessToken);
+                if (result.tokens.refreshToken) {
+                    localStorage.setItem(
+                        'refresh_token',
+                        result.tokens.refreshToken
+                    );
                 }
                 toast.success('Successfully signed in! Redirecting...');
                 window.location.href = '/dashboard';
