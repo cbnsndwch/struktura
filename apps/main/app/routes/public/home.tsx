@@ -12,10 +12,10 @@ import {
 } from '@cbnsndwch/struktura-shared-ui';
 
 import { isAuthenticated } from '../../lib/auth.js';
-import { 
-    shouldShowOnboarding, 
-    startOnboarding, 
-    shouldTriggerOnboardingForNewUser 
+import {
+    shouldShowOnboarding,
+    startOnboarding,
+    shouldTriggerOnboardingForNewUser
 } from '../../lib/onboarding.js';
 import { workspaceApi } from '../../lib/api/index.js';
 
@@ -96,7 +96,7 @@ export default function Home() {
     useEffect(() => {
         const checkAuthStatus = async () => {
             const authenticated = isAuthenticated();
-            
+
             if (authenticated) {
                 try {
                     // Check if onboarding is active
@@ -112,8 +112,10 @@ export default function Home() {
 
                     // Check if user has workspaces
                     const workspaces = await workspaceApi.getUserWorkspaces();
-                    const needsOnboarding = shouldTriggerOnboardingForNewUser(workspaces.length);
-                    
+                    const needsOnboarding = shouldTriggerOnboardingForNewUser(
+                        workspaces.length
+                    );
+
                     setUserAuth({
                         isAuthenticated: true,
                         needsOnboarding,
@@ -166,7 +168,10 @@ export default function Home() {
                         <ThemeToggle />
                         <div className="flex items-center gap-2">
                             {userAuth.isAuthenticated ? (
-                                <Button variant="ghost" onClick={handleEnterApp}>
+                                <Button
+                                    variant="ghost"
+                                    onClick={handleEnterApp}
+                                >
                                     Enter App
                                 </Button>
                             ) : (
@@ -199,13 +204,15 @@ export default function Home() {
                     </p>
                     <div className="flex flex-col sm:flex-row gap-4 justify-center">
                         {userAuth.isAuthenticated ? (
-                            <Button 
-                                size="lg" 
-                                className="px-8 text-lg" 
+                            <Button
+                                size="lg"
+                                className="px-8 text-lg"
                                 onClick={handleEnterApp}
                                 disabled={userAuth.isLoading}
                             >
-                                {userAuth.isLoading ? 'Loading...' : 'Enter App'}
+                                {userAuth.isLoading
+                                    ? 'Loading...'
+                                    : 'Enter App'}
                             </Button>
                         ) : (
                             <Button size="lg" className="px-8 text-lg" asChild>
