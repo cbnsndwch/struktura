@@ -3,7 +3,6 @@ import type { MetaFunction, LoaderFunctionArgs } from 'react-router';
 import { useNavigate } from 'react-router';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
-import { z } from 'zod';
 import {
     ArrowRight,
     ArrowLeft,
@@ -37,6 +36,15 @@ import {
 } from '@cbnsndwch/struktura-shared-ui';
 
 import { requireAuth } from '../../lib/auth.js';
+import { apiClient } from '../../lib/api/client.js';
+
+import {
+    type OnboardingState,
+    type OnboardingStep,
+    type WorkspaceFormData,
+    workspaceSchema
+} from './contracts.js';
+import { collectionTemplates, tourFeatures } from './constants.js';
 
 export const meta: MetaFunction = () => {
     return [
@@ -54,96 +62,6 @@ export async function loader({ request }: LoaderFunctionArgs) {
     requireAuth(request);
     return null;
 }
-
-// Validation schemas
-const workspaceSchema = z.object({
-    name: z
-        .string()
-        .min(2, 'Workspace name must be at least 2 characters')
-        .max(50, 'Workspace name must be less than 50 characters'),
-    description: z
-        .string()
-        .max(200, 'Description must be less than 200 characters')
-        .optional()
-});
-
-type WorkspaceFormData = z.infer<typeof workspaceSchema>;
-
-// Onboarding steps
-type OnboardingStep =
-    | 'welcome'
-    | 'workspace'
-    | 'templates'
-    | 'tour'
-    | 'success';
-
-interface OnboardingState {
-    currentStep: OnboardingStep;
-    completedSteps: OnboardingStep[];
-    workspaceData: WorkspaceFormData | null;
-    selectedTemplate: string | null;
-    canSkip: boolean;
-}
-
-// Collection templates
-const collectionTemplates = [
-    {
-        id: 'team-directory',
-        name: 'Team Directory',
-        description: 'Manage team members, roles, and contact information',
-        icon: Users,
-        fields: ['Name', 'Role', 'Email', 'Department', 'Start Date']
-    },
-    {
-        id: 'project-tracker',
-        name: 'Project Tracker',
-        description: 'Track project progress, tasks, and deadlines',
-        icon: BarChart3,
-        fields: ['Project Name', 'Status', 'Owner', 'Due Date', 'Priority']
-    },
-    {
-        id: 'inventory-management',
-        name: 'Inventory Management',
-        description: 'Track products, stock levels, and supplier information',
-        icon: Database,
-        fields: ['Product Name', 'SKU', 'Quantity', 'Supplier', 'Reorder Level']
-    },
-    {
-        id: 'customer-database',
-        name: 'Customer Database',
-        description: 'Organize customer information and communication history',
-        icon: Building2,
-        fields: ['Customer Name', 'Email', 'Phone', 'Company', 'Last Contact']
-    }
-];
-
-// Feature tour points
-const tourFeatures = [
-    {
-        title: 'Flexible Data Views',
-        description:
-            'Switch between grid, card, calendar, and kanban views to visualize your data the way that works best.',
-        icon: BarChart3
-    },
-    {
-        title: 'Real-time Collaboration',
-        description:
-            'Work together with your team in real-time. See changes instantly as they happen.',
-        icon: Users
-    },
-    {
-        title: 'Powerful API Access',
-        description:
-            'Connect your data to other tools with our GraphQL API and webhook integrations.',
-        icon: Zap
-    },
-    {
-        title: 'Smart Automation',
-        description:
-            'Set up automated workflows and triggers to save time on repetitive tasks.',
-        icon: Rocket
-    }
-];
 
 export default function Onboarding() {
     const navigate = useNavigate();
@@ -237,26 +155,11 @@ export default function Onboarding() {
     const handleWorkspaceSubmit = async (data: WorkspaceFormData) => {
         setIsLoading(true);
         try {
-            // Create workspace via API
-            const response = await fetch('/api/workspaces', {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json'
-                },
-                body: JSON.stringify({
-                    name: data.name,
-                    description: data.description || undefined
-                })
+            // Create workspace via API client (includes authentication)
+            const workspace = await apiClient.post('/workspaces', {
+                name: data.name,
+                description: data.description || undefined
             });
-
-            if (!response.ok) {
-                const errorData = await response.json();
-                throw new Error(
-                    errorData.message || 'Failed to create workspace'
-                );
-            }
-
-            const workspace = await response.json();
             console.log('Workspace created successfully:', workspace);
 
             setState(prev => ({
@@ -656,23 +559,23 @@ export default function Onboarding() {
                 </p>
             </div>
 
-            <Card className="p-6 bg-gradient-to-r from-blue-50 to-purple-50 border-primary/20">
+            <Card className="p-6 bg-gradient-to-r from-blue-50 to-purple-50 dark:from-blue-950/50 dark:to-purple-950/50 border-primary/20 dark:border-primary/30">
                 <h3 className="font-semibold mb-4">What's Next?</h3>
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4 text-sm">
                     <div className="flex items-center space-x-2">
-                        <CheckCircle className="h-4 w-4 text-green-600" />
+                        <CheckCircle className="h-4 w-4 text-green-600 dark:text-green-400" />
                         <span>Create your first collection</span>
                     </div>
                     <div className="flex items-center space-x-2">
-                        <CheckCircle className="h-4 w-4 text-green-600" />
+                        <CheckCircle className="h-4 w-4 text-green-600 dark:text-green-400" />
                         <span>Invite team members</span>
                     </div>
                     <div className="flex items-center space-x-2">
-                        <CheckCircle className="h-4 w-4 text-green-600" />
+                        <CheckCircle className="h-4 w-4 text-green-600 dark:text-green-400" />
                         <span>Import existing data</span>
                     </div>
                     <div className="flex items-center space-x-2">
-                        <CheckCircle className="h-4 w-4 text-green-600" />
+                        <CheckCircle className="h-4 w-4 text-green-600 dark:text-green-400" />
                         <span>Explore different views</span>
                     </div>
                 </div>
