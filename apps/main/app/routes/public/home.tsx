@@ -1,4 +1,5 @@
-import type { MetaFunction, LoaderFunctionArgs } from 'react-router';
+import { useEffect, useState } from 'react';
+import type { MetaFunction } from 'react-router';
 
 import {
     Button,
@@ -10,7 +11,13 @@ import {
     ThemeToggle
 } from '@cbnsndwch/struktura-shared-ui';
 
-import { redirectIfAuthenticated } from '../../lib/auth.js';
+import { isAuthenticated } from '../../lib/auth.js';
+import { 
+    shouldShowOnboarding, 
+    startOnboarding, 
+    shouldTriggerOnboardingForNewUser 
+} from '../../lib/onboarding.js';
+import { workspaceApi } from '../../lib/api/index.js';
 
 export const meta: MetaFunction = () => {
     const title = 'Struktura • No-Code Data Management Platform';
@@ -68,13 +75,82 @@ export const meta: MetaFunction = () => {
     ];
 };
 
-export async function loader({ request }: LoaderFunctionArgs) {
-    // Redirect authenticated users to their workspaces
-    redirectIfAuthenticated(request);
+export async function loader() {
+    // Allow both authenticated and unauthenticated users to see the home page
+    // The component will handle different behaviors based on auth state
     return null;
 }
 
 export default function Home() {
+    const [userAuth, setUserAuth] = useState<{
+        isAuthenticated: boolean;
+        needsOnboarding: boolean;
+        isLoading: boolean;
+    }>({
+        isAuthenticated: false,
+        needsOnboarding: false,
+        isLoading: true
+    });
+
+    // Check authentication status and determine redirect destination
+    useEffect(() => {
+        const checkAuthStatus = async () => {
+            const authenticated = isAuthenticated();
+            
+            if (authenticated) {
+                try {
+                    // Check if onboarding is active
+                    const onboardingActive = shouldShowOnboarding();
+                    if (onboardingActive) {
+                        setUserAuth({
+                            isAuthenticated: true,
+                            needsOnboarding: true,
+                            isLoading: false
+                        });
+                        return;
+                    }
+
+                    // Check if user has workspaces
+                    const workspaces = await workspaceApi.getUserWorkspaces();
+                    const needsOnboarding = shouldTriggerOnboardingForNewUser(workspaces.length);
+                    
+                    setUserAuth({
+                        isAuthenticated: true,
+                        needsOnboarding,
+                        isLoading: false
+                    });
+                } catch (error) {
+                    // If API call fails, assume they need onboarding
+                    setUserAuth({
+                        isAuthenticated: true,
+                        needsOnboarding: true,
+                        isLoading: false
+                    });
+                }
+            } else {
+                setUserAuth({
+                    isAuthenticated: false,
+                    needsOnboarding: false,
+                    isLoading: false
+                });
+            }
+        };
+
+        checkAuthStatus();
+    }, []);
+
+    // Smart navigation handler for authenticated users
+    const handleEnterApp = () => {
+        if (userAuth.needsOnboarding) {
+            // Start onboarding and navigate there
+            startOnboarding(false);
+            window.location.href = '/onboarding';
+        } else {
+            // Go directly to workspaces
+            window.location.href = '/workspaces';
+        }
+    };
+
     return (
         <div className="min-h-screen bg-gradient-to-b from-background to-muted/20">
             {/* Navigation Header */}
@@ -89,12 +165,20 @@ export default function Home() {
                     <div className="flex items-center gap-4">
                         <ThemeToggle />
                         <div className="flex items-center gap-2">
-                            <Button variant="ghost" asChild>
-                                <a href="/auth/login">Log In</a>
-                            </Button>
-                            <Button asChild>
-                                <a href="/auth/signup">Sign Up</a>
-                            </Button>
+                            {userAuth.isAuthenticated ? (
+                                <Button variant="ghost" onClick={handleEnterApp}>
+                                    Enter App
+                                </Button>
+                            ) : (
+                                <Button variant="ghost" asChild>
+                                    <a href="/auth/login">Log In</a>
+                                </Button>
+                            )}
+                            {!userAuth.isAuthenticated && (
+                                <Button asChild>
+                                    <a href="/auth/signup">Sign Up</a>
+                                </Button>
+                            )}
                         </div>
                     </div>
                 </div>
@@ -114,9 +198,20 @@ export default function Home() {
                         without writing a single line of code.
                     </p>
                     <div className="flex flex-col sm:flex-row gap-4 justify-center">
-                        <Button size="lg" className="px-8 text-lg" asChild>
-                            <a href="/auth/signup">Get Started Free</a>
-                        </Button>
+                        {userAuth.isAuthenticated ? (
+                            <Button 
+                                size="lg" 
+                                className="px-8 text-lg" 
+                                onClick={handleEnterApp}
+                                disabled={userAuth.isLoading}
+                            >
+                                {userAuth.isLoading ? 'Loading...' : 'Enter App'}
+                            </Button>
+                        ) : (
+                            <Button size="lg" className="px-8 text-lg" asChild>
+                                <a href="/auth/signup">Get Started Free</a>
+                            </Button>
+                        )}
                         <Button
                             size="lg"
                             variant="outline"
