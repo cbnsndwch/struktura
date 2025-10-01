@@ -11,8 +11,7 @@ import {
     FormItem,
     FormLabel,
     FormMessage,
-    Input,
-    Toaster
+    Input
 } from '@cbnsndwch/struktura-shared-ui';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { Eye, EyeOff, Loader2 } from 'lucide-react';
@@ -199,7 +198,6 @@ export default function Login() {
 
     return (
         <>
-            <Toaster />
             <div className="min-h-screen flex items-center justify-center bg-gradient-to-b from-background to-muted/20 p-4">
                 <Card className="w-full max-w-md">
                     <CardHeader className="text-center">

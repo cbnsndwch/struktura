@@ -2,7 +2,13 @@
  * Authentication context provider for React Router 7
  * Manages authentication state, user data, and token refresh across the application
  */
-import { createContext, useContext, useEffect, useState, type ReactNode } from 'react';
+import {
+    createContext,
+    useContext,
+    useEffect,
+    useState,
+    type ReactNode
+} from 'react';
 import { useNavigate } from 'react-router';
 
 import { isAuthenticated } from './auth.js';
@@ -49,7 +55,7 @@ export function AuthProvider({ children }: AuthProviderProps) {
                 // Fetch user data from API
                 const accessToken = localStorage.getItem('access_token');
                 const headers: HeadersInit = accessToken
-                    ? { 'Authorization': `Bearer ${accessToken}` }
+                    ? { Authorization: `Bearer ${accessToken}` }
                     : {};
                 const response = await fetch('/api/auth/me', {
                     credentials: 'include',
@@ -78,7 +84,11 @@ export function AuthProvider({ children }: AuthProviderProps) {
             }
         } catch (err) {
             console.error('Auth check failed:', err);
-            setError(err instanceof Error ? err.message : 'Authentication check failed');
+            setError(
+                err instanceof Error
+                    ? err.message
+                    : 'Authentication check failed'
+            );
             setIsAuthenticatedState(false);
             setUser(null);
         } finally {
@@ -107,9 +117,11 @@ export function AuthProvider({ children }: AuthProviderProps) {
 
     useEffect(() => {
         // Only check auth on client-side
-        if (typeof window !== 'undefined') {
-            checkAuth();
+        if (typeof window === 'undefined') {
+            return;
         }
+
+        checkAuth();
     }, []);
 
     const value: AuthContextValue = {
@@ -121,7 +133,9 @@ export function AuthProvider({ children }: AuthProviderProps) {
         logout
     };
 
-    return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;
+    return (
+        <AuthContext.Provider value={value}>{children}</AuthContext.Provider>
+    );
 }
 
 /**
@@ -130,8 +144,10 @@ export function AuthProvider({ children }: AuthProviderProps) {
  */
 export function useAuth(): AuthContextValue {
     const context = useContext(AuthContext);
-    if (context === undefined) {
+
+    if (!context) {
         throw new Error('useAuth must be used within an AuthProvider');
     }
+
     return context;
 }
