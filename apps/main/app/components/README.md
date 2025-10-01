@@ -9,6 +9,7 @@ This directory contains the navigation components for the Struktura workspace in
 The main sidebar navigation component that displays collections, favorites, and recent items.
 
 **Features:**
+
 - Collapsible sidebar with icon mode
 - Collections list with inline search
 - Favorites section (starred collections)
@@ -18,20 +19,21 @@ The main sidebar navigation component that displays collections, favorites, and 
 - Mobile-responsive with sheet drawer
 
 **Usage:**
+
 ```tsx
 import { WorkspaceNavigation } from './workspace-navigation';
 
 <WorkspaceNavigation
-  workspaceId="workspace-123"
-  workspaceName="My Workspace"
-  collections={collections}
-  recentCollections={recentCollections}
-  favoriteCollections={favoriteCollections}
-  currentCollectionId="collection-456"
-  onSearch={() => setSearchOpen(true)}
-  onToggleFavorite={toggleFavorite}
-  isFavorite={isFavorite}
-/>
+    workspaceId="workspace-123"
+    workspaceName="My Workspace"
+    collections={collections}
+    recentCollections={recentCollections}
+    favoriteCollections={favoriteCollections}
+    currentCollectionId="collection-456"
+    onSearch={() => setSearchOpen(true)}
+    onToggleFavorite={toggleFavorite}
+    isFavorite={isFavorite}
+/>;
 ```
 
 ### CollectionSearch
@@ -39,6 +41,7 @@ import { WorkspaceNavigation } from './workspace-navigation';
 Command palette-style quick search for collections.
 
 **Features:**
+
 - Keyboard shortcut: Cmd/Ctrl+K
 - Search across all collections
 - Grouped results (Favorites, Recent, All)
@@ -46,17 +49,18 @@ Command palette-style quick search for collections.
 - Keyboard navigation
 
 **Usage:**
+
 ```tsx
 import { CollectionSearch } from './collection-search';
 
 <CollectionSearch
-  open={searchOpen}
-  onOpenChange={setSearchOpen}
-  workspaceId="workspace-123"
-  collections={collections}
-  recentCollections={recentCollections}
-  favoriteCollections={favoriteCollections}
-/>
+    open={searchOpen}
+    onOpenChange={setSearchOpen}
+    workspaceId="workspace-123"
+    collections={collections}
+    recentCollections={recentCollections}
+    favoriteCollections={favoriteCollections}
+/>;
 ```
 
 ### ViewSwitcher
@@ -64,20 +68,22 @@ import { CollectionSearch } from './collection-search';
 Toggle between different collection view types.
 
 **Features:**
+
 - Grid, List, Kanban, Calendar views
 - Icon-based interface
 - Tooltips with descriptions
 - Configurable available views
 
 **Usage:**
+
 ```tsx
 import { ViewSwitcher } from './view-switcher';
 
 <ViewSwitcher
-  currentView={currentView}
-  onViewChange={setCurrentView}
-  availableViews={['grid', 'list', 'kanban', 'calendar']}
-/>
+    currentView={currentView}
+    onViewChange={setCurrentView}
+    availableViews={['grid', 'list', 'kanban', 'calendar']}
+/>;
 ```
 
 ### WorkspaceBreadcrumbs
@@ -85,23 +91,28 @@ import { ViewSwitcher } from './view-switcher';
 Hierarchical breadcrumb navigation.
 
 **Features:**
+
 - Shows current location
 - Clickable navigation links
 - Home icon for workspace root
 - Customizable segments
 
 **Usage:**
+
 ```tsx
 import { WorkspaceBreadcrumbs } from './workspace-breadcrumbs';
 
 <WorkspaceBreadcrumbs
-  workspaceId="workspace-123"
-  workspaceName="My Workspace"
-  segments={[
-    { label: 'Products', href: '/workspaces/workspace-123/collections/products' },
-    { label: 'Grid View' }
-  ]}
-/>
+    workspaceId="workspace-123"
+    workspaceName="My Workspace"
+    segments={[
+        {
+            label: 'Products',
+            href: '/workspaces/workspace-123/collections/products'
+        },
+        { label: 'Grid View' }
+    ]}
+/>;
 ```
 
 ### WorkspaceLayout
@@ -109,6 +120,7 @@ import { WorkspaceBreadcrumbs } from './workspace-breadcrumbs';
 Main layout wrapper that combines navigation, breadcrumbs, and content area.
 
 **Features:**
+
 - Integrated sidebar navigation
 - Header with breadcrumbs
 - Content area with Outlet
@@ -116,20 +128,24 @@ Main layout wrapper that combines navigation, breadcrumbs, and content area.
 - Auto-tracking of recent collections
 
 **Usage:**
+
 ```tsx
 import { WorkspaceLayout } from './workspace-layout';
 
 <WorkspaceLayout
-  workspaceId="workspace-123"
-  workspaceName="My Workspace"
-  collections={collections}
-  currentCollectionId="collection-456"
-  breadcrumbSegments={[
-    { label: 'Products', href: '/workspaces/workspace-123/collections/products' }
-  ]}
+    workspaceId="workspace-123"
+    workspaceName="My Workspace"
+    collections={collections}
+    currentCollectionId="collection-456"
+    breadcrumbSegments={[
+        {
+            label: 'Products',
+            href: '/workspaces/workspace-123/collections/products'
+        }
+    ]}
 >
-  {/* Your content here */}
-</WorkspaceLayout>
+    {/* Your content here */}
+</WorkspaceLayout>;
 ```
 
 ## Hooks
@@ -139,22 +155,23 @@ import { WorkspaceLayout } from './workspace-layout';
 Manage keyboard shortcuts for navigation.
 
 **Usage:**
+
 ```tsx
 import { useKeyboardShortcuts } from '../hooks/use-keyboard-shortcuts';
 
 useKeyboardShortcuts([
-  {
-    key: 'k',
-    ctrlOrCmd: true,
-    handler: () => setSearchOpen(true),
-    description: 'Open quick search'
-  },
-  {
-    key: 's',
-    ctrlOrCmd: true,
-    handler: () => saveChanges(),
-    description: 'Save changes'
-  }
+    {
+        key: 'k',
+        ctrlOrCmd: true,
+        handler: () => setSearchOpen(true),
+        description: 'Open quick search'
+    },
+    {
+        key: 's',
+        ctrlOrCmd: true,
+        handler: () => saveChanges(),
+        description: 'Save changes'
+    }
 ]);
 ```
 
@@ -163,21 +180,22 @@ useKeyboardShortcuts([
 Manage favorite/starred collections with localStorage persistence.
 
 **Usage:**
+
 ```tsx
 import { useFavoriteCollections } from '../hooks/use-favorite-collections';
 
 const { favoriteCollections, isFavorite, toggleFavorite, clearFavorites } =
-  useFavoriteCollections(workspaceId);
+    useFavoriteCollections(workspaceId);
 
 // Check if collection is favorited
 const starred = isFavorite('collection-123');
 
 // Toggle favorite status
 toggleFavorite({
-  id: 'collection-123',
-  name: 'Products',
-  slug: 'products',
-  workspaceId: 'workspace-456'
+    id: 'collection-123',
+    name: 'Products',
+    slug: 'products',
+    workspaceId: 'workspace-456'
 });
 ```
 
@@ -186,18 +204,19 @@ toggleFavorite({
 Track recently accessed collections with localStorage persistence.
 
 **Usage:**
+
 ```tsx
 import { useRecentCollections } from '../hooks/use-recent-collections';
 
 const { recentCollections, addRecentCollection, clearRecentCollections } =
-  useRecentCollections(workspaceId);
+    useRecentCollections(workspaceId);
 
 // Add a collection to recent list
 addRecentCollection({
-  id: 'collection-123',
-  name: 'Products',
-  slug: 'products',
-  workspaceId: 'workspace-456'
+    id: 'collection-123',
+    name: 'Products',
+    slug: 'products',
+    workspaceId: 'workspace-456'
 });
 ```
 
@@ -210,6 +229,7 @@ addRecentCollection({
 ## Mobile Support
 
 All navigation components are fully responsive:
+
 - Sidebar collapses to icon mode on mobile
 - Sheet drawer for mobile navigation
 - Touch-friendly interactive elements
