@@ -4,6 +4,7 @@
 import { render, screen, fireEvent } from '@testing-library/react';
 import { vi, describe, it, expect, beforeEach } from 'vitest';
 import { MemoryRouter } from 'react-router';
+import { SidebarProvider } from '@cbnsndwch/struktura-shared-ui';
 
 import type { CollectionSummary } from '../lib/api/workspaces.js';
 
@@ -69,7 +70,9 @@ describe('WorkspaceNavigation', () => {
     it('should render workspace name', () => {
         render(
             <MemoryRouter>
-                <WorkspaceNavigation {...defaultProps} />
+                <SidebarProvider>
+                    <WorkspaceNavigation {...defaultProps} />
+                </SidebarProvider>
             </MemoryRouter>
         );
 
@@ -79,7 +82,9 @@ describe('WorkspaceNavigation', () => {
     it('should render all collections', () => {
         render(
             <MemoryRouter>
-                <WorkspaceNavigation {...defaultProps} />
+                <SidebarProvider>
+                    <WorkspaceNavigation {...defaultProps} />
+                </SidebarProvider>
             </MemoryRouter>
         );
 
@@ -90,7 +95,9 @@ describe('WorkspaceNavigation', () => {
     it('should call onSearch when search button is clicked', () => {
         render(
             <MemoryRouter>
-                <WorkspaceNavigation {...defaultProps} />
+                <SidebarProvider>
+                    <WorkspaceNavigation {...defaultProps} />
+                </SidebarProvider>
             </MemoryRouter>
         );
 
@@ -103,7 +110,9 @@ describe('WorkspaceNavigation', () => {
     it('should filter collections by search query', () => {
         render(
             <MemoryRouter>
-                <WorkspaceNavigation {...defaultProps} />
+                <SidebarProvider>
+                    <WorkspaceNavigation {...defaultProps} />
+                </SidebarProvider>
             </MemoryRouter>
         );
 
@@ -132,7 +141,9 @@ describe('WorkspaceNavigation', () => {
 
         render(
             <MemoryRouter>
-                <WorkspaceNavigation {...props} />
+                <SidebarProvider>
+                    <WorkspaceNavigation {...props} />
+                </SidebarProvider>
             </MemoryRouter>
         );
 
@@ -155,7 +166,9 @@ describe('WorkspaceNavigation', () => {
 
         render(
             <MemoryRouter>
-                <WorkspaceNavigation {...props} />
+                <SidebarProvider>
+                    <WorkspaceNavigation {...props} />
+                </SidebarProvider>
             </MemoryRouter>
         );
 
