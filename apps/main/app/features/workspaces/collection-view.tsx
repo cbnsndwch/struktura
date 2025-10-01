@@ -3,7 +3,7 @@
  */
 import { useState } from 'react';
 import type { MetaFunction, LoaderFunctionArgs } from 'react-router';
-import { useLoaderData, useParams } from 'react-router';
+import { useLoaderData } from 'react-router';
 import { Database, FileText } from 'lucide-react';
 import {
     Card,
@@ -12,9 +12,10 @@ import {
     CardHeader,
     CardTitle
 } from '@cbnsndwch/struktura-shared-ui';
+
 import { ViewSwitcher, type ViewType } from '../../components/view-switcher.js';
 import { WorkspaceLayout } from '../../components/workspace-layout.js';
-import { workspaceApi, type CollectionSummary } from '../../lib/api/index.js';
+import { workspaceApi } from '../../lib/api/index.js';
 import { requireServerAuth } from '../../lib/auth.server.js';
 
 export const meta: MetaFunction<typeof loader> = ({ data }) => {
@@ -27,15 +28,6 @@ export const meta: MetaFunction<typeof loader> = ({ data }) => {
         }
     ];
 };
-
-interface CollectionData {
-    collection: CollectionSummary;
-    workspace: {
-        id: string;
-        name: string;
-    };
-    collections: CollectionSummary[];
-}
 
 export async function loader({ params, request }: LoaderFunctionArgs) {
     // Check authentication
@@ -57,7 +49,7 @@ export async function loader({ params, request }: LoaderFunctionArgs) {
         ]);
 
         // Find the specific collection
-        const collection = collections.find((c) => c.id === collectionId);
+        const collection = collections.find(c => c.id === collectionId);
 
         if (!collection) {
             throw new Response('Collection not found', { status: 404 });
@@ -79,7 +71,9 @@ export async function loader({ params, request }: LoaderFunctionArgs) {
             workspace: null,
             collections: [],
             error:
-                error instanceof Error ? error.message : 'Failed to load collection'
+                error instanceof Error
+                    ? error.message
+                    : 'Failed to load collection'
         };
     }
 }
@@ -87,7 +81,6 @@ export async function loader({ params, request }: LoaderFunctionArgs) {
 export default function CollectionView() {
     const { collection, workspace, collections, error } =
         useLoaderData<typeof loader>();
-    const params = useParams();
     const [currentView, setCurrentView] = useState<ViewType>('grid');
 
     if (error || !collection || !workspace) {
@@ -98,7 +91,9 @@ export default function CollectionView() {
                     <h1 className="text-xl font-semibold mb-2">
                         Unable to load collection
                     </h1>
-                    <p className="text-muted-foreground">{error || 'Collection not found'}</p>
+                    <p className="text-muted-foreground">
+                        {error || 'Collection not found'}
+                    </p>
                 </div>
             </div>
         );
@@ -120,7 +115,9 @@ export default function CollectionView() {
             {/* Collection Header */}
             <div className="flex items-center justify-between">
                 <div>
-                    <h1 className="text-3xl font-bold tracking-tight">{collection.name}</h1>
+                    <h1 className="text-3xl font-bold tracking-tight">
+                        {collection.name}
+                    </h1>
                     {collection.description && (
                         <p className="text-muted-foreground mt-2">
                             {collection.description}
@@ -138,28 +135,41 @@ export default function CollectionView() {
             <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4">
                 <Card>
                     <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-                        <CardTitle className="text-sm font-medium">Total Records</CardTitle>
+                        <CardTitle className="text-sm font-medium">
+                            Total Records
+                        </CardTitle>
                         <FileText className="h-4 w-4 text-muted-foreground" />
                     </CardHeader>
                     <CardContent>
-                        <div className="text-2xl font-bold">{collection.recordCount}</div>
+                        <div className="text-2xl font-bold">
+                            {collection.recordCount}
+                        </div>
                         <p className="text-xs text-muted-foreground">
-                            {collection.recordCount === 1 ? 'record' : 'records'} in collection
+                            {collection.recordCount === 1
+                                ? 'record'
+                                : 'records'}{' '}
+                            in collection
                         </p>
                     </CardContent>
                 </Card>
 
                 <Card>
                     <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-                        <CardTitle className="text-sm font-medium">Last Updated</CardTitle>
+                        <CardTitle className="text-sm font-medium">
+                            Last Updated
+                        </CardTitle>
                         <Database className="h-4 w-4 text-muted-foreground" />
                     </CardHeader>
                     <CardContent>
                         <div className="text-2xl font-bold">
-                            {new Date(collection.lastUpdated).toLocaleDateString()}
+                            {new Date(
+                                collection.lastUpdated
+                            ).toLocaleDateString()}
                         </div>
                         <p className="text-xs text-muted-foreground">
-                            {new Date(collection.lastUpdated).toLocaleTimeString()}
+                            {new Date(
+                                collection.lastUpdated
+                            ).toLocaleTimeString()}
                         </p>
                     </CardContent>
                 </Card>
@@ -175,7 +185,8 @@ export default function CollectionView() {
                         {currentView === 'calendar' && 'Calendar View'}
                     </CardTitle>
                     <CardDescription>
-                        View and manage your collection data in {currentView} format
+                        View and manage your collection data in {currentView}{' '}
+                        format
                     </CardDescription>
                 </CardHeader>
                 <CardContent>
@@ -185,8 +196,9 @@ export default function CollectionView() {
                             Collection view coming soon
                         </h3>
                         <p className="text-muted-foreground max-w-md">
-                            The {currentView} view for displaying and managing collection records
-                            will be implemented in a future update.
+                            The {currentView} view for displaying and managing
+                            collection records will be implemented in a future
+                            update.
                         </p>
                     </div>
                 </CardContent>

@@ -49,7 +49,9 @@ export function WorkspaceBreadcrumbs({
                 <BreadcrumbItem>
                     {segments.length > 0 ? (
                         <BreadcrumbLink asChild>
-                            <Link to={`/workspaces/${workspaceId}`}>{workspaceName}</Link>
+                            <Link to={`/workspaces/${workspaceId}`}>
+                                {workspaceName}
+                            </Link>
                         </BreadcrumbLink>
                     ) : (
                         <BreadcrumbPage>{workspaceName}</BreadcrumbPage>
@@ -67,10 +69,14 @@ export function WorkspaceBreadcrumbs({
                             </BreadcrumbSeparator>
                             <BreadcrumbItem>
                                 {isLast || !segment.href ? (
-                                    <BreadcrumbPage>{segment.label}</BreadcrumbPage>
+                                    <BreadcrumbPage>
+                                        {segment.label}
+                                    </BreadcrumbPage>
                                 ) : (
                                     <BreadcrumbLink asChild>
-                                        <Link to={segment.href}>{segment.label}</Link>
+                                        <Link to={segment.href}>
+                                            {segment.label}
+                                        </Link>
                                     </BreadcrumbLink>
                                 )}
                             </BreadcrumbItem>

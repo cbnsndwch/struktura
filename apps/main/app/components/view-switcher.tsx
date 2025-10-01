@@ -59,14 +59,14 @@ export function ViewSwitcher({
             <ToggleGroup
                 type="single"
                 value={currentView}
-                onValueChange={(value) => {
+                onValueChange={value => {
                     if (value && availableViews.includes(value as ViewType)) {
                         onViewChange(value as ViewType);
                     }
                 }}
                 size={size}
             >
-                {availableViews.map((view) => {
+                {availableViews.map(view => {
                     const config = VIEW_CONFIGS[view];
                     const Icon = config.icon;
 

@@ -4,6 +4,9 @@ export default [
     index('features/workspaces/workspaces.tsx'),
     route(':workspaceId', 'features/workspaces/workspace-details.tsx', [
         // Collection routes within workspace
-        route('collections/:collectionId', 'features/workspaces/collection-view.tsx')
+        route(
+            'collections/:collectionId',
+            'features/workspaces/collection-view.tsx'
+        )
     ])
 ] satisfies RouteConfig;

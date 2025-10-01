@@ -15,7 +15,9 @@ export interface RecentCollection {
 }
 
 export function useRecentCollections(workspaceId: string) {
-    const [recentCollections, setRecentCollections] = useState<RecentCollection[]>([]);
+    const [recentCollections, setRecentCollections] = useState<
+        RecentCollection[]
+    >([]);
 
     // Load recent collections from localStorage
     useEffect(() => {
@@ -24,9 +26,11 @@ export function useRecentCollections(workspaceId: string) {
             try {
                 const allRecent: RecentCollection[] = JSON.parse(stored);
                 const workspaceRecent = allRecent.filter(
-                    (c) => c.workspaceId === workspaceId
+                    c => c.workspaceId === workspaceId
                 );
-                setRecentCollections(workspaceRecent.slice(0, MAX_RECENT_ITEMS));
+                setRecentCollections(
+                    workspaceRecent.slice(0, MAX_RECENT_ITEMS)
+                );
             } catch (err) {
                 console.error('Failed to load recent collections:', err);
                 setRecentCollections([]);
@@ -49,7 +53,7 @@ export function useRecentCollections(workspaceId: string) {
             }
 
             // Remove existing entry if it exists
-            allRecent = allRecent.filter((c) => c.id !== collection.id);
+            allRecent = allRecent.filter(c => c.id !== collection.id);
 
             // Add to beginning
             allRecent.unshift({
@@ -59,22 +63,31 @@ export function useRecentCollections(workspaceId: string) {
 
             // Keep only recent items per workspace
             const workspaceRecent = allRecent.filter(
-                (c) => c.workspaceId === workspaceId
+                c => c.workspaceId === workspaceId
             );
             const otherWorkspaceRecent = allRecent.filter(
-                (c) => c.workspaceId !== workspaceId
+                c => c.workspaceId !== workspaceId
             );
 
             // Limit items
-            const trimmedWorkspaceRecent = workspaceRecent.slice(0, MAX_RECENT_ITEMS);
+            const trimmedWorkspaceRecent = workspaceRecent.slice(
+                0,
+                MAX_RECENT_ITEMS
+            );
             const trimmedOtherRecent = otherWorkspaceRecent.slice(
                 0,
                 MAX_RECENT_ITEMS * 3
             ); // Keep more from other workspaces
 
-            const finalRecent = [...trimmedWorkspaceRecent, ...trimmedOtherRecent];
+            const finalRecent = [
+                ...trimmedWorkspaceRecent,
+                ...trimmedOtherRecent
+            ];
 
-            localStorage.setItem(RECENT_COLLECTIONS_KEY, JSON.stringify(finalRecent));
+            localStorage.setItem(
+                RECENT_COLLECTIONS_KEY,
+                JSON.stringify(finalRecent)
+            );
             setRecentCollections(trimmedWorkspaceRecent);
         },
         [workspaceId]
@@ -87,7 +100,7 @@ export function useRecentCollections(workspaceId: string) {
             try {
                 const allRecent: RecentCollection[] = JSON.parse(stored);
                 const otherWorkspaceRecent = allRecent.filter(
-                    (c) => c.workspaceId !== workspaceId
+                    c => c.workspaceId !== workspaceId
                 );
                 localStorage.setItem(
                     RECENT_COLLECTIONS_KEY,

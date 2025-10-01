@@ -23,12 +23,19 @@ export function useKeyboardShortcuts(shortcuts: KeyboardShortcut[]) {
                 const shiftPressed = event.shiftKey || false;
                 const altPressed = event.altKey || false;
 
-                const keyMatches = event.key.toLowerCase() === shortcut.key.toLowerCase();
-                const ctrlOrCmdMatches = (shortcut.ctrlOrCmd ?? false) === ctrlOrCmdPressed;
+                const keyMatches =
+                    event.key.toLowerCase() === shortcut.key.toLowerCase();
+                const ctrlOrCmdMatches =
+                    (shortcut.ctrlOrCmd ?? false) === ctrlOrCmdPressed;
                 const shiftMatches = (shortcut.shift ?? false) === shiftPressed;
                 const altMatches = (shortcut.alt ?? false) === altPressed;
 
-                if (keyMatches && ctrlOrCmdMatches && shiftMatches && altMatches) {
+                if (
+                    keyMatches &&
+                    ctrlOrCmdMatches &&
+                    shiftMatches &&
+                    altMatches
+                ) {
                     event.preventDefault();
                     shortcut.handler();
                     break;

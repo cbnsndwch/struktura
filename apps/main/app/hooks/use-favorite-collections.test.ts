@@ -3,6 +3,7 @@
  */
 import { renderHook, act } from '@testing-library/react';
 import { describe, it, expect, beforeEach, vi } from 'vitest';
+
 import { useFavoriteCollections } from './use-favorite-collections.js';
 
 describe('useFavoriteCollections', () => {
@@ -21,25 +22,33 @@ describe('useFavoriteCollections', () => {
     });
 
     it('should initialize with empty favorites', () => {
-        const { result } = renderHook(() => useFavoriteCollections(workspaceId));
+        const { result } = renderHook(() =>
+            useFavoriteCollections(workspaceId)
+        );
 
         expect(result.current.favoriteCollections).toEqual([]);
     });
 
     it('should add a collection to favorites', () => {
-        const { result } = renderHook(() => useFavoriteCollections(workspaceId));
+        const { result } = renderHook(() =>
+            useFavoriteCollections(workspaceId)
+        );
 
         act(() => {
             result.current.toggleFavorite(mockCollection);
         });
 
         expect(result.current.favoriteCollections).toHaveLength(1);
-        expect(result.current.favoriteCollections[0].id).toBe(mockCollection.id);
+        expect(result.current.favoriteCollections[0].id).toBe(
+            mockCollection.id
+        );
         expect(result.current.isFavorite(mockCollection.id)).toBe(true);
     });
 
     it('should remove a collection from favorites', () => {
-        const { result } = renderHook(() => useFavoriteCollections(workspaceId));
+        const { result } = renderHook(() =>
+            useFavoriteCollections(workspaceId)
+        );
 
         act(() => {
             result.current.toggleFavorite(mockCollection);
@@ -56,7 +65,9 @@ describe('useFavoriteCollections', () => {
     });
 
     it('should persist favorites to localStorage', () => {
-        const { result } = renderHook(() => useFavoriteCollections(workspaceId));
+        const { result } = renderHook(() =>
+            useFavoriteCollections(workspaceId)
+        );
 
         act(() => {
             result.current.toggleFavorite(mockCollection);
@@ -72,10 +83,17 @@ describe('useFavoriteCollections', () => {
 
     it('should load favorites from localStorage', () => {
         // Pre-populate localStorage
-        const favorites = [{ ...mockCollection, starredAt: new Date().toISOString() }];
-        localStorage.setItem('struktura_favorite_collections', JSON.stringify(favorites));
+        const favorites = [
+            { ...mockCollection, starredAt: new Date().toISOString() }
+        ];
+        localStorage.setItem(
+            'struktura_favorite_collections',
+            JSON.stringify(favorites)
+        );
 
-        const { result } = renderHook(() => useFavoriteCollections(workspaceId));
+        const { result } = renderHook(() =>
+            useFavoriteCollections(workspaceId)
+        );
 
         expect(result.current.favoriteCollections).toHaveLength(1);
         expect(result.current.isFavorite(mockCollection.id)).toBe(true);
@@ -95,16 +113,25 @@ describe('useFavoriteCollections', () => {
             { ...mockCollection, starredAt: new Date().toISOString() },
             { ...otherCollection, starredAt: new Date().toISOString() }
         ];
-        localStorage.setItem('struktura_favorite_collections', JSON.stringify(favorites));
+        localStorage.setItem(
+            'struktura_favorite_collections',
+            JSON.stringify(favorites)
+        );
 
-        const { result } = renderHook(() => useFavoriteCollections(workspaceId));
+        const { result } = renderHook(() =>
+            useFavoriteCollections(workspaceId)
+        );
 
         expect(result.current.favoriteCollections).toHaveLength(1);
-        expect(result.current.favoriteCollections[0].id).toBe(mockCollection.id);
+        expect(result.current.favoriteCollections[0].id).toBe(
+            mockCollection.id
+        );
     });
 
     it('should clear all favorites for workspace', () => {
-        const { result } = renderHook(() => useFavoriteCollections(workspaceId));
+        const { result } = renderHook(() =>
+            useFavoriteCollections(workspaceId)
+        );
 
         act(() => {
             result.current.toggleFavorite(mockCollection);

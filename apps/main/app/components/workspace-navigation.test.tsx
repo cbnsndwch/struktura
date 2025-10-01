@@ -4,8 +4,10 @@
 import { render, screen, fireEvent } from '@testing-library/react';
 import { vi, describe, it, expect, beforeEach } from 'vitest';
 import { MemoryRouter } from 'react-router';
-import { WorkspaceNavigation } from './workspace-navigation.js';
+
 import type { CollectionSummary } from '../lib/api/workspaces.js';
+
+import { WorkspaceNavigation } from './workspace-navigation.js';
 
 // Mock react-router
 vi.mock('react-router', async () => {
@@ -13,7 +15,15 @@ vi.mock('react-router', async () => {
     return {
         ...actual,
         useNavigate: vi.fn(() => vi.fn()),
-        Link: ({ children, to, ...props }: any) => (
+        Link: ({
+            children,
+            to,
+            ...props
+        }: {
+            children: React.ReactNode;
+            to: string;
+            [key: string]: unknown;
+        }) => (
             <a href={to} {...props}>
                 {children}
             </a>
@@ -97,7 +107,9 @@ describe('WorkspaceNavigation', () => {
             </MemoryRouter>
         );
 
-        const searchInput = screen.getByPlaceholderText('Filter collections...');
+        const searchInput = screen.getByPlaceholderText(
+            'Filter collections...'
+        );
         fireEvent.change(searchInput, { target: { value: 'prod' } });
 
         expect(screen.getByText('Products')).toBeInTheDocument();

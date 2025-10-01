@@ -14,9 +14,9 @@ export interface FavoriteCollection {
 }
 
 export function useFavoriteCollections(workspaceId: string) {
-    const [favoriteCollections, setFavoriteCollections] = useState<FavoriteCollection[]>(
-        []
-    );
+    const [favoriteCollections, setFavoriteCollections] = useState<
+        FavoriteCollection[]
+    >([]);
 
     // Load favorites from localStorage
     useEffect(() => {
@@ -25,7 +25,7 @@ export function useFavoriteCollections(workspaceId: string) {
             try {
                 const allFavorites: FavoriteCollection[] = JSON.parse(stored);
                 const workspaceFavorites = allFavorites.filter(
-                    (c) => c.workspaceId === workspaceId
+                    c => c.workspaceId === workspaceId
                 );
                 setFavoriteCollections(workspaceFavorites);
             } catch (err) {
@@ -38,7 +38,7 @@ export function useFavoriteCollections(workspaceId: string) {
     // Check if a collection is favorited
     const isFavorite = useCallback(
         (collectionId: string): boolean => {
-            return favoriteCollections.some((c) => c.id === collectionId);
+            return favoriteCollections.some(c => c.id === collectionId);
         },
         [favoriteCollections]
     );
@@ -57,7 +57,9 @@ export function useFavoriteCollections(workspaceId: string) {
                 }
             }
 
-            const existingIndex = allFavorites.findIndex((c) => c.id === collection.id);
+            const existingIndex = allFavorites.findIndex(
+                c => c.id === collection.id
+            );
 
             if (existingIndex >= 0) {
                 // Remove from favorites
@@ -70,10 +72,13 @@ export function useFavoriteCollections(workspaceId: string) {
                 });
             }
 
-            localStorage.setItem(FAVORITE_COLLECTIONS_KEY, JSON.stringify(allFavorites));
+            localStorage.setItem(
+                FAVORITE_COLLECTIONS_KEY,
+                JSON.stringify(allFavorites)
+            );
 
             const workspaceFavorites = allFavorites.filter(
-                (c) => c.workspaceId === workspaceId
+                c => c.workspaceId === workspaceId
             );
             setFavoriteCollections(workspaceFavorites);
         },
@@ -87,7 +92,7 @@ export function useFavoriteCollections(workspaceId: string) {
             try {
                 const allFavorites: FavoriteCollection[] = JSON.parse(stored);
                 const otherWorkspaceFavorites = allFavorites.filter(
-                    (c) => c.workspaceId !== workspaceId
+                    c => c.workspaceId !== workspaceId
                 );
                 localStorage.setItem(
                     FAVORITE_COLLECTIONS_KEY,

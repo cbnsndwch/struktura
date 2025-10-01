@@ -11,7 +11,6 @@ import {
     Settings,
     Star,
     Clock,
-    ChevronRight,
     MoreHorizontal
 } from 'lucide-react';
 import {
@@ -35,6 +34,7 @@ import {
     Separator,
     ScrollArea
 } from '@cbnsndwch/struktura-shared-ui';
+
 import type { CollectionSummary } from '../lib/api/workspaces.js';
 import type { RecentCollection } from '../hooks/use-recent-collections.js';
 import type { FavoriteCollection } from '../hooks/use-favorite-collections.js';
@@ -47,7 +47,9 @@ interface WorkspaceNavigationProps {
     favoriteCollections: FavoriteCollection[];
     currentCollectionId?: string;
     onSearch: () => void;
-    onToggleFavorite: (collection: Omit<FavoriteCollection, 'starredAt'>) => void;
+    onToggleFavorite: (
+        collection: Omit<FavoriteCollection, 'starredAt'>
+    ) => void;
     isFavorite: (collectionId: string) => boolean;
 }
 
@@ -68,7 +70,7 @@ export function WorkspaceNavigation({
     // Filter collections based on search
     const filteredCollections = searchQuery
         ? collections.filter(
-              (c) =>
+              c =>
                   c.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
                   c.slug.toLowerCase().includes(searchQuery.toLowerCase())
           )
@@ -83,16 +85,15 @@ export function WorkspaceNavigation({
             <SidebarHeader>
                 <SidebarMenu>
                     <SidebarMenuItem>
-                        <SidebarMenuButton
-                            size="lg"
-                            asChild
-                        >
+                        <SidebarMenuButton size="lg" asChild>
                             <Link to={`/workspaces/${workspaceId}`}>
                                 <div className="flex aspect-square size-8 items-center justify-center rounded-lg bg-primary text-primary-foreground">
                                     <Database className="size-4" />
                                 </div>
                                 <div className="flex flex-col gap-0.5 leading-none">
-                                    <span className="font-semibold">{workspaceName}</span>
+                                    <span className="font-semibold">
+                                        {workspaceName}
+                                    </span>
                                     <span className="text-xs text-muted-foreground">
                                         Workspace
                                     </span>
@@ -138,32 +139,44 @@ export function WorkspaceNavigation({
                             <SidebarGroupLabel>Favorites</SidebarGroupLabel>
                             <SidebarGroupContent>
                                 <SidebarMenu>
-                                    {favoriteCollections.slice(0, 5).map((collection) => (
-                                        <SidebarMenuItem key={collection.id}>
-                                            <SidebarMenuButton
-                                                onClick={() =>
-                                                    handleCollectionClick(collection.id)
-                                                }
-                                                isActive={currentCollectionId === collection.id}
-                                                tooltip={collection.name}
+                                    {favoriteCollections
+                                        .slice(0, 5)
+                                        .map(collection => (
+                                            <SidebarMenuItem
+                                                key={collection.id}
                                             >
-                                                <Star className="h-4 w-4 fill-yellow-400 text-yellow-400" />
-                                                <span>{collection.name}</span>
-                                            </SidebarMenuButton>
-                                            <SidebarMenuAction
-                                                onClick={() =>
-                                                    onToggleFavorite({
-                                                        id: collection.id,
-                                                        name: collection.name,
-                                                        slug: collection.slug,
-                                                        workspaceId: workspaceId
-                                                    })
-                                                }
-                                            >
-                                                <Star className="h-4 w-4 fill-yellow-400 text-yellow-400" />
-                                            </SidebarMenuAction>
-                                        </SidebarMenuItem>
-                                    ))}
+                                                <SidebarMenuButton
+                                                    onClick={() =>
+                                                        handleCollectionClick(
+                                                            collection.id
+                                                        )
+                                                    }
+                                                    isActive={
+                                                        currentCollectionId ===
+                                                        collection.id
+                                                    }
+                                                    tooltip={collection.name}
+                                                >
+                                                    <Star className="h-4 w-4 fill-yellow-400 text-yellow-400" />
+                                                    <span>
+                                                        {collection.name}
+                                                    </span>
+                                                </SidebarMenuButton>
+                                                <SidebarMenuAction
+                                                    onClick={() =>
+                                                        onToggleFavorite({
+                                                            id: collection.id,
+                                                            name: collection.name,
+                                                            slug: collection.slug,
+                                                            workspaceId:
+                                                                workspaceId
+                                                        })
+                                                    }
+                                                >
+                                                    <Star className="h-4 w-4 fill-yellow-400 text-yellow-400" />
+                                                </SidebarMenuAction>
+                                            </SidebarMenuItem>
+                                        ))}
                                 </SidebarMenu>
                             </SidebarGroupContent>
                         </SidebarGroup>
@@ -178,38 +191,52 @@ export function WorkspaceNavigation({
                             <SidebarGroupLabel>Recent</SidebarGroupLabel>
                             <SidebarGroupContent>
                                 <SidebarMenu>
-                                    {recentCollections.slice(0, 5).map((collection) => (
-                                        <SidebarMenuItem key={collection.id}>
-                                            <SidebarMenuButton
-                                                onClick={() =>
-                                                    handleCollectionClick(collection.id)
-                                                }
-                                                isActive={currentCollectionId === collection.id}
-                                                tooltip={collection.name}
+                                    {recentCollections
+                                        .slice(0, 5)
+                                        .map(collection => (
+                                            <SidebarMenuItem
+                                                key={collection.id}
                                             >
-                                                <Clock className="h-4 w-4 text-muted-foreground" />
-                                                <span>{collection.name}</span>
-                                            </SidebarMenuButton>
-                                            <SidebarMenuAction
-                                                onClick={() =>
-                                                    onToggleFavorite({
-                                                        id: collection.id,
-                                                        name: collection.name,
-                                                        slug: collection.slug,
-                                                        workspaceId: workspaceId
-                                                    })
-                                                }
-                                            >
-                                                <Star
-                                                    className={`h-4 w-4 ${
-                                                        isFavorite(collection.id)
-                                                            ? 'fill-yellow-400 text-yellow-400'
-                                                            : 'text-muted-foreground'
-                                                    }`}
-                                                />
-                                            </SidebarMenuAction>
-                                        </SidebarMenuItem>
-                                    ))}
+                                                <SidebarMenuButton
+                                                    onClick={() =>
+                                                        handleCollectionClick(
+                                                            collection.id
+                                                        )
+                                                    }
+                                                    isActive={
+                                                        currentCollectionId ===
+                                                        collection.id
+                                                    }
+                                                    tooltip={collection.name}
+                                                >
+                                                    <Clock className="h-4 w-4 text-muted-foreground" />
+                                                    <span>
+                                                        {collection.name}
+                                                    </span>
+                                                </SidebarMenuButton>
+                                                <SidebarMenuAction
+                                                    onClick={() =>
+                                                        onToggleFavorite({
+                                                            id: collection.id,
+                                                            name: collection.name,
+                                                            slug: collection.slug,
+                                                            workspaceId:
+                                                                workspaceId
+                                                        })
+                                                    }
+                                                >
+                                                    <Star
+                                                        className={`h-4 w-4 ${
+                                                            isFavorite(
+                                                                collection.id
+                                                            )
+                                                                ? 'fill-yellow-400 text-yellow-400'
+                                                                : 'text-muted-foreground'
+                                                        }`}
+                                                    />
+                                                </SidebarMenuAction>
+                                            </SidebarMenuItem>
+                                        ))}
                                 </SidebarMenu>
                             </SidebarGroupContent>
                         </SidebarGroup>
@@ -226,7 +253,9 @@ export function WorkspaceNavigation({
                             size="sm"
                             className="ml-auto h-6 w-6 p-0"
                             onClick={() =>
-                                navigate(`/workspaces/${workspaceId}/collections/new`)
+                                navigate(
+                                    `/workspaces/${workspaceId}/collections/new`
+                                )
                             }
                         >
                             <Plus className="h-4 w-4" />
@@ -239,9 +268,9 @@ export function WorkspaceNavigation({
                             <SidebarInput
                                 placeholder="Filter collections..."
                                 value={searchQuery}
-                                onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
-                                    setSearchQuery(e.target.value)
-                                }
+                                onChange={(
+                                    e: React.ChangeEvent<HTMLInputElement>
+                                ) => setSearchQuery(e.target.value)}
                             />
                         </div>
 
@@ -256,13 +285,18 @@ export function WorkspaceNavigation({
                                         </p>
                                     </div>
                                 ) : (
-                                    filteredCollections.map((collection) => (
+                                    filteredCollections.map(collection => (
                                         <SidebarMenuItem key={collection.id}>
                                             <SidebarMenuButton
                                                 onClick={() =>
-                                                    handleCollectionClick(collection.id)
+                                                    handleCollectionClick(
+                                                        collection.id
+                                                    )
                                                 }
-                                                isActive={currentCollectionId === collection.id}
+                                                isActive={
+                                                    currentCollectionId ===
+                                                    collection.id
+                                                }
                                                 tooltip={collection.name}
                                             >
                                                 <Database className="h-4 w-4 text-muted-foreground" />
@@ -284,18 +318,23 @@ export function WorkspaceNavigation({
                                                                 id: collection.id,
                                                                 name: collection.name,
                                                                 slug: collection.slug,
-                                                                workspaceId: workspaceId
+                                                                workspaceId:
+                                                                    workspaceId
                                                             })
                                                         }
                                                     >
                                                         <Star
                                                             className={`mr-2 h-4 w-4 ${
-                                                                isFavorite(collection.id)
+                                                                isFavorite(
+                                                                    collection.id
+                                                                )
                                                                     ? 'fill-yellow-400 text-yellow-400'
                                                                     : ''
                                                             }`}
                                                         />
-                                                        {isFavorite(collection.id)
+                                                        {isFavorite(
+                                                            collection.id
+                                                        )
                                                             ? 'Remove from favorites'
                                                             : 'Add to favorites'}
                                                     </DropdownMenuItem>

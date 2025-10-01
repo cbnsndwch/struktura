@@ -3,7 +3,11 @@
  */
 import { renderHook } from '@testing-library/react';
 import { describe, it, expect, beforeEach, vi } from 'vitest';
-import { useKeyboardShortcuts, getShortcutText } from './use-keyboard-shortcuts.js';
+
+import {
+    useKeyboardShortcuts,
+    getShortcutText
+} from './use-keyboard-shortcuts.js';
 
 describe('useKeyboardShortcuts', () => {
     beforeEach(() => {

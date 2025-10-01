@@ -8,13 +8,18 @@ import {
     SidebarInset,
     SidebarTrigger
 } from '@cbnsndwch/struktura-shared-ui';
-import { WorkspaceNavigation } from './workspace-navigation.js';
-import { WorkspaceBreadcrumbs, type BreadcrumbSegment } from './workspace-breadcrumbs.js';
-import { CollectionSearch } from './collection-search.js';
+
 import { useKeyboardShortcuts } from '../hooks/use-keyboard-shortcuts.js';
 import { useRecentCollections } from '../hooks/use-recent-collections.js';
 import { useFavoriteCollections } from '../hooks/use-favorite-collections.js';
 import type { CollectionSummary } from '../lib/api/workspaces.js';
+
+import { CollectionSearch } from './collection-search.js';
+import {
+    WorkspaceBreadcrumbs,
+    type BreadcrumbSegment
+} from './workspace-breadcrumbs.js';
+import { WorkspaceNavigation } from './workspace-navigation.js';
 
 interface WorkspaceLayoutProps {
     workspaceId: string;
@@ -36,8 +41,7 @@ export function WorkspaceLayout({
     const [searchOpen, setSearchOpen] = useState(false);
 
     // Hooks for managing favorites and recents
-    const { recentCollections, addRecentCollection } =
-        useRecentCollections(workspaceId);
+    const { recentCollections } = useRecentCollections(workspaceId);
     const { favoriteCollections, isFavorite, toggleFavorite } =
         useFavoriteCollections(workspaceId);
 

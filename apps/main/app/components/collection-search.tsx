@@ -13,6 +13,7 @@ import {
     CommandList,
     CommandSeparator
 } from '@cbnsndwch/struktura-shared-ui';
+
 import type { CollectionSummary } from '../lib/api/workspaces.js';
 import type { RecentCollection } from '../hooks/use-recent-collections.js';
 import type { FavoriteCollection } from '../hooks/use-favorite-collections.js';
@@ -45,7 +46,7 @@ export function CollectionSearch({
 
         const query = searchQuery.toLowerCase();
         return collections.filter(
-            (c) =>
+            c =>
                 c.name.toLowerCase().includes(query) ||
                 c.slug.toLowerCase().includes(query) ||
                 c.description?.toLowerCase().includes(query)
@@ -58,7 +59,9 @@ export function CollectionSearch({
 
         const query = searchQuery.toLowerCase();
         return recentCollections.filter(
-            (c) => c.name.toLowerCase().includes(query) || c.slug.toLowerCase().includes(query)
+            c =>
+                c.name.toLowerCase().includes(query) ||
+                c.slug.toLowerCase().includes(query)
         );
     }, [recentCollections, searchQuery]);
 
@@ -68,7 +71,9 @@ export function CollectionSearch({
 
         const query = searchQuery.toLowerCase();
         return favoriteCollections.filter(
-            (c) => c.name.toLowerCase().includes(query) || c.slug.toLowerCase().includes(query)
+            c =>
+                c.name.toLowerCase().includes(query) ||
+                c.slug.toLowerCase().includes(query)
         );
     }, [favoriteCollections, searchQuery]);
 
@@ -101,14 +106,16 @@ export function CollectionSearch({
                 <CommandEmpty>
                     <div className="py-6 text-center">
                         <Search className="mx-auto h-8 w-8 text-muted-foreground mb-2" />
-                        <p className="text-sm text-muted-foreground">No collections found</p>
+                        <p className="text-sm text-muted-foreground">
+                            No collections found
+                        </p>
                     </div>
                 </CommandEmpty>
 
                 {!searchQuery && filteredFavorites.length > 0 && (
                     <>
                         <CommandGroup heading="Favorites">
-                            {filteredFavorites.map((collection) => (
+                            {filteredFavorites.map(collection => (
                                 <CommandItem
                                     key={collection.id}
                                     value={collection.id}
@@ -126,7 +133,7 @@ export function CollectionSearch({
                 {!searchQuery && filteredRecent.length > 0 && (
                     <>
                         <CommandGroup heading="Recent">
-                            {filteredRecent.map((collection) => (
+                            {filteredRecent.map(collection => (
                                 <CommandItem
                                     key={collection.id}
                                     value={collection.id}
@@ -142,8 +149,12 @@ export function CollectionSearch({
                 )}
 
                 {filteredCollections.length > 0 && (
-                    <CommandGroup heading={searchQuery ? 'Search Results' : 'All Collections'}>
-                        {filteredCollections.map((collection) => (
+                    <CommandGroup
+                        heading={
+                            searchQuery ? 'Search Results' : 'All Collections'
+                        }
+                    >
+                        {filteredCollections.map(collection => (
                             <CommandItem
                                 key={collection.id}
                                 value={collection.id}
