@@ -1,9 +1,55 @@
 # Test Status Summary
 
-## Current Status
+## 🚀 E2E Test Migration - IN PROGRESS
+
+We are replacing the failing unit/component tests with E2E tests using Vitest browser mode.
+
+### Infrastructure Status: ✅ Complete
+
+- [x] Installed `@vitest/browser` and `playwright` dependencies
+- [x] Created `vitest.browser.config.ts` configuration
+- [x] Set up E2E utilities in `src/test/e2e-utils.ts`
+- [x] Created E2E setup in `src/test/e2e-setup.ts`
+- [x] Added npm scripts: `test:e2e`, `test:e2e:watch`, `test:e2e:ui`
+- [x] Documented E2E approach in `docs/E2E_TESTING_GUIDE.md`
+
+### Test Files Status: 🔄 1/4 Complete
+
+| File                                              | Status      | Tests     | Notes                                                   |
+| ------------------------------------------------- | ----------- | --------- | ------------------------------------------------------- |
+| `app/features/auth/login.e2e.test.tsx`            | ✅ Complete | 6         | Renders, OAuth, validation, password toggle, navigation |
+| `app/features/auth/signup.e2e.test.tsx`           | ⏳ Pending  | 7 needed  | Replace signup.test.tsx                                 |
+| `app/features/onboarding/onboarding.e2e.test.tsx` | ⏳ Pending  | 13 needed | Replace onboarding.test.tsx                             |
+| `app/features/workspaces/workspaces.e2e.test.tsx` | ⏳ Pending  | 6 needed  | Replace workspaces.test.tsx                             |
+
+### Running E2E Tests
+
+```bash
+# Terminal 1: Start the dev server
+pnpm dev
+
+# Terminal 2: Run E2E tests
+pnpm test:e2e
+```
+
+**Important**: E2E tests require the application server to be running at `http://localhost:3000`.
+
+### Next Steps
+
+1. ✅ Complete login E2E tests
+2. ⏳ Create signup E2E tests
+3. ⏳ Create onboarding E2E tests
+4. ⏳ Create workspaces E2E tests
+5. ⏳ Verify all E2E tests pass
+6. ⏳ Archive or remove old failing unit tests
+7. ⏳ Update CI pipeline to run E2E tests
+
+---
+
+## Current Status (Unit Tests)
 
 **Tests are no longer hanging** ✅ - Fixed performance issues  
-**37 tests failing** ❌ - All rendering empty `<body />`
+**37 tests failing** ❌ - All rendering empty `<body />` (being replaced with E2E)
 
 ## Root Cause
 
@@ -18,13 +64,13 @@ The failing tests have a fundamental architectural mismatch:
 ```tsx
 // Component expects this:
 function WorkspacesPage() {
-  const { workspaces, error } = useLoaderData(); // ❌ Returns undefined in tests
-  // ...
+    const { workspaces, error } = useLoaderData(); // ❌ Returns undefined in tests
+    // ...
 }
 
 // Test does this:
 renderWithRouter(<WorkspacesPage />, {
-  loaderData: { workspaces: [], error: null } // ❌ Doesn't work - loader never called
+    loaderData: { workspaces: [], error: null } // ❌ Doesn't work - loader never called
 });
 ```
 
@@ -49,16 +95,16 @@ import { vi } from 'vitest';
 let mockLoaderData: any = {};
 
 vi.mock('react-router', async () => {
-  const actual = await vi.importActual('react-router');
-  return {
-    ...actual,
-    useLoaderData: () => mockLoaderData,
-  };
+    const actual = await vi.importActual('react-router');
+    return {
+        ...actual,
+        useLoaderData: () => mockLoaderData
+    };
 });
 
 // Expose setter for tests
 global.setMockLoaderData = (data: any) => {
-  mockLoaderData = data;
+    mockLoaderData = data;
 };
 ```
 
@@ -132,15 +178,18 @@ it('renders workspaces', () => {
 ## Recommended Path Forward
 
 **Immediate** (to unblock):
+
 1. Implement Option 1 (global mock) in `src/test/setup.ts`
 2. Update all failing tests to use `global.setMockLoaderData()`
 3. Get CI green
 
 **Short-term**:
+
 1. Implement Option 2 for new tests
 2. Create helper: `renderRoute(path, loader, element)`
 
 **Long-term**:
+
 1. Refactor components following Option 3
 2. Separate presentation from data loading
 3. Test views directly without routing overhead
@@ -148,6 +197,7 @@ it('renders workspaces', () => {
 ## Files to Modify
 
 ### Immediate Fix:
+
 - `apps/main/src/test/setup.ts` - Add global mock
 - `apps/main/app/features/auth/login.test.tsx` - Use global mock (11 tests)
 - `apps/main/app/features/auth/signup.test.tsx` - Use global mock (7 tests)
@@ -155,21 +205,23 @@ it('renders workspaces', () => {
 - `apps/main/app/features/workspaces/workspaces.test.tsx` - Use global mock (6 tests)
 
 ### Component Updates (Long-term):
+
 - `apps/main/app/features/workspaces/workspaces.tsx` - Split into View + Page
-- `apps/main/app/features/auth/login.tsx` - Split into View + Page  
+- `apps/main/app/features/auth/login.tsx` - Split into View + Page
 - `apps/main/app/features/auth/signup.tsx` - Split into View + Page
 - `apps/main/app/features/onboarding/onboarding.tsx` - Split into View + Page
 
 ## Current Test Status
 
-| Suite | Total | Pass | Fail | Skip |
-|-------|-------|------|------|------|
-| test:unit (auth-context) | 5 | 5 ✅ | 0 | 0 |
-| test:components (ProtectedRoute) | 5 | 0 | 0 | 5 ⏭️ |
-| test:features (all) | 41 | 13 | 37 ❌ | 0 |
-| **TOTAL** | **51** | **18** | **37** | **5** |
+| Suite                            | Total  | Pass   | Fail   | Skip  |
+| -------------------------------- | ------ | ------ | ------ | ----- |
+| test:unit (auth-context)         | 5      | 5 ✅   | 0      | 0     |
+| test:components (ProtectedRoute) | 5      | 0      | 0      | 5 ⏭️  |
+| test:features (all)              | 41     | 13     | 37 ❌  | 0     |
+| **TOTAL**                        | **51** | **18** | **37** | **5** |
 
 ### Breakdown of Failures:
+
 - Login component: 11 failures
 - Signup component: 7 failures
 - Onboarding: 13 failures

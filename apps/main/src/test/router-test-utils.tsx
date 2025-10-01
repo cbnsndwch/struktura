@@ -3,7 +3,11 @@
  * Provides helpers to properly render components with router context
  */
 import { type ReactElement } from 'react';
-import { render, type RenderOptions } from '@testing-library/react';
+import {
+    render,
+    type RenderOptions,
+    type RenderResult
+} from '@testing-library/react';
 import {
     createMemoryRouter,
     RouterProvider,
@@ -11,6 +15,10 @@ import {
 } from 'react-router';
 
 import { AuthProvider } from '@/lib/auth-context.js';
+
+type RouterRenderResult = RenderResult & {
+    router: ReturnType<typeof createMemoryRouter>;
+};
 
 interface RouterRenderOptions extends Omit<RenderOptions, 'wrapper'> {
     /**
@@ -58,7 +66,7 @@ interface RouterRenderOptions extends Omit<RenderOptions, 'wrapper'> {
 export function renderWithRouter(
     component: ReactElement,
     options: RouterRenderOptions = {}
-) {
+): RouterRenderResult {
     const {
         initialEntries = ['/'],
         routes,
@@ -110,7 +118,7 @@ export function renderWithRouter(
 export function renderWithAuth(
     component: ReactElement,
     options: Omit<RouterRenderOptions, 'withAuth'> = {}
-) {
+): RouterRenderResult {
     return renderWithRouter(component, {
         ...options,
         withAuth: true
