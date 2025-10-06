@@ -81,7 +81,7 @@
         "glob": "^11.0.3",
         "jsdom": "^27.0.0",
         "prettier": "^3.6.2",
-        "tailwindcss": "^4.1.13",
+        "tailwindcss": "^4.1.14",
         "tailwindcss-animate": "^1.0.7",
         "tsup": "^8.5.0",
         "typescript": "^5.9.2",
