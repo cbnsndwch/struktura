@@ -84,7 +84,7 @@
         "tailwindcss": "^4.1.13",
         "tailwindcss-animate": "^1.0.7",
         "tsup": "^8.5.0",
-        "typescript": "^5.9.2",
+        "typescript": "^5.9.3",
         "vite-plugin-dts": "^4.5.4",
         "vitest": "^3.2.4"
     },
