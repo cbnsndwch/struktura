@@ -18,7 +18,7 @@
         "@cbnsndwch/struktura-schema-contracts": "workspace:*",
         "@nestjs/common": "^11.1.6",
         "@nestjs/core": "^11.1.6",
-        "@nestjs/graphql": "^13.1.0",
+        "@nestjs/graphql": "^13.2.0",
         "@nestjs/mongoose": "^11.0.3",
         "class-transformer": "^0.5.1",
         "class-validator": "^0.14.2",
