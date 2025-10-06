@@ -38,7 +38,7 @@
         "@cbnsndwch/struktura-workspace-contracts": "workspace:*",
         "@cbnsndwch/struktura-workspace-domain": "workspace:*",
         "@hookform/resolvers": "^5.2.2",
-        "@nestjs/apollo": "^13.1.0",
+        "@nestjs/apollo": "^13.2.1",
         "@nestjs/common": "^11.1.6",
         "@nestjs/core": "^11.1.6",
         "@nestjs/graphql": "^13.1.0",
