@@ -108,7 +108,7 @@ importers:
         version: link:../../features/workspace/domain
       '@hookform/resolvers':
         specifier: ^5.2.2
-        version: 5.2.2(react-hook-form@7.63.0(react@19.1.1))
+        version: 5.2.2(react-hook-form@7.65.0(react@19.1.1))
       '@nestjs/apollo':
         specifier: ^13.1.0
         version: 13.1.0(@apollo/server@4.12.2(graphql@16.11.0))(@nestjs/common@11.1.6(class-transformer@0.5.1)(class-validator@0.14.2)(reflect-metadata@0.2.2)(rxjs@7.8.2))(@nestjs/core@11.1.6)(@nestjs/graphql@13.1.0(@nestjs/common@11.1.6(class-transformer@0.5.1)(class-validator@0.14.2)(reflect-metadata@0.2.2)(rxjs@7.8.2))(@nestjs/core@11.1.6)(class-transformer@0.5.1)(class-validator@0.14.2)(graphql@16.11.0)(reflect-metadata@0.2.2))(graphql@16.11.0)
@@ -203,8 +203,8 @@ importers:
         specifier: ^19.1.1
         version: 19.1.1(react@19.1.1)
       react-hook-form:
-        specifier: ^7.63.0
-        version: 7.63.0(react@19.1.1)
+        specifier: ^7.65.0
+        version: 7.65.0(react@19.1.1)
       reflect-metadata:
         specifier: ^0.2.2
         version: 0.2.2
@@ -658,7 +658,7 @@ importers:
         version: link:../contracts
       '@hookform/resolvers':
         specifier: ^5.2.2
-        version: 5.2.2(react-hook-form@7.63.0(react@19.1.1))
+        version: 5.2.2(react-hook-form@7.65.0(react@19.1.1))
       '@radix-ui/react-accordion':
         specifier: ^1.2.12
         version: 1.2.12(@types/react-dom@19.1.9(@types/react@19.1.15))(@types/react@19.1.15)(react-dom@19.1.1(react@19.1.1))(react@19.1.1)
@@ -777,8 +777,8 @@ importers:
         specifier: ^19.1.1
         version: 19.1.1(react@19.1.1)
       react-hook-form:
-        specifier: ^7.63.0
-        version: 7.63.0(react@19.1.1)
+        specifier: ^7.65.0
+        version: 7.65.0(react@19.1.1)
       react-resizable-panels:
         specifier: ^3.0.6
         version: 3.0.6(react-dom@19.1.1(react@19.1.1))(react@19.1.1)
@@ -7050,8 +7050,8 @@ packages:
     peerDependencies:
       react: ^19.1.1
 
-  react-hook-form@7.63.0:
-    resolution: {integrity: sha512-ZwueDMvUeucovM2VjkCf7zIHcs1aAlDimZu2Hvel5C5907gUzMpm4xCrQXtRzCvsBqFjonB4m3x4LzCFI1ZKWA==}
+  react-hook-form@7.65.0:
+    resolution: {integrity: sha512-xtOzDz063WcXvGWaHgLNrNzlsdFgtUWcb32E6WFaGTd7kPZG3EeDusjdZfUsPwKCKVXy1ZlntifaHZ4l8pAsmw==}
     engines: {node: '>=18.0.0'}
     peerDependencies:
       react: ^16.8.0 || ^17 || ^18 || ^19
@@ -9500,10 +9500,10 @@ snapshots:
     dependencies:
       graphql: 16.11.0
 
-  '@hookform/resolvers@5.2.2(react-hook-form@7.63.0(react@19.1.1))':
+  '@hookform/resolvers@5.2.2(react-hook-form@7.65.0(react@19.1.1))':
     dependencies:
       '@standard-schema/utils': 0.3.0
-      react-hook-form: 7.63.0(react@19.1.1)
+      react-hook-form: 7.65.0(react@19.1.1)
 
   '@humanfs/core@0.19.1': {}
 
@@ -15155,7 +15155,7 @@ snapshots:
       react: 19.1.1
       scheduler: 0.26.0
 
-  react-hook-form@7.63.0(react@19.1.1):
+  react-hook-form@7.65.0(react@19.1.1):
     dependencies:
       react: 19.1.1
 
