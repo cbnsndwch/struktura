@@ -5,16 +5,15 @@ import { MongooseModule } from '@nestjs/mongoose';
     imports: [
         MongooseModule.forRootAsync({
             useFactory: () => ({
-                uri:
-                    process.env.DATABASE_URL ||
-                    'mongodb://localhost:27017/struktura-dev',
+                uri: process.env.DATABASE_URL!,
                 // Connection options
                 maxPoolSize: 10,
-                serverSelectionTimeoutMS: 2000, // Reduced timeout
+                serverSelectionTimeoutMS: 10000, // Increased timeout
+                connectTimeoutMS: 10000,
                 socketTimeoutMS: 45000,
                 bufferCommands: false,
                 // Don't fail fast in development
-                retryAttempts: 2, // Reduced retries
+                retryAttempts: 3,
                 retryDelay: 1000,
                 // Allow the app to start without waiting for DB
                 lazyConnection: true

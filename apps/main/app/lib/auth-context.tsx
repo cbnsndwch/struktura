@@ -1,25 +1,13 @@
 /**
  * Authentication context provider for React Router 7
- * Manages authentication state, user data, and token refresh across the application
+ *
+ * Updated to use Better Auth for session-based authentication.
+ * Manages authentication state, user data across the application.
  */
-import {
-    createContext,
-    useContext,
-    useEffect,
-    useState,
-    type ReactNode
-} from 'react';
+import { createContext, useContext, useEffect, type ReactNode } from 'react';
 import { useNavigate } from 'react-router';
 
-import { isAuthenticated } from './auth.js';
-
-export interface AuthUser {
-    id: string;
-    email: string;
-    name: string;
-    roles: string[];
-    emailVerified: boolean;
-}
+import { useSession, signOut, type AuthUser } from './auth-client.js';
 
 export interface AuthContextValue {
     isAuthenticated: boolean;
@@ -36,100 +24,57 @@ interface AuthProviderProps {
     children: ReactNode;
 }
 
+/**
+ * AuthProvider component that wraps the application with authentication context.
+ *
+ * Uses Better Auth's useSession hook for automatic session management:
+ * - Sessions are stored in httpOnly cookies (more secure than localStorage)
+ * - Automatic session refresh when near expiration
+ * - Real-time session state updates
+ */
 export function AuthProvider({ children }: AuthProviderProps) {
-    const [isAuthenticatedState, setIsAuthenticatedState] = useState(false);
-    const [isLoading, setIsLoading] = useState(true);
-    const [user, setUser] = useState<AuthUser | null>(null);
-    const [error, setError] = useState<string | null>(null);
     const navigate = useNavigate();
 
-    const checkAuth = async () => {
-        setIsLoading(true);
-        setError(null);
+    // Better Auth's useSession hook handles all session state management
+    const {
+        data: session,
+        isPending: isLoading,
+        error: sessionError,
+        refetch: checkAuth
+    } = useSession();
 
-        try {
-            const authenticated = isAuthenticated();
-            setIsAuthenticatedState(authenticated);
-
-            if (authenticated) {
-                // Fetch user data from API
-                const accessToken = localStorage.getItem('access_token');
-                const headers: HeadersInit = accessToken
-                    ? { Authorization: `Bearer ${accessToken}` }
-                    : {};
-                const response = await fetch('/api/auth/me', {
-                    credentials: 'include',
-                    headers
-                });
-
-                if (response.ok) {
-                    const userData = await response.json();
-                    setUser({
-                        id: userData.id,
-                        email: userData.email,
-                        name: userData.name,
-                        roles: userData.roles || [],
-                        emailVerified: userData.emailVerified || false
-                    });
-                } else if (response.status === 401) {
-                    // Token expired or invalid
-                    setIsAuthenticatedState(false);
-                    setUser(null);
-                    // Clear invalid tokens
-                    localStorage.removeItem('access_token');
-                    localStorage.removeItem('refresh_token');
-                }
-            } else {
-                setUser(null);
-            }
-        } catch (err) {
-            console.error('Auth check failed:', err);
-            setError(
-                err instanceof Error
-                    ? err.message
-                    : 'Authentication check failed'
-            );
-            setIsAuthenticatedState(false);
-            setUser(null);
-        } finally {
-            setIsLoading(false);
-        }
-    };
+    const isAuthenticated = !!session?.user;
+    const user = session?.user ?? null;
+    const error = sessionError?.message ?? null;
 
     const logout = async () => {
         try {
-            // Call logout API
-            await fetch('/api/auth/logout', {
-                method: 'POST',
-                credentials: 'include'
-            });
+            // Better Auth signOut clears the session cookie
+            await signOut();
         } catch (err) {
-            console.error('Logout API call failed:', err);
+            console.error('Logout failed:', err);
         } finally {
-            // Clear local state regardless of API call result
-            localStorage.removeItem('access_token');
-            localStorage.removeItem('refresh_token');
-            setIsAuthenticatedState(false);
-            setUser(null);
             navigate('/auth/login');
         }
     };
 
+    // Handle session expiration
     useEffect(() => {
-        // Only check auth on client-side
-        if (typeof window === 'undefined') {
-            return;
+        if (!isLoading && !isAuthenticated && !sessionError) {
+            // Session expired or not present - could redirect to login
+            // Uncomment if you want automatic redirect on session loss:
+            // navigate('/auth/login');
         }
-
-        checkAuth();
-    }, []);
+    }, [isLoading, isAuthenticated, sessionError, navigate]);
 
     const value: AuthContextValue = {
-        isAuthenticated: isAuthenticatedState,
+        isAuthenticated,
         isLoading,
         user,
         error,
-        checkAuth,
+        checkAuth: async () => {
+            await checkAuth();
+        },
         logout
     };
 
@@ -141,6 +86,23 @@ export function AuthProvider({ children }: AuthProviderProps) {
 /**
  * Hook to access authentication context
  * Must be used within an AuthProvider
+ *
+ * @example
+ * ```tsx
+ * function Profile() {
+ *   const { user, isLoading, logout } = useAuth();
+ *
+ *   if (isLoading) return <Spinner />;
+ *   if (!user) return <Navigate to="/auth/login" />;
+ *
+ *   return (
+ *     <div>
+ *       <h1>Welcome, {user.name}</h1>
+ *       <button onClick={logout}>Sign Out</button>
+ *     </div>
+ *   );
+ * }
+ * ```
  */
 export function useAuth(): AuthContextValue {
     const context = useContext(AuthContext);
@@ -151,3 +113,9 @@ export function useAuth(): AuthContextValue {
 
     return context;
 }
+
+/**
+ * Re-export auth client utilities for convenience
+ */
+export { signIn, signUp, signOut, useSession } from './auth-client.js';
+export type { AuthUser } from './auth-client.js';
