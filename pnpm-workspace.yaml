@@ -46,7 +46,7 @@ catalog:
   dotenv: ^17.2.3
   globals: ^16.5.0
   jsep: ^1.4.0
-  glob: ^11.0.3
+  glob: ^11.1.0
   cpy-cli: ^6.0.0
 
   # Node Types
@@ -172,7 +172,7 @@ catalogs:
     graphql-subscriptions: ^3.0.0
 
     # Database
-    mongoose: ^8.18.2
+    mongoose: ^8.20.2
     mongodb-memory-server: ^10.4.1
 
     # Authentication
