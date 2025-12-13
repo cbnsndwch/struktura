@@ -1,45 +1,38 @@
 import { Module } from '@nestjs/common';
-import { MongooseModule } from '@nestjs/mongoose';
-import { JwtModule } from '@nestjs/jwt';
-import { PassportModule } from '@nestjs/passport';
+import { getConnectionToken } from '@nestjs/mongoose';
 import { ThrottlerModule } from '@nestjs/throttler';
+import type { Connection } from 'mongoose';
 
-import { AuthController } from './controllers/auth.controller.js';
-import { AuthService } from './services/auth.service.js';
-
-// Schemas
-import { User, UserSchema } from './entities/user.entity.js';
+import { PreferencesController } from './controllers/preferences.controller.js';
 import {
-    RefreshToken,
-    RefreshTokenSchema
-} from './entities/refresh-token.entity.js';
-
-// Strategies
-import { JwtStrategy } from './strategies/jwt.strategy.js';
-// import { GoogleStrategy } from './strategies/google.strategy.js'; // Temporarily disabled - requires env vars
-// import { GitHubStrategy } from './strategies/github.strategy.js'; // Temporarily disabled due to decorator issue
+    PreferencesService,
+    MONGODB_DATABASE
+} from './services/preferences.service.js';
 
 // Guards
-import { JwtAuthGuard } from './guards/jwt-auth.guard.js';
+import { BetterAuthGuard } from './guards/better-auth.guard.js';
 import { RolesGuard } from './guards/roles.guard.js';
 
+/**
+ * AuthModule - Authentication domain module
+ *
+ * Better Auth handles core authentication at the Express level (mounted in main.ts):
+ * - POST /api/auth/sign-up/email - User registration
+ * - POST /api/auth/sign-in/email - User login
+ * - POST /api/auth/sign-out - User logout
+ * - POST /api/auth/request-password-reset - Password reset request
+ * - POST /api/auth/reset-password - Password reset
+ * - GET /api/auth/session - Get current session
+ * - GET /api/auth/token - Get JWT token (with jwt plugin)
+ * - GET /api/auth/jwks - Get JWKS public keys
+ *
+ * This module provides:
+ * - BetterAuthGuard for protecting routes with @UseGuards()
+ * - PreferencesController for app-specific user preferences (stored in BA's user collection)
+ * - RolesGuard for role-based access control
+ */
 @Module({
     imports: [
-        // MongoDB schemas
-        MongooseModule.forFeature([
-            { name: User.name, schema: UserSchema },
-            { name: RefreshToken.name, schema: RefreshTokenSchema }
-        ]),
-
-        // Passport
-        PassportModule,
-
-        // JWT configuration
-        JwtModule.register({
-            secret: process.env.JWT_SECRET!,
-            signOptions: { expiresIn: '15m' }
-        }),
-
         // Rate limiting
         ThrottlerModule.forRoot([
             {
@@ -50,19 +43,25 @@ import { RolesGuard } from './guards/roles.guard.js';
             {
                 name: 'medium',
                 ttl: 60000, // 1 minute
-                limit: 20 // 20 requests per minute for auth endpoints
+                limit: 20 // 20 requests per minute
             }
         ])
     ],
-    controllers: [AuthController],
+    controllers: [PreferencesController],
     providers: [
-        AuthService,
-        JwtStrategy,
-        // GoogleStrategy, // Temporarily disabled
-        // GitHubStrategy, // Temporarily disabled
-        JwtAuthGuard,
+        // Provide MongoDB database instance from Mongoose connection
+        // This is used by PreferencesService to access the ba_user collection
+        {
+            provide: MONGODB_DATABASE,
+            useFactory: (connection: Connection) => {
+                return connection.getClient().db();
+            },
+            inject: [getConnectionToken()]
+        },
+        PreferencesService,
+        BetterAuthGuard,
         RolesGuard
     ],
-    exports: [AuthService, JwtAuthGuard, RolesGuard]
+    exports: [PreferencesService, BetterAuthGuard, RolesGuard]
 })
 export class AuthModule {}

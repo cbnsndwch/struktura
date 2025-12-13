@@ -1,92 +1,104 @@
 import { Resolver, Query, Mutation, Args } from '@nestjs/graphql';
 import { UseGuards } from '@nestjs/common';
 
-import { JwtAuthGuard } from '../guards/jwt-auth.guard.js';
-import { CurrentUser } from '../decorators/current-user.decorator.js';
-import { User, UserPreferencesType } from '../entities/user.entity.js';
-import {
-    RegisterDto,
-    LoginDto,
-    UpdatePreferencesDto
-} from '../dto/auth.dto.js';
-import { AuthService } from '../services/auth.service.js';
+import { BetterAuthGuard, type BetterAuthUser } from '../guards/better-auth.guard.js';
+import { BetterAuthCurrentUser } from '../decorators/better-auth-user.decorator.js';
+import { UserPreferencesType } from '../entities/user.entity.js';
+import { UpdatePreferencesDto } from '../dto/index.js';
+import { PreferencesService, type PreferencesUser } from '../services/preferences.service.js';
 
 /**
- * Example GraphQL resolver using the consolidated User model
- * This shows how the same User class works as both DTO validation and GraphQL schema
+ * GraphQL ObjectType for User (Better Auth compatible)
+ * Using a simplified type that matches BA user structure
  */
-@Resolver(() => User)
+import { ObjectType, Field, ID } from '@nestjs/graphql';
+
+@ObjectType('User', { description: 'User account information from Better Auth' })
+export class UserType {
+    @Field(() => ID)
+    id!: string;
+
+    @Field()
+    email!: string;
+
+    @Field()
+    name!: string;
+
+    @Field()
+    emailVerified!: boolean;
+
+    @Field(() => [String], { nullable: true })
+    roles?: string[];
+
+    @Field(() => UserPreferencesType, { nullable: true })
+    preferences?: UserPreferencesType;
+
+    @Field()
+    createdAt!: Date;
+
+    @Field()
+    updatedAt!: Date;
+}
+
+/**
+ * Convert PreferencesUser to UserType for GraphQL
+ */
+function toUserType(user: PreferencesUser): UserType {
+    const userType = new UserType();
+    userType.id = user.id;
+    userType.email = user.email;
+    userType.name = user.name;
+    userType.emailVerified = user.emailVerified;
+    userType.roles = user.roles ? user.roles.split(',').map((r) => r.trim()) : undefined;
+    userType.preferences = user.preferences;
+    userType.createdAt = user.createdAt;
+    userType.updatedAt = user.updatedAt;
+    return userType;
+}
+
+/**
+ * User GraphQL resolver for Better Auth
+ *
+ * Authentication (register, login, logout) is handled by Better Auth at the Express level.
+ * This resolver provides GraphQL access to user data and preferences.
+ */
+@Resolver(() => UserType)
 export class UserResolver {
-    constructor(private authService: AuthService) {}
+    constructor(private preferencesService: PreferencesService) {}
 
     /**
      * Get current user profile
-     * Uses User class as GraphQL ObjectType
      */
-    @Query(() => User)
-    @UseGuards(JwtAuthGuard)
-    async me(@CurrentUser() user: User): Promise<User> {
-        // The User class automatically handles GraphQL field mapping
-        return user;
-    }
-
-    /**
-     * Register a new user
-     * Uses RegisterDto (derived from User) for input validation
-     * Returns User object for GraphQL response
-     */
-    @Mutation(() => User)
-    async register(@Args('input') input: RegisterDto): Promise<User> {
-        // RegisterDto provides validation, User provides GraphQL output schema
-        // return this.authService.register(input);
-
-        // Placeholder implementation
-        const user = new User();
-        user.email = input.email;
-        user.name = input.name;
-        user.isVerified = false;
-        user.roles = ['editor'];
-        user.createdAt = new Date();
-        user.updatedAt = new Date();
-        return user;
-    }
-
-    /**
-     * User login
-     * Uses LoginDto for input validation
-     */
-    @Mutation(() => String) // or create AuthResponse GraphQL type
-    async login(@Args('input') input: LoginDto): Promise<string> {
-        // LoginDto provides validation
-        // return this.authService.login(input);
-
-        // Placeholder implementation
-        // eslint-disable-next-line @typescript-eslint/no-unused-vars
-        const { email, password } = input;
-        return 'jwt-token-here';
+    @Query(() => UserType)
+    @UseGuards(BetterAuthGuard)
+    async me(@BetterAuthCurrentUser() user: BetterAuthUser): Promise<UserType> {
+        // Fetch full user with preferences from BA collection
+        const fullUser = await this.preferencesService.getUser(user.id);
+        return toUserType(fullUser);
     }
 
     /**
      * Update user preferences
      */
-    @Mutation(() => User)
-    @UseGuards(JwtAuthGuard)
+    @Mutation(() => UserType)
+    @UseGuards(BetterAuthGuard)
     async updatePreferences(
-        @CurrentUser() user: User,
+        @BetterAuthCurrentUser() user: BetterAuthUser,
         @Args('input') input: UpdatePreferencesDto
-    ): Promise<User> {
-        return this.authService.updatePreferences(user.id, input);
+    ): Promise<UserType> {
+        const updatedUser = await this.preferencesService.updatePreferences(user.id, input);
+        return toUserType(updatedUser);
     }
 
     /**
-     * Get user preferences
+     * Get user preferences only
      */
     @Query(() => UserPreferencesType, { nullable: true })
-    @UseGuards(JwtAuthGuard)
+    @UseGuards(BetterAuthGuard)
     async preferences(
-        @CurrentUser() user: User
+        @BetterAuthCurrentUser() user: BetterAuthUser
     ): Promise<UserPreferencesType | null> {
-        const prefs = await this.authService.getPreferences(user.id);
+        const prefs = await this.preferencesService.getPreferences(user.id);
         return prefs ? { theme: prefs.theme } : null;
     }
 }
