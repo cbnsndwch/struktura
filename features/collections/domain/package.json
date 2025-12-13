@@ -16,24 +16,24 @@
         "@cbnsndwch/struktura-collections-contracts": "workspace:*",
         "@cbnsndwch/struktura-shared-contracts": "workspace:*",
         "@cbnsndwch/struktura-schema-contracts": "workspace:*",
-        "@nestjs/common": "^11.1.6",
-        "@nestjs/core": "^11.1.6",
-        "@nestjs/graphql": "^13.1.0",
-        "@nestjs/mongoose": "^11.0.3",
-        "class-transformer": "^0.5.1",
-        "class-validator": "^0.14.2",
-        "graphql": "^16.11.0",
-        "jsep": "^1.4.0",
-        "mongoose": "^8.18.2"
+        "@nestjs/common": "catalog:backend",
+        "@nestjs/core": "catalog:backend",
+        "@nestjs/graphql": "catalog:backend",
+        "@nestjs/mongoose": "catalog:backend",
+        "class-transformer": "catalog:",
+        "class-validator": "catalog:",
+        "graphql": "catalog:backend",
+        "jsep": "catalog:",
+        "mongoose": "catalog:backend"
     },
     "devDependencies": {
         "@cbnsndwch/struktura-eslint-config": "workspace:*",
         "@cbnsndwch/struktura-tsconfig": "workspace:*",
-        "@types/node": "^22.10.5",
-        "eslint": "^9.39.2",
-        "tsup": "^8.5.1",
-        "typescript": "^5.9.3",
-        "vitest": "^4.0.15"
+        "@types/node": "catalog:",
+        "eslint": "catalog:",
+        "tsup": "catalog:",
+        "typescript": "catalog:",
+        "vitest": "catalog:"
     },
     "peerDependencies": {
         "@nestjs/common": "^11.0.0",

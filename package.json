@@ -35,25 +35,25 @@
         "test:telegram": "tsx ./scripts/test-telegram-bot.ts"
     },
     "devDependencies": {
-        "@changesets/cli": "^2.29.7",
-        "@eslint/js": "^9.39.2",
-        "@types/node": "^22.18.6",
-        "change-case": "^5.4.4",
-        "conventional-changelog-cli": "^5.0.0",
-        "dotenv": "^17.2.2",
-        "eslint": "^9.39.2",
-        "eslint-config-prettier": "^10.1.8",
-        "eslint-import-resolver-typescript": "^4.4.4",
-        "eslint-plugin-import": "^2.32.0",
-        "eslint-plugin-prettier": "^5.5.4",
-        "globals": "^16.5.0",
-        "http-server": "^14.1.1",
-        "npm-check-updates": "^19.0.0",
-        "prettier": "^3.7.4",
-        "tsx": "^4.21.0",
-        "typescript": "^5.9.3",
-        "typescript-eslint": "^8.49.0",
-        "turbo": "^2.5.8"
+        "@changesets/cli": "catalog:",
+        "@eslint/js": "catalog:",
+        "@types/node": "catalog:",
+        "change-case": "catalog:",
+        "conventional-changelog-cli": "catalog:",
+        "dotenv": "catalog:",
+        "eslint": "catalog:",
+        "eslint-config-prettier": "catalog:",
+        "eslint-import-resolver-typescript": "catalog:",
+        "eslint-plugin-import": "catalog:",
+        "eslint-plugin-prettier": "catalog:",
+        "globals": "catalog:",
+        "http-server": "catalog:",
+        "npm-check-updates": "catalog:",
+        "prettier": "catalog:",
+        "tsx": "catalog:",
+        "turbo": "catalog:",
+        "typescript": "catalog:",
+        "typescript-eslint": "catalog:"
     },
     "jest": {
         "projects": [
@@ -82,7 +82,22 @@
             "braces": ">=3.0.3",
             "micromatch": ">=4.0.8",
             "@conventional-changelog/git-client": ">=2.0.0"
-        }
+        },
+        "ignoredBuiltDependencies": [
+            "@apollo/protobufjs",
+            "@nestjs/core",
+            "@scarf/scarf",
+            "@tailwindcss/oxide",
+            "core-js"
+        ],
+        "onlyBuiltDependencies": [
+            "@swc/core",
+            "bcrypt",
+            "esbuild",
+            "mongodb-memory-server",
+            "protobufjs",
+            "unrs-resolver"
+        ]
     },
     "packageManager": "pnpm@10.17.1+sha512.17c560fca4867ae9473a3899ad84a88334914f379be46d455cbf92e5cf4b39d34985d452d2583baf19967fa76cb5c17bc9e245529d0b98745721aa7200ecaf7a"
 }
