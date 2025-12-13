@@ -1,14 +1,24 @@
 /**
  * @jest-environment jsdom
  */
-import { render, screen, fireEvent } from '@testing-library/react';
-import { vi, describe, it, expect, beforeEach } from 'vitest';
+import { render, screen, fireEvent, cleanup } from '@testing-library/react';
+import { vi, describe, it, expect, beforeEach, afterEach } from 'vitest';
 import { MemoryRouter } from 'react-router';
 import { SidebarProvider } from '@cbnsndwch/struktura-shared-ui';
 
 import type { CollectionSummary } from '../lib/api/workspaces.js';
 
 import { WorkspaceNavigation } from './workspace-navigation.js';
+
+// Mock useIsMobile to always return false (desktop mode) for stable tests
+vi.mock('@cbnsndwch/struktura-shared-ui', async importOriginal => {
+    const actual =
+        await importOriginal<typeof import('@cbnsndwch/struktura-shared-ui')>();
+    return {
+        ...actual,
+        useIsMobile: () => false
+    };
+});
 
 // Mock react-router
 vi.mock('react-router', async () => {
@@ -65,6 +75,16 @@ describe('WorkspaceNavigation', () => {
 
     beforeEach(() => {
         vi.clearAllMocks();
+        // Ensure window dimensions are set for desktop mode
+        Object.defineProperty(window, 'innerWidth', {
+            writable: true,
+            configurable: true,
+            value: 1024
+        });
+    });
+
+    afterEach(() => {
+        cleanup();
     });
 
     it('should render workspace name', () => {

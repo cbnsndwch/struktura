@@ -21,8 +21,8 @@ export default defineConfig({
         // Optimized test execution
         testTimeout: 10000,
         hookTimeout: 10000,
-        // Reuse environment for faster tests (trade-off: less isolation)
-        isolate: false,
+        // Enable isolation to prevent mock leakage between test files
+        isolate: true,
         // Run test files sequentially to avoid overwhelming the system
         fileParallelism: false
     },
