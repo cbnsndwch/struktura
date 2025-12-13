@@ -27,6 +27,7 @@
     },
     "dependencies": {
         "@apollo/server": "catalog:backend",
+        "@as-integrations/express5": "catalog:backend",
         "@cbnsndwch/struktura-auth-contracts": "workspace:*",
         "@cbnsndwch/struktura-auth-domain": "workspace:*",
         "@cbnsndwch/struktura-collections-contracts": "workspace:*",
