@@ -970,11 +970,11 @@ services:
             - /bin/bash
             - -c
             - |
-                mongodump --uri="$$MONGODB_URI" --gzip --archive=/backup/struktura-$(date +%Y%m%d).gz
+                mongodump --uri="$$DATABASE_URL" --gzip --archive=/backup/struktura-$(date +%Y%m%d).gz
                 # Optional: Upload to cloud storage
                 # aws s3 cp /backup/struktura-$(date +%Y%m%d).gz s3://struktura-backups/mongodb/
         environment:
-            - MONGODB_URI_FILE=/run/secrets/mongodb-uri
+            - DATABASE_URL_FILE=/run/secrets/mongodb-uri
         secrets:
             - mongodb-uri
         volumes:

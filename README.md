@@ -228,7 +228,7 @@ Tasks are configured in `turbo.json`:
 
 1. **Production Environment Variables**:
     - `DATABASE_URL` - MongoDB connection string
-    - `JWT_SECRET` - JWT signing secret
+    - `BETTER_AUTH_SECRET` - Secret for session cookie encryption (min 32 chars)
     - `PORT` - Application server port (default: 3000)
     - `NODE_ENV` - Environment (development/production)
 
