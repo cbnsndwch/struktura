@@ -37,7 +37,7 @@ import {
 } from '@cbnsndwch/struktura-shared-ui';
 
 import { workspaceApi, type Workspace } from '../../lib/api/index.js';
-import { requireAuth } from '../../lib/auth.js';
+import { requireAuth, useAuthGuard } from '../../lib/auth.js';
 import {
     shouldShowOnboarding,
     startOnboarding,
@@ -118,9 +118,7 @@ export default function WorkspacesPage() {
     // Client-side authentication check and redirect
     useEffect(() => {
         if (typeof window !== 'undefined') {
-            import('../../lib/auth.js').then(({ useAuthGuard }) => {
-                useAuthGuard();
-            });
+            useAuthGuard();
         }
     }, []);
 
