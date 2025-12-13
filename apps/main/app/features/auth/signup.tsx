@@ -28,6 +28,7 @@ import {
 import { PasswordStrengthIndicator } from '../../components/auth/PasswordStrengthIndicator.js';
 import OAuthButtons from '../../components/auth/OAuthButtons.js';
 import { redirectIfAuthenticated } from '../../lib/auth.js';
+import { signUp } from '../../lib/auth-client.js';
 
 export const meta: MetaFunction = () => {
     return [
@@ -68,26 +69,17 @@ export default function Signup() {
         setError(null);
 
         try {
-            const response = await fetch('/api/auth/register', {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json'
-                },
-                body: JSON.stringify({
-                    email: data.email,
-                    name: data.name,
-                    password: data.password
-                })
+            const result = await signUp.email({
+                email: data.email,
+                name: data.name,
+                password: data.password
             });
 
-            if (!response.ok) {
-                const errorData = await response.json();
-                throw new Error(errorData.message || 'Registration failed');
+            if (result.error) {
+                throw new Error(result.error.message || 'Registration failed');
             }
 
             // Registration successful
-            await response.json();
-
             // Store email for potential resend verification
             localStorage.setItem('pendingVerificationEmail', data.email);
 
