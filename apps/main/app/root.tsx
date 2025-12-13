@@ -9,7 +9,7 @@ import {
     isRouteErrorResponse,
     type LoaderFunctionArgs
 } from 'react-router';
-import { ThemeProvider } from '@cbnsndwch/struktura-shared-ui';
+import { ThemeProvider, Toaster } from '@cbnsndwch/struktura-shared-ui';
 
 import { AuthProvider } from './lib/auth-context.js';
 import './app.css';
@@ -106,6 +106,7 @@ export function Layout({ children }: { children: React.ReactNode }) {
             </head>
             <body className="flex flex-col min-h-screen">
                 <ThemeProvider>{children}</ThemeProvider>
+                <Toaster />
                 <ScrollRestoration />
                 <Scripts />
             </body>
