@@ -172,7 +172,7 @@ catalogs:
     graphql-subscriptions: ^3.0.0
 
     # Database
-    mongoose: ^8.20.2
+    mongoose: ^9.0.1
     mongodb-memory-server: ^10.4.1
 
     # Authentication
