@@ -16,7 +16,7 @@ function decodeJWT(token: string): JWTPayload | null {
     try {
         const base64Url = token.split('.')[1];
         if (!base64Url) return null;
-        
+
         const base64 = base64Url.replace(/-/g, '+').replace(/_/g, '/');
         const jsonPayload = decodeURIComponent(
             atob(base64)
@@ -24,7 +24,7 @@ function decodeJWT(token: string): JWTPayload | null {
                 .map(c => '%' + ('00' + c.charCodeAt(0).toString(16)).slice(-2))
                 .join('')
         );
-        
+
         return JSON.parse(jsonPayload) as JWTPayload;
     } catch {
         return null;
@@ -37,13 +37,13 @@ function decodeJWT(token: string): JWTPayload | null {
 export function isTokenExpired(token: string): boolean {
     const payload = decodeJWT(token);
     if (!payload || !payload.exp) return true;
-    
+
     // Check if token is expired (with 30 second buffer)
     const expirationTime = payload.exp * 1000;
     const currentTime = Date.now();
     const buffer = 30 * 1000; // 30 seconds
-    
-    return currentTime >= (expirationTime - buffer);
+
+    return currentTime >= expirationTime - buffer;
 }
 
 /**
@@ -54,7 +54,7 @@ export function isAuthenticated(): boolean {
         // During SSR, we can't check localStorage
         return false;
     }
-    
+
     try {
         // First check localStorage (primary)
         const accessToken = localStorage.getItem('access_token');
@@ -66,22 +66,25 @@ export function isAuthenticated(): boolean {
             // Token expired, clear it
             localStorage.removeItem('access_token');
         }
-        
+
         // Fallback: check cookies for users who block localStorage
         const cookies = document.cookie
             .split(';')
             .map(cookie => cookie.trim().split('='))
-            .reduce((acc, [key, value]) => {
-                if (key && value) {
-                    acc[key] = decodeURIComponent(value);
-                }
-                return acc;
-            }, {} as Record<string, string>);
-            
+            .reduce(
+                (acc, [key, value]) => {
+                    if (key && value) {
+                        acc[key] = decodeURIComponent(value);
+                    }
+                    return acc;
+                },
+                {} as Record<string, string>
+            );
+
         if (cookies.access_token && !isTokenExpired(cookies.access_token)) {
             return true;
         }
-        
+
         return false;
     } catch {
         return false;
@@ -94,21 +97,24 @@ export function isAuthenticated(): boolean {
  */
 export function requireAuth(request: Request) {
     const url = new URL(request.url);
-    
+
     // Skip auth check during SSR - we'll handle it client-side
     if (typeof window === 'undefined') {
         return null;
     }
-    
+
     if (!isAuthenticated()) {
         // Preserve the intended destination
         const redirectUrl = new URL('/auth/login', url.origin);
         if (url.pathname !== '/auth/login') {
-            redirectUrl.searchParams.set('redirectTo', url.pathname + url.search);
+            redirectUrl.searchParams.set(
+                'redirectTo',
+                url.pathname + url.search
+            );
         }
         throw redirect(redirectUrl.toString());
     }
-    
+
     return null;
 }
 
@@ -130,9 +136,8 @@ export const PUBLIC_ROUTES = [
  * Check if a route is public (doesn't require authentication)
  */
 export function isPublicRoute(pathname: string): boolean {
-    return PUBLIC_ROUTES.some(route => 
-        pathname === route || 
-        pathname.startsWith(route + '/')
+    return PUBLIC_ROUTES.some(
+        route => pathname === route || pathname.startsWith(route + '/')
     );
 }
 
@@ -140,19 +145,22 @@ export function isPublicRoute(pathname: string): boolean {
  * Redirect authenticated users away from auth pages
  * Use this in auth page loaders
  */
-export function redirectIfAuthenticated(request: Request, defaultRedirect = '/workspaces') {
-    if (typeof window !== 'undefined' && isAuthenticated()) {
-        const url = new URL(request.url);
-        const redirectTo = url.searchParams.get('redirectTo') || defaultRedirect;
-        throw redirect(redirectTo);
+export function redirectIfAuthenticated(
+    request: Request,
+    defaultRedirect = '/workspaces'
+) {
+    if (typeof window === 'undefined' || !isAuthenticated()) {
+        return null;
     }
-    
-    return null;
+
+    const url = new URL(request.url);
+    const redirectTo = url.searchParams.get('redirectTo') || defaultRedirect;
+    throw redirect(redirectTo);
 }
 
 /**
  * Client-side authentication check with redirect
- * Use this in useEffect hooks for immediate client-side protection  
+ * Use this in useEffect hooks for immediate client-side protection
  */
 export function useAuthGuard(redirectTo = '/auth/login') {
     if (typeof window !== 'undefined' && !isAuthenticated()) {
@@ -199,7 +207,7 @@ export async function refreshAccessToken(): Promise<boolean> {
         }
 
         const data = await response.json();
-        
+
         if (data.tokens?.accessToken) {
             localStorage.setItem('access_token', data.tokens.accessToken);
             if (data.tokens.refreshToken) {
@@ -234,7 +242,7 @@ export async function checkAuthWithRefresh(): Promise<boolean> {
 
     // If not authenticated, try to refresh
     const refreshed = await refreshAccessToken();
-    
+
     // Check authentication again after refresh attempt
     return refreshed && isAuthenticated();
 }

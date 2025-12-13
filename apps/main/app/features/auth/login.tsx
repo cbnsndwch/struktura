@@ -1,3 +1,11 @@
+import { zodResolver } from '@hookform/resolvers/zod';
+import { Eye, EyeOff, Loader2 } from 'lucide-react';
+import { useCallback, useEffect, useState, type ChangeEvent } from 'react';
+import { useForm } from 'react-hook-form';
+import type { LoaderFunctionArgs, MetaFunction } from 'react-router';
+import { useNavigate, useSearchParams } from 'react-router';
+import { toast } from 'sonner';
+
 import {
     Alert,
     Button,
@@ -13,17 +21,10 @@ import {
     FormMessage,
     Input
 } from '@cbnsndwch/struktura-shared-ui';
-import { zodResolver } from '@hookform/resolvers/zod';
-import { Eye, EyeOff, Loader2 } from 'lucide-react';
-import { useCallback, useEffect, useState, type ChangeEvent } from 'react';
-import { useForm } from 'react-hook-form';
-import type { MetaFunction, LoaderFunctionArgs } from 'react-router';
-import { useNavigate, useSearchParams } from 'react-router';
-import { toast } from 'sonner';
 
-import OAuthButtons from '../../components/auth/OAuthButtons.js';
-import { loginSchema, type LoginFormData } from '../../lib/validations/auth.js';
-import { redirectIfAuthenticated } from '../../lib/auth.js';
+import OAuthButtons from '@/components/auth/OAuthButtons.js';
+import { redirectIfAuthenticated } from '@/lib/auth.js';
+import { loginSchema, type LoginFormData } from '@/lib/validations/auth.js';
 
 export const meta: MetaFunction = () => {
     return [
@@ -43,12 +44,14 @@ export async function loader({ request }: LoaderFunctionArgs) {
 }
 
 export default function Login() {
-    const [isLoading, setIsLoading] = useState(false);
-    const [showPassword, setShowPassword] = useState(false);
-    const [error, setError] = useState<string | null>(null);
-    const [showForgotPassword, setShowForgotPassword] = useState(false);
     const navigate = useNavigate();
     const [searchParams] = useSearchParams();
+
+    const [isLoading, setIsLoading] = useState(false);
+    const [error, setError] = useState<string | null>(null);
+
+    const [showPassword, setShowPassword] = useState(false);
+    const [showForgotPassword, setShowForgotPassword] = useState(false);
 
     const form = useForm<LoginFormData>({
         resolver: zodResolver(loginSchema),
