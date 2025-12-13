@@ -193,7 +193,7 @@ Enhanced `turbo.json` configuration:
 
 **Node.js Dependencies:**
 ```yaml
-- uses: actions/setup-node@v4
+- uses: actions/setup-node@v6
   with:
     cache: 'pnpm'
     cache-dependency-path: pnpm-lock.yaml
