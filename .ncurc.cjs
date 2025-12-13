@@ -4,12 +4,12 @@
 module.exports = {
     reject: [
         // we'll move to Node 24 manually when it's time
-        '@types/node',
-
-        // Nest does not yet support Apollo Server v5
-        '@apollo/server'
+        '@types/node'
     ],
 
     packageManager: 'pnpm',
-    deep: true
+
+    // Use workspaces instead of deep to support pnpm catalogs
+    // deep: true is incompatible with --workspaces
+    workspaces: true
 };
