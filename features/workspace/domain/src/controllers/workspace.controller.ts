@@ -10,7 +10,7 @@ import {
     UseGuards
 } from '@nestjs/common';
 
-import { JwtAuthGuard } from '@cbnsndwch/struktura-auth-domain';
+import { BetterAuthGuard } from '@cbnsndwch/struktura-auth-domain';
 
 import { WorkspaceRole } from '../entities/index.js';
 import {
@@ -33,7 +33,7 @@ interface AuthenticatedRequest extends Request {
 }
 
 @Controller('api/workspaces')
-@UseGuards(JwtAuthGuard)
+@UseGuards(BetterAuthGuard)
 export class WorkspaceController {
     constructor(private readonly workspaceService: WorkspaceService) {}
 

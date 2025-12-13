@@ -3,12 +3,14 @@ import {
     NotFoundException,
     ConflictException,
     ForbiddenException,
-    BadRequestException
+    BadRequestException,
+    Inject
 } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
+import type { Db } from 'mongodb';
 import { Model, Types } from 'mongoose';
 
-import { User, UserDocument } from '@cbnsndwch/struktura-auth-domain';
+import { MONGODB_DATABASE } from '@cbnsndwch/struktura-auth-domain';
 
 import {
     Workspace,
@@ -23,14 +25,29 @@ import {
     UpdateMemberRoleDto
 } from '../dto/index.js';
 
+/**
+ * Better Auth user document shape (minimal fields needed for workspace operations)
+ */
+interface BetterAuthUserDocument {
+    _id: string;
+    email: string;
+    name: string;
+}
+
 @Injectable()
 export class WorkspaceService {
     constructor(
         @InjectModel(Workspace.name)
         private workspaceModel: Model<WorkspaceDocument>,
-        @InjectModel(User.name)
-        private userModel: Model<UserDocument>
+        @Inject(MONGODB_DATABASE) private readonly db: Db
     ) {}
+
+    /**
+     * Get the Better Auth users collection
+     */
+    private get usersCollection() {
+        return this.db.collection<BetterAuthUserDocument>('ba_user');
+    }
 
     /**
      * Create a new workspace
@@ -204,10 +221,8 @@ export class WorkspaceService {
             WorkspaceRole.ADMIN
         ]);
 
-        // Find user by email
-        const user = await this.userModel
-            .findOne({ email: inviteMemberDto.email })
-            .exec();
+        // Find user by email in Better Auth users collection
+        const user = await this.usersCollection.findOne({ email: inviteMemberDto.email });
 
         if (!user) {
             throw new NotFoundException('User not found');
@@ -222,9 +237,9 @@ export class WorkspaceService {
             throw new ConflictException('User is already a member');
         }
 
-        // Add member
+        // Add member - BA uses string _id, convert to ObjectId for workspace schema
         workspace.members.push({
-            user: user._id as Types.ObjectId,
+            user: new Types.ObjectId(user._id),
             role: inviteMemberDto.role,
             invitedAt: new Date()
         });
