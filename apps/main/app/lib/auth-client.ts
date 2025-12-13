@@ -29,9 +29,14 @@ export const {
     signOut,
     useSession,
     getSession,
+    resetPassword,
+    requestPasswordReset,
     // Social auth methods
     signIn: { social: signInWithSocial }
 } = authClient;
+
+// Alias for consistency with other naming conventions
+export const forgetPassword = requestPasswordReset;
 
 /**
  * Type definitions for Better Auth session
