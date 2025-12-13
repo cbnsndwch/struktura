@@ -638,8 +638,8 @@ jobs:
     test:
         runs-on: ubuntu-24.04
         steps:
-            - uses: actions/checkout@v3
-            - uses: actions/setup-node@v3
+            - uses: actions/checkout@v6
+            - uses: actions/setup-node@v6
               with:
                   node-version: '22'
 

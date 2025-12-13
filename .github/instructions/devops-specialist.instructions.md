@@ -535,7 +535,7 @@ jobs:
         outputs:
             app-changed: ${{ steps.changes.outputs.app }}
         steps:
-            - uses: actions/checkout@v4
+            - uses: actions/checkout@v6
             - uses: dorny/paths-filter@v2
               id: changes
               with:
@@ -547,10 +547,10 @@ jobs:
     test:
         runs-on: ubuntu-24.04
         steps:
-            - uses: actions/checkout@v4
+            - uses: actions/checkout@v6
 
             - name: Setup Node.js
-              uses: actions/setup-node@v4
+              uses: actions/setup-node@v6
               with:
                   node-version: '22'
                   cache: 'pnpm'
@@ -571,7 +571,7 @@ jobs:
         if: needs.detect-changes.outputs.app-changed == 'true'
         runs-on: ubuntu-24.04
         steps:
-            - uses: actions/checkout@v4
+            - uses: actions/checkout@v6
 
             - name: Build and push Docker image
               uses: docker/build-push-action@v4
