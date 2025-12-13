@@ -23,6 +23,7 @@ import {
 } from '@cbnsndwch/struktura-shared-ui';
 
 import OAuthButtons from '@/components/auth/OAuthButtons.js';
+import { signIn, forgetPassword } from '@/lib/auth-client.js';
 import { redirectIfAuthenticated } from '@/lib/auth.js';
 import { loginSchema, type LoginFormData } from '@/lib/validations/auth.js';
 
@@ -67,44 +68,22 @@ export default function Login() {
             setError(null);
 
             try {
-                const response = await fetch('/api/auth/login', {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json'
-                    },
-                    body: JSON.stringify(data)
+                const result = await signIn.email({
+                    email: data.email,
+                    password: data.password
                 });
 
-                if (!response.ok) {
-                    const errorData = await response.json();
-                    throw new Error(errorData.message || 'Login failed');
+                if (result.error) {
+                    throw new Error(result.error.message || 'Login failed');
                 }
 
-                // Login successful
-                const result = await response.json();
+                // Login successful - Better Auth handles session cookies automatically
+                // Get redirect URL from query params
+                const redirectTo =
+                    searchParams.get('redirectTo') || '/dashboard';
 
-                // Store tokens and redirect to dashboard or intended destination
-                if (result.tokens?.accessToken) {
-                    localStorage.setItem(
-                        'access_token',
-                        result.tokens.accessToken
-                    );
-                    if (result.tokens.refreshToken) {
-                        localStorage.setItem(
-                            'refresh_token',
-                            result.tokens.refreshToken
-                        );
-                    }
-
-                    // Get redirect URL from query params
-                    const redirectTo =
-                        searchParams.get('redirectTo') || '/dashboard';
-
-                    toast.success('Successfully signed in! Redirecting...');
-                    navigate(redirectTo, { replace: true });
-                } else {
-                    throw new Error('Invalid response from server');
-                }
+                toast.success('Successfully signed in! Redirecting...');
+                navigate(redirectTo, { replace: true });
             } catch (err) {
                 const errorMessage =
                     err instanceof Error
@@ -132,18 +111,14 @@ export default function Login() {
         setError(null);
 
         try {
-            const response = await fetch('/api/auth/password-reset/request', {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json'
-                },
-                body: JSON.stringify({ email })
+            const result = await forgetPassword({
+                email,
+                redirectTo: `${window.location.origin}/auth/reset-password`
             });
 
-            if (!response.ok) {
-                const errorData = await response.json();
+            if (result.error) {
                 throw new Error(
-                    errorData.message || 'Failed to send reset email'
+                    result.error.message || 'Failed to send reset email'
                 );
             }
 
