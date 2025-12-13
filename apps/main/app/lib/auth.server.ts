@@ -52,7 +52,7 @@ interface JWTPayload {
  */
 function verifyToken(token: string): ServerAuthUser | null {
     try {
-        const secret = process.env.JWT_SECRET || 'your-secret-key';
+        const secret = process.env.JWT_SECRET!;
         const decoded = jwt.verify(token, secret) as JWTPayload;
         
         return {
