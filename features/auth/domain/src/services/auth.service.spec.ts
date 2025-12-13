@@ -25,27 +25,26 @@ describe('AuthService - Unit Tests (Isolated Business Logic)', () => {
     let mockJwtService: any;
 
     beforeEach(async () => {
-        // Create Mongoose-compatible mock constructors
-        const createMockUser = () => ({
-            _id: 'newUserId123',
-            save: vi.fn().mockResolvedValue({ _id: 'newUserId123' })
-        });
+        // Create Mongoose-compatible mock constructors using function constructor pattern
+        // Required for vitest 4.x which requires proper constructor functions
+        function MockUserModel(this: any) {
+            this._id = 'newUserId123';
+            this.save = vi.fn().mockResolvedValue({ _id: 'newUserId123' });
+        }
 
-        const createMockRefreshToken = () => ({
-            token: 'refreshToken123',
-            save: vi.fn().mockResolvedValue({ token: 'refreshToken123' })
-        });
+        function MockRefreshTokenModel(this: any) {
+            this.token = 'refreshToken123';
+            this.save = vi.fn().mockResolvedValue({ token: 'refreshToken123' });
+        }
 
         // Mock the constructor function
-        mockUserModel = vi.fn().mockImplementation(createMockUser);
+        mockUserModel = MockUserModel as any;
         mockUserModel.findOne = vi.fn();
         mockUserModel.findById = vi.fn();
         mockUserModel.create = vi.fn();
         mockUserModel.updateOne = vi.fn();
 
-        mockRefreshTokenModel = vi
-            .fn()
-            .mockImplementation(createMockRefreshToken);
+        mockRefreshTokenModel = MockRefreshTokenModel as any;
         mockRefreshTokenModel.create = vi.fn();
         mockRefreshTokenModel.findOne = vi.fn();
         mockRefreshTokenModel.deleteMany = vi.fn();
