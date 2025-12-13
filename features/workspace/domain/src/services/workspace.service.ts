@@ -222,7 +222,9 @@ export class WorkspaceService {
         ]);
 
         // Find user by email in Better Auth users collection
-        const user = await this.usersCollection.findOne({ email: inviteMemberDto.email });
+        const user = await this.usersCollection.findOne({
+            email: inviteMemberDto.email
+        });
 
         if (!user) {
             throw new NotFoundException('User not found');

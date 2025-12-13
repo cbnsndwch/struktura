@@ -63,8 +63,9 @@ export function ProtectedRoute({
 
         // Check role-based access if required
         if (requiredRoles.length > 0 && user) {
+            const userRoles = user.roles ?? '';
             const hasRequiredRole = requiredRoles.some(role =>
-                user.roles.includes(role)
+                userRoles.includes(role)
             );
 
             if (!hasRequiredRole) {

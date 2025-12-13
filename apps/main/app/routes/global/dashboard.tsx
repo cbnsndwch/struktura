@@ -7,9 +7,9 @@ import { requireServerAuth } from '../../lib/auth.server.js';
  * Dashboard route - redirects authenticated users to their workspaces
  * This provides a consistent entry point after login
  */
-export async function loader({ request }: LoaderFunctionArgs) {
+export async function loader(args: LoaderFunctionArgs) {
     // Check authentication - will redirect to login if not authenticated
-    requireServerAuth(request);
+    await requireServerAuth(args);
 
     // TODO: In the future, this could:
     // 1. Check if user has a default workspace and redirect there

@@ -1,7 +1,10 @@
 import { Resolver, Query, Mutation, Args } from '@nestjs/graphql';
 import { UseGuards } from '@nestjs/common';
 
-import { BetterAuthGuard, BetterAuthUserId } from '@cbnsndwch/struktura-auth-domain';
+import {
+    BetterAuthGuard,
+    BetterAuthUserId
+} from '@cbnsndwch/struktura-auth-domain';
 
 import {
     Workspace,

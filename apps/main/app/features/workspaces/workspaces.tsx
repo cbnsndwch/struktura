@@ -37,7 +37,7 @@ import {
 } from '@cbnsndwch/struktura-shared-ui';
 
 import { workspaceApi, type Workspace } from '../../lib/api/index.js';
-import { requireAuth, useAuthGuard } from '../../lib/auth.js';
+import { requireServerAuth } from '../../lib/auth.server.js';
 import {
     shouldShowOnboarding,
     startOnboarding,
@@ -55,9 +55,9 @@ export const meta: MetaFunction = () => {
     ];
 };
 
-export async function loader({ request }: LoaderFunctionArgs) {
-    // Check authentication - will redirect to login if not authenticated
-    requireAuth(request);
+export async function loader(args: LoaderFunctionArgs) {
+    // Check authentication - will redirect to login if not authenticated (uses Better Auth session)
+    await requireServerAuth(args);
 
     try {
         const workspaces = await workspaceApi.getUserWorkspaces();
@@ -70,28 +70,6 @@ export async function loader({ request }: LoaderFunctionArgs) {
         };
     } catch (error) {
         console.error('Failed to load workspaces:', error);
-
-        // Handle authentication errors gracefully
-        if (error instanceof Error && error.message.includes('Unauthorized')) {
-            // During SSR, this is expected if user isn't authenticated yet
-            // The client will re-fetch with proper authentication headers
-            if (typeof window === 'undefined') {
-                return {
-                    workspaces: [],
-                    error: null, // Don't show error during SSR
-                    needsAuth: true,
-                    shouldShowOnboardingFlow: false
-                };
-            } else {
-                // On client side, this means user needs to login
-                return {
-                    workspaces: [],
-                    error: 'Please log in to view your workspaces',
-                    needsAuth: true,
-                    shouldShowOnboardingFlow: false
-                };
-            }
-        }
 
         return {
             workspaces: [],
@@ -111,16 +89,10 @@ export default function WorkspacesPage() {
     const navigate = useNavigate();
     const [viewMode, setViewMode] = useState<ViewMode>('grid');
     const [searchQuery, setSearchQuery] = useState('');
-    const [workspaces, setWorkspaces] = useState(initialData.workspaces);
-    const [error, setError] = useState(initialData.error);
-    const [isLoading, setIsLoading] = useState(false);
 
-    // Client-side authentication check and redirect
-    useEffect(() => {
-        if (typeof window !== 'undefined') {
-            useAuthGuard();
-        }
-    }, []);
+    // Use data directly from server loader (authenticated via Better Auth session)
+    const workspaces = initialData.workspaces;
+    const error = initialData.error;
 
     // Check if onboarding should be shown for new users or if it's already active
     useEffect(() => {
@@ -145,50 +117,6 @@ export default function WorkspacesPage() {
             }
         }
     }, [initialData.shouldShowOnboardingFlow, workspaces.length, navigate]);
-
-    // Client-side re-fetch if authentication is needed
-    useEffect(() => {
-        if (initialData.needsAuth && typeof window !== 'undefined') {
-            // Check if we have auth token on client side
-            const hasToken = localStorage.getItem('access_token');
-            if (hasToken) {
-                // Re-fetch workspaces with authentication
-                const refetchWorkspaces = async () => {
-                    setIsLoading(true);
-                    try {
-                        const fetchedWorkspaces =
-                            await workspaceApi.getUserWorkspaces();
-                        setWorkspaces(fetchedWorkspaces);
-                        setError(null);
-                    } catch (fetchError) {
-                        console.error(
-                            'Failed to refetch workspaces:',
-                            fetchError
-                        );
-                        if (
-                            fetchError instanceof Error &&
-                            fetchError.message.includes('Unauthorized')
-                        ) {
-                            setError('Please log in to view your workspaces');
-                            // Optionally redirect to login
-                            // navigate('/auth/login');
-                        } else {
-                            setError(
-                                fetchError instanceof Error
-                                    ? fetchError.message
-                                    : 'Failed to load workspaces'
-                            );
-                        }
-                    } finally {
-                        setIsLoading(false);
-                    }
-                };
-                refetchWorkspaces();
-            } else {
-                setError('Please log in to view your workspaces');
-            }
-        }
-    }, [initialData.needsAuth]);
 
     // Filter workspaces based on search query
     const filteredWorkspaces = workspaces.filter(
@@ -240,30 +168,10 @@ export default function WorkspacesPage() {
         );
     }
 
-    if (isLoading) {
-        return (
-            <div className="min-h-screen bg-background">
-                <div className="container mx-auto px-4 py-8">
-                    <div className="max-w-md mx-auto text-center">
-                        <div className="mb-4">
-                            <Database className="h-12 w-12 text-muted-foreground mx-auto animate-pulse" />
-                        </div>
-                        <h1 className="text-xl font-semibold mb-2">
-                            Loading workspaces...
-                        </h1>
-                        <p className="text-muted-foreground">
-                            Please wait while we fetch your workspaces
-                        </p>
-                    </div>
-                </div>
-            </div>
-        );
-    }
-
     return (
         <div className="min-h-screen bg-background">
             {/* Header */}
-            <div className="border-b bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
+            <div className="border-b bg-background/95 backdrop-blur supports-backdrop-filter:bg-background/60">
                 <div className="container mx-auto px-4 py-4">
                     <div className="flex items-center justify-between">
                         <div>

@@ -24,7 +24,7 @@ import {
 
 import OAuthButtons from '@/components/auth/OAuthButtons.js';
 import { signIn, forgetPassword } from '@/lib/auth-client.js';
-import { redirectIfAuthenticated } from '@/lib/auth.js';
+import { redirectIfServerAuthenticated } from '@/lib/auth.server.js';
 import { loginSchema, type LoginFormData } from '@/lib/validations/auth.js';
 
 export const meta: MetaFunction = () => {
@@ -38,9 +38,9 @@ export const meta: MetaFunction = () => {
     ];
 };
 
-export async function loader({ request }: LoaderFunctionArgs) {
-    // Redirect authenticated users to workspaces
-    redirectIfAuthenticated(request);
+export async function loader(args: LoaderFunctionArgs) {
+    // Redirect authenticated users to workspaces (uses Better Auth session)
+    await redirectIfServerAuthenticated(args);
     return null;
 }
 

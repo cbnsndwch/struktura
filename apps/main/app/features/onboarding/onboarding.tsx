@@ -10,7 +10,7 @@ import {
     Progress
 } from '@cbnsndwch/struktura-shared-ui';
 
-import { requireAuth } from '../../lib/auth.js';
+import { requireServerAuth } from '../../lib/auth.server.js';
 import { apiClient } from '../../lib/api/client.js';
 
 import {
@@ -36,9 +36,9 @@ export const meta: MetaFunction = () => {
     ];
 };
 
-export async function loader({ request }: LoaderFunctionArgs) {
-    // Ensure user is authenticated before accessing onboarding
-    requireAuth(request);
+export async function loader(args: LoaderFunctionArgs) {
+    // Ensure user is authenticated before accessing onboarding (uses Better Auth session)
+    await requireServerAuth(args);
     return null;
 }
 
@@ -218,7 +218,7 @@ export default function Onboarding() {
     };
 
     return (
-        <div className="min-h-screen bg-gradient-to-b from-background to-muted/20">
+        <div className="min-h-screen bg-linear-to-b from-background to-muted/20">
             {/* Header with progress and skip */}
             {state.currentStep !== 'success' && (
                 <div className="border-b bg-background/80 backdrop-blur-sm sticky top-0 z-50">

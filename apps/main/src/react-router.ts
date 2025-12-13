@@ -1,14 +1,54 @@
 import { join } from 'node:path';
 
 import type { NestExpressApplication } from '@nestjs/platform-express';
-import { static as expressStatic } from 'express';
+import { static as expressStatic, type Request } from 'express';
 import { createRequestHandler } from '@react-router/express';
+import { fromNodeHeaders } from 'better-auth/node';
+
+import { getAuth, type Auth } from '@cbnsndwch/struktura-auth-domain';
 
 // Default paths handled by NestJS (excluding specific React Router API routes)
 const DEFAULT_NEST_PATHS = ['/graphql', '/api'];
 
 // Path to the React Router server build
 const BUILD_PATH = join(process.cwd(), 'build', 'server', 'index.js');
+
+/**
+ * App Load Context - passed to React Router loaders/actions
+ * This provides access to NestJS services and Better Auth from React Router
+ */
+export interface AppLoadContext {
+    [key: string]: unknown;
+    app: NestExpressApplication;
+    auth: Auth;
+    /**
+     * Get the current session from Better Auth
+     * Returns null if not authenticated
+     */
+    getSession: () => Promise<{
+        session: {
+            id: string;
+            userId: string;
+            token: string;
+            expiresAt: Date;
+            ipAddress?: string | null;
+            userAgent?: string | null;
+            createdAt: Date;
+            updatedAt: Date;
+        };
+        user: {
+            id: string;
+            email: string;
+            name: string;
+            emailVerified: boolean;
+            image?: string | null;
+            createdAt: Date;
+            updatedAt: Date;
+            roles?: string | null;
+            preferences?: string | null;
+        };
+    } | null>;
+}
 
 export async function mountReactRouterHandler(
     nestApp: NestExpressApplication,
@@ -29,8 +69,22 @@ export async function mountReactRouterHandler(
 
     const reactRouterHandler = createRequestHandler({
         build: viteDevServer ? build : build.default,
-        getLoadContext() {
-            return { app: nestApp };
+        getLoadContext(req: Request): AppLoadContext {
+            const auth = getAuth();
+            return {
+                app: nestApp,
+                auth,
+                getSession: async () => {
+                    try {
+                        const session = await auth.api.getSession({
+                            headers: fromNodeHeaders(req.headers)
+                        });
+                        return session;
+                    } catch {
+                        return null;
+                    }
+                }
+            };
         }
     });
 

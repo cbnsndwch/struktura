@@ -1,31 +1,37 @@
-import { renderHook, waitFor } from '@testing-library/react';
+import { renderHook, waitFor, act } from '@testing-library/react';
 import { describe, it, expect, vi, beforeEach } from 'vitest';
 import { createMemoryRouter, RouterProvider } from 'react-router';
 
 import { AuthProvider, useAuth } from './auth-context.js';
 
-// Mock the auth utilities
-vi.mock('./auth.js', () => ({
-    isAuthenticated: vi.fn()
-}));
+// Mock session state that we can manipulate per test
+let mockSessionData: {
+    user: { id: string; email: string; name?: string; emailVerified?: boolean } | null;
+    session: unknown;
+} | null = null;
+let mockIsPending = false;
+let mockError: Error | null = null;
+const mockRefetch = vi.fn();
+const mockSignOut = vi.fn();
 
-// Mock fetch
-global.fetch = vi.fn();
+// Mock the auth-client module
+vi.mock('./auth-client.js', () => ({
+    useSession: () => ({
+        data: mockSessionData,
+        isPending: mockIsPending,
+        error: mockError,
+        refetch: mockRefetch
+    }),
+    signOut: () => mockSignOut()
+}));
 
 describe('AuthContext', () => {
     beforeEach(() => {
         vi.clearAllMocks();
-        // Setup localStorage mock
-        const localStorageMock = {
-            getItem: vi.fn(),
-            setItem: vi.fn(),
-            removeItem: vi.fn(),
-            clear: vi.fn()
-        };
-        Object.defineProperty(window, 'localStorage', {
-            value: localStorageMock,
-            writable: true
-        });
+        // Reset mock session state
+        mockSessionData = null;
+        mockIsPending = false;
+        mockError = null;
     });
 
     const wrapper = ({ children }: { children: React.ReactNode }) => {
@@ -44,35 +50,34 @@ describe('AuthContext', () => {
     };
 
     it('should provide initial auth state', async () => {
-        const { isAuthenticated } = await import('./auth.js');
-        vi.mocked(isAuthenticated).mockReturnValue(false);
+        // Session not authenticated
+        mockSessionData = null;
+        mockIsPending = false;
 
         const { result } = renderHook(() => useAuth(), { wrapper });
 
-        // Wait for the auth check to complete
+        // Wait for state to settle
         await waitFor(() => {
             expect(result.current.isLoading).toBe(false);
         });
-        
-        // After auth check, should not be authenticated
+
+        // Should not be authenticated
         expect(result.current.isAuthenticated).toBe(false);
         expect(result.current.user).toBe(null);
     });
 
     it('should update auth state after checking authentication', async () => {
-        const { isAuthenticated } = await import('./auth.js');
-        vi.mocked(isAuthenticated).mockReturnValue(true);
-
-        vi.mocked(global.fetch).mockResolvedValueOnce({
-            ok: true,
-            json: async () => ({
+        // Session is authenticated with user data
+        mockSessionData = {
+            user: {
                 id: 'user1',
                 email: 'test@example.com',
                 name: 'Test User',
-                roles: ['user'],
                 emailVerified: true
-            })
-        } as Response);
+            },
+            session: {}
+        };
+        mockIsPending = false;
 
         const { result } = renderHook(() => useAuth(), { wrapper });
 
@@ -83,22 +88,16 @@ describe('AuthContext', () => {
                 id: 'user1',
                 email: 'test@example.com',
                 name: 'Test User',
-                roles: ['user'],
                 emailVerified: true
             });
         });
     });
 
     it('should handle authentication check failure', async () => {
-        const { isAuthenticated } = await import('./auth.js');
-        vi.mocked(isAuthenticated).mockReturnValue(true);
-
-        vi.mocked(global.fetch).mockResolvedValueOnce({
-            ok: false,
-            status: 401
-        } as Response);
-
-        vi.mocked(window.localStorage.getItem).mockReturnValue('fake-token');
+        // Session check failed with error
+        mockSessionData = null;
+        mockIsPending = false;
+        mockError = new Error('Session expired');
 
         const { result } = renderHook(() => useAuth(), { wrapper });
 
@@ -106,32 +105,23 @@ describe('AuthContext', () => {
             expect(result.current.isLoading).toBe(false);
             expect(result.current.isAuthenticated).toBe(false);
             expect(result.current.user).toBe(null);
+            expect(result.current.error).toBe('Session expired');
         });
-
-        // Should clear tokens
-        expect(window.localStorage.removeItem).toHaveBeenCalledWith(
-            'access_token'
-        );
-        expect(window.localStorage.removeItem).toHaveBeenCalledWith(
-            'refresh_token'
-        );
     });
 
     it('should handle logout', async () => {
-        const { isAuthenticated } = await import('./auth.js');
-        vi.mocked(isAuthenticated).mockReturnValue(true);
-
-        // Mock initial auth check
-        vi.mocked(global.fetch).mockResolvedValueOnce({
-            ok: true,
-            json: async () => ({
+        // Start with authenticated session
+        mockSessionData = {
+            user: {
                 id: 'user1',
                 email: 'test@example.com',
                 name: 'Test User',
-                roles: ['user'],
                 emailVerified: true
-            })
-        } as Response);
+            },
+            session: {}
+        };
+        mockIsPending = false;
+        mockSignOut.mockResolvedValue(undefined);
 
         const { result } = renderHook(() => useAuth(), { wrapper });
 
@@ -139,23 +129,13 @@ describe('AuthContext', () => {
             expect(result.current.isAuthenticated).toBe(true);
         });
 
-        // Mock logout API call
-        vi.mocked(global.fetch).mockResolvedValueOnce({
-            ok: true
-        } as Response);
-
         // Call logout
-        await result.current.logout();
-
-        // Wait for logout state changes to complete
-        await waitFor(() => {
-            expect(result.current.isAuthenticated).toBe(false);
-            expect(result.current.user).toBe(null);
+        await act(async () => {
+            await result.current.logout();
         });
-        
-        expect(window.localStorage.removeItem).toHaveBeenCalledWith(
-            'access_token'
-        );
+
+        // Verify signOut was called
+        expect(mockSignOut).toHaveBeenCalled();
     });
 
     it('should throw error when useAuth is used outside AuthProvider', () => {

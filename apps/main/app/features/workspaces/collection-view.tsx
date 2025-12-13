@@ -29,9 +29,11 @@ export const meta: MetaFunction<typeof loader> = ({ data }) => {
     ];
 };
 
-export async function loader({ params, request }: LoaderFunctionArgs) {
+export async function loader(args: LoaderFunctionArgs) {
     // Check authentication
-    requireServerAuth(request);
+    await requireServerAuth(args);
+
+    const { params } = args;
 
     const { workspaceId, collectionId } = params;
 

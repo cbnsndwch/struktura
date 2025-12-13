@@ -69,9 +69,11 @@ export const meta: MetaFunction<typeof loader> = ({ data }) => {
     ];
 };
 
-export async function loader({ params, request }: LoaderFunctionArgs) {
+export async function loader(args: LoaderFunctionArgs) {
     // Check authentication - will redirect to login if not authenticated
-    requireServerAuth(request);
+    await requireServerAuth(args);
+
+    const { params } = args;
 
     const { workspaceId } = params;
 
@@ -189,7 +191,7 @@ export default function WorkspaceDashboard() {
     return (
         <div className="min-h-screen bg-background">
             {/* Header */}
-            <div className="border-b bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
+            <div className="border-b bg-background/95 backdrop-blur supports-backdrop-filter:bg-background/60">
                 <div className="container mx-auto px-4 py-4">
                     <div className="flex items-center justify-between">
                         <div className="flex items-center gap-4">

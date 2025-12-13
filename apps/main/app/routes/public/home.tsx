@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { useState } from 'react';
 import type { MetaFunction, LoaderFunctionArgs } from 'react-router';
 import { useLoaderData } from 'react-router';
 
@@ -12,14 +12,8 @@ import {
     ThemeToggle
 } from '@cbnsndwch/struktura-shared-ui';
 
-import { isAuthenticated } from '../../lib/auth.js';
 import { getServerAuth } from '../../lib/auth.server.js';
-import {
-    shouldShowOnboarding,
-    startOnboarding,
-    shouldTriggerOnboardingForNewUser
-} from '../../lib/onboarding.js';
-import { workspaceApi } from '../../lib/api/index.js';
+import { shouldShowOnboarding, startOnboarding } from '../../lib/onboarding.js';
 
 export const meta: MetaFunction = () => {
     const title = 'Struktura • No-Code Data Management Platform';
@@ -77,9 +71,9 @@ export const meta: MetaFunction = () => {
     ];
 };
 
-export async function loader({ request }: LoaderFunctionArgs) {
+export async function loader(args: LoaderFunctionArgs) {
     // Get server-side authentication state to prevent layout shift
-    const auth = getServerAuth(request);
+    const auth = await getServerAuth(args);
 
     return {
         serverAuth: {
@@ -93,70 +87,26 @@ export async function loader({ request }: LoaderFunctionArgs) {
 
 export default function Home() {
     const loaderData = useLoaderData<typeof loader>();
-    const [userAuth, setUserAuth] = useState<{
-        isAuthenticated: boolean;
-        needsOnboarding: boolean;
-        isLoading: boolean;
-    }>({
-        // Initialize with server data to prevent layout shift
-        isAuthenticated: loaderData?.serverAuth?.isAuthenticated || false,
-        needsOnboarding: loaderData?.serverAuth?.needsOnboarding || false,
-        isLoading: false // Server has already determined auth state
-    });
 
-    // Client-side fallback check for users who block cookies
-    // Only runs if server didn't find authentication
-    useEffect(() => {
-        // If server already found user is authenticated, don't check client-side
-        if (loaderData?.serverAuth?.isAuthenticated) {
-            return;
-        }
+    // Use server auth state directly - Better Auth handles sessions via cookies
+    const isAuthenticated = loaderData?.serverAuth?.isAuthenticated || false;
 
-        const checkClientSideAuth = async () => {
-            const authenticated = isAuthenticated();
+    // Check if onboarding is active client-side (localStorage-based)
+    const [needsOnboarding, setNeedsOnboarding] = useState(false);
 
-            if (authenticated) {
-                try {
-                    // Check if onboarding is active
-                    const onboardingActive = shouldShowOnboarding();
-                    if (onboardingActive) {
-                        setUserAuth({
-                            isAuthenticated: true,
-                            needsOnboarding: true,
-                            isLoading: false
-                        });
-                        return;
-                    }
-
-                    // Check if user has workspaces
-                    const workspaces = await workspaceApi.getUserWorkspaces();
-                    const needsOnboarding = shouldTriggerOnboardingForNewUser(
-                        workspaces.length
-                    );
-
-                    setUserAuth({
-                        isAuthenticated: true,
-                        needsOnboarding,
-                        isLoading: false
-                    });
-                } catch {
-                    // If API call fails, assume they need onboarding
-                    setUserAuth({
-                        isAuthenticated: true,
-                        needsOnboarding: true,
-                        isLoading: false
-                    });
-                }
+    // Check onboarding status after mount (client-side only)
+    useState(() => {
+        if (typeof window !== 'undefined' && isAuthenticated) {
+            const onboardingActive = shouldShowOnboarding();
+            if (onboardingActive) {
+                setNeedsOnboarding(true);
             }
-            // If not authenticated client-side either, keep server state (false)
-        };
-
-        checkClientSideAuth();
-    }, [loaderData?.serverAuth?.isAuthenticated]);
+        }
+    });
 
     // Smart navigation handler for authenticated users
     const handleEnterApp = () => {
-        if (userAuth.needsOnboarding) {
+        if (needsOnboarding) {
             // Start onboarding and navigate there
             startOnboarding(false);
             window.location.href = '/onboarding';
@@ -167,9 +117,9 @@ export default function Home() {
     };
 
     return (
-        <div className="min-h-screen bg-gradient-to-b from-background to-muted/20">
+        <div className="min-h-screen bg-linear-to-b from-background to-muted/20">
             {/* Navigation Header */}
-            <header className="border-b bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
+            <header className="border-b bg-background/95 backdrop-blur supports-backdrop-filter:bg-background/60">
                 <div className="container mx-auto px-4 h-16 flex items-center justify-between">
                     <div className="flex items-center gap-2">
                         <div className="font-bold text-xl">Struktura</div>
@@ -180,7 +130,7 @@ export default function Home() {
                     <div className="flex items-center gap-4">
                         <ThemeToggle />
                         <div className="flex items-center gap-2">
-                            {userAuth.isAuthenticated ? (
+                            {isAuthenticated ? (
                                 <Button
                                     variant="ghost"
                                     onClick={handleEnterApp}
@@ -192,7 +142,7 @@ export default function Home() {
                                     <a href="/auth/login">Log In</a>
                                 </Button>
                             )}
-                            {!userAuth.isAuthenticated && (
+                            {!isAuthenticated && (
                                 <Button asChild>
                                     <a href="/auth/signup">Sign Up</a>
                                 </Button>
@@ -216,16 +166,13 @@ export default function Home() {
                         without writing a single line of code.
                     </p>
                     <div className="flex flex-col sm:flex-row gap-4 justify-center">
-                        {userAuth.isAuthenticated ? (
+                        {isAuthenticated ? (
                             <Button
                                 size="lg"
                                 className="px-8 text-lg"
                                 onClick={handleEnterApp}
-                                disabled={userAuth.isLoading}
                             >
-                                {userAuth.isLoading
-                                    ? 'Loading...'
-                                    : 'Enter App'}
+                                Enter App
                             </Button>
                         ) : (
                             <Button size="lg" className="px-8 text-lg" asChild>
