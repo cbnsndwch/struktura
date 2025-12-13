@@ -30,7 +30,7 @@
         "@cbnsndwch/struktura-eslint-config": "workspace:*",
         "@cbnsndwch/struktura-tsconfig": "workspace:*",
         "@types/node": "^22.10.5",
-        "eslint": "^9.36.0",
+        "eslint": "^9.39.2",
         "tsup": "^8.5.1",
         "typescript": "^5.9.3",
         "vitest": "^3.2.4"
