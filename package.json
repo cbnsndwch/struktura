@@ -32,7 +32,8 @@
         "release": "pnpm build && pnpm test && pnpm changeset:publish",
         "vset": "tsx ./scripts/version-bump.ts",
         "vtag": "tsx ./scripts/create-version-tag.ts",
-        "test:telegram": "tsx ./scripts/test-telegram-bot.ts"
+        "test:telegram": "tsx ./scripts/test-telegram-bot.ts",
+        "db:seed": "tsx ./scripts/seed-test-users.ts"
     },
     "devDependencies": {
         "@changesets/cli": "catalog:",

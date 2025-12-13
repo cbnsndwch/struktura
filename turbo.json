@@ -9,7 +9,7 @@
         "GRAPHQL_INTROSPECTION",
         "CI",
         "GITHUB_ACTIONS",
-        "JWT_SECRET",
+        "BETTER_AUTH_SECRET",
         "GITHUB_CLIENT_ID",
         "GITHUB_CLIENT_SECRET",
         "GITHUB_CALLBACK_URL",
