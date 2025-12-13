@@ -8,6 +8,7 @@ import {
     resetPasswordSchema,
     type ResetPasswordFormData
 } from '../../../lib/validations/auth.js';
+import { resetPassword } from '../../../lib/auth-client.js';
 
 import { FormState } from './components/FormState.js';
 
@@ -90,33 +91,25 @@ export default function FormRoute() {
             setResetState({ status: 'submitting' });
 
             try {
-                const response = await fetch('/api/auth/reset-password', {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json'
-                    },
-                    body: JSON.stringify({
-                        token: data.token,
-                        newPassword: data.newPassword
-                    })
+                const result = await resetPassword({
+                    token: data.token,
+                    newPassword: data.newPassword
                 });
 
-                if (response.ok) {
-                    const result = await response.json();
-                    // Navigate to success route with message
-                    navigate(
-                        `/auth/reset-password/success?message=${encodeURIComponent(
-                            result.message || 'Password reset successfully!'
-                        )}`
-                    );
-                } else {
-                    const errorData = await response.json();
+                if (result.error) {
                     setResetState({
                         status: 'error',
                         message:
-                            errorData.message ||
+                            result.error.message ||
                             'Password reset failed. Please try again.'
                     });
+                } else {
+                    // Navigate to success route with message
+                    navigate(
+                        `/auth/reset-password/success?message=${encodeURIComponent(
+                            'Password reset successfully!'
+                        )}`
+                    );
                 }
             } catch {
                 setResetState({
