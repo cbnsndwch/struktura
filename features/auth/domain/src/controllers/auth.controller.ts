@@ -77,7 +77,7 @@ export class AuthController {
     }
 
     @Public()
-    @Post('request-password-reset')
+    @Post('password-reset/request')
     @HttpCode(HttpStatus.OK)
     async requestPasswordReset(
         @Body() dto: RequestPasswordResetDto
