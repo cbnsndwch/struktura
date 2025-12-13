@@ -46,7 +46,7 @@ catalog:
   dotenv: ^17.2.3
   globals: ^16.5.0
   jsep: ^1.4.0
-  glob: ^11.1.0
+  glob: ^13.0.0
   cpy-cli: ^6.0.0
 
   # Node Types
