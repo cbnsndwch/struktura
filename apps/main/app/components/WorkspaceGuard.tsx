@@ -34,7 +34,7 @@ export function WorkspaceGuard({
     children,
     requiredRole
 }: WorkspaceGuardProps) {
-    const { isAuthenticated, isLoading: authLoading } = useAuth();
+    const { isAuthenticated, isLoading: authLoading, user } = useAuth();
     const { workspaceId } = useParams();
     const navigate = useNavigate();
     const [isChecking, setIsChecking] = useState(true);
@@ -72,23 +72,10 @@ export function WorkspaceGuard({
             // (API should return 403 if user doesn't have access)
             if (workspace) {
                 // If a specific role is required, check it
-                if (requiredRole) {
-                    // Get user's role in workspace from members array
-                    const response = await fetch('/api/auth/me', {
-                        credentials: 'include',
-                        headers: {
-                            Authorization: `Bearer ${localStorage.getItem('access_token')}`
-                        }
-                    });
-                    if (!response.ok) {
-                        throw new Error(
-                            `Failed to fetch current user: ${response.status} ${response.statusText}`
-                        );
-                    }
-                    const currentUser = await response.json();
-
+                if (requiredRole && user) {
+                    // Use user from auth context (Better Auth session)
                     const member = workspace.members?.find(
-                        (m: { user: string }) => m.user === currentUser.id
+                        (m: { user: string }) => m.user === user.id
                     );
 
                     if (!member) {
