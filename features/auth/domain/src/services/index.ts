@@ -1,18 +1,15 @@
-// Main NestJS services - Preferences uses Better Auth's ba_user collection
-export {
+import type { Provider } from '@nestjs/common';
+
+import { authProvider } from './auth.service.js';
+import { PreferencesService } from './preferences.service.js';
+import { SessionService } from './session.service.js';
+
+export const authServices: Provider[] = [
     PreferencesService,
-    MONGODB_DATABASE,
-    type PreferencesUser
-} from './preferences.service.js';
+    SessionService,
+    authProvider
+];
 
-// Hash service for password operations
-export * from './hash.service.js';
-
-// Contract-based services (alternative implementations)
-export { AuthContractService } from './auth.contract.service.js';
-
-// External contracts
-export * from '../../../contracts/src/services/password-service.contract.js';
-
-// Legacy auth service is deprecated - use Better Auth instead
-// Files renamed to *.deprecated.ts and preserved for reference
+export * from './auth.service.js';
+export * from './preferences.service.js';
+export * from './session.service.js';
