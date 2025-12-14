@@ -10,7 +10,7 @@ import {
     UseGuards
 } from '@nestjs/common';
 
-import { BetterAuthGuard } from '@cbnsndwch/struktura-auth-domain';
+import { BetterAuthGuard, type User } from '@cbnsndwch/struktura-auth-domain';
 
 import { WorkspaceRole } from '../entities/index.js';
 import {
@@ -23,13 +23,9 @@ import {
 import { WorkspaceGuard, WorkspaceRoles } from '../guards/index.js';
 import { WorkspaceService } from '../services/workspace.service.js';
 
-// Type definition for authenticated request
+// Type definition for authenticated request with Better Auth user
 interface AuthenticatedRequest extends Request {
-    user: {
-        sub: string;
-        email: string;
-        roles?: string[];
-    };
+    user: User;
 }
 
 @Controller('api/workspaces')
@@ -42,12 +38,12 @@ export class WorkspaceController {
         @Body() createWorkspaceDto: CreateWorkspaceDto,
         @Request() req: AuthenticatedRequest
     ) {
-        return this.workspaceService.create(createWorkspaceDto, req.user.sub);
+        return this.workspaceService.create(createWorkspaceDto, req.user.id);
     }
 
     @Get()
     findAll(@Request() req: AuthenticatedRequest) {
-        return this.workspaceService.findAllForUser(req.user.sub);
+        return this.workspaceService.findAllForUser(req.user.id);
     }
 
     @Get(':id')
@@ -78,7 +74,7 @@ export class WorkspaceController {
         return this.workspaceService.update(
             id,
             updateWorkspaceDto,
-            req.user.sub
+            req.user.id
         );
     }
 
@@ -93,7 +89,7 @@ export class WorkspaceController {
         return this.workspaceService.updateSettings(
             id,
             settingsDto,
-            req.user.sub
+            req.user.id
         );
     }
 
@@ -101,7 +97,7 @@ export class WorkspaceController {
     @UseGuards(WorkspaceGuard)
     @WorkspaceRoles([WorkspaceRole.OWNER])
     remove(@Param('id') id: string, @Request() req: AuthenticatedRequest) {
-        return this.workspaceService.remove(id, req.user.sub);
+        return this.workspaceService.remove(id, req.user.id);
     }
 
     @Post(':id/members')
@@ -115,7 +111,7 @@ export class WorkspaceController {
         return this.workspaceService.inviteMember(
             id,
             inviteMemberDto,
-            req.user.sub
+            req.user.id
         );
     }
 
@@ -132,7 +128,7 @@ export class WorkspaceController {
             id,
             memberId,
             updateRoleDto,
-            req.user.sub
+            req.user.id
         );
     }
 
@@ -144,7 +140,7 @@ export class WorkspaceController {
         @Param('memberId') memberId: string,
         @Request() req: AuthenticatedRequest
     ) {
-        return this.workspaceService.removeMember(id, memberId, req.user.sub);
+        return this.workspaceService.removeMember(id, memberId, req.user.id);
     }
 
     @Get(':id/role')
@@ -156,6 +152,6 @@ export class WorkspaceController {
         WorkspaceRole.VIEWER
     ])
     getUserRole(@Param('id') id: string, @Request() req: AuthenticatedRequest) {
-        return this.workspaceService.getUserRole(id, req.user.sub);
+        return this.workspaceService.getUserRole(id, req.user.id);
     }
 }

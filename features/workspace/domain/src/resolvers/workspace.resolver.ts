@@ -1,10 +1,7 @@
 import { Resolver, Query, Mutation, Args } from '@nestjs/graphql';
 import { UseGuards } from '@nestjs/common';
 
-import {
-    BetterAuthGuard,
-    BetterAuthUserId
-} from '@cbnsndwch/struktura-auth-domain';
+import { BetterAuthGuard, UserId } from '@cbnsndwch/struktura-auth-domain';
 
 import {
     Workspace,
@@ -29,15 +26,13 @@ export class WorkspaceResolver {
     @Mutation(() => Workspace)
     async createWorkspace(
         @Args('input') input: CreateWorkspaceInput,
-        @BetterAuthUserId() userId: string
+        @UserId() userId: string
     ): Promise<WorkspaceDocument> {
         return this.workspaceService.create(input, userId);
     }
 
     @Query(() => [Workspace])
-    async workspaces(
-        @BetterAuthUserId() userId: string
-    ): Promise<WorkspaceDocument[]> {
+    async workspaces(@UserId() userId: string): Promise<WorkspaceDocument[]> {
         return this.workspaceService.findAllForUser(userId);
     }
 
@@ -66,7 +61,7 @@ export class WorkspaceResolver {
     async updateWorkspace(
         @Args('id') id: string,
         @Args('input') input: UpdateWorkspaceInput,
-        @BetterAuthUserId() userId: string
+        @UserId() userId: string
     ): Promise<WorkspaceDocument> {
         return this.workspaceService.update(id, input, userId);
     }
@@ -77,7 +72,7 @@ export class WorkspaceResolver {
     async updateWorkspaceSettings(
         @Args('id') id: string,
         @Args('input') input: UpdateWorkspaceSettingsInput,
-        @BetterAuthUserId() userId: string
+        @UserId() userId: string
     ): Promise<WorkspaceDocument> {
         return this.workspaceService.updateSettings(id, input, userId);
     }
@@ -87,7 +82,7 @@ export class WorkspaceResolver {
     @WorkspaceRoles([WorkspaceRole.OWNER])
     async deleteWorkspace(
         @Args('id') id: string,
-        @BetterAuthUserId() userId: string
+        @UserId() userId: string
     ): Promise<boolean> {
         await this.workspaceService.remove(id, userId);
         return true;
@@ -99,7 +94,7 @@ export class WorkspaceResolver {
     async inviteMember(
         @Args('workspaceId') workspaceId: string,
         @Args('input') input: InviteMemberInput,
-        @BetterAuthUserId() userId: string
+        @UserId() userId: string
     ): Promise<WorkspaceDocument> {
         return this.workspaceService.inviteMember(workspaceId, input, userId);
     }
@@ -111,7 +106,7 @@ export class WorkspaceResolver {
         @Args('workspaceId') workspaceId: string,
         @Args('memberId') memberId: string,
         @Args('input') input: UpdateMemberRoleInput,
-        @BetterAuthUserId() userId: string
+        @UserId() userId: string
     ): Promise<WorkspaceDocument> {
         return this.workspaceService.updateMemberRole(
             workspaceId,
@@ -127,7 +122,7 @@ export class WorkspaceResolver {
     async removeMember(
         @Args('workspaceId') workspaceId: string,
         @Args('memberId') memberId: string,
-        @BetterAuthUserId() userId: string
+        @UserId() userId: string
     ): Promise<WorkspaceDocument> {
         return this.workspaceService.removeMember(
             workspaceId,
@@ -146,7 +141,7 @@ export class WorkspaceResolver {
     ])
     async userRoleInWorkspace(
         @Args('workspaceId') workspaceId: string,
-        @BetterAuthUserId() userId: string
+        @UserId() userId: string
     ): Promise<WorkspaceRole | null> {
         return this.workspaceService.getUserRole(workspaceId, userId);
     }

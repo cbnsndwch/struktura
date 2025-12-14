@@ -42,7 +42,7 @@ export class WorkspaceGuard implements CanActivate {
 
         const userRole = await this.workspaceService.getUserRole(
             workspaceId,
-            user.sub
+            user.id
         );
 
         if (!userRole || !requiredRoles.includes(userRole)) {
