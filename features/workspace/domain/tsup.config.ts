@@ -1,7 +1,7 @@
 import { defineConfig } from 'tsup';
 
 export default defineConfig({
-    entry: ['src/index.ts'],
+    entry: ['src/**/*'],
     format: ['esm'],
     dts: true,
     sourcemap: true,
@@ -25,7 +25,7 @@ export default defineConfig({
         'ts-morph'
     ],
     noExternal: [],
-    bundle: true,
+    bundle: false,
     splitting: false,
     skipNodeModulesBundle: true
 });

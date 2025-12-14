@@ -40,5 +40,9 @@
             "types": "./dist/index.d.ts",
             "import": "./dist/index.js"
         }
+        ,"./module": {
+            "types": "./dist/workspace.module.d.ts",
+            "import": "./dist/workspace.module.js"
+        }
     }
 }
