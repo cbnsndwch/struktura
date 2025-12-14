@@ -56,7 +56,7 @@ import {
     type CollectionSummary,
     type RecentActivity
 } from '../../lib/api/index.js';
-import { requireServerAuth } from '../../lib/auth.server.js';
+import { requireServerAuth, getCookieHeader } from '../../lib/auth.server.js';
 
 export const meta: MetaFunction<typeof loader> = ({ data }) => {
     const workspaceName = data?.dashboardData?.workspace?.name || 'Workspace';
@@ -74,6 +74,7 @@ export async function loader(args: LoaderFunctionArgs) {
     await requireServerAuth(args);
 
     const { params } = args;
+    const cookieHeader = getCookieHeader(args);
 
     const { workspaceId } = params;
 
@@ -82,8 +83,10 @@ export async function loader(args: LoaderFunctionArgs) {
     }
 
     try {
-        const dashboardData =
-            await workspaceApi.getWorkspaceDashboard(workspaceId);
+        const dashboardData = await workspaceApi.getWorkspaceDashboard(
+            workspaceId,
+            { cookieHeader }
+        );
         return { dashboardData, error: null };
     } catch (error) {
         console.error('Failed to load workspace dashboard:', error);

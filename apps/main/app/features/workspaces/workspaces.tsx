@@ -1,6 +1,3 @@
-/**
- * Main workspaces listing page - shows all workspaces for the current user
- */
 import {
     Building2,
     Calendar,
@@ -13,10 +10,14 @@ import {
     Settings,
     Users
 } from 'lucide-react';
-import { useState, useEffect } from 'react';
-import type { MetaFunction, LoaderFunctionArgs } from 'react-router';
-import { useLoaderData, useNavigate } from 'react-router';
+import { useEffect, useState } from 'react';
+import {
+    useNavigate,
+    type LoaderFunctionArgs,
+    type MetaFunction
+} from 'react-router';
 
+import type { ListViewMode } from '@cbnsndwch/struktura-shared-contracts';
 import {
     Avatar,
     AvatarFallback,
@@ -36,13 +37,17 @@ import {
     Input
 } from '@cbnsndwch/struktura-shared-ui';
 
-import { workspaceApi, type Workspace } from '../../lib/api/index.js';
+import type { Workspace } from '../../lib/api/index.js';
 import { requireServerAuth } from '../../lib/auth.server.js';
 import {
+    clearOnboardingState,
     shouldShowOnboarding,
-    startOnboarding,
-    shouldTriggerOnboardingForNewUser
+    shouldTriggerOnboardingForNewUser,
+    startOnboarding
 } from '../../lib/onboarding.js';
+import type { AppLoadContext } from '../../../src/react-router.js';
+
+import type { Route } from './+types/workspaces.js';
 
 export const meta: MetaFunction = () => {
     return [
@@ -55,12 +60,29 @@ export const meta: MetaFunction = () => {
     ];
 };
 
-export async function loader(args: LoaderFunctionArgs) {
+export async function loader(args: LoaderFunctionArgs<AppLoadContext>) {
     // Check authentication - will redirect to login if not authenticated (uses Better Auth session)
-    await requireServerAuth(args);
+    const auth = await requireServerAuth(args);
 
     try {
-        const workspaces = await workspaceApi.getUserWorkspaces();
+        // The loader adapter already returns plain JSON objects ready for RR7 serialization
+        const workspaceData = await args.context.workspaces.findAllForUser(
+            auth.user!.id
+        );
+
+        // Map to the Workspace type expected by the UI
+        const workspaces: Workspace[] = workspaceData.map(ws => ({
+            id: ws.id,
+            name: ws.name,
+            slug: ws.slug,
+            description: ws.description,
+            owner: ws.owner,
+            members: ws.members,
+            settings: ws.settings,
+            createdAt: ws.createdAt,
+            updatedAt: ws.updatedAt
+        }));
+
         return {
             workspaces,
             error: null,
@@ -82,41 +104,52 @@ export async function loader(args: LoaderFunctionArgs) {
     }
 }
 
-type ViewMode = 'grid' | 'list';
-
-export default function WorkspacesPage() {
-    const initialData = useLoaderData<typeof loader>();
+export default function WorkspacesPage({
+    loaderData: loaderData
+}: Route.ComponentProps) {
     const navigate = useNavigate();
-    const [viewMode, setViewMode] = useState<ViewMode>('grid');
+
+    const [viewMode, setViewMode] = useState<ListViewMode>('grid');
     const [searchQuery, setSearchQuery] = useState('');
 
     // Use data directly from server loader (authenticated via Better Auth session)
-    const workspaces = initialData.workspaces;
-    const error = initialData.error;
+    const workspaces = loaderData.workspaces;
+    const error = loaderData.error;
 
     // Check if onboarding should be shown for new users or if it's already active
     useEffect(() => {
-        if (typeof window !== 'undefined') {
-            // Check if onboarding is already active
-            const isOnboardingActive = shouldShowOnboarding();
-
-            // If onboarding is active, redirect to onboarding
-            if (isOnboardingActive) {
-                navigate('/onboarding');
-                return;
-            }
-
-            // If this is a new user (no workspaces), start onboarding automatically
-            if (
-                initialData.shouldShowOnboardingFlow &&
-                workspaces.length === 0
-            ) {
-                startOnboarding(false); // false = not from workspace button
-                navigate('/onboarding');
-                return;
-            }
+        if (typeof window === 'undefined') {
+            return;
         }
-    }, [initialData.shouldShowOnboardingFlow, workspaces.length, navigate]);
+
+        // SERVER-SIDE STATE TAKES PRIORITY: If user has workspaces, they've completed
+        // onboarding and should never see it again. Clear any stale localStorage state.
+        if (workspaces.length > 0) {
+            const isOnboardingActive = shouldShowOnboarding();
+            if (isOnboardingActive) {
+                // Clear stale onboarding state - user has workspaces, so they're done
+                clearOnboardingState();
+            }
+            // User has workspaces, don't redirect to onboarding
+            return;
+        }
+
+        // User has NO workspaces - check if onboarding is already active
+        const isOnboardingActive = shouldShowOnboarding();
+
+        // If onboarding is active, redirect to onboarding
+        if (isOnboardingActive) {
+            navigate('/onboarding');
+            return;
+        }
+
+        // If this is a new user (no workspaces), start onboarding automatically
+        if (loaderData.shouldShowOnboardingFlow) {
+            startOnboarding(false); // false = not from workspace button
+            navigate('/onboarding');
+            return;
+        }
+    }, [loaderData.shouldShowOnboardingFlow, workspaces.length, navigate]);
 
     // Filter workspaces based on search query
     const filteredWorkspaces = workspaces.filter(

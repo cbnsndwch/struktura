@@ -16,7 +16,7 @@ import {
 import { ViewSwitcher, type ViewType } from '../../components/view-switcher.js';
 import { WorkspaceLayout } from '../../components/workspace-layout.js';
 import { workspaceApi } from '../../lib/api/index.js';
-import { requireServerAuth } from '../../lib/auth.server.js';
+import { requireServerAuth, getCookieHeader } from '../../lib/auth.server.js';
 
 export const meta: MetaFunction<typeof loader> = ({ data }) => {
     const collectionName = data?.collection?.name || 'Collection';
@@ -34,6 +34,7 @@ export async function loader(args: LoaderFunctionArgs) {
     await requireServerAuth(args);
 
     const { params } = args;
+    const cookieHeader = getCookieHeader(args);
 
     const { workspaceId, collectionId } = params;
 
@@ -46,8 +47,8 @@ export async function loader(args: LoaderFunctionArgs) {
     try {
         // Fetch workspace data and all collections
         const [workspace, collections] = await Promise.all([
-            workspaceApi.getWorkspace(workspaceId),
-            workspaceApi.getWorkspaceCollections(workspaceId)
+            workspaceApi.getWorkspace(workspaceId, { cookieHeader }),
+            workspaceApi.getWorkspaceCollections(workspaceId, { cookieHeader })
         ]);
 
         // Find the specific collection
