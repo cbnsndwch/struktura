@@ -71,7 +71,10 @@ const _authClient = createAuthClient({
     // Base URL is automatically detected when running on same domain
     // For development, the frontend and backend are on the same origin (localhost:3007)
     baseURL:
-        typeof window !== 'undefined' ? window.location.origin : undefined
+        typeof window !== 'undefined' ? window.location.origin : undefined,
+    plugins: [
+        
+    ]
 });
 
 // Cast to extended interface for proper typing

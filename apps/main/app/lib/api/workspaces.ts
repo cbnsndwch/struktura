@@ -1,7 +1,7 @@
 /**
  * Workspace API client
  */
-import { apiClient } from './client.js';
+import { apiClient, type ServerRequestOptions } from './client.js';
 
 // Types based on the workspace domain entities
 export interface Workspace {
@@ -105,61 +105,70 @@ export interface WorkspaceDashboardData {
 export class WorkspaceApi {
     /**
      * Get all workspaces for the current user
+     * @param options - Optional request options including cookieHeader for server-side calls
      */
-    async getUserWorkspaces(): Promise<Workspace[]> {
-        return apiClient.get<Workspace[]>('/workspaces');
+    async getUserWorkspaces(options?: ServerRequestOptions): Promise<Workspace[]> {
+        return apiClient.get<Workspace[]>('/workspaces', options);
     }
 
     /**
      * Get a specific workspace by ID
+     * @param options - Optional request options including cookieHeader for server-side calls
      */
-    async getWorkspace(id: string): Promise<Workspace> {
-        return apiClient.get<Workspace>(`/workspaces/${id}`);
+    async getWorkspace(id: string, options?: ServerRequestOptions): Promise<Workspace> {
+        return apiClient.get<Workspace>(`/workspaces/${id}`, options);
     }
 
     /**
      * Get a workspace by slug
+     * @param options - Optional request options including cookieHeader for server-side calls
      */
-    async getWorkspaceBySlug(slug: string): Promise<Workspace> {
-        return apiClient.get<Workspace>(`/workspaces/slug/${slug}`);
+    async getWorkspaceBySlug(slug: string, options?: ServerRequestOptions): Promise<Workspace> {
+        return apiClient.get<Workspace>(`/workspaces/slug/${slug}`, options);
     }
 
     /**
      * Create a new workspace
+     * @param options - Optional request options including cookieHeader for server-side calls
      */
-    async createWorkspace(data: CreateWorkspaceData): Promise<Workspace> {
-        return apiClient.post<Workspace>('/workspaces', data);
+    async createWorkspace(data: CreateWorkspaceData, options?: ServerRequestOptions): Promise<Workspace> {
+        return apiClient.post<Workspace>('/workspaces', data, options);
     }
 
     /**
      * Update a workspace
+     * @param options - Optional request options including cookieHeader for server-side calls
      */
     async updateWorkspace(
         id: string,
-        data: UpdateWorkspaceData
+        data: UpdateWorkspaceData,
+        options?: ServerRequestOptions
     ): Promise<Workspace> {
-        return apiClient.patch<Workspace>(`/workspaces/${id}`, data);
+        return apiClient.patch<Workspace>(`/workspaces/${id}`, data, options);
     }
 
     /**
      * Delete a workspace
+     * @param options - Optional request options including cookieHeader for server-side calls
      */
-    async deleteWorkspace(id: string): Promise<void> {
-        return apiClient.delete<void>(`/workspaces/${id}`);
+    async deleteWorkspace(id: string, options?: ServerRequestOptions): Promise<void> {
+        return apiClient.delete<void>(`/workspaces/${id}`, options);
     }
 
     /**
      * Get workspace dashboard data (collections, activity, stats)
+     * @param options - Optional request options including cookieHeader for server-side calls
      */
     async getWorkspaceDashboard(
-        workspaceId: string
+        workspaceId: string,
+        options?: ServerRequestOptions
     ): Promise<WorkspaceDashboardData> {
         // For now, we'll simulate the dashboard data by making separate calls
         // In the future, this could be a single optimized endpoint
         const [workspace, collections, recentActivity] = await Promise.all([
-            this.getWorkspace(workspaceId),
-            this.getWorkspaceCollections(workspaceId),
-            this.getWorkspaceActivity(workspaceId)
+            this.getWorkspace(workspaceId, options),
+            this.getWorkspaceCollections(workspaceId, options),
+            this.getWorkspaceActivity(workspaceId, options)
         ]);
 
         const stats = {
@@ -181,15 +190,18 @@ export class WorkspaceApi {
 
     /**
      * Get collections for a workspace (summary for dashboard)
+     * @param options - Optional request options including cookieHeader for server-side calls
      */
     async getWorkspaceCollections(
-        workspaceId: string
+        workspaceId: string,
+        options?: ServerRequestOptions
     ): Promise<CollectionSummary[]> {
         // This endpoint might not exist yet, so we'll return empty array for now
         // In a real implementation, this would be `/workspaces/${workspaceId}/collections`
         try {
             return apiClient.get<CollectionSummary[]>(
-                `/workspaces/${workspaceId}/collections`
+                `/workspaces/${workspaceId}/collections`,
+                options
             );
         } catch (error) {
             console.error('Error fetching collections:', error);
@@ -204,12 +216,17 @@ export class WorkspaceApi {
 
     /**
      * Get recent activity for a workspace
+     * @param options - Optional request options including cookieHeader for server-side calls
      */
-    async getWorkspaceActivity(workspaceId: string): Promise<RecentActivity[]> {
+    async getWorkspaceActivity(
+        workspaceId: string,
+        options?: ServerRequestOptions
+    ): Promise<RecentActivity[]> {
         // This endpoint might not exist yet, so we'll return mock data for now
         try {
             return apiClient.get<RecentActivity[]>(
-                `/workspaces/${workspaceId}/activity`
+                `/workspaces/${workspaceId}/activity`,
+                options
             );
         } catch (error) {
             console.error('Error fetching activity:', error);

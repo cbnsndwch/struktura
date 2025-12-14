@@ -1,10 +1,12 @@
 /**
  * Server-side authentication utilities for React Router 7
- * 
+ *
  * Uses Better Auth session from the load context injected by the React Router handler.
  * This provides seamless authentication between NestJS and React Router loaders/actions.
  */
 import type { LoaderFunctionArgs, ActionFunctionArgs } from 'react-router';
+
+import type { IUserPreferences } from '@cbnsndwch/struktura-auth-contracts';
 
 import type { AppLoadContext } from '../../src/react-router.js';
 
@@ -17,7 +19,7 @@ export interface ServerAuthUser {
     image?: string | null;
     createdAt: Date;
     updatedAt: Date;
-    preferences?: string | null;
+    preferences?: IUserPreferences;
 }
 
 export interface ServerAuthResult {
@@ -33,9 +35,11 @@ export async function getServerAuth(
     args: LoaderFunctionArgs | ActionFunctionArgs
 ): Promise<ServerAuthResult> {
     const context = args.context as AppLoadContext;
-    
+
     if (!context?.getSession) {
-        console.warn('getServerAuth: No getSession in load context. Is Better Auth initialized?');
+        console.warn(
+            'getServerAuth: No getSession in load context. Is Better Auth initialized?'
+        );
         return {
             isAuthenticated: false,
             user: null
@@ -44,7 +48,7 @@ export async function getServerAuth(
 
     try {
         const session = await context.getSession();
-        
+
         if (!session?.user) {
             return {
                 isAuthenticated: false,
@@ -52,9 +56,10 @@ export async function getServerAuth(
             };
         }
 
-        // Parse roles - Better Auth stores them as a string
-        const rolesStr = session.user.roles;
-        const roles = rolesStr ? rolesStr.split(',').map(r => r.trim()) : ['user'];
+        const preferences: IUserPreferences = {
+            theme: 'system',
+            ...session.user.preferences
+        };
 
         return {
             isAuthenticated: true,
@@ -62,12 +67,12 @@ export async function getServerAuth(
                 id: session.user.id,
                 email: session.user.email,
                 name: session.user.name,
-                roles,
                 emailVerified: session.user.emailVerified,
                 image: session.user.image,
                 createdAt: session.user.createdAt,
                 updatedAt: session.user.updatedAt,
-                preferences: session.user.preferences
+                roles: session.user.roles || [],
+                preferences
             }
         };
     } catch (error) {
@@ -88,16 +93,16 @@ export async function requireServerAuth(
     redirectTo = '/auth/login'
 ): Promise<ServerAuthResult> {
     const auth = await getServerAuth(args);
-    
+
     if (!auth.isAuthenticated) {
         const url = new URL(args.request.url);
         const loginUrl = new URL(redirectTo, url.origin);
-        
+
         // Add redirect parameter if not already on auth pages
         if (!url.pathname.startsWith('/auth')) {
             loginUrl.searchParams.set('redirectTo', url.pathname + url.search);
         }
-        
+
         throw new Response(null, {
             status: 302,
             headers: {
@@ -105,7 +110,7 @@ export async function requireServerAuth(
             }
         });
     }
-    
+
     return auth;
 }
 
@@ -118,11 +123,11 @@ export async function redirectIfServerAuthenticated(
     defaultRedirect = '/workspaces'
 ): Promise<void> {
     const auth = await getServerAuth(args);
-    
+
     if (auth.isAuthenticated) {
         const url = new URL(args.request.url);
         const redirectUrl = new URL(defaultRedirect, url.origin);
-        
+
         throw new Response(null, {
             status: 302,
             headers: {
@@ -136,12 +141,26 @@ export async function redirectIfServerAuthenticated(
  * Check if user has specific role
  */
 export function hasRole(auth: ServerAuthResult, role: string): boolean {
-    return auth.isAuthenticated && auth.user?.roles.includes(role) || false;
+    return (auth.isAuthenticated && auth.user?.roles.includes(role)) || false;
 }
 
 /**
  * Check if user has any of the specified roles
  */
 export function hasAnyRole(auth: ServerAuthResult, roles: string[]): boolean {
-    return auth.isAuthenticated && roles.some(role => auth.user?.roles.includes(role)) || false;
+    return (
+        (auth.isAuthenticated &&
+            roles.some(role => auth.user?.roles.includes(role))) ||
+        false
+    );
+}
+
+/**
+ * Extract cookie header from request for forwarding to API calls
+ * Use this when making server-side API requests that need authentication
+ */
+export function getCookieHeader(
+    args: LoaderFunctionArgs | ActionFunctionArgs
+): string | undefined {
+    return args.request.headers.get('cookie') ?? undefined;
 }

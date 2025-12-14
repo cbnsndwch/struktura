@@ -20,6 +20,16 @@ export interface AuthTokens {
 }
 
 /**
+ * Request options that can include server-side headers
+ */
+export interface ServerRequestOptions extends RequestInit {
+    /**
+     * Cookie header to forward from the incoming request (for server-side API calls)
+     */
+    cookieHeader?: string;
+}
+
+/**
  * Base API client with error handling and type safety
  */
 export class ApiClient {
@@ -116,19 +126,28 @@ export class ApiClient {
 
     private async requestWithAuth<T>(
         endpoint: string,
-        options: RequestInit = {},
+        options: ServerRequestOptions = {},
         retryCount = 0
     ): Promise<T> {
         const url = this.getFullUrl(endpoint);
         const authHeaders = this.getAuthHeaders();
         
+        // Extract cookieHeader from options and prepare headers
+        const { cookieHeader, ...fetchOptions } = options;
+        const headers: Record<string, string> = {
+            'Content-Type': 'application/json',
+            ...authHeaders,
+            ...(options.headers as Record<string, string> || {}),
+        };
+        
+        // On server-side, forward cookies from the original request
+        if (typeof window === 'undefined' && cookieHeader) {
+            headers['Cookie'] = cookieHeader;
+        }
+        
         const response = await fetch(url, {
-            headers: {
-                'Content-Type': 'application/json',
-                ...authHeaders,
-                ...options.headers,
-            },
-            ...options,
+            ...fetchOptions,
+            headers,
         });
 
         // If we get a 401 and have a refresh token, try to refresh and retry once
@@ -177,16 +196,16 @@ export class ApiClient {
 
     private async request<T>(
         endpoint: string,
-        options: RequestInit = {}
+        options: ServerRequestOptions = {}
     ): Promise<T> {
         return this.requestWithAuth<T>(endpoint, options);
     }
 
-    async get<T>(endpoint: string, options?: RequestInit): Promise<T> {
+    async get<T>(endpoint: string, options?: ServerRequestOptions): Promise<T> {
         return this.request<T>(endpoint, { method: 'GET', ...options });
     }
 
-    async post<T>(endpoint: string, data?: unknown, options?: RequestInit): Promise<T> {
+    async post<T>(endpoint: string, data?: unknown, options?: ServerRequestOptions): Promise<T> {
         return this.request<T>(endpoint, {
             method: 'POST',
             body: data ? JSON.stringify(data) : undefined,
@@ -194,7 +213,7 @@ export class ApiClient {
         });
     }
 
-    async put<T>(endpoint: string, data?: unknown, options?: RequestInit): Promise<T> {
+    async put<T>(endpoint: string, data?: unknown, options?: ServerRequestOptions): Promise<T> {
         return this.request<T>(endpoint, {
             method: 'PUT',
             body: data ? JSON.stringify(data) : undefined,
@@ -202,7 +221,7 @@ export class ApiClient {
         });
     }
 
-    async patch<T>(endpoint: string, data?: unknown, options?: RequestInit): Promise<T> {
+    async patch<T>(endpoint: string, data?: unknown, options?: ServerRequestOptions): Promise<T> {
         return this.request<T>(endpoint, {
             method: 'PATCH',
             body: data ? JSON.stringify(data) : undefined,
@@ -210,7 +229,7 @@ export class ApiClient {
         });
     }
 
-    async delete<T>(endpoint: string, options?: RequestInit): Promise<T> {
+    async delete<T>(endpoint: string, options?: ServerRequestOptions): Promise<T> {
         return this.request<T>(endpoint, { method: 'DELETE', ...options });
     }
 
