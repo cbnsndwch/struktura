@@ -1,207 +1,72 @@
-import { Field, ID, ObjectType } from '@nestjs/graphql';
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
-import {
-    IsArray,
-    IsBoolean,
-    IsDate,
-    IsEmail,
-    IsIn,
-    IsOptional,
-    IsString,
-    MaxLength,
-    MinLength
-} from 'class-validator';
+import { Field, ID, ObjectType } from '@nestjs/graphql';
 import { Document } from 'mongoose';
 
-import type {
-    IUser,
-    UserPreferences
-} from '@cbnsndwch/struktura-auth-contracts';
+import { parseUserPreferences } from './user-preferences.entity.js';
 
 export type UserDocument = User & Document;
 
 /**
- * GraphQL ObjectType for UserPreferences
- */
-@ObjectType('UserPreferences')
-export class UserPreferencesType implements UserPreferences {
-    @Field(() => String)
-    @IsIn(['light', 'dark', 'system'])
-    theme!: 'light' | 'dark' | 'system';
-}
-
-/**
- * Consolidated User class that serves as:
- * - Mongoose Schema (with @Prop decorators)
- * - GraphQL ObjectType (with @Field decorators)
- * - DTO with validation (with class-validator decorators)
- * - Domain Entity (implements IUser interface)
+ * User schema that maps to Better Auth's ba_user collection.
+ *
+ * This schema is used by Mongoose for populate operations on workspace members.
+ * Better Auth manages this collection directly, we only read from it.
  */
 @Schema({
-    timestamps: true,
-    collection: 'users'
+    collection: 'ba_user',
+    versionKey: false,
+    timestamps: false // Better Auth manages timestamps
 })
-@ObjectType('User', { description: 'User account information' })
-export class User implements IUser {
-    // Public fields - exposed in GraphQL and API responses
+@ObjectType('User', { description: 'Better Auth user information' })
+export class User {
     @Field(() => ID)
     id!: string;
 
-    @Prop({ type: String, required: true, unique: true })
-    @Field()
-    @IsEmail({}, { message: 'Please provide a valid email address' })
-    email!: string;
-
     @Prop({ type: String, required: true })
     @Field()
-    @IsString()
-    @MinLength(2, { message: 'Name must be at least 2 characters long' })
-    @MaxLength(100, { message: 'Name cannot exceed 100 characters' })
     name!: string;
+
+    @Prop({ type: String, required: true, unique: true })
+    @Field()
+    email!: string;
 
     @Prop({ type: Boolean, default: false })
     @Field()
-    @IsBoolean()
     emailVerified!: boolean;
 
-    // Interface compliance - getter that maps to emailVerified
-    get isVerified(): boolean {
-        return this.emailVerified;
-    }
-
-    set isVerified(value: boolean) {
-        this.emailVerified = value;
-    }
-
     @Prop({ type: String })
     @Field({ nullable: true })
-    @IsOptional()
-    @IsString()
-    timezone?: string;
+    image?: string;
+
+    @Prop({ type: String, default: 'user' })
+    @Field()
+    roles!: string;
 
     @Prop({ type: String })
-    @Field({ nullable: true })
-    @IsOptional()
-    @IsString()
-    language?: string;
-
-    @Prop({
-        type: Object,
-        default: () => ({ theme: 'system' })
-    })
-    @Field(() => UserPreferencesType, { nullable: true })
-    @IsOptional()
-    preferences?: UserPreferences;
-
-    @Field()
-    @IsDate()
-    createdAt!: Date;
-
-    @Field()
-    @IsDate()
-    updatedAt!: Date;
-
-    // Internal fields - NOT exposed in GraphQL (no @Field decorator)
-    @Prop({ type: String, required: true })
-    // Note: No @Field decorator - this won't be exposed in GraphQL
-    passwordHash!: string;
-
-    @Prop({ type: String, default: null })
-    emailVerificationToken?: string;
-
-    @Prop({ type: Date, default: null })
-    emailVerificationExpires?: Date;
-
-    @Prop({ type: String, default: null })
-    passwordResetToken?: string;
-
-    @Prop({ type: Date, default: null })
-    passwordResetExpires?: Date;
+    preferences?: string;
 
     @Prop({ type: Date })
-    lastLoginAt?: Date;
+    @Field()
+    createdAt!: Date;
 
-    @Prop({
-        type: [String],
-        enum: ['admin', 'editor', 'viewer'],
-        default: ['editor']
-    })
-    @Field(() => [String])
-    @IsArray()
-    @IsString({ each: true })
-    roles!: string[];
-
-    @Prop({ type: Object })
-    profile?: {
-        avatar?: string;
-        timezone?: string;
-        language?: string;
-    };
-
-    @Prop({ type: Object })
-    oauthProviders?: {
-        google?: {
-            id: string;
-            email: string;
-        };
-        github?: {
-            id: string;
-            username: string;
-        };
-    };
-
-    // Domain methods
-    static fromData(data: IUser): User {
-        const user = new User();
-        user.id = data.id;
-        user.email = data.email;
-        user.name = data.name;
-        user.emailVerified = data.isVerified; // Store as emailVerified in DB
-        user.createdAt = data.createdAt;
-        user.updatedAt = data.updatedAt;
-        user.timezone = data.timezone;
-        user.language = data.language;
-        user.preferences = data.preferences;
-        return user;
-    }
-
-    toData(): IUser {
-        return {
-            id: this.id,
-            email: this.email,
-            name: this.name,
-            isVerified: this.emailVerified, // Map from emailVerified to isVerified
-            createdAt: this.createdAt,
-            updatedAt: this.updatedAt,
-            timezone: this.timezone,
-            language: this.language,
-            preferences: this.preferences
-        };
-    }
-
-    // Utility method to get public user data (safe for API responses)
-    toPublicData() {
-        return {
-            id: this.id,
-            email: this.email,
-            name: this.name,
-            isVerified: this.emailVerified, // Use emailVerified for consistency
-            roles: this.roles,
-            timezone: this.timezone,
-            language: this.language,
-            preferences: this.preferences,
-            createdAt: this.createdAt,
-            updatedAt: this.updatedAt
-        };
-    }
+    @Prop({ type: Date })
+    @Field()
+    updatedAt!: Date;
 }
 
 export const UserSchema = SchemaFactory.createForClass(User);
 
-// Add indexes for performance
-// Note: email index is handled by unique: true in @Prop decorator
-UserSchema.index({ emailVerificationToken: 1 });
-UserSchema.index({ passwordResetToken: 1 });
-UserSchema.index({ roles: 1 });
-UserSchema.index({ 'oauthProviders.google.id': 1 });
-UserSchema.index({ 'oauthProviders.github.id': 1 });
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+const transform = (_doc: UserDocument, ret: any) => {
+    ret.id = ret._id?.toString();
+    ret.preferences = parseUserPreferences(ret.preferences);
+
+    delete ret._id;
+    delete ret.__v;
+
+    return ret;
+};
+
+// Add virtual for id to map from _id, and transform preferences field
+UserSchema.set('toJSON', { virtuals: true, transform });
+UserSchema.set('toObject', { virtuals: true, transform });

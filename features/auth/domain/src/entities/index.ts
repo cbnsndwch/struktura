@@ -1,7 +1,9 @@
-export { User, UserSchema, type UserDocument } from './user.entity.js';
+import type { ModelDefinition } from '@nestjs/mongoose';
 
-export {
-    RefreshToken,
-    RefreshTokenSchema,
-    type RefreshTokenDocument
-} from './refresh-token.entity.js';
+import { User, UserSchema } from './user.entity.js';
+
+export const authEntities: ModelDefinition[] = [
+    { name: User.name, schema: UserSchema }
+];
+
+export * from './user.entity.js';
