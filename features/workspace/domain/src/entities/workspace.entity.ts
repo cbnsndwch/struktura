@@ -3,21 +3,21 @@ import { Field, ObjectType, ID, registerEnumType } from '@nestjs/graphql';
 import {
     IsString,
     IsOptional,
-    IsEnum,
     MinLength,
     MaxLength,
     IsObject,
-    ValidateNested,
-    IsBoolean,
-    IsDate
+    ValidateNested
 } from 'class-validator';
 import { Type } from 'class-transformer';
 import { Document, Types } from 'mongoose';
-import type {
-    Workspace as IWorkspace,
-    WorkspaceSettings as IWorkspaceSettings
+
+import {
+    type IWorkspace,
+    WorkspaceRole
 } from '@cbnsndwch/struktura-workspace-contracts';
-import { WorkspaceRole } from '@cbnsndwch/struktura-workspace-contracts';
+
+import { WorkspaceMember } from './workspace-member.entity.js';
+import { WorkspaceSettings } from './workspace-settings.entity.js';
 
 export type WorkspaceDocument = Workspace &
     Document & {
@@ -30,105 +30,6 @@ registerEnumType(WorkspaceRole, {
     name: 'WorkspaceRole',
     description: 'The roles available in a workspace'
 });
-
-@ObjectType()
-export class WorkspaceSettings implements IWorkspaceSettings {
-    @Prop({ type: String, default: 'UTC' })
-    @Field()
-    @IsString()
-    defaultTimezone!: string;
-
-    @Prop({ type: String, default: 'en' })
-    @Field()
-    @IsString()
-    defaultLanguage!: string;
-
-    @Prop({
-        type: {
-            apiAccess: { type: Boolean, default: false },
-            realTimeSync: { type: Boolean, default: true },
-            advancedPermissions: { type: Boolean, default: false }
-        },
-        default: {}
-    })
-    @Field(() => WorkspaceFeatures)
-    @IsObject()
-    @ValidateNested()
-    @Type(() => WorkspaceFeatures)
-    features!: WorkspaceFeatures;
-
-    @Prop({
-        type: {
-            logo: { type: String },
-            primaryColor: { type: String },
-            customDomain: { type: String }
-        }
-    })
-    @Field(() => WorkspaceBranding, { nullable: true })
-    @IsOptional()
-    @IsObject()
-    @ValidateNested()
-    @Type(() => WorkspaceBranding)
-    branding?: WorkspaceBranding;
-}
-
-@ObjectType()
-export class WorkspaceFeatures {
-    @Prop({ type: Boolean, default: false })
-    @Field()
-    @IsBoolean()
-    apiAccess!: boolean;
-
-    @Prop({ type: Boolean, default: true })
-    @Field()
-    @IsBoolean()
-    realTimeSync!: boolean;
-
-    @Prop({ type: Boolean, default: false })
-    @Field()
-    @IsBoolean()
-    advancedPermissions!: boolean;
-}
-
-@ObjectType()
-export class WorkspaceBranding {
-    @Prop({ type: String })
-    @Field({ nullable: true })
-    @IsOptional()
-    @IsString()
-    logo?: string;
-
-    @Prop({ type: String })
-    @Field({ nullable: true })
-    @IsOptional()
-    @IsString()
-    primaryColor?: string;
-
-    @Prop({ type: String })
-    @Field({ nullable: true })
-    @IsOptional()
-    @IsString()
-    customDomain?: string;
-}
-
-@ObjectType()
-export class WorkspaceMember {
-    @Field(() => ID)
-    user!: string;
-
-    @Field(() => WorkspaceRole)
-    @IsEnum(WorkspaceRole)
-    role!: WorkspaceRole;
-
-    @Field()
-    @IsDate()
-    invitedAt!: Date;
-
-    @Field({ nullable: true })
-    @IsOptional()
-    @IsDate()
-    joinedAt?: Date;
-}
 
 /**
  * Consolidated Workspace class that serves as:
@@ -184,7 +85,11 @@ export class Workspace implements IWorkspace {
     @Prop({
         type: [
             {
-                user: { type: Types.ObjectId, ref: 'User', required: true },
+                user: {
+                    type: Types.ObjectId,
+                    ref: 'User',
+                    required: true
+                },
                 role: {
                     type: String,
                     enum: ['owner', 'admin', 'editor', 'viewer'],
