@@ -1,6 +1,6 @@
-import { AuthModule } from '@cbnsndwch/struktura-auth-domain';
-import { CollectionsModule } from '@cbnsndwch/struktura-collections-domain';
-import { WorkspaceModule } from '@cbnsndwch/struktura-workspace-domain';
+import { AuthModule } from '@cbnsndwch/struktura-auth-domain/module';
+import { CollectionsModule } from '@cbnsndwch/struktura-collections-domain/module';
+import { WorkspaceModule } from '@cbnsndwch/struktura-workspace-domain/module';
 
 import { apolloModule } from './apollo.module.js';
 import { DbModule } from './db.module.js';

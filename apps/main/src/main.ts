@@ -2,12 +2,11 @@ import { Logger } from '@nestjs/common';
 import { NestFactory } from '@nestjs/core';
 import { NestExpressApplication } from '@nestjs/platform-express';
 import { getConnectionToken } from '@nestjs/mongoose';
-import { toNodeHandler } from 'better-auth/node';
 import type { Connection } from 'mongoose';
 import 'dotenv/config';
 
 import { printStartupBanner } from '@cbnsndwch/struktura-shared-domain';
-import { createBetterAuth, getAuth } from '@cbnsndwch/struktura-auth-domain';
+import { mountBetterAuthHandler } from '@cbnsndwch/struktura-auth-domain';
 
 import { AppModule } from './app.module.js';
 import { mountReactRouterHandler } from './react-router.js';
@@ -34,19 +33,8 @@ async function bootstrap() {
         });
     }
 
-    // Initialize Better Auth with the Mongoose connection's underlying MongoDB client
-    const db = mongooseConnection.getClient().db();
-    createBetterAuth(db);
-    logger.log('Better Auth initialized with Mongoose connection');
-
-    // Get the underlying Express app
-    const expressApp = app.getHttpAdapter().getInstance();
-
-    // Mount Better Auth handler BEFORE NestJS routes
-    // Important: This must be before express.json() middleware
-    // Better Auth handles all /api/auth/* routes
-    // Note: Express 5 requires named splat parameters instead of *
-    expressApp.all('/api/auth/{*splat}', toNodeHandler(getAuth()));
+    // Mount Better Auth handler for /api/auth/* routes
+    await mountBetterAuthHandler(app);
 
     // Mount React Router handler for all non-API routes
     await mountReactRouterHandler(app);

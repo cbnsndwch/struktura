@@ -5,7 +5,16 @@ import { static as expressStatic, type Request } from 'express';
 import { createRequestHandler } from '@react-router/express';
 import { fromNodeHeaders } from 'better-auth/node';
 
-import { getAuth, type Auth } from '@cbnsndwch/struktura-auth-domain';
+import {
+    TOKEN_AUTH_SERVICE,
+    type SessionPayload,
+    type Auth
+} from '@cbnsndwch/struktura-auth-domain';
+import {
+    WorkspaceService,
+    createWorkspaceLoader
+} from '@cbnsndwch/struktura-workspace-domain';
+import type { IWorkspaceLoader } from '@cbnsndwch/struktura-workspace-contracts';
 
 // Default paths handled by NestJS (excluding specific React Router API routes)
 const DEFAULT_NEST_PATHS = ['/graphql', '/api'];
@@ -15,39 +24,25 @@ const BUILD_PATH = join(process.cwd(), 'build', 'server', 'index.js');
 
 /**
  * App Load Context - passed to React Router loaders/actions
- * This provides access to NestJS services and Better Auth from React Router
+
+ * This provides access to NestJS services and Better Auth from React Router.
+ *
+ * IMPORTANT: Services are exposed via interfaces (ISP) to avoid bundling
+ * Nest code into the Vite build. The actual implementations are resolved
+ * from the Nest IoC container and adapted here.
  */
 export interface AppLoadContext {
     [key: string]: unknown;
-    app: NestExpressApplication;
     auth: Auth;
     /**
-     * Get the current session from Better Auth
-     * Returns null if not authenticated
+     * Workspace loader service (ISP - Interface Segregation Principle)
+     * This is an adapter around the NestJS WorkspaceService.
      */
-    getSession: () => Promise<{
-        session: {
-            id: string;
-            userId: string;
-            token: string;
-            expiresAt: Date;
-            ipAddress?: string | null;
-            userAgent?: string | null;
-            createdAt: Date;
-            updatedAt: Date;
-        };
-        user: {
-            id: string;
-            email: string;
-            name: string;
-            emailVerified: boolean;
-            image?: string | null;
-            createdAt: Date;
-            updatedAt: Date;
-            roles?: string | null;
-            preferences?: string | null;
-        };
-    } | null>;
+    workspaces: IWorkspaceLoader;
+    /**
+     * Get the current session from Better Auth, or `null `if not authenticated
+     */
+    getSession: () => Promise<SessionPayload | null>;
 }
 
 export async function mountReactRouterHandler(
@@ -67,25 +62,34 @@ export async function mountReactRouterHandler(
         ? () => viteDevServer.ssrLoadModule('virtual:react-router/server-build')
         : await import(BUILD_PATH);
 
+    function getLoadContext(req: Request): AppLoadContext {
+        // better auth instance from Nest IoC container
+        const auth = nestApp.get<Auth>(TOKEN_AUTH_SERVICE);
+
+        // Resolve workspace service from Nest IoC container and create adapter
+        const workspaceService = nestApp.get(WorkspaceService);
+        const workspaces = createWorkspaceLoader(workspaceService);
+
+        const getSession = async () => {
+            try {
+                const headers = fromNodeHeaders(req.headers);
+                const session = await auth.api.getSession({ headers });
+                return session;
+            } catch {
+                return null;
+            }
+        };
+
+        return {
+            auth,
+            getSession,
+            workspaces
+        };
+    }
+
     const reactRouterHandler = createRequestHandler({
         build: viteDevServer ? build : build.default,
-        getLoadContext(req: Request): AppLoadContext {
-            const auth = getAuth();
-            return {
-                app: nestApp,
-                auth,
-                getSession: async () => {
-                    try {
-                        const session = await auth.api.getSession({
-                            headers: fromNodeHeaders(req.headers)
-                        });
-                        return session;
-                    } catch {
-                        return null;
-                    }
-                }
-            };
-        }
+        getLoadContext
     });
 
     const expressApp = nestApp.getHttpAdapter().getInstance();
