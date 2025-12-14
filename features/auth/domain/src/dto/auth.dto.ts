@@ -6,32 +6,44 @@ import {
     IsIn,
     IsOptional
 } from 'class-validator';
-import { PickType } from '@nestjs/mapped-types';
 import { InputType, Field } from '@nestjs/graphql';
-
-import { User } from '../entities/user.entity.js';
 
 /**
  * DTO for user registration
- * Extends the base User model and adds password validation
+ * Used with Better Auth's signUp endpoint
  */
 @InputType('RegisterInput')
-export class RegisterDto extends PickType(User, [
-    'email',
-    'name',
-    'timezone',
-    'language'
-] as const) {
+export class RegisterDto {
+    @Field()
+    @IsEmail({}, { message: 'Please provide a valid email address' })
+    email!: string;
+
+    @Field()
+    @IsString()
+    @MinLength(2, { message: 'Name must be at least 2 characters long' })
+    @MaxLength(100, { message: 'Name cannot exceed 100 characters' })
+    name!: string;
+
     @Field()
     @IsString()
     @MinLength(8, { message: 'Password must be at least 8 characters long' })
     @MaxLength(128, { message: 'Password cannot exceed 128 characters' })
     password!: string;
+
+    @Field({ nullable: true })
+    @IsOptional()
+    @IsString()
+    timezone?: string;
+
+    @Field({ nullable: true })
+    @IsOptional()
+    @IsString()
+    language?: string;
 }
 
 /**
  * DTO for user login
- * Simple credentials validation
+ * Used with Better Auth's signIn endpoint
  */
 @InputType('LoginInput')
 export class LoginDto {
@@ -46,14 +58,27 @@ export class LoginDto {
 
 /**
  * DTO for user profile updates
- * Allows updating only safe user fields
+ * Allows updating safe user fields via preferences
  */
 @InputType('UpdateUserInput')
-export class UpdateUserDto extends PickType(User, [
-    'name',
-    'timezone',
-    'language'
-] as const) {}
+export class UpdateUserDto {
+    @Field({ nullable: true })
+    @IsOptional()
+    @IsString()
+    @MinLength(2, { message: 'Name must be at least 2 characters long' })
+    @MaxLength(100, { message: 'Name cannot exceed 100 characters' })
+    name?: string;
+
+    @Field({ nullable: true })
+    @IsOptional()
+    @IsString()
+    timezone?: string;
+
+    @Field({ nullable: true })
+    @IsOptional()
+    @IsString()
+    language?: string;
+}
 
 /**
  * DTO for password reset request
