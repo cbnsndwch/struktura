@@ -1,3 +1,4 @@
+import { useState } from 'react';
 import {
     ArrowRight,
     ArrowLeft,
@@ -5,7 +6,8 @@ import {
     Building2,
     Users,
     Database,
-    BarChart3
+    BarChart3,
+    Loader2
 } from 'lucide-react';
 
 import {
@@ -51,20 +53,35 @@ const collectionTemplates = [
 interface TemplatesStepProps {
     selectedTemplate: string | null;
     onTemplateSelect: (templateId: string | null) => void;
-    onNext: () => void;
+    onNext: (templateId: string | null) => Promise<void>;
     onBack: () => void;
+    isLoading?: boolean;
 }
 
 export default function TemplatesStep({
     selectedTemplate,
     onTemplateSelect,
     onNext,
-    onBack
+    onBack,
+    isLoading = false
 }: TemplatesStepProps) {
+    const [isSubmitting, setIsSubmitting] = useState(false);
+
+    const handleContinue = async () => {
+        setIsSubmitting(true);
+        try {
+            await onNext(selectedTemplate);
+        } finally {
+            setIsSubmitting(false);
+        }
+    };
+
+    const loading = isLoading || isSubmitting;
+
     return (
         <div className="space-y-6">
             <div className="text-center space-y-3">
-                <div className="mx-auto w-16 h-16 bg-gradient-to-br from-purple-500 to-pink-600 rounded-2xl flex items-center justify-center">
+                <div className="mx-auto w-16 h-16 bg-linear-to-br from-purple-500 to-pink-600 rounded-2xl flex items-center justify-center">
                     <Database className="h-8 w-8 text-white" />
                 </div>
                 <h2 className="text-2xl font-bold">Choose a Template</h2>
@@ -91,7 +108,7 @@ export default function TemplatesStep({
                         >
                             <CardContent className="p-4">
                                 <div className="flex items-start space-x-3">
-                                    <div className="w-10 h-10 bg-primary/10 rounded-lg flex items-center justify-center flex-shrink-0">
+                                    <div className="w-10 h-10 bg-primary/10 rounded-lg flex items-center justify-center shrink-0">
                                         <Icon className="h-5 w-5 text-primary" />
                                     </div>
                                     <div className="space-y-2 flex-1">
@@ -126,7 +143,7 @@ export default function TemplatesStep({
                                         </div>
                                     </div>
                                     {isSelected && (
-                                        <CheckCircle className="h-5 w-5 text-primary flex-shrink-0" />
+                                        <CheckCircle className="h-5 w-5 text-primary shrink-0" />
                                     )}
                                 </div>
                             </CardContent>
@@ -139,6 +156,7 @@ export default function TemplatesStep({
                 <Button
                     variant="ghost"
                     onClick={() => onTemplateSelect(null)}
+                    disabled={loading}
                     className={
                         selectedTemplate === null ? 'ring-2 ring-primary' : ''
                     }
@@ -148,11 +166,26 @@ export default function TemplatesStep({
             </div>
 
             <div className="flex flex-col sm:flex-row gap-3 pt-4">
-                <Button onClick={onNext} className="flex-1">
-                    Continue
-                    <ArrowRight className="ml-2 h-4 w-4" />
+                <Button
+                    onClick={handleContinue}
+                    className="flex-1"
+                    disabled={loading}
+                >
+                    {loading ? (
+                        <>
+                            <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                            {selectedTemplate
+                                ? 'Creating collection...'
+                                : 'Continuing...'}
+                        </>
+                    ) : (
+                        <>
+                            Continue
+                            <ArrowRight className="ml-2 h-4 w-4" />
+                        </>
+                    )}
                 </Button>
-                <Button variant="outline" onClick={onBack}>
+                <Button variant="outline" onClick={onBack} disabled={loading}>
                     <ArrowLeft className="mr-2 h-4 w-4" />
                     Back
                 </Button>

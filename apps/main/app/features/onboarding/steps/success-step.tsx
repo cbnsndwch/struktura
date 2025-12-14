@@ -15,7 +15,7 @@ export default function SuccessStep({
 }: SuccessStepProps) {
     return (
         <div className="text-center space-y-6">
-            <div className="mx-auto w-20 h-20 bg-gradient-to-br from-green-500 to-emerald-600 rounded-2xl flex items-center justify-center">
+            <div className="mx-auto w-20 h-20 bg-linear-to-br from-green-500 to-emerald-600 rounded-2xl flex items-center justify-center">
                 <CheckCircle className="h-10 w-10 text-white" />
             </div>
 
@@ -29,7 +29,7 @@ export default function SuccessStep({
                 </p>
             </div>
 
-            <Card className="p-6 bg-gradient-to-r from-blue-50 to-purple-50 dark:from-blue-950/50 dark:to-purple-950/50 border-primary/20 dark:border-primary/30">
+            <Card className="p-6 bg-linear-to-r from-blue-50 to-purple-50 dark:from-blue-950/50 dark:to-purple-950/50 border-primary/20 dark:border-primary/30">
                 <h3 className="font-semibold mb-4">What's Next?</h3>
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4 text-sm">
                     <div className="flex items-center space-x-2">

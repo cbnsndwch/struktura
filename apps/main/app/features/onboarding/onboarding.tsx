@@ -12,6 +12,8 @@ import {
 
 import { requireServerAuth } from '../../lib/auth.server.js';
 import { apiClient } from '../../lib/api/client.js';
+import { clearOnboardingState as clearSharedOnboardingState } from '../../lib/onboarding.js';
+import type { AppLoadContext } from '../../../src/react-router.js';
 
 import {
     type OnboardingState,
@@ -36,9 +38,38 @@ export const meta: MetaFunction = () => {
     ];
 };
 
-export async function loader(args: LoaderFunctionArgs) {
+export async function loader(args: LoaderFunctionArgs<AppLoadContext>) {
     // Ensure user is authenticated before accessing onboarding (uses Better Auth session)
-    await requireServerAuth(args);
+    const auth = await requireServerAuth(args);
+
+    // Check if user already has workspaces - if so, they've completed onboarding
+    // and should be redirected to dashboard (server-side redirect)
+    const { workspaces: workspaceLoader } = args.context;
+
+    try {
+        const workspaces = await workspaceLoader.findAllForUser(auth.user!.id);
+        if (workspaces.length > 0) {
+            // User already has workspaces, redirect to dashboard
+            const url = new URL(args.request.url);
+            throw new Response(null, {
+                status: 302,
+                headers: {
+                    Location: new URL('/dashboard', url.origin).toString()
+                }
+            });
+        }
+    } catch (error) {
+        // If it's a redirect response, re-throw it
+        if (error instanceof Response) {
+            throw error;
+        }
+        // Otherwise, log and continue to onboarding (fail open for new users)
+        console.error(
+            'Failed to check workspaces in onboarding loader:',
+            error
+        );
+    }
+
     return null;
 }
 
@@ -49,6 +80,7 @@ export default function Onboarding() {
         currentStep: 'welcome',
         completedSteps: [],
         workspaceData: null,
+        workspaceId: null,
         selectedTemplate: null,
         canSkip: true
     });
@@ -82,6 +114,8 @@ export default function Onboarding() {
     const clearOnboardingState = () => {
         if (typeof window !== 'undefined') {
             localStorage.removeItem('struktura-onboarding-state');
+            // Also clear the shared onboarding state (different key) to prevent redirect loops
+            clearSharedOnboardingState();
         }
     };
 
@@ -127,15 +161,16 @@ export default function Onboarding() {
         setIsLoading(true);
         try {
             // Create workspace via API client (includes authentication)
-            const workspace = await apiClient.post('/workspaces', {
+            const workspace = (await apiClient.post('/workspaces', {
                 name: data.name,
                 description: data.description || undefined
-            });
+            })) as { id: string };
             console.log('Workspace created successfully:', workspace);
 
             setState(prev => ({
                 ...prev,
-                workspaceData: data
+                workspaceData: data,
+                workspaceId: workspace.id
             }));
             nextStep();
         } catch (error) {
@@ -171,6 +206,198 @@ export default function Onboarding() {
         }));
     };
 
+    /**
+     * Handle proceeding from templates step - create a collection if a template was selected
+     */
+    const handleTemplatesContinue = async (
+        templateId: string | null
+    ): Promise<void> => {
+        // If no template selected, just proceed to the next step
+        if (!templateId || !state.workspaceId) {
+            nextStep();
+            return;
+        }
+
+        setIsLoading(true);
+        try {
+            // Map frontend template IDs to backend template data
+            // The templates on the frontend are UI-specific, we need to create collections
+            // with appropriate fields based on the selected template
+            const templateConfigs: Record<
+                string,
+                {
+                    name: string;
+                    description: string;
+                    fields: Array<{
+                        name: string;
+                        type: string;
+                        description?: string;
+                        required?: boolean;
+                    }>;
+                }
+            > = {
+                'team-directory': {
+                    name: 'Team Directory',
+                    description:
+                        'Manage team members, roles, and contact information',
+                    fields: [
+                        {
+                            name: 'name',
+                            type: 'text',
+                            description: 'Team member name',
+                            required: true
+                        },
+                        {
+                            name: 'role',
+                            type: 'text',
+                            description: 'Job role/title'
+                        },
+                        {
+                            name: 'email',
+                            type: 'email',
+                            description: 'Contact email',
+                            required: true
+                        },
+                        {
+                            name: 'department',
+                            type: 'text',
+                            description: 'Department'
+                        },
+                        {
+                            name: 'startDate',
+                            type: 'date',
+                            description: 'Start date'
+                        }
+                    ]
+                },
+                'project-tracker': {
+                    name: 'Project Tracker',
+                    description: 'Track project progress, tasks, and deadlines',
+                    fields: [
+                        {
+                            name: 'projectName',
+                            type: 'text',
+                            description: 'Project name',
+                            required: true
+                        },
+                        {
+                            name: 'status',
+                            type: 'select',
+                            description: 'Current status'
+                        },
+                        { name: 'owner', type: 'text', description: 'Owner' },
+                        {
+                            name: 'dueDate',
+                            type: 'date',
+                            description: 'Due date'
+                        },
+                        {
+                            name: 'priority',
+                            type: 'select',
+                            description: 'Priority level'
+                        }
+                    ]
+                },
+                'inventory-management': {
+                    name: 'Inventory Management',
+                    description:
+                        'Track products, stock levels, and supplier information',
+                    fields: [
+                        {
+                            name: 'productName',
+                            type: 'text',
+                            description: 'Product name',
+                            required: true
+                        },
+                        { name: 'sku', type: 'text', description: 'SKU code' },
+                        {
+                            name: 'quantity',
+                            type: 'number',
+                            description: 'Current quantity'
+                        },
+                        {
+                            name: 'supplier',
+                            type: 'text',
+                            description: 'Supplier name'
+                        },
+                        {
+                            name: 'reorderLevel',
+                            type: 'number',
+                            description: 'Reorder level'
+                        }
+                    ]
+                },
+                'customer-database': {
+                    name: 'Customer Database',
+                    description:
+                        'Organize customer information and communication history',
+                    fields: [
+                        {
+                            name: 'customerName',
+                            type: 'text',
+                            description: 'Customer name',
+                            required: true
+                        },
+                        {
+                            name: 'email',
+                            type: 'email',
+                            description: 'Email address'
+                        },
+                        {
+                            name: 'phone',
+                            type: 'text',
+                            description: 'Phone number'
+                        },
+                        {
+                            name: 'company',
+                            type: 'text',
+                            description: 'Company name'
+                        },
+                        {
+                            name: 'lastContact',
+                            type: 'date',
+                            description: 'Last contact date'
+                        }
+                    ]
+                }
+            };
+
+            const templateConfig = templateConfigs[templateId];
+            if (!templateConfig) {
+                console.warn(`Unknown template: ${templateId}`);
+                nextStep();
+                return;
+            }
+
+            // Create the collection via API
+            const collection = await apiClient.post('/collections', {
+                name: templateConfig.name,
+                description: templateConfig.description,
+                workspaceId: state.workspaceId,
+                fields: templateConfig.fields
+            });
+            console.log('Collection created successfully:', collection);
+
+            nextStep();
+        } catch (error) {
+            console.error('Failed to create collection from template:', error);
+
+            // Show error but still allow user to proceed
+            const errorMessage =
+                error instanceof Error
+                    ? error.message
+                    : 'An unexpected error occurred while creating the collection';
+            console.warn(
+                'Continuing onboarding despite collection creation error:',
+                errorMessage
+            );
+
+            nextStep();
+        } finally {
+            setIsLoading(false);
+        }
+    };
+
     const finishOnboarding = () => {
         clearOnboardingState();
         // Navigate to workspace dashboard
@@ -197,8 +424,9 @@ export default function Onboarding() {
                     <TemplatesStep
                         selectedTemplate={state.selectedTemplate}
                         onTemplateSelect={handleTemplateSelect}
-                        onNext={nextStep}
+                        onNext={handleTemplatesContinue}
                         onBack={prevStep}
+                        isLoading={isLoading}
                     />
                 );
             case 'tour':

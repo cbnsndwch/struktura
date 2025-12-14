@@ -26,6 +26,7 @@ export interface OnboardingState {
     currentStep: OnboardingStep;
     completedSteps: OnboardingStep[];
     workspaceData: WorkspaceFormData | null;
+    workspaceId: string | null; // ID of the created workspace
     selectedTemplate: string | null;
     canSkip: boolean;
 }
