@@ -1,17 +1,17 @@
 // Workspace core interfaces and types
 
-export interface Workspace {
+export interface IWorkspace {
     id: string;
     name: string;
     slug: string;
     description?: string;
     ownerId: string;
-    settings: WorkspaceSettings;
+    settings: IWorkspaceSettings;
     createdAt: Date;
     updatedAt: Date;
 }
 
-export interface WorkspaceSettings {
+export interface IWorkspaceSettings {
     defaultTimezone: string;
     defaultLanguage: string;
     features: {
@@ -26,7 +26,7 @@ export interface WorkspaceSettings {
     };
 }
 
-export interface WorkspaceMember {
+export interface IWorkspaceMember {
     id: string;
     workspaceId: string;
     userId: string;
@@ -67,13 +67,13 @@ export interface CreateWorkspaceData {
     name: string;
     description?: string;
     slug?: string;
-    settings?: Partial<WorkspaceSettings>;
+    settings?: Partial<IWorkspaceSettings>;
 }
 
 export interface UpdateWorkspaceData {
     name?: string;
     description?: string;
-    settings?: Partial<WorkspaceSettings>;
+    settings?: Partial<IWorkspaceSettings>;
 }
 
 export interface InviteMemberData {
@@ -90,12 +90,12 @@ export interface UpdateMemberData {
 
 // Service contracts
 export interface WorkspaceServiceContract {
-    create(data: CreateWorkspaceData, ownerId: string): Promise<Workspace>;
-    findById(id: string): Promise<Workspace | null>;
-    findBySlug(slug: string): Promise<Workspace | null>;
-    findByOwner(ownerId: string): Promise<Workspace[]>;
-    findByMember(userId: string): Promise<Workspace[]>;
-    update(id: string, data: UpdateWorkspaceData): Promise<Workspace>;
+    create(data: CreateWorkspaceData, ownerId: string): Promise<IWorkspace>;
+    findById(id: string): Promise<IWorkspace | null>;
+    findBySlug(slug: string): Promise<IWorkspace | null>;
+    findByOwner(ownerId: string): Promise<IWorkspace[]>;
+    findByMember(userId: string): Promise<IWorkspace[]>;
+    update(id: string, data: UpdateWorkspaceData): Promise<IWorkspace>;
     delete(id: string): Promise<void>;
 
     // Member management
@@ -103,17 +103,17 @@ export interface WorkspaceServiceContract {
         workspaceId: string,
         data: InviteMemberData,
         invitedBy: string
-    ): Promise<WorkspaceMember>;
+    ): Promise<IWorkspaceMember>;
     getMember(
         workspaceId: string,
         userId: string
-    ): Promise<WorkspaceMember | null>;
-    getMembers(workspaceId: string): Promise<WorkspaceMember[]>;
+    ): Promise<IWorkspaceMember | null>;
+    getMembers(workspaceId: string): Promise<IWorkspaceMember[]>;
     updateMember(
         workspaceId: string,
         userId: string,
         data: UpdateMemberData
-    ): Promise<WorkspaceMember>;
+    ): Promise<IWorkspaceMember>;
     removeMember(workspaceId: string, userId: string): Promise<void>;
 
     // Permissions
@@ -129,28 +129,28 @@ export interface WorkspaceServiceContract {
 }
 
 export interface WorkspaceRepositoryContract {
-    findById(id: string): Promise<Workspace | null>;
-    findBySlug(slug: string): Promise<Workspace | null>;
-    findByOwnerId(ownerId: string): Promise<Workspace[]>;
+    findById(id: string): Promise<IWorkspace | null>;
+    findBySlug(slug: string): Promise<IWorkspace | null>;
+    findByOwnerId(ownerId: string): Promise<IWorkspace[]>;
     create(
-        workspace: Omit<Workspace, 'id' | 'createdAt' | 'updatedAt'>
-    ): Promise<Workspace>;
-    update(id: string, updates: Partial<Workspace>): Promise<Workspace>;
+        workspace: Omit<IWorkspace, 'id' | 'createdAt' | 'updatedAt'>
+    ): Promise<IWorkspace>;
+    update(id: string, updates: Partial<IWorkspace>): Promise<IWorkspace>;
     delete(id: string): Promise<void>;
 }
 
 export interface WorkspaceMemberRepositoryContract {
-    findByWorkspaceId(workspaceId: string): Promise<WorkspaceMember[]>;
-    findByUserId(userId: string): Promise<WorkspaceMember[]>;
+    findByWorkspaceId(workspaceId: string): Promise<IWorkspaceMember[]>;
+    findByUserId(userId: string): Promise<IWorkspaceMember[]>;
     findByWorkspaceAndUser(
         workspaceId: string,
         userId: string
-    ): Promise<WorkspaceMember | null>;
-    create(member: Omit<WorkspaceMember, 'id'>): Promise<WorkspaceMember>;
+    ): Promise<IWorkspaceMember | null>;
+    create(member: Omit<IWorkspaceMember, 'id'>): Promise<IWorkspaceMember>;
     update(
         id: string,
-        updates: Partial<WorkspaceMember>
-    ): Promise<WorkspaceMember>;
+        updates: Partial<IWorkspaceMember>
+    ): Promise<IWorkspaceMember>;
     delete(id: string): Promise<void>;
 }
 
@@ -189,4 +189,78 @@ export class WorkspaceSlugConflictError extends Error {
         super(`Workspace slug already exists: ${slug}`);
         this.name = 'WorkspaceSlugConflictError';
     }
+}
+
+// =============================================================================
+// React Router Loader Interfaces (Interface Segregation Principle)
+// These minimal interfaces are used by RR7 loaders to avoid bundling Nest code
+// =============================================================================
+
+/**
+ * Workspace data returned by loader interface.
+ * This is a plain JSON object suitable for RR7 serialization.
+ */
+export interface WorkspaceLoaderData {
+    id: string;
+    name: string;
+    slug: string;
+    description?: string;
+    owner: string;
+    members: Array<{
+        user: string;
+        role: 'owner' | 'admin' | 'editor' | 'viewer';
+        invitedAt: string;
+        joinedAt?: string;
+    }>;
+    settings: {
+        timezone: string;
+        dateFormat: string;
+        numberFormat: string;
+        defaultLanguage: string;
+        features: {
+            apiAccess: boolean;
+            realTimeSync: boolean;
+            advancedPermissions: boolean;
+        };
+        branding?: {
+            logo?: string;
+            primaryColor?: string;
+            customDomain?: string;
+        };
+    };
+    createdAt: string;
+    updatedAt: string;
+}
+
+/**
+ * Create workspace input for loader interface.
+ */
+export interface CreateWorkspaceLoaderInput {
+    name: string;
+    description?: string;
+    slug?: string;
+}
+
+/**
+ * Minimal interface for workspace operations in React Router loaders.
+ * This follows the Interface Segregation Principle - RR7 loaders only need
+ * these methods and should not import the full WorkspaceService class.
+ *
+ * The implementation is provided by the Nest side via getLoadContext().
+ */
+export interface IWorkspaceLoader {
+    /**
+     * Get all workspaces for a user.
+     * Returns plain JSON objects ready for RR7 serialization.
+     */
+    findAllForUser(userId: string): Promise<WorkspaceLoaderData[]>;
+
+    /**
+     * Create a new workspace.
+     * Returns plain JSON object ready for RR7 serialization.
+     */
+    create(
+        input: CreateWorkspaceLoaderInput,
+        ownerId: string
+    ): Promise<WorkspaceLoaderData>;
 }
