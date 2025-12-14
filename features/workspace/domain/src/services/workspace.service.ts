@@ -3,14 +3,12 @@ import {
     NotFoundException,
     ConflictException,
     ForbiddenException,
-    BadRequestException,
-    Inject
+    BadRequestException
 } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
-import type { Db } from 'mongodb';
 import { Model, Types } from 'mongoose';
 
-import { MONGODB_DATABASE } from '@cbnsndwch/struktura-auth-domain';
+import { User, type UserDocument } from '@cbnsndwch/struktura-auth-domain';
 
 import {
     Workspace,
@@ -25,29 +23,14 @@ import {
     UpdateMemberRoleDto
 } from '../dto/index.js';
 
-/**
- * Better Auth user document shape (minimal fields needed for workspace operations)
- */
-interface BetterAuthUserDocument {
-    _id: string;
-    email: string;
-    name: string;
-}
-
 @Injectable()
 export class WorkspaceService {
     constructor(
         @InjectModel(Workspace.name)
-        private workspaceModel: Model<WorkspaceDocument>,
-        @Inject(MONGODB_DATABASE) private readonly db: Db
+        private workspaces: Model<WorkspaceDocument>,
+        @InjectModel(User.name)
+        private users: Model<UserDocument>
     ) {}
-
-    /**
-     * Get the Better Auth users collection
-     */
-    private get usersCollection() {
-        return this.db.collection<BetterAuthUserDocument>('ba_user');
-    }
 
     /**
      * Create a new workspace
@@ -62,7 +45,7 @@ export class WorkspaceService {
         const workspaceSlug = slug || this.generateSlug(name);
 
         // Check if slug already exists
-        const existingWorkspace = await this.workspaceModel
+        const existingWorkspace = await this.workspaces
             .findOne({ slug: workspaceSlug })
             .exec();
 
@@ -71,7 +54,7 @@ export class WorkspaceService {
         }
 
         // Create workspace with owner as the first member
-        const workspace = new this.workspaceModel({
+        const workspace = new this.workspaces({
             name,
             description,
             slug: workspaceSlug,
@@ -102,7 +85,7 @@ export class WorkspaceService {
      * Get all workspaces for a user
      */
     async findAllForUser(userId: string): Promise<WorkspaceDocument[]> {
-        return this.workspaceModel
+        return this.workspaces
             .find({
                 'members.user': new Types.ObjectId(userId)
             })
@@ -120,7 +103,7 @@ export class WorkspaceService {
             throw new BadRequestException('Invalid workspace ID');
         }
 
-        const workspace = await this.workspaceModel
+        const workspace = await this.workspaces
             .findById(id)
             .populate('owner', 'name email')
             .populate('members.user', 'name email')
@@ -137,7 +120,7 @@ export class WorkspaceService {
      * Get workspace by slug
      */
     async findBySlug(slug: string): Promise<WorkspaceDocument> {
-        const workspace = await this.workspaceModel
+        const workspace = await this.workspaces
             .findOne({ slug })
             .populate('owner', 'name email')
             .populate('members.user', 'name email')
@@ -202,7 +185,7 @@ export class WorkspaceService {
             );
         }
 
-        await this.workspaceModel.findByIdAndDelete(id).exec();
+        await this.workspaces.findByIdAndDelete(id).exec();
     }
 
     /**
@@ -222,7 +205,7 @@ export class WorkspaceService {
         ]);
 
         // Find user by email in Better Auth users collection
-        const user = await this.usersCollection.findOne({
+        const user = await this.users.findOne({
             email: inviteMemberDto.email
         });
 
@@ -330,7 +313,7 @@ export class WorkspaceService {
         workspaceId: string,
         userId: string
     ): Promise<WorkspaceRole | null> {
-        const workspace = await this.workspaceModel
+        const workspace = await this.workspaces
             .findById(workspaceId)
             .select('members owner')
             .exec();
