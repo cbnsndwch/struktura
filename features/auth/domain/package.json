@@ -19,21 +19,14 @@
         "@cbnsndwch/struktura-shared-domain": "workspace:*",
         "@nestjs/common": "catalog:backend",
         "@nestjs/core": "catalog:backend",
-        "@nestjs/jwt": "catalog:backend",
+        "@nestjs/graphql": "catalog:backend",
         "@nestjs/mongoose": "catalog:backend",
-        "@nestjs/passport": "catalog:backend",
         "@nestjs/throttler": "catalog:backend",
-        "bcrypt": "catalog:backend",
         "better-auth": "^1.4.6",
         "class-transformer": "catalog:",
         "class-validator": "catalog:",
         "mongodb": "^7.0.0",
         "mongoose": "catalog:backend",
-        "nodemailer": "catalog:backend",
-        "passport": "catalog:backend",
-        "passport-github2": "catalog:backend",
-        "passport-google-oauth20": "catalog:backend",
-        "passport-jwt": "catalog:backend",
         "reflect-metadata": "catalog:",
         "rxjs": "catalog:"
     },
@@ -41,11 +34,6 @@
         "@cbnsndwch/struktura-eslint-config": "workspace:*",
         "@cbnsndwch/struktura-tsconfig": "workspace:*",
         "@nestjs/testing": "catalog:backend",
-        "@types/bcrypt": "catalog:backend",
-        "@types/nodemailer": "catalog:backend",
-        "@types/passport-github2": "catalog:backend",
-        "@types/passport-google-oauth20": "catalog:backend",
-        "@types/passport-jwt": "catalog:backend",
         "eslint": "catalog:",
         "prettier": "catalog:",
         "tsup": "catalog:",
@@ -61,6 +49,10 @@
         ".": {
             "types": "./dist/index.d.ts",
             "import": "./dist/index.js"
+        },
+        "./module": {
+            "types": "./dist/auth.module.d.ts",
+            "import": "./dist/auth.module.js"
         }
     },
     "engines": {
