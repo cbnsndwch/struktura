@@ -1,30 +1,15 @@
 import { Module } from '@nestjs/common';
-import { getConnectionToken } from '@nestjs/mongoose';
+import { MongooseModule } from '@nestjs/mongoose';
 import { ThrottlerModule } from '@nestjs/throttler';
-import type { Connection } from 'mongoose';
 
-import { PreferencesController } from './controllers/preferences.controller.js';
-import {
-    PreferencesService,
-    MONGODB_DATABASE
-} from './services/preferences.service.js';
-
-// Guards
+import { authControllers } from './controllers/index.js';
+import { authEntities } from './entities/index.js';
 import { BetterAuthGuard } from './guards/better-auth.guard.js';
 import { RolesGuard } from './guards/roles.guard.js';
+import { authServices } from './services/index.js';
 
 /**
- * AuthModule - Authentication domain module
- *
- * Better Auth handles core authentication at the Express level (mounted in main.ts):
- * - POST /api/auth/sign-up/email - User registration
- * - POST /api/auth/sign-in/email - User login
- * - POST /api/auth/sign-out - User logout
- * - POST /api/auth/request-password-reset - Password reset request
- * - POST /api/auth/reset-password - Password reset
- * - GET /api/auth/session - Get current session
- * - GET /api/auth/token - Get JWT token (with jwt plugin)
- * - GET /api/auth/jwks - Get JWKS public keys
+ * AuthModule - Authentication/Session domain module
  *
  * This module provides:
  * - BetterAuthGuard for protecting routes with @UseGuards()
@@ -33,6 +18,8 @@ import { RolesGuard } from './guards/roles.guard.js';
  */
 @Module({
     imports: [
+        // Register User schema to enable populate() in other modules
+        MongooseModule.forFeature(authEntities),
         // Rate limiting
         ThrottlerModule.forRoot([
             {
@@ -47,21 +34,19 @@ import { RolesGuard } from './guards/roles.guard.js';
             }
         ])
     ],
-    controllers: [PreferencesController],
+    controllers: authControllers,
     providers: [
-        // Provide MongoDB database instance from Mongoose connection
-        // This is used by PreferencesService to access the ba_user collection
-        {
-            provide: MONGODB_DATABASE,
-            useFactory: (connection: Connection) => {
-                return connection.getClient().db();
-            },
-            inject: [getConnectionToken()]
-        },
-        PreferencesService,
+        ...authServices,
         BetterAuthGuard,
         RolesGuard
+        //
     ],
-    exports: [PreferencesService, BetterAuthGuard, RolesGuard]
+    exports: [
+        ...authServices,
+        BetterAuthGuard,
+        RolesGuard,
+        // Export MongooseModule so User is available in importing modules
+        MongooseModule
+    ]
 })
 export class AuthModule {}
