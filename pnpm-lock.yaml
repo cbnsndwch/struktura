@@ -794,21 +794,15 @@ importers:
       '@nestjs/core':
         specifier: catalog:backend
         version: 11.1.9(@nestjs/common@11.1.9(class-transformer@0.5.1)(class-validator@0.14.3)(reflect-metadata@0.2.2)(rxjs@7.8.2))(@nestjs/platform-express@11.1.9)(reflect-metadata@0.2.2)(rxjs@7.8.2)
-      '@nestjs/jwt':
+      '@nestjs/graphql':
         specifier: catalog:backend
-        version: 11.0.2(@nestjs/common@11.1.9(class-transformer@0.5.1)(class-validator@0.14.3)(reflect-metadata@0.2.2)(rxjs@7.8.2))
+        version: 13.2.3(@nestjs/common@11.1.9(class-transformer@0.5.1)(class-validator@0.14.3)(reflect-metadata@0.2.2)(rxjs@7.8.2))(@nestjs/core@11.1.9)(class-transformer@0.5.1)(class-validator@0.14.3)(graphql@16.12.0)(reflect-metadata@0.2.2)
       '@nestjs/mongoose':
         specifier: catalog:backend
         version: 11.0.4(@nestjs/common@11.1.9(class-transformer@0.5.1)(class-validator@0.14.3)(reflect-metadata@0.2.2)(rxjs@7.8.2))(@nestjs/core@11.1.9)(mongoose@9.0.1)(rxjs@7.8.2)
-      '@nestjs/passport':
-        specifier: catalog:backend
-        version: 11.0.5(@nestjs/common@11.1.9(class-transformer@0.5.1)(class-validator@0.14.3)(reflect-metadata@0.2.2)(rxjs@7.8.2))(passport@0.7.0)
       '@nestjs/throttler':
         specifier: catalog:backend
         version: 6.5.0(@nestjs/common@11.1.9(class-transformer@0.5.1)(class-validator@0.14.3)(reflect-metadata@0.2.2)(rxjs@7.8.2))(@nestjs/core@11.1.9)(reflect-metadata@0.2.2)
-      bcrypt:
-        specifier: catalog:backend
-        version: 6.0.0
       better-auth:
         specifier: ^1.4.6
         version: 1.4.6(react-dom@19.2.3(react@19.2.3))(react@19.2.3)
@@ -824,21 +818,6 @@ importers:
       mongoose:
         specifier: catalog:backend
         version: 9.0.1
-      nodemailer:
-        specifier: catalog:backend
-        version: 7.0.11
-      passport:
-        specifier: catalog:backend
-        version: 0.7.0
-      passport-github2:
-        specifier: catalog:backend
-        version: 0.1.12
-      passport-google-oauth20:
-        specifier: catalog:backend
-        version: 2.0.0
-      passport-jwt:
-        specifier: catalog:backend
-        version: 4.0.1
       reflect-metadata:
         specifier: 'catalog:'
         version: 0.2.2
@@ -855,21 +834,6 @@ importers:
       '@nestjs/testing':
         specifier: catalog:backend
         version: 11.1.9(@nestjs/common@11.1.9(class-transformer@0.5.1)(class-validator@0.14.3)(reflect-metadata@0.2.2)(rxjs@7.8.2))(@nestjs/core@11.1.9)(@nestjs/platform-express@11.1.9)
-      '@types/bcrypt':
-        specifier: catalog:backend
-        version: 6.0.0
-      '@types/nodemailer':
-        specifier: catalog:backend
-        version: 7.0.4
-      '@types/passport-github2':
-        specifier: catalog:backend
-        version: 1.2.9
-      '@types/passport-google-oauth20':
-        specifier: catalog:backend
-        version: 2.0.17
-      '@types/passport-jwt':
-        specifier: catalog:backend
-        version: 4.0.1
       eslint:
         specifier: 'catalog:'
         version: 9.39.2(jiti@2.6.1)
