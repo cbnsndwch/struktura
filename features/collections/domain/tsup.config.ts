@@ -1,12 +1,13 @@
 import { defineConfig } from 'tsup';
 
 export default defineConfig({
-    entry: ['src/index.ts'],
+    entry: ['src/**/*'],
     format: ['esm'],
     dts: true,
     sourcemap: true,
     clean: true,
     target: 'es2023',
+    bundle: false,
     external: [
         '@nestjs/common',
         '@nestjs/core',

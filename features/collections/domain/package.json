@@ -45,6 +45,10 @@
         ".": {
             "types": "./dist/index.d.ts",
             "import": "./dist/index.js"
+        },
+        "./module": {
+            "types": "./dist/collections.module.d.ts",
+            "import": "./dist/collections.module.js"
         }
     }
 }
