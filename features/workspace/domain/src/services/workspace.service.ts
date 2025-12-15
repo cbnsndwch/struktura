@@ -84,14 +84,16 @@ export class WorkspaceService {
      * Get all workspaces for a user
      */
     async findAllForUser(userId: string): Promise<WorkspaceDocument[]> {
-        return this.workspaces
-            .find({
-                'members.user': new Types.ObjectId(userId)
-            })
-            .populate('owner', 'name email')
-            .populate('members.user', 'name email')
-            .sort({ updatedAt: -1 })
-            .exec();
+        return (
+            this.workspaces
+                .find({
+                    'members.user': new Types.ObjectId(userId)
+                })
+                // .populate('owner', 'name email')
+                // .populate('members.user', 'name email')
+                .sort({ updatedAt: -1 })
+                .exec()
+        );
     }
 
     /**
@@ -104,8 +106,8 @@ export class WorkspaceService {
 
         const workspace = await this.workspaces
             .findById(id)
-            .populate('owner', 'name email')
-            .populate('members.user', 'name email')
+            // .populate('owner', 'name email')
+            // .populate('members.user', 'name email')
             .exec();
 
         if (!workspace) {
@@ -121,8 +123,8 @@ export class WorkspaceService {
     async findBySlug(slug: string): Promise<WorkspaceDocument> {
         const workspace = await this.workspaces
             .findOne({ slug })
-            .populate('owner', 'name email')
-            .populate('members.user', 'name email')
+            // .populate('owner', 'name email')
+            // .populate('members.user', 'name email')
             .exec();
 
         if (!workspace) {
