@@ -2,7 +2,6 @@ import { ObjectType, Field } from '@nestjs/graphql';
 import { Prop } from '@nestjs/mongoose';
 import { IsBoolean } from 'class-validator';
 
-
 @ObjectType()
 export class WorkspaceFeatures {
     @Prop({ type: Boolean, default: false })

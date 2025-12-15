@@ -8,7 +8,7 @@ import {
 import { InjectModel } from '@nestjs/mongoose';
 import { Model, Types } from 'mongoose';
 
-import { User, type UserDocument } from '@cbnsndwch/struktura-auth-domain';
+import { UserService } from '@cbnsndwch/struktura-auth-domain';
 
 import {
     Workspace,
@@ -28,8 +28,7 @@ export class WorkspaceService {
     constructor(
         @InjectModel(Workspace.name)
         private workspaces: Model<WorkspaceDocument>,
-        @InjectModel(User.name)
-        private users: Model<UserDocument>
+        private readonly userService: UserService
     ) {}
 
     /**
@@ -204,10 +203,10 @@ export class WorkspaceService {
             WorkspaceRole.ADMIN
         ]);
 
-        // Find user by email in Better Auth users collection
-        const user = await this.users.findOne({
-            email: inviteMemberDto.email
-        });
+        // Find user by email using Better Auth API
+        const user = await this.userService.findByEmailOrNull(
+            inviteMemberDto.email
+        );
 
         if (!user) {
             throw new NotFoundException('User not found');
@@ -215,16 +214,16 @@ export class WorkspaceService {
 
         // Check if user is already a member
         const existingMember = workspace.members.find(
-            member => member.user.toString() === user._id?.toString()
+            member => member.user.toString() === user.id
         );
 
         if (existingMember) {
             throw new ConflictException('User is already a member');
         }
 
-        // Add member - BA uses string _id, convert to ObjectId for workspace schema
+        // Add member - BA uses string id, convert to ObjectId for workspace schema
         workspace.members.push({
-            user: new Types.ObjectId(user._id),
+            user: new Types.ObjectId(user.id),
             role: inviteMemberDto.role,
             invitedAt: new Date()
         });
