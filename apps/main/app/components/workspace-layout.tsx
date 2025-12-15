@@ -20,6 +20,7 @@ import {
     type BreadcrumbSegment
 } from './workspace-breadcrumbs.js';
 import { WorkspaceNavigation } from './workspace-navigation.js';
+import { UserMenu } from './user-menu.js';
 
 interface WorkspaceLayoutProps {
     workspaceId: string;
@@ -70,7 +71,7 @@ export function WorkspaceLayout({
             />
 
             <SidebarInset>
-                {/* Header with breadcrumbs */}
+                {/* Header with breadcrumbs and user menu */}
                 <header className="flex h-16 shrink-0 items-center gap-2 border-b px-4">
                     <SidebarTrigger className="-ml-1" />
                     <div className="flex-1">
@@ -80,6 +81,7 @@ export function WorkspaceLayout({
                             segments={breadcrumbSegments}
                         />
                     </div>
+                    <UserMenu />
                 </header>
 
                 {/* Main content */}

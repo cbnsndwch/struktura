@@ -7,6 +7,7 @@ import workspaceRoutes from './features/workspaces/routes.js';
 import otherRoutes from './routes/other/routes.js';
 import publicRoutes from './routes/public/routes.js';
 import globalRoutes from './routes/global/routes.js';
+import settingsRoutes from './routes/settings/routes.js';
 
 import uiExampleRoutes from './examples/routes.js';
 
@@ -18,6 +19,7 @@ export default [
     ...prefix('onboarding', onboardingRoutes),
     ...prefix('workspaces', workspaceRoutes),
     ...prefix('auth', authRoutes),
+    ...prefix('settings', settingsRoutes),
 
     // examples
     ...uiExampleRoutes
