@@ -44,7 +44,15 @@ export class PreferencesService {
         // Merge with updates
         const updatedPreferences: IUserPreferences = {
             ...currentPreferences,
-            ...(input.theme !== undefined ? { theme: input.theme } : {})
+            ...(input.theme !== undefined ? { theme: input.theme } : {}),
+            ...(input.notifications !== undefined
+                ? {
+                      notifications: {
+                          ...currentPreferences.notifications,
+                          ...input.notifications
+                      }
+                  }
+                : {})
         };
 
         // Update user in Better Auth's collection

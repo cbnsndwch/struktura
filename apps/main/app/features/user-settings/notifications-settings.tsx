@@ -1,7 +1,7 @@
 /**
  * Notification preferences settings page
  */
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import {
     Card,
     CardContent,
@@ -12,16 +12,14 @@ import {
     Switch,
     Button
 } from '@cbnsndwch/struktura-shared-ui';
-
-interface NotificationPreferences {
-    emailNotifications: boolean;
-    workspaceUpdates: boolean;
-    collaborationNotifications: boolean;
-    marketingEmails: boolean;
-}
+import { toast } from 'sonner';
+import type { INotificationPreferences } from '@cbnsndwch/struktura-auth-contracts';
+import { useAuth } from '../../lib/auth-context.js';
 
 export function NotificationsSettings() {
-    const [preferences, setPreferences] = useState<NotificationPreferences>({
+    const { user } = useAuth();
+    
+    const [preferences, setPreferences] = useState<INotificationPreferences>({
         emailNotifications: true,
         workspaceUpdates: true,
         collaborationNotifications: true,
@@ -30,7 +28,31 @@ export function NotificationsSettings() {
 
     const [isSaving, setIsSaving] = useState(false);
 
-    const handleToggle = (key: keyof NotificationPreferences) => {
+    // Load user preferences on mount
+    useEffect(() => {
+        const loadPreferences = async () => {
+            if (!user) return;
+
+            try {
+                const response = await fetch('/api/user/preferences', {
+                    credentials: 'include'
+                });
+
+                if (response.ok) {
+                    const data = await response.json();
+                    if (data.notifications) {
+                        setPreferences(data.notifications);
+                    }
+                }
+            } catch (error) {
+                console.error('Failed to load notification preferences:', error);
+            }
+        };
+
+        loadPreferences();
+    }, [user]);
+
+    const handleToggle = (key: keyof INotificationPreferences) => {
         setPreferences(prev => ({
             ...prev,
             [key]: !prev[key]
@@ -40,9 +62,29 @@ export function NotificationsSettings() {
     const handleSave = async () => {
         setIsSaving(true);
         try {
-            // TODO: Implement API call to save notification preferences
-            // await updateNotificationPreferences(preferences);
-            await new Promise(resolve => setTimeout(resolve, 500));
+            const response = await fetch('/api/user/preferences', {
+                method: 'PUT',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                credentials: 'include',
+                body: JSON.stringify({
+                    notifications: preferences
+                })
+            });
+
+            if (!response.ok) {
+                throw new Error('Failed to save preferences');
+            }
+
+            toast.success('Preferences saved', {
+                description: 'Your notification preferences have been updated.'
+            });
+        } catch (error) {
+            console.error('Failed to save notification preferences:', error);
+            toast.error('Failed to save preferences', {
+                description: 'Please try again.'
+            });
         } finally {
             setIsSaving(false);
         }
