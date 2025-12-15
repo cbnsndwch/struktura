@@ -34,6 +34,7 @@ const columns = [
 ];
 
 function TestDataTable() {
+    // eslint-disable-next-line react-hooks/incompatible-library -- TanStack Table's `useReactTable()` returns non-memoizable functions; this is test-only.
     const table = useReactTable({
         data: testData,
         columns,
@@ -60,6 +61,7 @@ describe('DataTable', () => {
 
     it('should show "No results" when data is empty', () => {
         function EmptyTestDataTable() {
+            // eslint-disable-next-line react-hooks/incompatible-library -- TanStack Table's `useReactTable()` returns non-memoizable functions; this is test-only.
             const emptyTable = useReactTable({
                 data: [],
                 columns,
