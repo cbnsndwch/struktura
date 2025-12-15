@@ -17,18 +17,18 @@
         "@cbnsndwch/struktura-auth-domain": "workspace:*",
         "@cbnsndwch/struktura-shared-domain": "workspace:*",
         "@cbnsndwch/struktura-workspace-contracts": "workspace:*",
-        "class-transformer": "catalog:",
-        "class-validator": "catalog:",
+        "class-transformer": "catalog:shared",
+        "class-validator": "catalog:shared",
         "mongoose": "catalog:backend"
     },
     "devDependencies": {
         "@cbnsndwch/struktura-eslint-config": "workspace:*",
         "@cbnsndwch/struktura-tsconfig": "workspace:*",
-        "eslint": "catalog:",
-        "prettier": "catalog:",
-        "tsup": "catalog:",
-        "typescript": "catalog:",
-        "vitest": "catalog:"
+        "eslint": "catalog:shared",
+        "prettier": "catalog:shared",
+        "tsup": "catalog:shared",
+        "typescript": "catalog:shared",
+        "vitest": "catalog:shared"
     },
     "module": "./dist/index.js",
     "types": "./dist/index.d.ts",
@@ -39,8 +39,8 @@
         ".": {
             "types": "./dist/index.d.ts",
             "import": "./dist/index.js"
-        }
-        ,"./module": {
+        },
+        "./module": {
             "types": "./dist/workspace.module.d.ts",
             "import": "./dist/workspace.module.js"
         }

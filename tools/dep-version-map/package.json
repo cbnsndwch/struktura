@@ -3,7 +3,7 @@
     "type": "module",
     "private": true,
     "devDependencies": {
-        "glob": "catalog:",
+        "glob": "catalog:shared",
         "lodash-es": "^4.17.21"
     }
 }

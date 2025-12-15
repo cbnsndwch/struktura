@@ -27,19 +27,19 @@
         "README.md"
     ],
     "devDependencies": {
-        "@eslint/js": "catalog:",
-        "eslint": "catalog:",
-        "eslint-config-prettier": "catalog:",
-        "eslint-import-resolver-typescript": "catalog:",
-        "eslint-plugin-import": "catalog:",
+        "@eslint/js": "catalog:shared",
+        "eslint": "catalog:shared",
+        "eslint-config-prettier": "catalog:shared",
+        "eslint-import-resolver-typescript": "catalog:shared",
+        "eslint-plugin-import": "catalog:shared",
         "eslint-plugin-only-warn": "^1.1.0",
-        "eslint-plugin-prettier": "catalog:",
+        "eslint-plugin-prettier": "catalog:shared",
         "eslint-plugin-react": "^7.37.5",
         "eslint-plugin-react-hooks": "^7.0.1",
         "eslint-plugin-turbo": "^2.6.3",
-        "globals": "catalog:",
-        "prettier": "catalog:",
-        "typescript": "catalog:",
-        "typescript-eslint": "catalog:"
+        "globals": "catalog:shared",
+        "prettier": "catalog:shared",
+        "typescript": "catalog:shared",
+        "typescript-eslint": "catalog:shared"
     }
 }

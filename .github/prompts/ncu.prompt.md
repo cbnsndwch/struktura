@@ -8,13 +8,13 @@ This monorepo uses **pnpm catalogs** to manage shared dependency versions centra
 
 ### Catalog Structure
 
-- **Default catalog (`catalog:`)**: Shared dependencies used across frontend and backend (TypeScript, testing, linting, utilities)
+- **Shared catalog (`catalog:shared`)**: Shared dependencies used across frontend and backend (TypeScript, testing, linting, utilities)
 - **Named catalogs (`catalogs:`)**: Domain-specific dependencies (e.g., `frontend:` for React/UI libraries, `backend:` for NestJS)
 
 ### Key Files
 
 - `pnpm-workspace.yaml` - Contains all catalog definitions with pinned versions
-- `package.json` files - Reference catalogs via `catalog:` or `catalog:<name>` syntax
+- `package.json` files - Reference catalogs via `catalog:<name>` syntax
 
 ---
 
@@ -35,7 +35,7 @@ Report findings in a structured format:
     - name: "typescript"
       current: "^5.3.0"
       latest: "^5.4.0"
-      location: "catalog:default"
+      location: "catalog:shared"
 </outdated_packages>
 ```
 
@@ -143,4 +143,4 @@ Before finishing, verify:
 - **Always use pnpm** — never npm or yarn
 - **Use turbo for builds** — `pnpm build` invokes turbo
 - **One group per commit** — atomic, reversible changes
-- **Catalog versions are the source of truth** — individual `package.json` files should use `catalog:` references, not hardcoded versions
+- **Catalog versions are the source of truth** — individual `package.json` files should use `catalog:shared` references, not hardcoded versions

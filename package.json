@@ -36,25 +36,25 @@
         "db:seed": "tsx ./scripts/seed-test-users.ts"
     },
     "devDependencies": {
-        "@changesets/cli": "catalog:",
-        "@eslint/js": "catalog:",
-        "@types/node": "catalog:",
-        "change-case": "catalog:",
-        "conventional-changelog-cli": "catalog:",
-        "dotenv": "catalog:",
-        "eslint": "catalog:",
-        "eslint-config-prettier": "catalog:",
-        "eslint-import-resolver-typescript": "catalog:",
-        "eslint-plugin-import": "catalog:",
-        "eslint-plugin-prettier": "catalog:",
-        "globals": "catalog:",
-        "http-server": "catalog:",
-        "npm-check-updates": "catalog:",
-        "prettier": "catalog:",
-        "tsx": "catalog:",
-        "turbo": "catalog:",
-        "typescript": "catalog:",
-        "typescript-eslint": "catalog:"
+        "@changesets/cli": "catalog:shared",
+        "@eslint/js": "catalog:shared",
+        "@types/node": "catalog:shared",
+        "change-case": "catalog:shared",
+        "conventional-changelog-cli": "catalog:shared",
+        "dotenv": "catalog:shared",
+        "eslint": "catalog:shared",
+        "eslint-config-prettier": "catalog:shared",
+        "eslint-import-resolver-typescript": "catalog:shared",
+        "eslint-plugin-import": "catalog:shared",
+        "eslint-plugin-prettier": "catalog:shared",
+        "globals": "catalog:shared",
+        "http-server": "catalog:shared",
+        "npm-check-updates": "catalog:shared",
+        "prettier": "catalog:shared",
+        "tsx": "catalog:shared",
+        "turbo": "catalog:shared",
+        "typescript": "catalog:shared",
+        "typescript-eslint": "catalog:shared"
     },
     "jest": {
         "projects": [
@@ -96,8 +96,8 @@
             "bcrypt",
             "esbuild",
             "mongodb-memory-server",
-            "protobufjs",
-            "unrs-resolver"
+            "msw",
+            "protobufjs"
         ]
     },
     "packageManager": "pnpm@10.25.0+sha512.5e82639027af37cf832061bcc6d639c219634488e0f2baebe785028a793de7b525ffcd3f7ff574f5e9860654e098fe852ba8ac5dd5cefe1767d23a020a92f501"

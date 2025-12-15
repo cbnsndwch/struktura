@@ -23,22 +23,22 @@
         "@nestjs/mongoose": "catalog:backend",
         "@nestjs/throttler": "catalog:backend",
         "better-auth": "^1.4.6",
-        "class-transformer": "catalog:",
-        "class-validator": "catalog:",
+        "class-transformer": "catalog:shared",
+        "class-validator": "catalog:shared",
         "mongodb": "^7.0.0",
         "mongoose": "catalog:backend",
-        "reflect-metadata": "catalog:",
-        "rxjs": "catalog:"
+        "reflect-metadata": "catalog:shared",
+        "rxjs": "catalog:shared"
     },
     "devDependencies": {
         "@cbnsndwch/struktura-eslint-config": "workspace:*",
         "@cbnsndwch/struktura-tsconfig": "workspace:*",
         "@nestjs/testing": "catalog:backend",
-        "eslint": "catalog:",
-        "prettier": "catalog:",
-        "tsup": "catalog:",
-        "typescript": "catalog:",
-        "vitest": "catalog:"
+        "eslint": "catalog:shared",
+        "prettier": "catalog:shared",
+        "tsup": "catalog:shared",
+        "typescript": "catalog:shared",
+        "vitest": "catalog:shared"
     },
     "module": "./dist/index.js",
     "types": "./dist/index.d.ts",

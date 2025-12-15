@@ -19,9 +19,9 @@
     "devDependencies": {
         "@cbnsndwch/struktura-eslint-config": "workspace:*",
         "@cbnsndwch/struktura-tsconfig": "workspace:*",
-        "tsup": "catalog:",
-        "typescript": "catalog:",
-        "vitest": "catalog:"
+        "tsup": "catalog:shared",
+        "typescript": "catalog:shared",
+        "vitest": "catalog:shared"
     },
     "peerDependencies": {
         "typescript": "^5.7.0"
