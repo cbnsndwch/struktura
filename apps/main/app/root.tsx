@@ -4,7 +4,6 @@ import {
     Outlet,
     Scripts,
     ScrollRestoration,
-    useLoaderData,
     useRouteError,
     isRouteErrorResponse,
     type LoaderFunctionArgs
@@ -13,6 +12,8 @@ import { ThemeProvider, Toaster } from '@cbnsndwch/struktura-shared-ui';
 
 import { AuthProvider } from './lib/auth-context.js';
 import './app.css';
+
+import type { Route } from './+types/root.js';
 
 export async function loader({ request }: LoaderFunctionArgs) {
     // TODO: Add authentication check and load user preferences
@@ -87,8 +88,13 @@ function ThemeScript({ userTheme }: { userTheme?: string | null }) {
     return <script dangerouslySetInnerHTML={{ __html: themeScript }} />;
 }
 
-export function Layout({ children }: { children: React.ReactNode }) {
-    const loaderData = useLoaderData<typeof loader>();
+export function Layout({
+    children,
+    loaderData
+}: {
+    children: React.ReactNode;
+    loaderData?: Route.ComponentProps['loaderData'];
+}) {
     const userTheme = loaderData?.userTheme || null;
 
     return (

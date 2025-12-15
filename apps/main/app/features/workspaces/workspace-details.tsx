@@ -2,8 +2,13 @@
  * Individual workspace dashboard - shows collections, activity, and quick actions
  */
 import { useState } from 'react';
-import type { MetaFunction, LoaderFunctionArgs } from 'react-router';
-import { useLoaderData, Link, useNavigate, useParams } from 'react-router';
+import {
+    Link,
+    useNavigate,
+    useParams,
+    type MetaFunction,
+    type LoaderFunctionArgs
+} from 'react-router';
 import {
     Plus,
     Search,
@@ -58,6 +63,8 @@ import {
 } from '../../lib/api/index.js';
 import { requireServerAuth, getCookieHeader } from '../../lib/auth.server.js';
 
+import type { Route } from './+types/workspace-details.js';
+
 export const meta: MetaFunction<typeof loader> = ({ data }) => {
     const workspaceName = data?.dashboardData?.workspace?.name || 'Workspace';
     return [
@@ -102,8 +109,10 @@ export async function loader(args: LoaderFunctionArgs) {
 
 type CollectionViewMode = 'grid' | 'list';
 
-export default function WorkspaceDashboard() {
-    const { dashboardData, error } = useLoaderData<typeof loader>();
+export default function WorkspaceDashboard({
+    loaderData
+}: Route.ComponentProps) {
+    const { dashboardData, error } = loaderData;
     const navigate = useNavigate();
     const params = useParams();
     const [collectionViewMode, setCollectionViewMode] =

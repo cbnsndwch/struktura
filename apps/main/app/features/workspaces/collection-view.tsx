@@ -3,8 +3,8 @@
  */
 import { useState } from 'react';
 import type { MetaFunction, LoaderFunctionArgs } from 'react-router';
-import { useLoaderData } from 'react-router';
 import { Database, FileText } from 'lucide-react';
+
 import {
     Card,
     CardContent,
@@ -17,6 +17,8 @@ import { ViewSwitcher, type ViewType } from '../../components/view-switcher.js';
 import { WorkspaceLayout } from '../../components/workspace-layout.js';
 import { workspaceApi } from '../../lib/api/index.js';
 import { requireServerAuth, getCookieHeader } from '../../lib/auth.server.js';
+
+import type { Route } from './+types/collection-view.js';
 
 export const meta: MetaFunction<typeof loader> = ({ data }) => {
     const collectionName = data?.collection?.name || 'Collection';
@@ -81,9 +83,8 @@ export async function loader(args: LoaderFunctionArgs) {
     }
 }
 
-export default function CollectionView() {
-    const { collection, workspace, collections, error } =
-        useLoaderData<typeof loader>();
+export default function CollectionView({ loaderData }: Route.ComponentProps) {
+    const { collection, workspace, collections, error } = loaderData;
     const [currentView, setCurrentView] = useState<ViewType>('grid');
 
     if (error || !collection || !workspace) {

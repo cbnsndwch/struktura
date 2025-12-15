@@ -6,7 +6,7 @@ import { createRequestHandler } from '@react-router/express';
 import { fromNodeHeaders } from 'better-auth/node';
 
 import {
-    TOKEN_AUTH_SERVICE,
+    BETTER_AUTH_SERVICE,
     type SessionPayload,
     type Auth
 } from '@cbnsndwch/struktura-auth-domain';
@@ -64,7 +64,7 @@ export async function mountReactRouterHandler(
 
     function getLoadContext(req: Request): AppLoadContext {
         // better auth instance from Nest IoC container
-        const auth = nestApp.get<Auth>(TOKEN_AUTH_SERVICE);
+        const auth = nestApp.get<Auth>(BETTER_AUTH_SERVICE);
 
         // Resolve workspace service from Nest IoC container and create adapter
         const workspaceService = nestApp.get(WorkspaceService);

@@ -274,7 +274,7 @@ export function WorkspaceNavigation({
                             />
                         </div>
 
-                        <ScrollArea className="h-[400px]">
+                        <ScrollArea className="h-100">
                             <SidebarMenu>
                                 {filteredCollections.length === 0 ? (
                                     <div className="px-2 py-4 text-center">

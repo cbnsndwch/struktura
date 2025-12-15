@@ -1,6 +1,6 @@
 {
     "$schema": "https://ui.shadcn.com/schema.json",
-    "style": "default",
+    "style": "radix-mira",
     "rsc": false,
     "tsx": true,
     "tailwind": {
@@ -17,5 +17,8 @@
         "ui": "@cbnsndwch/struktura-shared-ui/components",
         "utils": "@cbnsndwch/struktura-shared-ui/lib/utils"
     },
-    "iconLibrary": "lucide"
+    "iconLibrary": "lucide",
+    "menuColor": "default",
+    "menuAccent": "subtle",
+    "registries": {}
 }

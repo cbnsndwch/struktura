@@ -94,8 +94,8 @@ export function CollectionSearch({
         <CommandDialog
             open={open}
             onOpenChange={onOpenChange}
-            title="Search Collections"
-            description="Quickly find and navigate to collections"
+            // title="Search Collections"
+            // description="Quickly find and navigate to collections"
         >
             <CommandInput
                 placeholder="Search collections..."

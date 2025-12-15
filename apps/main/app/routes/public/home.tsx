@@ -1,6 +1,5 @@
 import { useState } from 'react';
 import type { MetaFunction, LoaderFunctionArgs } from 'react-router';
-import { useLoaderData } from 'react-router';
 
 import {
     Button,
@@ -14,6 +13,8 @@ import {
 
 import { getServerAuth } from '../../lib/auth.server.js';
 import { shouldShowOnboarding, startOnboarding } from '../../lib/onboarding.js';
+
+import type { Route } from './+types/home.js';
 
 export const meta: MetaFunction = () => {
     const title = 'Struktura • No-Code Data Management Platform';
@@ -85,9 +86,7 @@ export async function loader(args: LoaderFunctionArgs) {
     };
 }
 
-export default function Home() {
-    const loaderData = useLoaderData<typeof loader>();
-
+export default function Home({ loaderData }: Route.ComponentProps) {
     // Use server auth state directly - Better Auth handles sessions via cookies
     const isAuthenticated = loaderData?.serverAuth?.isAuthenticated || false;
 

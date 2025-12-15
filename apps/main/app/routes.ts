@@ -8,6 +8,8 @@ import otherRoutes from './routes/other/routes.js';
 import publicRoutes from './routes/public/routes.js';
 import globalRoutes from './routes/global/routes.js';
 
+import uiExampleRoutes from './examples/routes.js';
+
 export default [
     ...publicRoutes,
     ...globalRoutes,
@@ -15,5 +17,8 @@ export default [
 
     ...prefix('onboarding', onboardingRoutes),
     ...prefix('workspaces', workspaceRoutes),
-    ...prefix('auth', authRoutes)
+    ...prefix('auth', authRoutes),
+
+    // examples
+    ...uiExampleRoutes
 ] satisfies RouteConfig;

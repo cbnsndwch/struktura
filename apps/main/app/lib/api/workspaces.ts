@@ -196,11 +196,10 @@ export class WorkspaceApi {
         workspaceId: string,
         options?: ServerRequestOptions
     ): Promise<CollectionSummary[]> {
-        // This endpoint might not exist yet, so we'll return empty array for now
-        // In a real implementation, this would be `/workspaces/${workspaceId}/collections`
+        // Use the collections endpoint with workspaceId as a query parameter
         try {
-            return apiClient.get<CollectionSummary[]>(
-                `/workspaces/${workspaceId}/collections`,
+            return await apiClient.get<CollectionSummary[]>(
+                `/collections?workspaceId=${workspaceId}`,
                 options
             );
         } catch (error) {
@@ -216,27 +215,18 @@ export class WorkspaceApi {
 
     /**
      * Get recent activity for a workspace
-     * @param options - Optional request options including cookieHeader for server-side calls
+     * @param workspaceId - The workspace ID (unused until backend endpoint is implemented)
+     * @param options - Optional request options (unused until backend endpoint is implemented)
      */
     async getWorkspaceActivity(
+        // eslint-disable-next-line @typescript-eslint/no-unused-vars
         workspaceId: string,
+        // eslint-disable-next-line @typescript-eslint/no-unused-vars
         options?: ServerRequestOptions
     ): Promise<RecentActivity[]> {
-        // This endpoint might not exist yet, so we'll return mock data for now
-        try {
-            return apiClient.get<RecentActivity[]>(
-                `/workspaces/${workspaceId}/activity`,
-                options
-            );
-        } catch (error) {
-            console.error('Error fetching activity:', error);
-
-            // Fallback to mock data if endpoint doesn't exist
-            console.warn(
-                'Activity endpoint not available, returning mock data'
-            );
-            return [];
-        }
+        // TODO: Implement activity endpoint on the backend
+        // For now, return an empty array since the endpoint doesn't exist yet
+        return [];
     }
 }
 
