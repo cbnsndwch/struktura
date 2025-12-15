@@ -77,7 +77,8 @@ export const config = [
             'coverage/**',
             'node_modules/**',
             '.turbo/**',
-            '**/*.d.ts'
+            '**/*.d.ts',
+            '**/tsup.config.bundled_*.mjs'
         ]
     }
 ];
