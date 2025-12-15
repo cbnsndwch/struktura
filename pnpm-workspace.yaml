@@ -9,7 +9,7 @@ packages:
 catalogs:
   backend:
     '@apollo/server': ^5.2.0
-    '@as-integrations/express5': ^1.0.2
+    '@as-integrations/express5': ^1.1.2
     '@nestjs/apollo': ^13.2.3
     '@nestjs/cli': ^11.0.14
     '@nestjs/common': ^11.1.9
@@ -85,12 +85,12 @@ catalogs:
     '@types/react': ^19.2.7
     '@types/react-dom': ^19.2.3
     '@vitejs/plugin-react': ^5.1.2
-    autoprefixer: ^10.4.22
+    autoprefixer: ^10.4.23
     class-variance-authority: 0.7.1
     cmdk: 1.1.1
     embla-carousel-react: 8.6.0
     eslint-plugin-react-hooks: ^7.0.1
-    eslint-plugin-react-refresh: ^0.4.24
+    eslint-plugin-react-refresh: ^0.4.25
     input-otp: 1.4.2
     jsdom: ^27.3.0
     lucide-react: 0.561.0
@@ -98,9 +98,9 @@ catalogs:
     playwright: ^1.57.0
     postcss: ^8.5.6
     radix-ui: ^1.4.3
-    react: ^19.2.0
+    react: ^19.2.3
     react-day-picker: ^9.12.0
-    react-dom: ^19.2.0
+    react-dom: ^19.2.3
     react-hook-form: 7.68.0
     react-resizable-panels: 3.0.6
     react-router: ^7.10.1
@@ -114,7 +114,7 @@ catalogs:
     vaul: 1.1.2
     vite: ^7.2.7
     vite-plugin-dts: ^4.5.4
-    vite-tsconfig-paths: ^5.1.4
+    vite-tsconfig-paths: ^6.0.1
   shared:
     '@changesets/cli': ^2.29.8
     '@eslint/js': ^9.39.2
