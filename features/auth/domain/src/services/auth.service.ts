@@ -1,31 +1,61 @@
 import type { FactoryProvider } from '@nestjs/common';
-import { getConnectionToken } from '@nestjs/mongoose';
-import type {} from 'better-auth';
-import { mongodbAdapter } from 'better-auth/adapters/mongodb';
+import type { DBAdapterInstance } from 'better-auth';
 import { betterAuth } from 'better-auth/minimal';
-import { bearer, jwt } from 'better-auth/plugins';
-import { ObjectId, type Db } from 'mongodb';
-import type { Connection } from 'mongoose';
+import { admin, bearer, jwt } from 'better-auth/plugins';
+import { ObjectId } from 'mongodb';
 
-export const TOKEN_AUTH_SERVICE = Symbol.for('TOKEN_AUTH_SERVICE');
+import {
+    AUTH_MODULE_OPTIONS,
+    AUTH_MODULE_DEFAULTS,
+    type AuthModuleOptions
+} from '../auth.options.js';
 
-export const authProvider: FactoryProvider<Auth> = {
-    provide: TOKEN_AUTH_SERVICE,
-    inject: [getConnectionToken()],
-    useFactory: (conn: Connection) => {
-        const db = conn.db!;
+import {
+    NestJSMongoDBAdapterService,
+    NESTJS_MONGODB_ADAPTER_CONFIG,
+    type NestJSMongoDBAdapterConfig
+} from './mongoose-nestjs.adapter.js';
 
-        const instance = createBetterAuth(db);
+export const BETTER_AUTH_SERVICE = Symbol.for('BETTER_AUTH_SERVICE');
 
+/**
+ * Factory provider for the Better Auth instance.
+ * Uses an async factory to ensure the MongoDB adapter is initialized
+ * before creating the Better Auth instance.
+ */
+export const authProvider: FactoryProvider<Promise<Auth>> = {
+    provide: BETTER_AUTH_SERVICE,
+    inject: [NestJSMongoDBAdapterService, AUTH_MODULE_OPTIONS],
+    useFactory: async (
+        adapterService: NestJSMongoDBAdapterService,
+        options: AuthModuleOptions
+    ): Promise<Auth> => {
+        const dbAdapter = await adapterService.getAdapterAsync();
+        const instance = createBetterAuth(dbAdapter, options);
         return instance;
     }
 };
 
 /**
- * Create the Better Auth instance with a MongoDB database
- *
- * This should be called once during app initialization, after Mongoose is connected.
- * Use `mongoose.connection.getClient().db()` to get the database instance.
+ * Create the MongoDB adapter config provider from AuthModuleOptions
+ */
+export function createMongodbAdapterConfigProvider(
+    options: AuthModuleOptions
+): { provide: symbol; useValue: NestJSMongoDBAdapterConfig } {
+    const adapterOptions =
+        options.mongodbAdapter ?? AUTH_MODULE_DEFAULTS.mongodbAdapter;
+    return {
+        provide: NESTJS_MONGODB_ADAPTER_CONFIG,
+        useValue: {
+            debugLogs: adapterOptions.debugLogs ?? false,
+            usePlural: adapterOptions.usePlural ?? false,
+            transaction: adapterOptions.transaction ?? true
+        }
+    };
+}
+
+/**
+ * Create the Better Auth instance with the NestJS MongoDB adapter
  *
  * JWT Algorithm options (via keyPairConfig):
  * - EdDSA with Ed25519 (default) - Fast and secure
@@ -33,93 +63,79 @@ export const authProvider: FactoryProvider<Auth> = {
  * - RS256 (RSA 2048) - Maximum compatibility
  * - PS256 (RSA-PSS) - More secure RSA variant
  */
-function createBetterAuth(db: Db) {
+function createBetterAuth(
+    dbAdapter: DBAdapterInstance,
+    options: AuthModuleOptions
+) {
+    const opts = mergeWithDefaults(options);
+
     return betterAuth({
-        // Base path for auth endpoints (matches existing /api/auth/* routes)
-        basePath: '/api/auth',
+        // Base path for auth endpoints
+        basePath: opts.basePath,
 
         // Secret for session cookie signing and encryption
-        // Must be at least 32 characters. JWT signing uses asymmetric keys from JWKS.
-        secret: process.env.BETTER_AUTH_SECRET!,
+        secret: opts.secret ?? process.env.BETTER_AUTH_SECRET!,
 
-        // Database configuration with MongoDB adapter
-        // Uses the same connection as Mongoose
-        database: mongodbAdapter(db, {
-            // Whether to execute multiple operations in a transaction
-            transaction: true
-        }),
+        // Database configuration with NestJS MongoDB adapter
+        database: dbAdapter,
 
         // Enable email/password authentication
         emailAndPassword: {
-            enabled: true,
-            // Password requirements
-            minPasswordLength: 8
+            enabled: opts.emailAndPassword.enabled ?? true,
+            minPasswordLength: opts.emailAndPassword.minPasswordLength ?? 8
         },
 
-        // User schema customization to match existing user model
+        // User schema customization
         user: {
-            modelName: 'ba_user',
+            modelName: opts.modelNames.user,
             additionalFields: {
-                // Add custom fields that exist in current User entity
                 roles: {
                     type: 'string[]',
                     required: false,
-                    defaultValue: ['user'],
-                    input: false // Don't allow user to set roles on signup
+                    defaultValue: ['viewer'],
+                    input: false
                 },
-                // User preferences stored as JSON string
-                // Default: {"theme":"system"}
                 preferences: {
                     type: 'json',
                     required: false,
-                    defaultValue: {
-                        theme: 'system'
-                    },
-                    input: false // Managed via dedicated preferences API
+                    defaultValue: { theme: 'system' },
+                    input: false
                 }
             }
         },
 
         // Session configuration
         session: {
-            modelName: 'ba_session',
-            // Session expiration (7 days by default)
-            expiresIn: 60 * 60 * 24 * 7, // 7 days in seconds
-            // Update session if it expires in less than 1 day
-            updateAge: 60 * 60 * 24 // 1 day in seconds
+            modelName: opts.modelNames.session,
+            expiresIn: opts.session.expiresIn,
+            updateAge: opts.session.updateAge
         },
 
-        // Account configuration (for OAuth/credential providers)
+        // Account configuration
         account: {
-            modelName: 'ba_account'
+            modelName: opts.modelNames.account
         },
 
-        // Verification configuration (for email verification, password reset, etc.)
+        // Verification configuration
         verification: {
-            modelName: 'ba_verification'
+            modelName: opts.modelNames.verification
         },
 
-        // Plugins for JWT/JWKS support
+        // Plugins for JWT/JWKS support and admin
         plugins: [
-            // JWT plugin provides /token endpoint and /jwks for public keys
+            // Admin plugin for user management APIs
+            admin(),
             jwt({
                 jwks: {
-                    // Use EdDSA with Ed25519 curve (default, fast and secure)
-                    // For RSA: { alg: 'RS256', modulusLength: 2048 }
-                    // For EC: { alg: 'ES256' }
-                    keyPairConfig: {
-                        alg: 'EdDSA',
-                        crv: 'Ed25519'
+                    keyPairConfig: opts.jwt.keyPairConfig as {
+                        alg: 'EdDSA';
+                        crv: 'Ed25519';
                     },
-                    // Enable automatic key rotation (30 days)
-                    rotationInterval: 60 * 60 * 24 * 30,
-                    // Grace period for old keys (30 days)
-                    gracePeriod: 60 * 60 * 24 * 30
+                    rotationInterval: opts.jwt.rotationInterval,
+                    gracePeriod: opts.jwt.gracePeriod
                 },
                 jwt: {
-                    // JWT expiration time
-                    expirationTime: '15m',
-                    // Custom payload - include essential user info
+                    expirationTime: opts.jwt.expirationTime,
                     definePayload: ({ user }) => ({
                         sub: user.id,
                         email: user.email,
@@ -128,23 +144,64 @@ function createBetterAuth(db: Db) {
                     })
                 }
             }),
-            // Bearer plugin allows using JWT tokens in Authorization header
-            bearer()
+            bearer(),
+            // Include any additional plugins from options
+            ...(options.plugins ?? [])
         ],
 
         // Advanced options
         advanced: {
-            // Generate IDs compatible with existing MongoDB ObjectIds
             database: {
                 generateId: () => new ObjectId().toString()
             }
         },
 
-        // see {@link https://www.better-auth.com/docs/adapters/mongo#joins-experimental}
+        // Experimental features
         experimental: {
-            joins: true
+            joins: opts.experimentalJoins
         }
     });
+}
+
+/**
+ * Merge user options with defaults
+ */
+function mergeWithDefaults(options: AuthModuleOptions): Required<
+    Omit<AuthModuleOptions, 'secret' | 'plugins'>
+> & {
+    secret?: string;
+} {
+    return {
+        basePath: options.basePath ?? AUTH_MODULE_DEFAULTS.basePath,
+        secret: options.secret,
+        jwt: {
+            ...AUTH_MODULE_DEFAULTS.jwt,
+            ...options.jwt,
+            keyPairConfig: {
+                ...AUTH_MODULE_DEFAULTS.jwt.keyPairConfig,
+                ...options.jwt?.keyPairConfig
+            }
+        },
+        session: {
+            ...AUTH_MODULE_DEFAULTS.session,
+            ...options.session
+        },
+        emailAndPassword: {
+            ...AUTH_MODULE_DEFAULTS.emailAndPassword,
+            ...options.emailAndPassword
+        },
+        rateLimits: options.rateLimits ?? AUTH_MODULE_DEFAULTS.rateLimits,
+        mongodbAdapter: {
+            ...AUTH_MODULE_DEFAULTS.mongodbAdapter,
+            ...options.mongodbAdapter
+        },
+        modelNames: {
+            ...AUTH_MODULE_DEFAULTS.modelNames,
+            ...options.modelNames
+        },
+        experimentalJoins:
+            options.experimentalJoins ?? AUTH_MODULE_DEFAULTS.experimentalJoins
+    };
 }
 
 /**

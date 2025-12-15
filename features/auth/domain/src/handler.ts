@@ -1,7 +1,7 @@
 import type { NestExpressApplication } from '@nestjs/platform-express';
 import { toNodeHandler } from 'better-auth/node';
 
-import { type Auth, TOKEN_AUTH_SERVICE } from './services/auth.service.js';
+import { type Auth, BETTER_AUTH_SERVICE } from './services/auth.service.js';
 
 /**
  * Mount Better Auth handler BEFORE NestJS routes
@@ -13,7 +13,7 @@ import { type Auth, TOKEN_AUTH_SERVICE } from './services/auth.service.js';
  */
 export async function mountBetterAuthHandler(nestApp: NestExpressApplication) {
     // resolve Better Auth instance the from NestJS IoC container
-    const auth = nestApp.get<Auth>(TOKEN_AUTH_SERVICE);
+    const auth = nestApp.get<Auth>(BETTER_AUTH_SERVICE);
 
     // Get the underlying Express app
     const expressApp = nestApp.getHttpAdapter().getInstance();

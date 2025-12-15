@@ -11,7 +11,7 @@ import { fromNodeHeaders } from 'better-auth/node';
 
 import type { IUser, ISession } from '@cbnsndwch/struktura-auth-contracts';
 
-import { type Auth, TOKEN_AUTH_SERVICE } from '../services/index.js';
+import { type Auth, BETTER_AUTH_SERVICE } from '../services/index.js';
 
 /**
  * Extended request type with Better Auth properties
@@ -38,7 +38,7 @@ export interface BetterAuthRequest extends Request {
 @Injectable()
 export class BetterAuthGuard implements CanActivate {
     constructor(
-        @Inject(TOKEN_AUTH_SERVICE)
+        @Inject(BETTER_AUTH_SERVICE)
         private readonly auth: Auth,
         private readonly reflector: Reflector
     ) {}
@@ -68,7 +68,8 @@ export class BetterAuthGuard implements CanActivate {
             }
 
             // Attach user and session to request for downstream use
-            request.user = user as IUser;
+            // Use unknown cast as admin plugin extends user type with additional fields
+            request.user = user as unknown as IUser;
             request.session = session;
 
             return true;

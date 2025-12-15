@@ -3,7 +3,7 @@ import type { IncomingHttpHeaders } from 'node:http';
 import { Inject, Injectable } from '@nestjs/common';
 import { fromNodeHeaders } from 'better-auth/node';
 
-import { type Auth, TOKEN_AUTH_SERVICE } from './auth.service.js';
+import { type Auth, BETTER_AUTH_SERVICE } from './auth.service.js';
 
 @Injectable()
 export class SessionService {
@@ -11,7 +11,7 @@ export class SessionService {
      *
      */
     constructor(
-        @Inject(TOKEN_AUTH_SERVICE)
+        @Inject(BETTER_AUTH_SERVICE)
         private readonly auth: Auth
     ) {}
 
