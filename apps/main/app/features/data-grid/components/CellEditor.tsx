@@ -1,7 +1,7 @@
 /**
  * Cell editor components for different field types
  */
-import { useState, useEffect, useRef } from 'react';
+import { useEffect, useRef } from 'react';
 import { FieldType } from '@cbnsndwch/struktura-schema-contracts';
 import type { FieldDefinition } from '@cbnsndwch/struktura-collections-contracts';
 import {
