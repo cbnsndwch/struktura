@@ -381,8 +381,8 @@ catalogs:
       specifier: ^5.5.4
       version: 5.5.4
     glob:
-      specifier: ^13.0.0
-      version: 13.0.0
+      specifier: ^10.5.0
+      version: 10.5.0
     globals:
       specifier: ^16.5.0
       version: 16.5.0
@@ -1273,7 +1273,7 @@ importers:
         version: 9.39.2(jiti@2.6.1)
       glob:
         specifier: catalog:shared
-        version: 13.0.0
+        version: 10.5.0
       jsdom:
         specifier: catalog:frontend
         version: 27.3.0(postcss@8.5.6)
@@ -1430,7 +1430,7 @@ importers:
     devDependencies:
       glob:
         specifier: catalog:shared
-        version: 13.0.0
+        version: 10.5.0
       lodash-es:
         specifier: ^4.17.21
         version: 4.17.21
@@ -6555,6 +6555,10 @@ packages:
 
   glob@10.4.5:
     resolution: {integrity: sha512-7Bv8RF0k6xjo7d4A/PxYLbUCfb6c+Vpd2/mB2yRDlew7Jb5hEXiCD9ibfO7wpk8i4sevK6DFny9h7EYbM3/sHg==}
+    hasBin: true
+
+  glob@10.5.0:
+    resolution: {integrity: sha512-DfXN8DfhJ7NH3Oe7cFmu3NCu1wKbkReJ8TorzSAFbSKrlNaQSKfIzqYqVY8zlbs2NLBbWpRiU52GX2PbaBVNkg==}
     hasBin: true
 
   glob@13.0.0:
@@ -15415,6 +15419,15 @@ snapshots:
   glob-to-regexp@0.4.1: {}
 
   glob@10.4.5:
+    dependencies:
+      foreground-child: 3.3.1
+      jackspeak: 3.4.3
+      minimatch: 9.0.5
+      minipass: 7.1.2
+      package-json-from-dist: 1.0.1
+      path-scurry: 1.11.1
+
+  glob@10.5.0:
     dependencies:
       foreground-child: 3.3.1
       jackspeak: 3.4.3
