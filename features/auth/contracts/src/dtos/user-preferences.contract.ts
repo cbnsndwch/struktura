@@ -2,6 +2,31 @@
 export type ThemePreference = 'light' | 'dark' | 'system';
 
 /**
+ * Notification preferences for the user
+ */
+export interface INotificationPreferences {
+    /**
+     * Enable or disable all email notifications
+     */
+    emailNotifications: boolean;
+
+    /**
+     * Receive notifications about workspace updates
+     */
+    workspaceUpdates: boolean;
+
+    /**
+     * Receive notifications when someone mentions or shares with you
+     */
+    collaborationNotifications: boolean;
+
+    /**
+     * Receive marketing and product update emails
+     */
+    marketingEmails: boolean;
+}
+
+/**
  * Represents user-configurable preferences for the application.
  *
  * Defines the structure for storing user preferences such as theme settings.
@@ -14,6 +39,11 @@ export interface IUserPreferences {
      */
     theme: ThemePreference;
 
-    // Future: notifications, language, etc.
+    /**
+     * Notification preferences
+     */
+    notifications?: INotificationPreferences;
+
+    // Future: language, timezone, etc.
     [key: string]: any;
 }

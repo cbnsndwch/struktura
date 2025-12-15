@@ -6,7 +6,7 @@ import { IsArray, IsOptional, IsString, ValidateNested } from 'class-validator';
 import { FieldDefinition } from '../entities/field-definition.entity.js';
 
 // Collection template response
-@ObjectType()
+@ObjectType('CollectionTemplate')
 export class CollectionTemplateDto implements CollectionTemplate {
     @Field()
     @IsString()

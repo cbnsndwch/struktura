@@ -13,7 +13,7 @@ import type { IWorkspaceSettings } from '@cbnsndwch/struktura-workspace-contract
 import { WorkspaceBranding } from './workspace-branding.entity.js';
 import { WorkspaceFeatures } from './workspace-features.entity.js';
 
-@ObjectType()
+@ObjectType('WorkspaceSettings')
 export class WorkspaceSettings implements IWorkspaceSettings {
     @Prop({ type: String, default: 'UTC' })
     @Field()

@@ -15,7 +15,7 @@ export class InviteMemberDto {
     inviteMessage?: string;
 }
 
-@InputType()
+@InputType('InviteMemberInput')
 export class InviteMemberInput {
     @Field()
     @IsEmail({}, { message: 'Please provide a valid email address' })
@@ -36,7 +36,7 @@ export class UpdateMemberRoleDto {
     role!: WorkspaceRole;
 }
 
-@InputType()
+@InputType('UpdateMemberRoleInput')
 export class UpdateMemberRoleInput {
     @Field(() => WorkspaceRole)
     @IsEnum(WorkspaceRole, { message: 'Please provide a valid role' })

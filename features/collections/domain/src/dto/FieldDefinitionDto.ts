@@ -16,7 +16,7 @@ import { FieldType } from '../entities/field-type.enum.js';
 import { FieldOptionsDto } from './FieldOptionsDto.js';
 import { FieldValidationRuleDto } from './FieldValidationRuleDto.js';
 
-@InputType()
+@InputType('FieldDefinitionInput')
 export class FieldDefinitionDto {
     @Field()
     @IsString()

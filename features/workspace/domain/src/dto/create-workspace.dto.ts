@@ -30,7 +30,7 @@ export class CreateWorkspaceDto {
     slug?: string;
 }
 
-@InputType()
+@InputType('CreateWorkspaceInput')
 export class CreateWorkspaceInput {
     @Field()
     @IsString()
