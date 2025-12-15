@@ -29,6 +29,7 @@ import {
     Skeleton
 } from '@cbnsndwch/struktura-shared-ui';
 import { Trash2, Download } from 'lucide-react';
+import { CellEditor } from './CellEditor.js';
 
 export interface DataGridProps {
     collectionId: string;
@@ -96,14 +97,12 @@ export function DataGrid({
 
                     if (isEditing) {
                         return (
-                            <input
-                                type="text"
-                                value={editValue as string}
-                                onChange={(e) => setEditValue(e.target.value)}
-                                onBlur={() => handleCellBlur(row.original.id, field.name)}
-                                onKeyDown={(e) => handleCellKeyDown(e, row.original.id, field.name)}
-                                className="w-full h-full px-2 py-1 border-2 border-blue-500 outline-none"
-                                autoFocus
+                            <CellEditor
+                                field={field}
+                                value={editValue}
+                                onChange={setEditValue}
+                                onCommit={() => handleCellBlur(row.original.id, field.name)}
+                                onCancel={() => handleCellCancel()}
                             />
                         );
                     }
@@ -176,6 +175,11 @@ export function DataGrid({
         setEditValue('');
     }, [editingCell, editValue, records, onUpdateRecord]);
 
+    const handleCellCancel = useCallback(() => {
+        setEditingCell(null);
+        setEditValue('');
+    }, []);
+
     const handleCellKeyDown = useCallback((
         e: React.KeyboardEvent<HTMLInputElement>,
         recordId: string,
@@ -186,10 +190,9 @@ export function DataGrid({
             handleCellBlur(recordId, fieldName);
         } else if (e.key === 'Escape') {
             e.preventDefault();
-            setEditingCell(null);
-            setEditValue('');
+            handleCellCancel();
         }
-    }, [handleCellBlur]);
+    }, [handleCellBlur, handleCellCancel]);
 
     const handleDeleteSelected = useCallback(async () => {
         const selectedIds = Object.keys(rowSelection);
@@ -336,14 +339,35 @@ function formatCellValue(value: unknown, fieldType: string): string {
 
     switch (fieldType) {
         case 'date':
-            return new Date(value as string).toLocaleDateString();
+            try {
+                return new Date(value as string).toLocaleDateString();
+            } catch {
+                return String(value);
+            }
         case 'datetime':
-            return new Date(value as string).toLocaleString();
+            try {
+                return new Date(value as string).toLocaleString();
+            } catch {
+                return String(value);
+            }
         case 'boolean':
-            return value ? '✓' : '';
+            return value ? '✓' : '✗';
         case 'number':
+            return typeof value === 'number' ? value.toLocaleString() : String(value);
         case 'currency':
+            return typeof value === 'number'
+                ? new Intl.NumberFormat('en-US', {
+                      style: 'currency',
+                      currency: 'USD'
+                  }).format(value)
+                : String(value);
         case 'percent':
+            return typeof value === 'number'
+                ? `${(value * 100).toFixed(2)}%`
+                : String(value);
+        case 'email':
+        case 'url':
+        case 'phone':
             return String(value);
         default:
             return String(value);
