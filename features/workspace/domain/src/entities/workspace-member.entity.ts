@@ -3,7 +3,7 @@ import { IsEnum, IsDate, IsOptional } from 'class-validator';
 
 import { WorkspaceRole } from '@cbnsndwch/struktura-workspace-contracts';
 
-@ObjectType()
+@ObjectType('WorkspaceMember')
 export class WorkspaceMember {
     @Field(() => ID)
     user!: string;

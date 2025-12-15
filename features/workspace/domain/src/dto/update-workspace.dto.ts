@@ -8,7 +8,7 @@ export class UpdateWorkspaceDto extends PartialType(
     OmitType(CreateWorkspaceDto, ['slug'] as const)
 ) {}
 
-@InputType()
+@InputType('UpdateWorkspaceInput')
 export class UpdateWorkspaceInput {
     @Field({ nullable: true })
     @IsOptional()
@@ -24,7 +24,7 @@ export class UpdateWorkspaceInput {
     description?: string;
 }
 
-@InputType()
+@InputType('UpdateWorkspaceSettingsInput')
 export class UpdateWorkspaceSettingsDto {
     @Field({ nullable: true })
     @IsOptional()
@@ -37,7 +37,7 @@ export class UpdateWorkspaceSettingsDto {
     defaultLanguage?: string;
 }
 
-@InputType()
+@InputType('UpdateWorkspaceSettingsInputGql')
 export class UpdateWorkspaceSettingsInput {
     @Field({ nullable: true })
     @IsOptional()
