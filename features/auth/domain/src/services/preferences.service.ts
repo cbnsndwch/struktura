@@ -48,7 +48,7 @@ export class PreferencesService {
             ...(input.notifications !== undefined
                 ? {
                       notifications: {
-                          ...currentPreferences.notifications,
+                          ...(currentPreferences.notifications || {}),
                           ...input.notifications
                       }
                   }
