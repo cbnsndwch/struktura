@@ -2,7 +2,6 @@ import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
 import { Field, ObjectType, ID } from '@nestjs/graphql';
 import { IsString, IsObject, IsNumber } from 'class-validator';
 import { Document, Types } from 'mongoose';
-import GraphQLJSON from 'graphql-type-json';
 
 import { CollectionRecord as ICollectionRecord } from '@cbnsndwch/struktura-schema-contracts';
 
@@ -24,7 +23,6 @@ export class Record implements ICollectionRecord {
     collectionId!: string;
 
     @Prop({ type: Object, required: true })
-    @Field(() => GraphQLJSON)
     @IsObject()
     data!: { [key: string]: unknown };
 
