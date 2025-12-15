@@ -34,7 +34,7 @@ const settingsNavItems: SettingsNavItem[] = [
     }
 ];
 
-export function SettingsLayout() {
+export default function SettingsLayout() {
     const location = useLocation();
 
     return (
