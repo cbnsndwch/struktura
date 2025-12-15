@@ -153,26 +153,58 @@ export class RecordService {
     }
 
     /**
-     * Bulk update records
+     * Bulk update records using MongoDB bulkWrite for better performance
      */
     async bulkUpdate(
         collectionId: string,
         dto: BulkUpdateRecordsDto,
         userId: string
     ): Promise<Record[]> {
-        const updatedRecords: Record[] = [];
-
-        for (const update of dto.updates) {
-            const record = await this.findById(collectionId, update.id);
-
-            if (record) {
-                record.data = { ...record.data, ...update.data };
-                record.modifiedBy = userId;
-                record.version += 1;
-                const saved = await record.save();
-                updatedRecords.push(saved);
-            }
+        if (dto.updates.length === 0) {
+            return [];
         }
+
+        // Fetch existing records to merge data properly
+        const updateIds = dto.updates.map(u => u.id);
+        const existingRecords = await this.recordModel
+            .find({ _id: { $in: updateIds }, collectionId })
+            .exec();
+
+        const recordMap = new Map(
+            existingRecords.map(r => [r._id.toString(), r])
+        );
+
+        // Prepare bulk write operations
+        const operations = dto.updates
+            .filter(update => recordMap.has(update.id))
+            .map(update => {
+                const existing = recordMap.get(update.id);
+                const mergedData = { ...existing!.data, ...update.data };
+
+                return {
+                    updateOne: {
+                        filter: { _id: update.id, collectionId },
+                        update: {
+                            $set: {
+                                data: mergedData,
+                                modifiedBy: userId
+                            },
+                            $inc: { version: 1 }
+                        }
+                    }
+                };
+            });
+
+        if (operations.length === 0) {
+            return [];
+        }
+
+        await this.recordModel.bulkWrite(operations);
+
+        // Fetch and return the updated records
+        const updatedRecords = await this.recordModel
+            .find({ _id: { $in: updateIds }, collectionId })
+            .exec();
 
         return updatedRecords;
     }

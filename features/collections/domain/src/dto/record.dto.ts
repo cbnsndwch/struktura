@@ -1,4 +1,5 @@
-import { IsNotEmpty, IsObject, IsOptional, IsArray, IsString } from 'class-validator';
+import { IsNotEmpty, IsObject, IsOptional, IsArray, IsString, ValidateNested } from 'class-validator';
+import { Type } from 'class-transformer';
 
 export class CreateRecordDto {
     @IsNotEmpty()
@@ -18,10 +19,22 @@ export class BulkCreateRecordsDto {
     records!: CreateRecordDto[];
 }
 
+export class BulkUpdateItemDto {
+    @IsString()
+    @IsNotEmpty()
+    id!: string;
+
+    @IsObject()
+    @IsNotEmpty()
+    data!: Partial<Record<string, unknown>>;
+}
+
 export class BulkUpdateRecordsDto {
     @IsArray()
     @IsNotEmpty()
-    updates!: Array<{ id: string; data: Partial<Record<string, unknown>> }>;
+    @ValidateNested({ each: true })
+    @Type(() => BulkUpdateItemDto)
+    updates!: BulkUpdateItemDto[];
 }
 
 export class BulkDeleteRecordsDto {

@@ -340,15 +340,23 @@ function formatCellValue(value: unknown, fieldType: string): string {
     switch (fieldType) {
         case 'date':
             try {
-                return new Date(value as string).toLocaleDateString();
+                const date = new Date(value as string);
+                if (isNaN(date.getTime())) {
+                    return '';
+                }
+                return date.toLocaleDateString();
             } catch {
-                return String(value);
+                return '';
             }
         case 'datetime':
             try {
-                return new Date(value as string).toLocaleString();
+                const date = new Date(value as string);
+                if (isNaN(date.getTime())) {
+                    return '';
+                }
+                return date.toLocaleString();
             } catch {
-                return String(value);
+                return '';
             }
         case 'boolean':
             return value ? '✓' : '✗';

@@ -47,6 +47,12 @@ export class Record implements ICollectionRecord {
     @Field()
     updatedAt!: Date;
 
+    /**
+     * Create a Record instance from data object.
+     * @param data - Record data conforming to ICollectionRecord
+     * @returns Record instance
+     * @todo Add validation to ensure data integrity before assignment
+     */
     static fromData(data: ICollectionRecord): Record {
         const record = new Record();
         Object.assign(record, data);

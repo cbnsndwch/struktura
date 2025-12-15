@@ -9,7 +9,8 @@ import {
     Query,
     HttpCode,
     HttpStatus,
-    Req
+    Req,
+    NotFoundException
 } from '@nestjs/common';
 import { Request } from 'express';
 
@@ -27,6 +28,39 @@ import {
 @Controller('api/collections/:collectionId/records')
 export class RecordsController {
     constructor(private readonly recordService: RecordService) {}
+
+    @Get('count')
+    async count(
+        @Param('collectionId') collectionId: string,
+        @Query('filter') filterStr?: string
+    ): Promise<{ count: number }> {
+        let filter: Record<string, unknown> | undefined;
+
+        if (filterStr) {
+            try {
+                filter = JSON.parse(filterStr);
+            } catch {
+                // Ignore invalid filter JSON
+            }
+        }
+
+        const count = await this.recordService.count(collectionId, filter);
+        return { count };
+    }
+
+    @Get(':id')
+    async findById(
+        @Param('collectionId') collectionId: string,
+        @Param('id') id: string
+    ): Promise<Record> {
+        const record = await this.recordService.findById(collectionId, id);
+        if (!record) {
+            throw new NotFoundException(
+                `Record ${id} not found in collection ${collectionId}`
+            );
+        }
+        return record;
+    }
 
     @Get()
     async findAll(
@@ -68,37 +102,6 @@ export class RecordsController {
         }
 
         return await this.recordService.findAll(collectionId, query);
-    }
-
-    @Get('count')
-    async count(
-        @Param('collectionId') collectionId: string,
-        @Query('filter') filterStr?: string
-    ): Promise<{ count: number }> {
-        let filter: Record<string, unknown> | undefined;
-
-        if (filterStr) {
-            try {
-                filter = JSON.parse(filterStr);
-            } catch {
-                // Ignore invalid filter JSON
-            }
-        }
-
-        const count = await this.recordService.count(collectionId, filter);
-        return { count };
-    }
-
-    @Get(':id')
-    async findById(
-        @Param('collectionId') collectionId: string,
-        @Param('id') id: string
-    ): Promise<Record> {
-        const record = await this.recordService.findById(collectionId, id);
-        if (!record) {
-            throw new Error('Record not found');
-        }
-        return record;
     }
 
     @Post()

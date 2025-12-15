@@ -99,43 +99,63 @@ export function CellEditor({
                 />
             );
 
-        case FieldType.DATE:
+        case FieldType.DATE: {
+            let dateValue = '';
+            try {
+                if (value) {
+                    const date = new Date(value as string);
+                    if (!isNaN(date.getTime())) {
+                        const isoString = date.toISOString();
+                        const datePart = isoString.split('T')[0];
+                        if (datePart) {
+                            dateValue = datePart;
+                        }
+                    }
+                }
+            } catch {
+                // Invalid date, use empty string
+            }
             return (
                 <Input
                     ref={inputRef}
                     type="date"
-                    value={
-                        value
-                            ? new Date(value as string)
-                                  .toISOString()
-                                  .split('T')[0]
-                            : ''
-                    }
+                    value={dateValue}
                     onChange={(e) => onChange(e.target.value)}
                     onBlur={onCommit}
                     onKeyDown={handleKeyDown}
                     className="w-full h-full px-2 py-1 border-2 border-blue-500 outline-none rounded-none"
                 />
             );
+        }
 
-        case FieldType.DATETIME:
+        case FieldType.DATETIME: {
+            let datetimeValue = '';
+            try {
+                if (value) {
+                    const date = new Date(value as string);
+                    if (!isNaN(date.getTime())) {
+                        const isoString = date.toISOString();
+                        const datetimePart = isoString.slice(0, 16);
+                        if (datetimePart && datetimePart.length === 16) {
+                            datetimeValue = datetimePart;
+                        }
+                    }
+                }
+            } catch {
+                // Invalid date, use empty string
+            }
             return (
                 <Input
                     ref={inputRef}
                     type="datetime-local"
-                    value={
-                        value
-                            ? new Date(value as string)
-                                  .toISOString()
-                                  .slice(0, 16)
-                            : ''
-                    }
+                    value={datetimeValue}
                     onChange={(e) => onChange(e.target.value)}
                     onBlur={onCommit}
                     onKeyDown={handleKeyDown}
                     className="w-full h-full px-2 py-1 border-2 border-blue-500 outline-none rounded-none"
                 />
             );
+        }
 
         case FieldType.BOOLEAN:
             return (
