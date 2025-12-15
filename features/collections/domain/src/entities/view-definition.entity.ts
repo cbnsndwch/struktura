@@ -13,7 +13,7 @@ import { ViewDefinition as IViewDefinition } from '@cbnsndwch/struktura-collecti
 
 // View definition for different ways to display collection data
 
-@ObjectType()
+@ObjectType('ViewDefinition')
 @Schema({ _id: false })
 export class ViewDefinition implements IViewDefinition {
     @Prop({ type: String, required: true })

@@ -4,7 +4,7 @@ import { IsString, IsOptional } from 'class-validator';
 
 import { FieldValidationRule as IFieldValidationRule } from '@cbnsndwch/struktura-collections-contracts';
 
-@ObjectType()
+@ObjectType('FieldValidationRule')
 @Schema({ _id: false })
 export class FieldValidationRule implements IFieldValidationRule {
     @Prop({ type: String, required: true })

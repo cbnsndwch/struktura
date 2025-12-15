@@ -117,6 +117,28 @@ export class RefreshTokenDto {
 }
 
 /**
+ * DTO for notification preferences
+ */
+@InputType('NotificationPreferencesInput')
+export class NotificationPreferencesDto {
+    @Field({ nullable: true })
+    @IsOptional()
+    emailNotifications?: boolean;
+
+    @Field({ nullable: true })
+    @IsOptional()
+    workspaceUpdates?: boolean;
+
+    @Field({ nullable: true })
+    @IsOptional()
+    collaborationNotifications?: boolean;
+
+    @Field({ nullable: true })
+    @IsOptional()
+    marketingEmails?: boolean;
+}
+
+/**
  * DTO for updating user preferences
  */
 @InputType('UpdatePreferencesInput')
@@ -127,4 +149,8 @@ export class UpdatePreferencesDto {
         message: 'Theme must be one of: light, dark, system'
     })
     theme?: 'light' | 'dark' | 'system';
+
+    @Field(() => NotificationPreferencesDto, { nullable: true })
+    @IsOptional()
+    notifications?: NotificationPreferencesDto;
 }

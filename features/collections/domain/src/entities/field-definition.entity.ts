@@ -29,7 +29,7 @@ registerEnumType(FieldType, {
 });
 
 @Schema({ _id: false })
-@ObjectType()
+@ObjectType('FieldDefinition')
 export class FieldDefinition implements IFieldDefinition {
     @Prop({ type: String, required: true })
     @Field()

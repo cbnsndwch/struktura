@@ -13,7 +13,7 @@ import { CreateCollectionData } from '@cbnsndwch/struktura-collections-contracts
 
 import { FieldDefinitionDto } from './FieldDefinitionDto.js';
 
-@InputType()
+@InputType('CreateCollectionInput')
 export class CreateCollectionDto implements CreateCollectionData {
     @Field()
     @IsString()

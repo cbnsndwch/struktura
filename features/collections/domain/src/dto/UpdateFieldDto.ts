@@ -17,7 +17,7 @@ import { UpdateFieldData } from '@cbnsndwch/struktura-collections-contracts';
 import { FieldOptionsDto } from './FieldOptionsDto.js';
 import { FieldValidationRuleDto } from './FieldValidationRuleDto.js';
 
-@InputType()
+@InputType('UpdateFieldInput')
 export class UpdateFieldDto implements UpdateFieldData {
     @Field({ nullable: true })
     @IsOptional()

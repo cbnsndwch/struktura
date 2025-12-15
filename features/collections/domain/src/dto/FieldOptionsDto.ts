@@ -1,7 +1,7 @@
 import { InputType, Field } from '@nestjs/graphql';
 import { IsOptional, IsArray, IsString } from 'class-validator';
 
-@InputType()
+@InputType('FieldChoiceInput')
 export class FieldChoiceInputDto {
     @Field()
     label!: string;
@@ -13,7 +13,7 @@ export class FieldChoiceInputDto {
     color?: string;
 }
 
-@InputType()
+@InputType('FieldOptionsInput')
 export class FieldOptionsDto {
     @Field(() => [FieldChoiceInputDto], { nullable: true })
     @IsOptional()

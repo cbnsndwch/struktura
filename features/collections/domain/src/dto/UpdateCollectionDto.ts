@@ -14,7 +14,7 @@ import {
 import { FieldDefinitionDto } from './FieldDefinitionDto.js';
 import { ViewDefinitionDto } from './ViewDefinitionDto.js';
 
-@InputType()
+@InputType('UpdateCollectionInput')
 export class UpdateCollectionDto implements UpdateCollectionData {
     @Field({ nullable: true })
     @IsOptional()
