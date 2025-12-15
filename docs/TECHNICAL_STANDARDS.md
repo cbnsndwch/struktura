@@ -6,10 +6,10 @@
 ### 1.1 Required Software
 - **Node.js**: v22.13.1 or higher (LTS recommended)
 - **pnpm**: v10.13.1 or higher (package manager)
-- **MongoDB**: v7.0 or higher
-- **Redis**: v7.0 or higher
-- **Docker**: v24.0 or higher
+- **MongoDB**: v7.0 or higher (local instance or MongoDB Atlas)
 - **Git**: v2.40 or higher
+
+> **Note**: Docker is optional and used for production deployment only. Local development uses direct MongoDB connection.
 
 ### 1.2 Development Stack Versions (Locked)
 - **TypeScript**: 5.7.2
@@ -41,11 +41,9 @@ pnpm install
 # Set up environment variables
 cp .env.example .env.local
 # Edit .env.local with your configuration
+# - Set MONGODB_URI (local instance or MongoDB Atlas connection string)
 
-# Start development services
-docker-compose up -d mongodb redis
-
-# Run the application
+# Run the application with hot-reload
 pnpm dev
 ```
 

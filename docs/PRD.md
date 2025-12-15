@@ -134,24 +134,26 @@ Create a no-code data table management platform that combines the ease-of-use of
 ### 6.1 Technology Stack
 - **Frontend**: React 18, TypeScript, Vite, React Router 7
 - **Backend**: Node.js, NestJS, GraphQL, MongoDB
-- **Real-Time**: WebSockets, Rocicorp Zero synchronization
-- **Authentication**: JWT, OAuth 2.0, SAML SSO
-- **Infrastructure**: Docker, Cloud-native deployment
+- **Real-Time**: WebSockets, Rocicorp Zero synchronization (planned)
+- **Authentication**: Better Auth library with session-based auth, OAuth 2.0, SAML SSO (planned)
+- **Infrastructure**: Docker for production, pnpm for local development
 
 ### 6.2 System Architecture
 ```
 ┌─────────────────┐    ┌──────────────────┐    ┌─────────────────┐
 │   Frontend UI   │    │   API Gateway    │    │    Database     │
 │   React/TS      │◄──►│   NestJS/GraphQL │◄──►│    MongoDB      │
-│                 │    │                  │    │                 │
+│                 │    │  + Better Auth  │    │                 │
 └─────────────────┘    └──────────────────┘    └─────────────────┘
          │                       │                       │
          ▼                       ▼                       ▼
 ┌─────────────────┐    ┌──────────────────┐    ┌─────────────────┐
-│  Real-Time Sync │    │   Auth Service   │    │  File Storage   │
-│  WebSockets     │    │   JWT/OAuth      │    │  GridFS/S3      │
+│  Real-Time Sync │    │   File Storage   │    │  (planned)      │
+│  WebSockets     │    │   GridFS/S3      │    │                 │
 └─────────────────┘    └──────────────────┘    └─────────────────┘
 ```
+
+> **Note**: Authentication is integrated directly into the API Gateway using Better Auth library (session-based), not as a separate service.
 
 ### 6.3 Data Model
 - **Collections**: User-defined schemas with flexible fields

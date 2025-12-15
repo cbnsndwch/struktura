@@ -1,14 +1,18 @@
 # Development Action Plan
 ## Struktura - No-Code Document Management Platform
 
-## 📊 **Progress Update - September 28, 2025**
+## 📊 **Progress Update - December 15, 2025**
 
 ### ✅ **Completed Epics**
 - **Epic 1: Core Platform Foundation** - Authentication, workspace management, and database operations
 - **Epic 2: Schema Management System** - Visual collection builder and dynamic field types
 
+### 🚧 **In Progress**
+- **Epic 3: Data Management Interface** (~80% complete) - Grid views, forms, and CRUD operations
+  - Issues #46-67 tracking remaining work
+
 ### 🎯 **Next Phase**
-- **Epic 3: Data Management Interface** - Grid views, forms, and CRUD operations
+- Complete Epic 3 remaining items
 - Continue with remaining milestones toward v0.1.0-mvp
 
 ---
@@ -23,13 +27,13 @@
 **Status**: ✅ **Completed on September 28, 2025**
 
 - [x] **Repository Structure**: Set up monorepo with proper workspace configuration
-- [x] **Development Environment**: Docker Compose setup for MongoDB, Redis, and application services  
+- [x] **Development Environment**: pnpm + direct MongoDB connection (local or Atlas)
 - [x] **CI/CD Pipeline**: GitHub Actions for automated testing, building, and deployment
 - [x] **Code Quality Tools**: ESLint, Prettier, Husky pre-commit hooks
 - [x] **Documentation Setup**: Automated API documentation generation
 
 **Success Criteria**:
-- ✅ All developers can run the full stack locally with `docker-compose up`
+- ✅ All developers can run the full stack locally with `pnpm install` + `pnpm dev`
 - ✅ CI/CD pipeline successfully builds and tests code changes
 - ✅ Code quality standards enforced automatically
 
@@ -89,7 +93,7 @@ Establish a solid foundation with working authentication and basic workspace man
 **Status**: ✅ **Completed on September 28, 2025**
 
 **Acceptance Criteria**:
-- [x] Docker Compose setup runs unified application with MongoDB and Redis
+- [x] Development setup runs unified application with MongoDB
 - [x] Hot reload working for the integrated NestJS + React Router 7 application
 - [x] Environment variables properly configured
 - [x] Database migrations system in place

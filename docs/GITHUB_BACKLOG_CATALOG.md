@@ -4,10 +4,11 @@ This file serves as the source of truth for all GitHub issues, epics, and milest
 
 ## Catalog Metadata
 
-- **Last Updated**: 2025-09-28
+- **Last Updated**: 2025-12-15
 - **GitHub Repository**: cbnsndwch/struktura
-- **Total Issues Planned**: 35 (7 new issues added to Epic 3)
+- **Total Issues Planned**: 67 (Issues #46-67 added for Epic 3)
 - **Total Epics Completed**: 2 of 8 (Epic 1 & 2 ✅)
+- **Epic 3 Progress**: ~80% complete
 - **Active Milestones**: 3
 
 ## Epic & Issue Tracking
@@ -85,13 +86,12 @@ Establish the fundamental project infrastructure including development environme
 **Estimate**: 5 days  
 **Priority**: Critical
 
-**Description**: Create Docker Compose setup for MongoDB, Redis, and application services to enable consistent local development.
+**Description**: Set up development environment with pnpm and direct MongoDB connection for consistent local development.
 
 **Acceptance Criteria**:
-- [x] Docker Compose file with MongoDB, Redis, and app services
+- [x] Development environment with `pnpm install` + `pnpm dev`
 - [x] Environment variable configuration
-- [x] Health checks for all services
-- [x] Data persistence configuration
+- [x] MongoDB connection (local or Atlas)
 - [x] Development hot-reload setup
 - [x] Documentation for setup process
 

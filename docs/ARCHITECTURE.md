@@ -29,7 +29,6 @@ graph TB
 
     subgraph "Data Layer"
         MongoDB[(MongoDB)]
-        Redis[(Redis Cache)]
         Zero[Rocicorp Zero]
     end
 
@@ -44,7 +43,7 @@ graph TB
     ContentMgmt --> MongoDB
     SchemaMgmt --> MongoDB
     DataMgmt --> MongoDB
-    Auth --> Redis
+    Auth --> MongoDB
     Zero --> MongoDB
     Browser --> Zero
 ```
@@ -63,22 +62,25 @@ graph TB
 - **API**: GraphQL with Apollo Server + REST endpoints
 - **Admin UI**: React Router 7 framework mode, mounted on NestJS Express router
 - **Frontend Build**: Vite for frontend build tooling integrated with NestJS
-- **Real-time**: WebSockets with Rocicorp Zero synchronization engine
-- **Authentication**: JWT with refresh tokens
+- **Real-time**: WebSockets with Rocicorp Zero synchronization engine (planned)
+- **Authentication**: Better Auth library with session-based auth
 
 **Data Layer**
 - **Database**: MongoDB 7+ with Mongoose ODM as primary data store
-- **Caching**: Redis for sessions and real-time data
-- **Real-time Sync**: Rocicorp Zero for live collaboration
+- **Real-time Sync**: Rocicorp Zero for live collaboration (planned)
 
 **Development Tools**
 - **Linting**: ESLint with custom shared configuration
 - **Formatting**: Prettier for code formatting
 - **Version Management**: Changesets for semantic versioning
 
-**Infrastructure**
+**Local Development**
+- **Package Manager**: pnpm with `pnpm install` + `pnpm dev` for hot-reload
+- **Database**: Direct MongoDB connection (local instance or MongoDB Atlas)
+- **No Docker required** for local development
+
+**Production Infrastructure** (planned)
 - **Containerization**: Docker with multi-stage builds
-- **Development**: Docker Compose for local development
 - **Monitoring**: OpenTelemetry + Prometheus metrics (OTEL-LGTM stack)
 
 ## 2. Database Design
