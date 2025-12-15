@@ -55,7 +55,7 @@
         "react-hook-form": "catalog:frontend",
         "react-resizable-panels": "catalog:frontend",
         "react-router": "catalog:frontend",
-        "recharts": "2.15.4",
+        "recharts": "3.6.0",
         "sonner": "catalog:frontend",
         "tailwind-merge": "catalog:frontend",
         "tw-animate-css": "catalog:frontend",
