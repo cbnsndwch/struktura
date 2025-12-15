@@ -16,7 +16,8 @@ import {
     Label
 } from '@cbnsndwch/struktura-shared-ui';
 import { useAuth } from '../../lib/auth-context.js';
-import { getInitials } from '../../lib/utils.js';
+import { getInitials } from '../../lib/user-utils.js';
+
 export function ProfileSettings() {
     const { user } = useAuth();
     const [displayName, setDisplayName] = useState(user?.name || '');

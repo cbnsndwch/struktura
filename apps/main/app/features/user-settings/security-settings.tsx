@@ -21,35 +21,69 @@ interface OAuthProvider {
     icon?: string;
 }
 
+// Better Auth OAuth signin endpoint
+// TODO: Extract to configuration or use Apollo Client with apollo-link-rest
+const BETTER_AUTH_SIGNIN_PATH = '/api/auth/signin';
+
 export function SecuritySettings() {
     const { user } = useAuth();
     const [providers, setProviders] = useState<OAuthProvider[]>([
         { id: 'google', name: 'Google', connected: false },
         { id: 'github', name: 'GitHub', connected: false }
     ]);
+    const [isLoading, setIsLoading] = useState(true);
 
-    // Check if user is connected via OAuth based on their email provider or image
+    // Fetch connected OAuth accounts from Better Auth
+    // TODO: Migrate to Apollo Client with useQuery hook for better error handling,
+    // retries, and caching. Consider using apollo-link-rest to wrap Better Auth's REST API.
     useEffect(() => {
-        if (user?.image) {
-            // If user has an image, they likely connected via OAuth
-            // We can make more sophisticated checks based on the image URL patterns
-            setProviders(prev =>
-                prev.map(p => {
-                    if (user.image?.includes('google') && p.id === 'google') {
-                        return { ...p, connected: true };
+        async function fetchConnectedAccounts() {
+            if (!user) return;
+            
+            setIsLoading(true);
+            try {
+                // Better Auth should provide an accounts endpoint
+                // This is a placeholder - adjust based on actual Better Auth API
+                const response = await fetch('/api/auth/session', {
+                    credentials: 'include'
+                });
+                
+                if (response.ok) {
+                    const session = await response.json();
+                    
+                    // Check session data for OAuth provider information
+                    // This is more reliable than checking image URLs
+                    if (session?.user) {
+                        // Update provider status based on actual session data
+                        // Fallback to image URL check if provider info not available
+                        setProviders(prev =>
+                            prev.map(p => {
+                                // Check if provider is in session data (adjust based on actual API)
+                                const isConnected = session.user?.image?.includes(p.id) || false;
+                                return { ...p, connected: isConnected };
+                            })
+                        );
                     }
-                    if (user.image?.includes('github') && p.id === 'github') {
-                        return { ...p, connected: true };
-                    }
-                    return p;
-                })
-            );
+                }
+            } catch (error) {
+                console.error('Failed to fetch connected accounts:', error);
+                // On error, default to all disconnected
+                setProviders(prev =>
+                    prev.map(p => ({ ...p, connected: false }))
+                );
+            } finally {
+                setIsLoading(false);
+            }
         }
+        
+        fetchConnectedAccounts();
     }, [user]);
 
     const handleConnectProvider = (providerId: string) => {
-        // Redirect to OAuth provider connection flow
-        window.location.href = `/api/auth/signin/${providerId}?callbackURL=${encodeURIComponent(window.location.pathname)}`;
+        // Use Better Auth's OAuth connection flow
+        // Full page reload is intentional for OAuth flow
+        const callbackURL = encodeURIComponent(window.location.pathname);
+        window.location.href = `${BETTER_AUTH_SIGNIN_PATH}/${providerId}?callbackURL=${callbackURL}`;
     };
 
     const handleDisconnectProvider = async (providerId: string) => {

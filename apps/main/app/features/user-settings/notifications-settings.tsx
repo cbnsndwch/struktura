@@ -129,8 +129,13 @@ export function NotificationsSettings() {
                             <Label htmlFor="workspace-updates" className="text-base">
                                 Workspace Updates
                             </Label>
-                            <p className="text-sm text-muted-foreground">
+                            <p 
+                                className="text-sm text-muted-foreground"
+                                id="workspace-updates-description"
+                            >
                                 Get notified about changes in your workspaces
+                                {!preferences.emailNotifications && 
+                                    ' (Enable email notifications first)'}
                             </p>
                         </div>
                         <Switch
@@ -138,6 +143,8 @@ export function NotificationsSettings() {
                             checked={preferences.workspaceUpdates}
                             onCheckedChange={() => handleToggle('workspaceUpdates')}
                             disabled={!preferences.emailNotifications}
+                            aria-describedby="workspace-updates-description"
+                            className={!preferences.emailNotifications ? 'opacity-50' : ''}
                         />
                     </div>
 
@@ -146,8 +153,13 @@ export function NotificationsSettings() {
                             <Label htmlFor="collaboration-notifications" className="text-base">
                                 Collaboration Notifications
                             </Label>
-                            <p className="text-sm text-muted-foreground">
+                            <p 
+                                className="text-sm text-muted-foreground"
+                                id="collaboration-notifications-description"
+                            >
                                 Receive notifications when someone mentions or shares with you
+                                {!preferences.emailNotifications && 
+                                    ' (Enable email notifications first)'}
                             </p>
                         </div>
                         <Switch
@@ -157,6 +169,8 @@ export function NotificationsSettings() {
                                 handleToggle('collaborationNotifications')
                             }
                             disabled={!preferences.emailNotifications}
+                            aria-describedby="collaboration-notifications-description"
+                            className={!preferences.emailNotifications ? 'opacity-50' : ''}
                         />
                     </div>
 

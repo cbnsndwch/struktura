@@ -63,7 +63,10 @@ export default function SettingsLayout() {
                     <nav className="grid gap-1 px-2 py-4">
                         {settingsNavItems.map(item => {
                             const Icon = item.icon;
-                            const isActive = location.pathname === item.href;
+                            // Handle both direct path and index route (/settings -> /settings/profile)
+                            const isActive =
+                                location.pathname === item.href ||
+                                (item.href === '/settings/profile' && location.pathname === '/settings');
 
                             return (
                                 <Link
