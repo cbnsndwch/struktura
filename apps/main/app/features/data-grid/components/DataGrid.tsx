@@ -147,7 +147,7 @@ export function DataGrid({
 
     const handleCellClick = useCallback((rowId: string, columnId: string, value: unknown) => {
         // Single click - select/focus
-        console.log('Cell clicked:', rowId, columnId, value);
+        
     }, []);
 
     const handleCellDoubleClick = useCallback((rowId: string, columnId: string, value: unknown) => {
