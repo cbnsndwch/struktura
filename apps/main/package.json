@@ -5,7 +5,7 @@
     "type": "module",
     "description": "Main Struktura application - unified NestJS backend with React Router 7 admin UI",
     "scripts": {
-        "build": "react-router build && nest build",
+        "build": "react-router typegen && react-router build && nest build",
         "build:react-router": "react-router build",
         "build:nest": "nest build",
         "dev": "pnpm types && nest start --watch",
