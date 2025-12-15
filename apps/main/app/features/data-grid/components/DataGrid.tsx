@@ -123,7 +123,7 @@ export function DataGrid({
         });
 
         return cols;
-    }, [fields, editingCell, editValue]);
+    }, [fields]);
 
     const table = useReactTable({
         data: records,
