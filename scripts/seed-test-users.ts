@@ -13,20 +13,61 @@
  *   BETTER_AUTH_SECRET - Secret for Better Auth session cookies (uses default dev secret if not set)
  */
 
-import { MongoClient } from 'mongodb';
+import { MongoClient, type Db } from 'mongodb';
+import { betterAuth } from 'better-auth';
+import { mongodbAdapter } from 'better-auth/adapters/mongodb';
 import { APIError } from 'better-auth/api';
 import 'dotenv/config';
 
-import { createBetterAuth, getAuth } from '@cbnsndwch/struktura-auth-domain';
-
 // Default development secret (32+ chars required) - NEVER use in production
 const DEV_AUTH_SECRET = 'struktura-dev-secret-minimum-32-chars-required';
+
+/**
+ * Create a standalone Better Auth instance for seeding
+ */
+function createSeedAuth(db: Db) {
+    return betterAuth({
+        basePath: '/api/auth',
+        secret: process.env.BETTER_AUTH_SECRET!,
+        database: mongodbAdapter(db),
+        emailAndPassword: {
+            enabled: true,
+            minPasswordLength: 8
+        },
+        user: {
+            modelName: 'ba_user',
+            additionalFields: {
+                roles: {
+                    type: 'string[]',
+                    required: false,
+                    defaultValue: ['viewer'],
+                    input: false
+                },
+                preferences: {
+                    type: 'json',
+                    required: false,
+                    defaultValue: { theme: 'system' },
+                    input: false
+                }
+            }
+        },
+        session: {
+            modelName: 'ba_session'
+        },
+        account: {
+            modelName: 'ba_account'
+        },
+        verification: {
+            modelName: 'ba_verification'
+        }
+    });
+}
 
 interface TestUser {
     email: string;
     name: string;
     password: string;
-    roles: string;
+    roles: string[];
     emailVerified: boolean;
 }
 
@@ -35,21 +76,21 @@ const TEST_USERS: TestUser[] = [
         email: 'test@example.com',
         name: 'Test User',
         password: 'password123',
-        roles: 'editor',
+        roles: ['editor'],
         emailVerified: true // Pre-verified for testing
     },
     {
         email: 'admin@example.com',
         name: 'Admin User',
         password: 'admin123',
-        roles: 'admin',
+        roles: ['admin'],
         emailVerified: true
     },
     {
         email: 'viewer@example.com',
         name: 'Viewer User',
         password: 'viewer123',
-        roles: 'viewer',
+        roles: ['viewer'],
         emailVerified: true
     }
 ];
@@ -78,8 +119,7 @@ async function seedUsers() {
         console.log('✅ Connected to MongoDB');
 
         // Initialize Better Auth with the database
-        createBetterAuth(db);
-        const auth = getAuth();
+        const auth = createSeedAuth(db);
         console.log('✅ Better Auth initialized');
 
         // Get collections for direct operations (using ba_ prefix)
@@ -97,17 +137,18 @@ async function seedUsers() {
                         `⏭️  User ${testUser.email} already exists, updating roles...`
                     );
                     // Update roles and emailVerified status for existing user
+                    // Better Auth stores string[] fields as JSON strings in MongoDB
                     await usersCollection.updateOne(
                         { email: testUser.email },
                         {
                             $set: {
-                                roles: testUser.roles,
+                                roles: JSON.stringify(testUser.roles),
                                 emailVerified: testUser.emailVerified
                             }
                         }
                     );
                     console.log(
-                        `✅ Updated user: ${testUser.email} (${testUser.roles})`
+                        `✅ Updated user: ${testUser.email} (${testUser.roles.join(', ')})`
                     );
                     continue;
                 }
@@ -130,18 +171,19 @@ async function seedUsers() {
 
                 // Update user with additional fields (roles, emailVerified)
                 // Better Auth doesn't allow setting these during signup
+                // Better Auth stores string[] fields as JSON strings in MongoDB
                 await usersCollection.updateOne(
                     { id: result.user.id },
                     {
                         $set: {
-                            roles: testUser.roles,
+                            roles: JSON.stringify(testUser.roles),
                             emailVerified: testUser.emailVerified
                         }
                     }
                 );
 
                 console.log(
-                    `✅ Created user: ${testUser.email} (${testUser.roles})`
+                    `✅ Created user: ${testUser.email} (${testUser.roles.join(', ')})`
                 );
             } catch (error) {
                 if (error instanceof APIError) {
