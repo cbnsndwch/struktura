@@ -22,7 +22,7 @@
         "@nestjs/graphql": "catalog:backend",
         "@nestjs/mongoose": "catalog:backend",
         "@nestjs/throttler": "catalog:backend",
-        "better-auth": "^1.4.6",
+        "better-auth": "^1.4.7",
         "class-transformer": "catalog:shared",
         "class-validator": "catalog:shared",
         "mongodb": "^7.0.0",
