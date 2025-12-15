@@ -19,7 +19,7 @@ jobs:
   # Circuit Breaker - Skip CI Check
   # ================================
   check-skip-ci:
-    runs-on: ubuntu-24.04
+    runs-on: ubuntu-24.04-arm
     outputs:
       should-skip: ${{ steps.skip-check.outputs.should-skip }}
     steps:
@@ -43,7 +43,7 @@ jobs:
   quality-checks:
     needs: check-skip-ci
     if: needs.check-skip-ci.outputs.should-skip != 'true'
-    runs-on: ubuntu-24.04
+    runs-on: ubuntu-24.04-arm
     steps:
       - name: Checkout repository
         uses: actions/checkout@v6
@@ -76,7 +76,7 @@ jobs:
   # Security Scanning
   # ================================
   security-scan:
-    runs-on: ubuntu-24.04
+    runs-on: ubuntu-24.04-arm
     needs:
       - check-skip-ci
       - quality-checks
@@ -180,7 +180,7 @@ jobs:
   # Development Deployment
   # ================================
   deploy-dev:
-    runs-on: ubuntu-24.04
+    runs-on: ubuntu-24.04-arm
     needs:
       - build-and-push
     if: github.ref == 'refs/heads/develop' && github.event_name == 'push'
@@ -204,7 +204,7 @@ jobs:
   # Staging Deployment (Pre-release)
   # ================================
   deploy-staging:
-    runs-on: ubuntu-24.04
+    runs-on: ubuntu-24.04-arm
     needs:
       - build-and-push
     if: github.event_name == 'push' && startsWith(github.ref, 'refs/tags/') && (contains(github.ref_name, '-pre.') || contains(github.ref_name, '-rc.'))
@@ -224,7 +224,7 @@ jobs:
   # Production Deployment (Release)
   # ================================
   deploy-prod:
-    runs-on: ubuntu-24.04
+    runs-on: ubuntu-24.04-arm
     needs:
       - build-and-push
     if: github.event_name == 'push' && startsWith(github.ref, 'refs/tags/v')
@@ -243,7 +243,7 @@ jobs:
   # Notification
   # ================================
   notify:
-    runs-on: ubuntu-24.04
+    runs-on: ubuntu-24.04-arm
     needs: 
       - check-skip-ci
       - quality-checks
