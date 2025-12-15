@@ -85,6 +85,7 @@
         "tailwindcss-animate": "catalog:frontend",
         "typescript": "catalog:shared",
         "vite-plugin-dts": "catalog:frontend",
+        "vite-tsconfig-paths": "catalog:frontend",
         "vitest": "catalog:shared"
     },
     "main": "./dist/index.js",
