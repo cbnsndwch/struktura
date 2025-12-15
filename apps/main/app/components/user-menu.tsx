@@ -109,12 +109,18 @@ export function UserMenu({ className }: UserMenuProps) {
             </DropdownMenu>
 
             {/* Logout confirmation dialog */}
-            <AlertDialog open={showLogoutDialog} onOpenChange={setShowLogoutDialog}>
+            <AlertDialog
+                open={showLogoutDialog}
+                onOpenChange={setShowLogoutDialog}
+            >
                 <AlertDialogContent>
                     <AlertDialogHeader>
-                        <AlertDialogTitle>Are you sure you want to log out?</AlertDialogTitle>
+                        <AlertDialogTitle>
+                            Are you sure you want to log out?
+                        </AlertDialogTitle>
                         <AlertDialogDescription>
-                            You will be redirected to the login page and will need to sign in again to access your account.
+                            You will be redirected to the login page and will
+                            need to sign in again to access your account.
                         </AlertDialogDescription>
                     </AlertDialogHeader>
                     <AlertDialogFooter>

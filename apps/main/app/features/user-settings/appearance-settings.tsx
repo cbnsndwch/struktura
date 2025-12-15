@@ -41,7 +41,9 @@ export function AppearanceSettings() {
     return (
         <div className="space-y-6">
             <div>
-                <h2 className="text-2xl font-bold tracking-tight">Appearance</h2>
+                <h2 className="text-2xl font-bold tracking-tight">
+                    Appearance
+                </h2>
                 <p className="text-muted-foreground">
                     Customize how Struktura looks on your device
                 </p>
@@ -66,7 +68,10 @@ export function AppearanceSettings() {
                         {themeOptions.map(option => {
                             const Icon = option.icon;
                             return (
-                                <div key={option.value} className="flex items-start space-x-3">
+                                <div
+                                    key={option.value}
+                                    className="flex items-start space-x-3"
+                                >
                                     <RadioGroupItem
                                         value={option.value}
                                         id={`theme-${option.value}`}

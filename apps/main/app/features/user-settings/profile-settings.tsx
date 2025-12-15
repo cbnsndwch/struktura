@@ -15,6 +15,7 @@ import {
     Input,
     Label
 } from '@cbnsndwch/struktura-shared-ui';
+
 import { useAuth } from '../../lib/auth-context.js';
 import { getInitials } from '../../lib/user-utils.js';
 
@@ -42,7 +43,8 @@ export function ProfileSettings() {
                 <CardHeader>
                     <CardTitle>Profile Picture</CardTitle>
                     <CardDescription>
-                        Your profile picture is synced from your authentication provider
+                        Your profile picture is synced from your authentication
+                        provider
                     </CardDescription>
                 </CardHeader>
                 <CardContent className="flex items-center gap-4">
@@ -56,7 +58,10 @@ export function ProfileSettings() {
                         <AvatarFallback>{initials}</AvatarFallback>
                     </Avatar>
                     <div className="text-sm text-muted-foreground">
-                        <p>Connected via {user.image ? 'OAuth provider' : 'email'}</p>
+                        <p>
+                            Connected via{' '}
+                            {user.image ? 'OAuth provider' : 'email'}
+                        </p>
                     </div>
                 </CardContent>
             </Card>
@@ -79,7 +84,8 @@ export function ProfileSettings() {
                             placeholder="Your display name"
                         />
                         <p className="text-xs text-muted-foreground">
-                            This is how your name will appear across the platform
+                            This is how your name will appear across the
+                            platform
                         </p>
                     </div>
 
@@ -92,14 +98,13 @@ export function ProfileSettings() {
                             className="bg-muted"
                         />
                         <p className="text-xs text-muted-foreground">
-                            Email cannot be changed. Contact support if you need to update it.
+                            Email cannot be changed. Contact support if you need
+                            to update it.
                         </p>
                     </div>
 
                     <div className="flex justify-end">
-                        <Button disabled>
-                            Save Changes
-                        </Button>
+                        <Button disabled>Save Changes</Button>
                     </div>
                 </CardContent>
             </Card>

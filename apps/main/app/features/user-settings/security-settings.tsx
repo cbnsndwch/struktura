@@ -12,6 +12,7 @@ import {
     Badge
 } from '@cbnsndwch/struktura-shared-ui';
 import { CheckCircle2, XCircle, ExternalLink } from 'lucide-react';
+
 import { useAuth } from '../../lib/auth-context.js';
 
 interface OAuthProvider {
@@ -39,7 +40,7 @@ export function SecuritySettings() {
     useEffect(() => {
         async function fetchConnectedAccounts() {
             if (!user) return;
-            
+
             setIsLoading(true);
             try {
                 // Better Auth should provide an accounts endpoint
@@ -47,10 +48,10 @@ export function SecuritySettings() {
                 const response = await fetch('/api/auth/session', {
                     credentials: 'include'
                 });
-                
+
                 if (response.ok) {
                     const session = await response.json();
-                    
+
                     // Check session data for OAuth provider information
                     // This is more reliable than checking image URLs
                     if (session?.user) {
@@ -59,7 +60,9 @@ export function SecuritySettings() {
                         setProviders(prev =>
                             prev.map(p => {
                                 // Check if provider is in session data (adjust based on actual API)
-                                const isConnected = session.user?.image?.includes(p.id) || false;
+                                const isConnected =
+                                    session.user?.image?.includes(p.id) ||
+                                    false;
                                 return { ...p, connected: isConnected };
                             })
                         );
@@ -75,7 +78,7 @@ export function SecuritySettings() {
                 setIsLoading(false);
             }
         }
-        
+
         fetchConnectedAccounts();
     }, [user]);
 
@@ -125,7 +128,11 @@ export function SecuritySettings() {
                                 <span className="text-sm">
                                     Your email address is not verified
                                 </span>
-                                <Button variant="link" size="sm" className="ml-auto">
+                                <Button
+                                    variant="link"
+                                    size="sm"
+                                    className="ml-auto"
+                                >
                                     Send verification email
                                 </Button>
                             </>
@@ -160,7 +167,10 @@ export function SecuritySettings() {
                                             {provider.name}
                                         </span>
                                         {provider.connected && (
-                                            <Badge variant="secondary" className="text-xs">
+                                            <Badge
+                                                variant="secondary"
+                                                className="text-xs"
+                                            >
                                                 Connected
                                             </Badge>
                                         )}
@@ -186,7 +196,9 @@ export function SecuritySettings() {
                                 <Button
                                     variant="default"
                                     size="sm"
-                                    onClick={() => handleConnectProvider(provider.id)}
+                                    onClick={() =>
+                                        handleConnectProvider(provider.id)
+                                    }
                                 >
                                     <ExternalLink className="mr-2 h-4 w-4" />
                                     Connect

@@ -3,7 +3,8 @@
  */
 import { Link, Outlet, useLocation } from 'react-router';
 import { User, Bell, Shield, Palette, type LucideIcon } from 'lucide-react';
-import { cn } from '@cbnsndwch/struktura-shared-ui/lib/utils';
+
+import { cn } from '@cbnsndwch/struktura-shared-ui';
 
 interface SettingsNavItem {
     title: string;
@@ -40,7 +41,7 @@ export default function SettingsLayout() {
     return (
         <div className="flex min-h-screen flex-col">
             {/* Header */}
-            <header className="sticky top-0 z-50 w-full border-b bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
+            <header className="sticky top-0 z-50 w-full border-b bg-background/95 backdrop-blur supports-backdrop-filter:bg-background/60">
                 <div className="container flex h-14 items-center">
                     <Link
                         to="/workspaces"
@@ -66,7 +67,8 @@ export default function SettingsLayout() {
                             // Handle both direct path and index route (/settings -> /settings/profile)
                             const isActive =
                                 location.pathname === item.href ||
-                                (item.href === '/settings/profile' && location.pathname === '/settings');
+                                (item.href === '/settings/profile' &&
+                                    location.pathname === '/settings');
 
                             return (
                                 <Link

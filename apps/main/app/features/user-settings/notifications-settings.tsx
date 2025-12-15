@@ -14,11 +14,12 @@ import {
 } from '@cbnsndwch/struktura-shared-ui';
 import { toast } from 'sonner';
 import type { INotificationPreferences } from '@cbnsndwch/struktura-auth-contracts';
+
 import { useAuth } from '../../lib/auth-context.js';
 
 export function NotificationsSettings() {
     const { user } = useAuth();
-    
+
     const [preferences, setPreferences] = useState<INotificationPreferences>({
         emailNotifications: true,
         workspaceUpdates: true,
@@ -45,7 +46,10 @@ export function NotificationsSettings() {
                     }
                 }
             } catch (error) {
-                console.error('Failed to load notification preferences:', error);
+                console.error(
+                    'Failed to load notification preferences:',
+                    error
+                );
             }
         };
 
@@ -93,7 +97,9 @@ export function NotificationsSettings() {
     return (
         <div className="space-y-6">
             <div>
-                <h2 className="text-2xl font-bold tracking-tight">Notifications</h2>
+                <h2 className="text-2xl font-bold tracking-tight">
+                    Notifications
+                </h2>
                 <p className="text-muted-foreground">
                     Manage how you receive notifications
                 </p>
@@ -110,55 +116,74 @@ export function NotificationsSettings() {
                 <CardContent className="space-y-6">
                     <div className="flex items-center justify-between">
                         <div className="space-y-0.5">
-                            <Label htmlFor="email-notifications" className="text-base">
+                            <Label
+                                htmlFor="email-notifications"
+                                className="text-base"
+                            >
                                 Enable Email Notifications
                             </Label>
                             <p className="text-sm text-muted-foreground">
-                                Receive email notifications for important updates
+                                Receive email notifications for important
+                                updates
                             </p>
                         </div>
                         <Switch
                             id="email-notifications"
                             checked={preferences.emailNotifications}
-                            onCheckedChange={() => handleToggle('emailNotifications')}
+                            onCheckedChange={() =>
+                                handleToggle('emailNotifications')
+                            }
                         />
                     </div>
 
                     <div className="flex items-center justify-between">
                         <div className="space-y-0.5">
-                            <Label htmlFor="workspace-updates" className="text-base">
+                            <Label
+                                htmlFor="workspace-updates"
+                                className="text-base"
+                            >
                                 Workspace Updates
                             </Label>
-                            <p 
+                            <p
                                 className="text-sm text-muted-foreground"
                                 id="workspace-updates-description"
                             >
                                 Get notified about changes in your workspaces
-                                {!preferences.emailNotifications && 
+                                {!preferences.emailNotifications &&
                                     ' (Enable email notifications first)'}
                             </p>
                         </div>
                         <Switch
                             id="workspace-updates"
                             checked={preferences.workspaceUpdates}
-                            onCheckedChange={() => handleToggle('workspaceUpdates')}
+                            onCheckedChange={() =>
+                                handleToggle('workspaceUpdates')
+                            }
                             disabled={!preferences.emailNotifications}
                             aria-describedby="workspace-updates-description"
-                            className={!preferences.emailNotifications ? 'opacity-50' : ''}
+                            className={
+                                !preferences.emailNotifications
+                                    ? 'opacity-50'
+                                    : ''
+                            }
                         />
                     </div>
 
                     <div className="flex items-center justify-between">
                         <div className="space-y-0.5">
-                            <Label htmlFor="collaboration-notifications" className="text-base">
+                            <Label
+                                htmlFor="collaboration-notifications"
+                                className="text-base"
+                            >
                                 Collaboration Notifications
                             </Label>
-                            <p 
+                            <p
                                 className="text-sm text-muted-foreground"
                                 id="collaboration-notifications-description"
                             >
-                                Receive notifications when someone mentions or shares with you
-                                {!preferences.emailNotifications && 
+                                Receive notifications when someone mentions or
+                                shares with you
+                                {!preferences.emailNotifications &&
                                     ' (Enable email notifications first)'}
                             </p>
                         </div>
@@ -170,23 +195,33 @@ export function NotificationsSettings() {
                             }
                             disabled={!preferences.emailNotifications}
                             aria-describedby="collaboration-notifications-description"
-                            className={!preferences.emailNotifications ? 'opacity-50' : ''}
+                            className={
+                                !preferences.emailNotifications
+                                    ? 'opacity-50'
+                                    : ''
+                            }
                         />
                     </div>
 
                     <div className="flex items-center justify-between">
                         <div className="space-y-0.5">
-                            <Label htmlFor="marketing-emails" className="text-base">
+                            <Label
+                                htmlFor="marketing-emails"
+                                className="text-base"
+                            >
                                 Marketing Emails
                             </Label>
                             <p className="text-sm text-muted-foreground">
-                                Receive emails about new features and product updates
+                                Receive emails about new features and product
+                                updates
                             </p>
                         </div>
                         <Switch
                             id="marketing-emails"
                             checked={preferences.marketingEmails}
-                            onCheckedChange={() => handleToggle('marketingEmails')}
+                            onCheckedChange={() =>
+                                handleToggle('marketingEmails')
+                            }
                         />
                     </div>
                 </CardContent>
