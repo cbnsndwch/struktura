@@ -17,7 +17,7 @@ import { FieldType } from '../entities/index.js';
 import { FieldOptionsDto } from './FieldOptionsDto.js';
 import { FieldValidationRuleDto } from './FieldValidationRuleDto.js';
 
-@InputType()
+@InputType('AddFieldInput')
 export class AddFieldDto implements AddFieldData {
     @Field()
     @IsString()

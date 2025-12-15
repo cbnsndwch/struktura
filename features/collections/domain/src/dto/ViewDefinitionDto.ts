@@ -7,7 +7,7 @@ import {
     IsArray
 } from 'class-validator';
 
-@InputType()
+@InputType('ViewDefinitionInput')
 export class ViewDefinitionDto {
     @Field()
     @IsString()

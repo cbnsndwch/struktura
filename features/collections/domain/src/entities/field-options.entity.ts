@@ -5,7 +5,7 @@ import { IsOptional, IsArray, IsString, IsNumber } from 'class-validator';
 import { FieldOptions as IFieldOptions } from '@cbnsndwch/struktura-collections-contracts';
 
 // Field choice type for select/multiselect fields
-@ObjectType()
+@ObjectType('FieldChoice')
 export class FieldChoice {
     @Field()
     label!: string;
@@ -19,7 +19,7 @@ export class FieldChoice {
 
 // Field options for different field types
 
-@ObjectType()
+@ObjectType('FieldOptions')
 @Schema({ _id: false })
 export class FieldOptions implements IFieldOptions {
     // For select/multiselect fields
