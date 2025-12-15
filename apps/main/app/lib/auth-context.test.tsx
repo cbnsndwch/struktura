@@ -40,6 +40,10 @@ describe('AuthContext', () => {
                 {
                     path: '/',
                     element: <AuthProvider>{children}</AuthProvider>
+                },
+                {
+                    path: '/auth/login',
+                    element: <div>Login</div>
                 }
             ],
             {

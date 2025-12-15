@@ -183,7 +183,9 @@ export class ApiClient {
         }
 
         // Handle empty responses (like 204 No Content)
-        if (response.status === 204 || response.headers.get('content-length') === '0') {
+        // Note: in tests, fetch may be mocked with a minimal Response-like object that omits `headers`.
+        const contentLength = response.headers?.get?.('content-length');
+        if (response.status === 204 || contentLength === '0') {
             return {} as T;
         }
 
