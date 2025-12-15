@@ -83,7 +83,6 @@
         "prettier": "catalog:shared",
         "tailwindcss": "catalog:frontend",
         "tailwindcss-animate": "catalog:frontend",
-        "tsup": "catalog:shared",
         "typescript": "catalog:shared",
         "vite-plugin-dts": "catalog:frontend",
         "vitest": "catalog:shared"

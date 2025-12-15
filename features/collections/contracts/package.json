@@ -5,9 +5,9 @@
     "type": "module",
     "private": true,
     "scripts": {
-        "build": "tsup",
+        "build": "tsdown",
         "clean": "rm -rf dist",
-        "dev": "tsup --watch",
+        "dev": "tsdown --watch",
         "lint": "eslint . --fix",
         "format": "prettier --write .",
         "test": "vitest --run --passWithNoTests",
@@ -19,7 +19,7 @@
     "devDependencies": {
         "@cbnsndwch/struktura-eslint-config": "workspace:*",
         "@cbnsndwch/struktura-tsconfig": "workspace:*",
-        "tsup": "catalog:shared",
+        "tsdown": "catalog:shared",
         "typescript": "catalog:shared",
         "vitest": "catalog:shared"
     },

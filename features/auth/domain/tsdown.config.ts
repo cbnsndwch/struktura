@@ -1,4 +1,4 @@
-import { defineConfig } from 'tsup';
+import { defineConfig } from 'tsdown';
 
 export default defineConfig({
     entry: ['src/**/*'],
@@ -8,7 +8,7 @@ export default defineConfig({
     clean: true,
     target: 'es2023',
     noExternal: [],
-    bundle: false,
-    splitting: false,
-    skipNodeModulesBundle: true
+    unbundle: true,
+    skipNodeModulesBundle: true,
+    fixedExtension: false
 });

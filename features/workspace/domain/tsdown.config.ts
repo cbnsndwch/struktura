@@ -1,4 +1,4 @@
-import { defineConfig } from 'tsup';
+import { defineConfig } from 'tsdown';
 
 export default defineConfig({
     entry: ['src/**/*'],
@@ -7,18 +7,25 @@ export default defineConfig({
     sourcemap: true,
     clean: true,
     target: 'es2023',
-    bundle: false,
     external: [
         '@nestjs/common',
         '@nestjs/core',
         '@nestjs/mongoose',
         '@nestjs/graphql',
         '@nestjs/mapped-types',
+        '@cbnsndwch/struktura-auth-domain',
+        '@cbnsndwch/struktura-workspace-contracts',
+        'mongoose',
         'class-validator',
         'class-transformer',
-        'mongoose',
         'graphql',
-        'reflect-metadata',
-        'rxjs'
-    ]
+        '@apollo/subgraph',
+        '@nestjs/websockets',
+        '@nestjs/microservices',
+        'ts-morph'
+    ],
+    noExternal: [],
+    unbundle: true,
+    skipNodeModulesBundle: true,
+    fixedExtension: false
 });
