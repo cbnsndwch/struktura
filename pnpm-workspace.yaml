@@ -120,7 +120,7 @@ catalogs:
     '@eslint/js': ^9.39.2
     '@swc/cli': ^0.7.9
     '@swc/core': ^1.15.4
-    '@types/node': ^22.19.2
+    '@types/node': ^22.19.3
     '@types/supertest': ^6.0.3
     '@vitest/browser': ^4.0.15
     change-case: ^5.4.4
