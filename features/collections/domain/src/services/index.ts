@@ -4,3 +4,4 @@ export * from './lookup.service.js';
 export * from './field-type-registry.service.js';
 export * from './auto-field.service.js';
 export * from './secure-expression-evaluator.service.js';
+export * from './record.service.js';
