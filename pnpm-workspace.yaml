@@ -21,7 +21,7 @@ catalogs:
     '@nestjs/platform-express': ^11.1.9
     '@nestjs/schematics': ^11.0.9
     '@nestjs/serve-static': ^5.0.4
-    '@nestjs/testing': ^11.1.9
+    '@nestjs/testing': ^11.1.10
     '@nestjs/throttler': ^6.5.0
     '@types/bcrypt': ^6.0.0
     '@types/express': ^5.0.6
