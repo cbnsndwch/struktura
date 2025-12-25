@@ -33,7 +33,8 @@
         "vset": "tsx ./scripts/version-bump.ts",
         "vtag": "tsx ./scripts/create-version-tag.ts",
         "test:telegram": "tsx ./scripts/test-telegram-bot.ts",
-        "db:seed": "tsx ./scripts/seed-test-users.ts"
+        "db:seed": "tsx ./scripts/seed-test-users.ts",
+        "test:e2e:login": "./scripts/run-e2e-login-tests.sh"
     },
     "devDependencies": {
         "@changesets/cli": "catalog:shared",
