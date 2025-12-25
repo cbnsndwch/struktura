@@ -22,7 +22,7 @@
         "@nestjs/mongoose": "catalog:backend",
         "class-transformer": "catalog:shared",
         "class-validator": "catalog:shared",
-        "graphql": "catalog:backend",
+        "graphql": "catalog:shared",
         "jsep": "catalog:shared",
         "mongoose": "catalog:backend"
     },

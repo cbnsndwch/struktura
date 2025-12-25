@@ -21,6 +21,7 @@
         "@cbnsndwch/struktura-eslint-config": "workspace:*",
         "@cbnsndwch/struktura-tsconfig": "workspace:*",
         "eslint": "catalog:shared",
+        "postcss": "catalog:frontend",
         "prettier": "catalog:shared",
         "tsdown": "catalog:shared",
         "typescript": "catalog:shared",
