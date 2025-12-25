@@ -2,9 +2,9 @@
     "name": "@cbnsndwch/struktura-monorepo",
     "description": "Struktura - No-Code Data Management Platform",
     "version": "0.1.0",
+    "type": "module",
     "license": "MIT",
     "private": true,
-    "type": "module",
     "repository": "https://github.com/cbnsndwch/struktura",
     "author": {
         "name": "cbnsndwch LLC",
@@ -50,6 +50,7 @@
         "globals": "catalog:shared",
         "http-server": "catalog:shared",
         "npm-check-updates": "catalog:shared",
+        "postcss": "catalog:frontend",
         "prettier": "catalog:shared",
         "tsx": "catalog:shared",
         "turbo": "catalog:shared",
