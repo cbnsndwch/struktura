@@ -48,7 +48,7 @@ export interface DataGridProps {
 }
 
 export function DataGrid({
-    collectionId,
+    // collectionId,
     fields,
     records,
     isLoading = false,
@@ -243,7 +243,10 @@ export function DataGrid({
     // Keyboard navigation
     useEffect(() => {
         const handleKeyDown = (e: KeyboardEvent) => {
-            if (editingCell) return; // Don't handle navigation while editing
+            if (editingCell) {
+                // Don't handle navigation while editing
+                return;
+            }
 
             // Handle arrow key navigation
             // TODO: Implement arrow key navigation between cells
@@ -297,7 +300,7 @@ export function DataGrid({
             )}
 
             {/* Grid */}
-            <div className="rounded-md border overflow-auto max-h-[600px]">
+            <div className="rounded-md border overflow-auto max-h-150">
                 <Table style={{ width: table.getTotalSize() }}>
                     <TableHeader className="sticky top-0 bg-background z-10">
                         {table.getHeaderGroups().map(headerGroup => (
