@@ -36,7 +36,7 @@
         "eslint-plugin-prettier": "catalog:shared",
         "eslint-plugin-react": "^7.37.5",
         "eslint-plugin-react-hooks": "^7.0.1",
-        "eslint-plugin-turbo": "^2.6.3",
+        "eslint-plugin-turbo": "^2.7.2",
         "globals": "catalog:shared",
         "prettier": "catalog:shared",
         "typescript": "catalog:shared",
