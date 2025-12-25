@@ -94,8 +94,8 @@ catalogs:
       specifier: ^9.0.2
       version: 9.0.2
     nodemailer:
-      specifier: ^7.0.11
-      version: 7.0.11
+      specifier: ^7.0.12
+      version: 7.0.12
     passport:
       specifier: ^0.7.0
       version: 0.7.0
@@ -596,8 +596,8 @@ importers:
         specifier: catalog:backend
         version: 6.0.0
       better-auth:
-        specifier: ^1.4.6
-        version: 1.4.6(react-dom@19.2.3(react@19.2.3))(react@19.2.3)
+        specifier: ^1.4.9
+        version: 1.4.9(mongodb@7.0.0)(react-dom@19.2.3(react@19.2.3))(react@19.2.3)(vitest@4.0.16(@types/node@22.19.2)(jiti@2.6.1)(jsdom@27.3.0(postcss@8.5.6))(lightningcss@1.30.2)(msw@2.12.4(@types/node@22.19.2)(typescript@5.9.3))(terser@5.44.0)(tsx@4.21.0)(yaml@2.8.1))
       class-transformer:
         specifier: catalog:shared
         version: 0.5.1
@@ -630,7 +630,7 @@ importers:
         version: 9.0.2
       nodemailer:
         specifier: catalog:backend
-        version: 7.0.11
+        version: 7.0.12
       passport:
         specifier: catalog:backend
         version: 0.7.0
@@ -790,7 +790,7 @@ importers:
         version: 6.0.3(typescript@5.9.3)(vite@7.3.0(@types/node@22.19.2)(jiti@2.6.1)(lightningcss@1.30.2)(terser@5.44.0)(tsx@4.21.0)(yaml@2.8.1))
       vitest:
         specifier: catalog:shared
-        version: 4.0.16(@types/node@22.19.2)(jiti@2.6.1)(jsdom@27.3.0)(lightningcss@1.30.2)(msw@2.12.4(@types/node@22.19.2)(typescript@5.9.3))(terser@5.44.0)(tsx@4.21.0)(yaml@2.8.1)
+        version: 4.0.16(@types/node@22.19.2)(jiti@2.6.1)(jsdom@27.3.0(postcss@8.5.6))(lightningcss@1.30.2)(msw@2.12.4(@types/node@22.19.2)(typescript@5.9.3))(terser@5.44.0)(tsx@4.21.0)(yaml@2.8.1)
 
   features/auth/contracts:
     dependencies:
@@ -818,7 +818,7 @@ importers:
         version: 5.9.3
       vitest:
         specifier: catalog:shared
-        version: 4.0.16(@types/node@24.10.4)(jiti@2.6.1)(jsdom@27.3.0)(lightningcss@1.30.2)(msw@2.12.4(@types/node@24.10.4)(typescript@5.9.3))(terser@5.44.0)(tsx@4.21.0)(yaml@2.8.1)
+        version: 4.0.16(@types/node@24.10.4)(jiti@2.6.1)(jsdom@27.3.0(postcss@8.5.6))(lightningcss@1.30.2)(msw@2.12.4(@types/node@24.10.4)(typescript@5.9.3))(terser@5.44.0)(tsx@4.21.0)(yaml@2.8.1)
 
   features/auth/domain:
     dependencies:
@@ -891,7 +891,7 @@ importers:
         version: 5.9.3
       vitest:
         specifier: catalog:shared
-        version: 4.0.16(@types/node@24.10.4)(jiti@2.6.1)(jsdom@27.3.0)(lightningcss@1.30.2)(msw@2.12.4(@types/node@24.10.4)(typescript@5.9.3))(terser@5.44.0)(tsx@4.21.0)(yaml@2.8.1)
+        version: 4.0.16(@types/node@24.10.4)(jiti@2.6.1)(jsdom@27.3.0(postcss@8.5.6))(lightningcss@1.30.2)(msw@2.12.4(@types/node@24.10.4)(typescript@5.9.3))(terser@5.44.0)(tsx@4.21.0)(yaml@2.8.1)
 
   features/collections/contracts:
     dependencies:
@@ -913,7 +913,7 @@ importers:
         version: 5.9.3
       vitest:
         specifier: catalog:shared
-        version: 4.0.16(@types/node@24.10.4)(jiti@2.6.1)(jsdom@27.3.0)(lightningcss@1.30.2)(msw@2.12.4(@types/node@24.10.4)(typescript@5.9.3))(terser@5.44.0)(tsx@4.21.0)(yaml@2.8.1)
+        version: 4.0.16(@types/node@24.10.4)(jiti@2.6.1)(jsdom@27.3.0(postcss@8.5.6))(lightningcss@1.30.2)(msw@2.12.4(@types/node@24.10.4)(typescript@5.9.3))(terser@5.44.0)(tsx@4.21.0)(yaml@2.8.1)
 
   features/collections/domain:
     dependencies:
@@ -974,7 +974,7 @@ importers:
         version: 5.9.3
       vitest:
         specifier: catalog:shared
-        version: 4.0.16(@types/node@22.19.2)(jiti@2.6.1)(jsdom@27.3.0)(lightningcss@1.30.2)(msw@2.12.4(@types/node@22.19.2)(typescript@5.9.3))(terser@5.44.0)(tsx@4.21.0)(yaml@2.8.1)
+        version: 4.0.16(@types/node@22.19.2)(jiti@2.6.1)(jsdom@27.3.0(postcss@8.5.6))(lightningcss@1.30.2)(msw@2.12.4(@types/node@22.19.2)(typescript@5.9.3))(terser@5.44.0)(tsx@4.21.0)(yaml@2.8.1)
 
   features/schema/contracts:
     devDependencies:
@@ -998,7 +998,7 @@ importers:
         version: 5.9.3
       vitest:
         specifier: catalog:shared
-        version: 4.0.16(@types/node@24.10.4)(jiti@2.6.1)(jsdom@27.3.0)(lightningcss@1.30.2)(msw@2.12.4(@types/node@24.10.4)(typescript@5.9.3))(terser@5.44.0)(tsx@4.21.0)(yaml@2.8.1)
+        version: 4.0.16(@types/node@24.10.4)(jiti@2.6.1)(jsdom@27.3.0(postcss@8.5.6))(lightningcss@1.30.2)(msw@2.12.4(@types/node@24.10.4)(typescript@5.9.3))(terser@5.44.0)(tsx@4.21.0)(yaml@2.8.1)
 
   features/schema/domain:
     dependencies:
@@ -1029,7 +1029,7 @@ importers:
         version: 5.9.3
       vitest:
         specifier: catalog:shared
-        version: 4.0.16(@types/node@24.10.4)(jiti@2.6.1)(jsdom@27.3.0)(lightningcss@1.30.2)(msw@2.12.4(@types/node@24.10.4)(typescript@5.9.3))(terser@5.44.0)(tsx@4.21.0)(yaml@2.8.1)
+        version: 4.0.16(@types/node@24.10.4)(jiti@2.6.1)(jsdom@27.3.0(postcss@8.5.6))(lightningcss@1.30.2)(msw@2.12.4(@types/node@24.10.4)(typescript@5.9.3))(terser@5.44.0)(tsx@4.21.0)(yaml@2.8.1)
 
   features/shared/contracts:
     devDependencies:
@@ -1053,7 +1053,7 @@ importers:
         version: 5.9.3
       vitest:
         specifier: catalog:shared
-        version: 4.0.16(@types/node@24.10.4)(jiti@2.6.1)(jsdom@27.3.0)(lightningcss@1.30.2)(msw@2.12.4(@types/node@24.10.4)(typescript@5.9.3))(terser@5.44.0)(tsx@4.21.0)(yaml@2.8.1)
+        version: 4.0.16(@types/node@24.10.4)(jiti@2.6.1)(jsdom@27.3.0(postcss@8.5.6))(lightningcss@1.30.2)(msw@2.12.4(@types/node@24.10.4)(typescript@5.9.3))(terser@5.44.0)(tsx@4.21.0)(yaml@2.8.1)
 
   features/shared/domain:
     dependencies:
@@ -1084,7 +1084,7 @@ importers:
         version: 5.9.3
       vitest:
         specifier: catalog:shared
-        version: 4.0.16(@types/node@24.10.4)(jiti@2.6.1)(jsdom@27.3.0)(lightningcss@1.30.2)(msw@2.12.4(@types/node@24.10.4)(typescript@5.9.3))(terser@5.44.0)(tsx@4.21.0)(yaml@2.8.1)
+        version: 4.0.16(@types/node@24.10.4)(jiti@2.6.1)(jsdom@27.3.0(postcss@8.5.6))(lightningcss@1.30.2)(msw@2.12.4(@types/node@24.10.4)(typescript@5.9.3))(terser@5.44.0)(tsx@4.21.0)(yaml@2.8.1)
 
   features/shared/ui:
     dependencies:
@@ -1298,7 +1298,7 @@ importers:
         version: 6.0.3(typescript@5.9.3)(vite@7.3.0(@types/node@24.10.4)(jiti@2.6.1)(lightningcss@1.30.2)(terser@5.44.0)(tsx@4.21.0)(yaml@2.8.1))
       vitest:
         specifier: catalog:shared
-        version: 4.0.16(@types/node@24.10.4)(jiti@2.6.1)(jsdom@27.3.0)(lightningcss@1.30.2)(msw@2.12.4(@types/node@24.10.4)(typescript@5.9.3))(terser@5.44.0)(tsx@4.21.0)(yaml@2.8.1)
+        version: 4.0.16(@types/node@24.10.4)(jiti@2.6.1)(jsdom@27.3.0(postcss@8.5.6))(lightningcss@1.30.2)(msw@2.12.4(@types/node@24.10.4)(typescript@5.9.3))(terser@5.44.0)(tsx@4.21.0)(yaml@2.8.1)
 
   features/workspace/contracts:
     dependencies:
@@ -1326,7 +1326,7 @@ importers:
         version: 5.9.3
       vitest:
         specifier: catalog:shared
-        version: 4.0.16(@types/node@24.10.4)(jiti@2.6.1)(jsdom@27.3.0)(lightningcss@1.30.2)(msw@2.12.4(@types/node@24.10.4)(typescript@5.9.3))(terser@5.44.0)(tsx@4.21.0)(yaml@2.8.1)
+        version: 4.0.16(@types/node@24.10.4)(jiti@2.6.1)(jsdom@27.3.0(postcss@8.5.6))(lightningcss@1.30.2)(msw@2.12.4(@types/node@24.10.4)(typescript@5.9.3))(terser@5.44.0)(tsx@4.21.0)(yaml@2.8.1)
 
   features/workspace/domain:
     dependencies:
@@ -1369,7 +1369,7 @@ importers:
         version: 5.9.3
       vitest:
         specifier: catalog:shared
-        version: 4.0.16(@types/node@24.10.4)(jiti@2.6.1)(jsdom@27.3.0)(lightningcss@1.30.2)(msw@2.12.4(@types/node@24.10.4)(typescript@5.9.3))(terser@5.44.0)(tsx@4.21.0)(yaml@2.8.1)
+        version: 4.0.16(@types/node@24.10.4)(jiti@2.6.1)(jsdom@27.3.0(postcss@8.5.6))(lightningcss@1.30.2)(msw@2.12.4(@types/node@24.10.4)(typescript@5.9.3))(terser@5.44.0)(tsx@4.21.0)(yaml@2.8.1)
 
   libs/auth:
     dependencies:
@@ -1397,7 +1397,7 @@ importers:
         version: 5.9.3
       vitest:
         specifier: catalog:shared
-        version: 4.0.16(@types/node@24.10.4)(jiti@2.6.1)(jsdom@27.3.0)(lightningcss@1.30.2)(msw@2.12.4(@types/node@24.10.4)(typescript@5.9.3))(terser@5.44.0)(tsx@4.21.0)(yaml@2.8.1)
+        version: 4.0.16(@types/node@24.10.4)(jiti@2.6.1)(jsdom@27.3.0(postcss@8.5.6))(lightningcss@1.30.2)(msw@2.12.4(@types/node@24.10.4)(typescript@5.9.3))(terser@5.44.0)(tsx@4.21.0)(yaml@2.8.1)
 
   libs/utils:
     dependencies:
@@ -1425,7 +1425,7 @@ importers:
         version: 5.9.3
       vitest:
         specifier: catalog:shared
-        version: 4.0.16(@types/node@24.10.4)(jiti@2.6.1)(jsdom@27.3.0)(lightningcss@1.30.2)(msw@2.12.4(@types/node@24.10.4)(typescript@5.9.3))(terser@5.44.0)(tsx@4.21.0)(yaml@2.8.1)
+        version: 4.0.16(@types/node@24.10.4)(jiti@2.6.1)(jsdom@27.3.0(postcss@8.5.6))(lightningcss@1.30.2)(msw@2.12.4(@types/node@24.10.4)(typescript@5.9.3))(terser@5.44.0)(tsx@4.21.0)(yaml@2.8.1)
 
   tools/dep-version-map:
     devDependencies:
@@ -1433,8 +1433,8 @@ importers:
         specifier: catalog:shared
         version: 13.0.0
       lodash-es:
-        specifier: ^4.17.21
-        version: 4.17.21
+        specifier: ^4.17.22
+        version: 4.17.22
 
   tools/eslint-config:
     devDependencies:
@@ -1940,16 +1940,34 @@ packages:
       kysely: ^0.28.5
       nanostores: ^1.0.1
 
+  '@better-auth/core@1.4.9':
+    resolution: {integrity: sha512-JT2q4NDkQzN22KclUEoZ7qU6tl9HUTfK1ctg2oWlT87SEagkwJcnrUwS9VznL+u9ziOIfY27P0f7/jSnmvLcoQ==}
+    peerDependencies:
+      '@better-auth/utils': 0.3.0
+      '@better-fetch/fetch': 1.1.21
+      better-call: 1.1.7
+      jose: ^6.1.0
+      kysely: ^0.28.5
+      nanostores: ^1.0.1
+
   '@better-auth/telemetry@1.4.6':
     resolution: {integrity: sha512-idc9MGJXxWA7zl2U9zsbdG6+2ZCeqWdPq1KeFSfyqGMFtI1VPQOx9YWLqNPOt31YnOX77ojZSraU2sb7IRdBMA==}
     peerDependencies:
       '@better-auth/core': 1.4.6
+
+  '@better-auth/telemetry@1.4.9':
+    resolution: {integrity: sha512-Tthy1/Gmx+pYlbvRQPBTKfVei8+pJwvH1NZp+5SbhwA6K2EXIaoonx/K6N/AXYs2aKUpyR4/gzqDesDjL7zd6A==}
+    peerDependencies:
+      '@better-auth/core': 1.4.9
 
   '@better-auth/utils@0.3.0':
     resolution: {integrity: sha512-W+Adw6ZA6mgvnSnhOki270rwJ42t4XzSK6YWGF//BbVXL6SwCLWfyzBc1lN2m/4RM28KubdBKQ4X5VMoLRNPQw==}
 
   '@better-fetch/fetch@1.1.18':
     resolution: {integrity: sha512-rEFOE1MYIsBmoMJtQbl32PGHHXuG2hDxvEd7rUHE0vCBoFQVSDqaVs9hkZEtHCxRoY+CljXKFCOuJ8uxqw1LcA==}
+
+  '@better-fetch/fetch@1.1.21':
+    resolution: {integrity: sha512-/ImESw0sskqlVR94jB+5+Pxjf+xBwDZF/N5+y2/q4EqD7IARUTSpPfIo8uf39SYpCxyOCtbyYpUrZ3F/k0zT4A==}
 
   '@borewit/text-codec@0.1.1':
     resolution: {integrity: sha512-5L/uBxmjaCIX5h8Z+uu+kA9BQLkc/Wl06UGR5ajNRxu+/XjonB5i8JpgFMrPj3LXTCPA0pv8yxUvbUi+QthGGA==}
@@ -5205,8 +5223,75 @@ packages:
       vue:
         optional: true
 
+  better-auth@1.4.9:
+    resolution: {integrity: sha512-usSdjuyTzZwIvM8fjF8YGhPncxV3MAg3dHUO9uPUnf0yklXUSYISiH1+imk6/Z+UBqsscyyPRnbIyjyK97p7YA==}
+    peerDependencies:
+      '@lynx-js/react': '*'
+      '@prisma/client': ^5.0.0 || ^6.0.0 || ^7.0.0
+      '@sveltejs/kit': ^2.0.0
+      '@tanstack/react-start': ^1.0.0
+      better-sqlite3: ^12.0.0
+      drizzle-kit: '>=0.31.4'
+      drizzle-orm: '>=0.41.0'
+      mongodb: ^6.0.0 || ^7.0.0
+      mysql2: ^3.0.0
+      next: ^14.0.0 || ^15.0.0 || ^16.0.0
+      pg: ^8.0.0
+      prisma: ^5.0.0 || ^6.0.0 || ^7.0.0
+      react: ^18.0.0 || ^19.0.0
+      react-dom: ^18.0.0 || ^19.0.0
+      solid-js: ^1.0.0
+      svelte: ^4.0.0 || ^5.0.0
+      vitest: ^2.0.0 || ^3.0.0 || ^4.0.0
+      vue: ^3.0.0
+    peerDependenciesMeta:
+      '@lynx-js/react':
+        optional: true
+      '@prisma/client':
+        optional: true
+      '@sveltejs/kit':
+        optional: true
+      '@tanstack/react-start':
+        optional: true
+      better-sqlite3:
+        optional: true
+      drizzle-kit:
+        optional: true
+      drizzle-orm:
+        optional: true
+      mongodb:
+        optional: true
+      mysql2:
+        optional: true
+      next:
+        optional: true
+      pg:
+        optional: true
+      prisma:
+        optional: true
+      react:
+        optional: true
+      react-dom:
+        optional: true
+      solid-js:
+        optional: true
+      svelte:
+        optional: true
+      vitest:
+        optional: true
+      vue:
+        optional: true
+
   better-call@1.1.5:
     resolution: {integrity: sha512-nQJ3S87v6wApbDwbZ++FrQiSiVxWvZdjaO+2v6lZJAG2WWggkB2CziUDjPciz3eAt9TqfRursIQMZIcpkBnvlw==}
+    peerDependencies:
+      zod: ^4.0.0
+    peerDependenciesMeta:
+      zod:
+        optional: true
+
+  better-call@1.1.7:
+    resolution: {integrity: sha512-6gaJe1bBIEgVebQu/7q9saahVzvBsGaByEnE8aDVncZEDiJO7sdNB28ot9I6iXSbR25egGmmZ6aIURXyQHRraQ==}
     peerDependencies:
       zod: ^4.0.0
     peerDependenciesMeta:
@@ -7142,8 +7227,8 @@ packages:
     resolution: {integrity: sha512-iPZK6eYjbxRu3uB4/WZ3EsEIMJFMqAoopl3R+zuq0UjcAm/MO6KCweDgPfP3elTztoKP3KtnVHxTn2NHBSDVUw==}
     engines: {node: '>=10'}
 
-  lodash-es@4.17.21:
-    resolution: {integrity: sha512-mKnC+QJ9pWVzv+C4/U3rRsHapFfHvQFoFB92e52xeyGMcX6/OlIl78je1u8vePzYZSkkogMPJ2yjxxsb89cxyw==}
+  lodash-es@4.17.22:
+    resolution: {integrity: sha512-XEawp1t0gxSi9x01glktRZ5HDy0HXqrM0x5pXQM98EaI0NxO6jVM7omDOxsuEo5UIASAnm2bRp1Jt/e0a2XU8Q==}
 
   lodash.includes@4.3.0:
     resolution: {integrity: sha512-W3Bx6mdkRTGtlJISOvVD/lbqjTlPPUDTMnlXZFnVwi9NKJ6tiAk6LVdlhZMm17VZisqhKcgzpO5Wz91PCt5b0w==}
@@ -7505,8 +7590,8 @@ packages:
   node-releases@2.0.27:
     resolution: {integrity: sha512-nmh3lCkYZ3grZvqcCH+fjmQ7X+H0OeZgP40OierEaAptX4XofMh5kwNbWh7lBduUzCcV/8kZ+NDLCwm2iorIlA==}
 
-  nodemailer@7.0.11:
-    resolution: {integrity: sha512-gnXhNRE0FNhD7wPSCGhdNh46Hs6nm+uTyg+Kq0cZukNQiYdnCsoQjodNP9BQVG9XrcK/v6/MgpAPBUFyzh9pvw==}
+  nodemailer@7.0.12:
+    resolution: {integrity: sha512-H+rnK5bX2Pi/6ms3sN4/jRQvYSMltV6vqup/0SFOrxYYY/qoNvhXPlYq3e+Pm9RFJRwrMGbMIwi81M4dxpomhA==}
     engines: {node: '>=6.0.0'}
 
   normalize-package-data@6.0.2:
@@ -10119,15 +10204,34 @@ snapshots:
       nanostores: 1.1.0
       zod: 4.2.1
 
+  '@better-auth/core@1.4.9(@better-auth/utils@0.3.0)(@better-fetch/fetch@1.1.21)(better-call@1.1.7(zod@4.2.1))(jose@6.1.3)(kysely@0.28.9)(nanostores@1.1.0)':
+    dependencies:
+      '@better-auth/utils': 0.3.0
+      '@better-fetch/fetch': 1.1.21
+      '@standard-schema/spec': 1.0.0
+      better-call: 1.1.7(zod@4.2.1)
+      jose: 6.1.3
+      kysely: 0.28.9
+      nanostores: 1.1.0
+      zod: 4.2.1
+
   '@better-auth/telemetry@1.4.6(@better-auth/core@1.4.6(@better-auth/utils@0.3.0)(@better-fetch/fetch@1.1.18)(better-call@1.1.5(zod@4.2.1))(jose@6.1.3)(kysely@0.28.9)(nanostores@1.1.0))':
     dependencies:
       '@better-auth/core': 1.4.6(@better-auth/utils@0.3.0)(@better-fetch/fetch@1.1.18)(better-call@1.1.5(zod@4.2.1))(jose@6.1.3)(kysely@0.28.9)(nanostores@1.1.0)
       '@better-auth/utils': 0.3.0
       '@better-fetch/fetch': 1.1.18
 
+  '@better-auth/telemetry@1.4.9(@better-auth/core@1.4.9(@better-auth/utils@0.3.0)(@better-fetch/fetch@1.1.21)(better-call@1.1.7(zod@4.2.1))(jose@6.1.3)(kysely@0.28.9)(nanostores@1.1.0))':
+    dependencies:
+      '@better-auth/core': 1.4.9(@better-auth/utils@0.3.0)(@better-fetch/fetch@1.1.21)(better-call@1.1.7(zod@4.2.1))(jose@6.1.3)(kysely@0.28.9)(nanostores@1.1.0)
+      '@better-auth/utils': 0.3.0
+      '@better-fetch/fetch': 1.1.21
+
   '@better-auth/utils@0.3.0': {}
 
   '@better-fetch/fetch@1.1.18': {}
+
+  '@better-fetch/fetch@1.1.21': {}
 
   '@borewit/text-codec@0.1.1': {}
 
@@ -13697,10 +13801,39 @@ snapshots:
       react: 19.2.3
       react-dom: 19.2.3(react@19.2.3)
 
+  better-auth@1.4.9(mongodb@7.0.0)(react-dom@19.2.3(react@19.2.3))(react@19.2.3)(vitest@4.0.16(@types/node@22.19.2)(jiti@2.6.1)(jsdom@27.3.0(postcss@8.5.6))(lightningcss@1.30.2)(msw@2.12.4(@types/node@22.19.2)(typescript@5.9.3))(terser@5.44.0)(tsx@4.21.0)(yaml@2.8.1)):
+    dependencies:
+      '@better-auth/core': 1.4.9(@better-auth/utils@0.3.0)(@better-fetch/fetch@1.1.21)(better-call@1.1.7(zod@4.2.1))(jose@6.1.3)(kysely@0.28.9)(nanostores@1.1.0)
+      '@better-auth/telemetry': 1.4.9(@better-auth/core@1.4.9(@better-auth/utils@0.3.0)(@better-fetch/fetch@1.1.21)(better-call@1.1.7(zod@4.2.1))(jose@6.1.3)(kysely@0.28.9)(nanostores@1.1.0))
+      '@better-auth/utils': 0.3.0
+      '@better-fetch/fetch': 1.1.21
+      '@noble/ciphers': 2.1.1
+      '@noble/hashes': 2.0.1
+      better-call: 1.1.7(zod@4.2.1)
+      defu: 6.1.4
+      jose: 6.1.3
+      kysely: 0.28.9
+      nanostores: 1.1.0
+      zod: 4.2.1
+    optionalDependencies:
+      mongodb: 7.0.0
+      react: 19.2.3
+      react-dom: 19.2.3(react@19.2.3)
+      vitest: 4.0.16(@types/node@22.19.2)(jiti@2.6.1)(jsdom@27.3.0(postcss@8.5.6))(lightningcss@1.30.2)(msw@2.12.4(@types/node@22.19.2)(typescript@5.9.3))(terser@5.44.0)(tsx@4.21.0)(yaml@2.8.1)
+
   better-call@1.1.5(zod@4.2.1):
     dependencies:
       '@better-auth/utils': 0.3.0
       '@better-fetch/fetch': 1.1.18
+      rou3: 0.7.11
+      set-cookie-parser: 2.7.1
+    optionalDependencies:
+      zod: 4.2.1
+
+  better-call@1.1.7(zod@4.2.1):
+    dependencies:
+      '@better-auth/utils': 0.3.0
+      '@better-fetch/fetch': 1.1.21
       rou3: 0.7.11
       set-cookie-parser: 2.7.1
     optionalDependencies:
@@ -15731,7 +15864,7 @@ snapshots:
     dependencies:
       p-locate: 5.0.0
 
-  lodash-es@4.17.21: {}
+  lodash-es@4.17.22: {}
 
   lodash.includes@4.3.0: {}
 
@@ -16081,7 +16214,7 @@ snapshots:
 
   node-releases@2.0.27: {}
 
-  nodemailer@7.0.11: {}
+  nodemailer@7.0.12: {}
 
   normalize-package-data@6.0.2:
     dependencies:
@@ -17898,45 +18031,7 @@ snapshots:
       - tsx
       - yaml
 
-  vitest@4.0.16(@types/node@22.19.2)(jiti@2.6.1)(jsdom@27.3.0)(lightningcss@1.30.2)(msw@2.12.4(@types/node@22.19.2)(typescript@5.9.3))(terser@5.44.0)(tsx@4.21.0)(yaml@2.8.1):
-    dependencies:
-      '@vitest/expect': 4.0.16
-      '@vitest/mocker': 4.0.16(msw@2.12.4(@types/node@22.19.2)(typescript@5.9.3))(vite@7.3.0(@types/node@22.19.2)(jiti@2.6.1)(lightningcss@1.30.2)(terser@5.44.0)(tsx@4.21.0)(yaml@2.8.1))
-      '@vitest/pretty-format': 4.0.16
-      '@vitest/runner': 4.0.16
-      '@vitest/snapshot': 4.0.16
-      '@vitest/spy': 4.0.16
-      '@vitest/utils': 4.0.16
-      es-module-lexer: 1.7.0
-      expect-type: 1.2.2
-      magic-string: 0.30.21
-      obug: 2.1.1
-      pathe: 2.0.3
-      picomatch: 4.0.3
-      std-env: 3.10.0
-      tinybench: 2.9.0
-      tinyexec: 1.0.2
-      tinyglobby: 0.2.15
-      tinyrainbow: 3.0.3
-      vite: 7.3.0(@types/node@22.19.2)(jiti@2.6.1)(lightningcss@1.30.2)(terser@5.44.0)(tsx@4.21.0)(yaml@2.8.1)
-      why-is-node-running: 2.3.0
-    optionalDependencies:
-      '@types/node': 22.19.2
-      jsdom: 27.3.0(postcss@8.5.6)
-    transitivePeerDependencies:
-      - jiti
-      - less
-      - lightningcss
-      - msw
-      - sass
-      - sass-embedded
-      - stylus
-      - sugarss
-      - terser
-      - tsx
-      - yaml
-
-  vitest@4.0.16(@types/node@24.10.4)(jiti@2.6.1)(jsdom@27.3.0)(lightningcss@1.30.2)(msw@2.12.4(@types/node@24.10.4)(typescript@5.9.3))(terser@5.44.0)(tsx@4.21.0)(yaml@2.8.1):
+  vitest@4.0.16(@types/node@24.10.4)(jiti@2.6.1)(jsdom@27.3.0(postcss@8.5.6))(lightningcss@1.30.2)(msw@2.12.4(@types/node@24.10.4)(typescript@5.9.3))(terser@5.44.0)(tsx@4.21.0)(yaml@2.8.1):
     dependencies:
       '@vitest/expect': 4.0.16
       '@vitest/mocker': 4.0.16(msw@2.12.4(@types/node@24.10.4)(typescript@5.9.3))(vite@7.3.0(@types/node@24.10.4)(jiti@2.6.1)(lightningcss@1.30.2)(terser@5.44.0)(tsx@4.21.0)(yaml@2.8.1))

@@ -58,7 +58,7 @@
         "@types/react-dom": "catalog:frontend",
         "@types/react": "catalog:frontend",
         "bcrypt": "catalog:backend",
-        "better-auth": "^1.4.6",
+        "better-auth": "^1.4.9",
         "class-transformer": "catalog:shared",
         "class-validator": "catalog:shared",
         "class-variance-authority": "catalog:frontend",
