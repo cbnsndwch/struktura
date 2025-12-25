@@ -9,6 +9,7 @@ A spreadsheet-like grid interface for viewing and editing collection records in 
 The main grid component that displays collection records with sorting, editing, and bulk operations.
 
 **Props:**
+
 - `collectionId: string` - ID of the collection to display
 - `fields: FieldDefinition[]` - Field definitions from the collection schema
 - `records: CollectionRecord[]` - Array of records to display
@@ -18,6 +19,7 @@ The main grid component that displays collection records with sorting, editing, 
 - `onBulkUpdate?: (updates: Array<{ id: string; data: Record<string, unknown> }>) => Promise<void>` - Callback for bulk updates
 
 **Features:**
+
 - Column sorting (click header to toggle asc/desc)
 - Row selection with checkboxes
 - Inline editing with double-click
@@ -30,6 +32,7 @@ The main grid component that displays collection records with sorting, editing, 
 Field type-specific editors for inline editing.
 
 **Supported Field Types:**
+
 - `TEXT`, `EMAIL`, `URL`, `PHONE` - Text inputs with appropriate HTML5 types
 - `NUMBER`, `CURRENCY`, `PERCENT` - Number inputs with formatting
 - `DATE`, `DATETIME` - Date/datetime pickers
@@ -37,6 +40,7 @@ Field type-specific editors for inline editing.
 - `SELECT` - Dropdown with predefined options
 
 **Keyboard Shortcuts:**
+
 - `Enter` - Commit changes
 - `Escape` - Cancel editing
 - `Tab` - Commit and move to next cell (planned)
@@ -51,21 +55,17 @@ function CollectionView({ collection, records }) {
     const [localRecords, setLocalRecords] = useState(records);
 
     const handleUpdateRecord = async (recordId, data) => {
-        const updated = await recordsApi.updateRecord(
-            collection.id,
-            recordId,
-            { data }
-        );
-        setLocalRecords(prev => 
-            prev.map(r => r.id === recordId ? updated : r)
+        const updated = await recordsApi.updateRecord(collection.id, recordId, {
+            data
+        });
+        setLocalRecords(prev =>
+            prev.map(r => (r.id === recordId ? updated : r))
         );
     };
 
-    const handleDeleteRecords = async (recordIds) => {
+    const handleDeleteRecords = async recordIds => {
         await recordsApi.bulkDeleteRecords(collection.id, recordIds);
-        setLocalRecords(prev => 
-            prev.filter(r => !recordIds.includes(r.id))
-        );
+        setLocalRecords(prev => prev.filter(r => !recordIds.includes(r.id)));
     };
 
     return (
@@ -83,6 +83,7 @@ function CollectionView({ collection, records }) {
 ## Architecture
 
 The grid is built using:
+
 - **TanStack Table v8** - Headless table library providing sorting, filtering, and column management
 - **shadcn/ui** - UI components for consistent styling
 - **React Router 7** - For routing and data loading

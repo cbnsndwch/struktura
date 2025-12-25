@@ -29,6 +29,7 @@ import {
     Skeleton
 } from '@cbnsndwch/struktura-shared-ui';
 import { Trash2, Download } from 'lucide-react';
+
 import { CellEditor } from './CellEditor.js';
 
 export interface DataGridProps {
@@ -36,9 +37,14 @@ export interface DataGridProps {
     fields: FieldDefinition[];
     records: CollectionRecord[];
     isLoading?: boolean;
-    onUpdateRecord?: (recordId: string, data: Record<string, unknown>) => Promise<void>;
+    onUpdateRecord?: (
+        recordId: string,
+        data: Record<string, unknown>
+    ) => Promise<void>;
     onDeleteRecords?: (recordIds: string[]) => Promise<void>;
-    onBulkUpdate?: (updates: Array<{ id: string; data: Record<string, unknown> }>) => Promise<void>;
+    onBulkUpdate?: (
+        updates: Array<{ id: string; data: Record<string, unknown> }>
+    ) => Promise<void>;
 }
 
 export function DataGrid({
@@ -53,7 +59,10 @@ export function DataGrid({
     const [columnFilters, setColumnFilters] = useState<ColumnFiltersState>([]);
     const [rowSelection, setRowSelection] = useState<RowSelectionState>({});
     const [columnResizeMode] = useState<ColumnResizeMode>('onChange');
-    const [editingCell, setEditingCell] = useState<{ rowId: string; columnId: string } | null>(null);
+    const [editingCell, setEditingCell] = useState<{
+        rowId: string;
+        columnId: string;
+    } | null>(null);
     const [editValue, setEditValue] = useState<unknown>('');
 
     // Create column definitions from field definitions
@@ -66,7 +75,7 @@ export function DataGrid({
                 header: ({ table }) => (
                     <Checkbox
                         checked={table.getIsAllPageRowsSelected()}
-                        onCheckedChange={(value) =>
+                        onCheckedChange={value =>
                             table.toggleAllPageRowsSelected(!!value)
                         }
                         aria-label="Select all"
@@ -75,7 +84,7 @@ export function DataGrid({
                 cell: ({ row }) => (
                     <Checkbox
                         checked={row.getIsSelected()}
-                        onCheckedChange={(value) => row.toggleSelected(!!value)}
+                        onCheckedChange={value => row.toggleSelected(!!value)}
                         aria-label="Select row"
                     />
                 ),
@@ -85,7 +94,7 @@ export function DataGrid({
         ];
 
         // Add field columns
-        fields.forEach((field) => {
+        fields.forEach(field => {
             cols.push({
                 accessorKey: `data.${field.name}`,
                 id: field.name,
@@ -93,7 +102,9 @@ export function DataGrid({
                 size: 200,
                 cell: ({ row, column }) => {
                     const value = row.original.data[field.name];
-                    const isEditing = editingCell?.rowId === row.id && editingCell?.columnId === column.id;
+                    const isEditing =
+                        editingCell?.rowId === row.id &&
+                        editingCell?.columnId === column.id;
 
                     if (isEditing) {
                         return (
@@ -101,7 +112,9 @@ export function DataGrid({
                                 field={field}
                                 value={editValue}
                                 onChange={setEditValue}
-                                onCommit={() => handleCellBlur(row.original.id, field.name)}
+                                onCommit={() =>
+                                    handleCellBlur(row.original.id, field.name)
+                                }
                                 onCancel={() => handleCellCancel()}
                             />
                         );
@@ -110,8 +123,12 @@ export function DataGrid({
                     return (
                         <div
                             className="px-2 py-1 cursor-pointer hover:bg-muted/50"
-                            onClick={() => handleCellClick(row.id, column.id, value)}
-                            onDoubleClick={() => handleCellDoubleClick(row.id, column.id, value)}
+                            onClick={() =>
+                                handleCellClick(row.id, column.id, value)
+                            }
+                            onDoubleClick={() =>
+                                handleCellDoubleClick(row.id, column.id, value)
+                            }
                         >
                             {formatCellValue(value, field.type)}
                         </div>
@@ -142,57 +159,72 @@ export function DataGrid({
             columnFilters,
             rowSelection
         },
-        getRowId: (row) => row.id
+        getRowId: row => row.id
     });
 
-    const handleCellClick = useCallback((rowId: string, columnId: string, value: unknown) => {
-        // Single click - select/focus
-        
-    }, []);
+    const handleCellClick = useCallback(
+        (rowId: string, columnId: string, value: unknown) => {
+            // Single click - select/focus
+        },
+        []
+    );
 
-    const handleCellDoubleClick = useCallback((rowId: string, columnId: string, value: unknown) => {
-        // Double click - start editing
-        if (columnId !== 'select') {
-            setEditingCell({ rowId, columnId });
-            setEditValue(value ?? '');
-        }
-    }, []);
+    const handleCellDoubleClick = useCallback(
+        (rowId: string, columnId: string, value: unknown) => {
+            // Double click - start editing
+            if (columnId !== 'select') {
+                setEditingCell({ rowId, columnId });
+                setEditValue(value ?? '');
+            }
+        },
+        []
+    );
 
-    const handleCellBlur = useCallback(async (recordId: string, fieldName: string) => {
-        if (editingCell && onUpdateRecord) {
-            const currentValue = records.find(r => r.id === recordId)?.data[fieldName];
-            
-            if (editValue !== currentValue) {
-                try {
-                    await onUpdateRecord(recordId, { [fieldName]: editValue });
-                } catch (error) {
-                    console.error('Failed to update cell:', error);
+    const handleCellBlur = useCallback(
+        async (recordId: string, fieldName: string) => {
+            if (editingCell && onUpdateRecord) {
+                const currentValue = records.find(r => r.id === recordId)?.data[
+                    fieldName
+                ];
+
+                if (editValue !== currentValue) {
+                    try {
+                        await onUpdateRecord(recordId, {
+                            [fieldName]: editValue
+                        });
+                    } catch (error) {
+                        console.error('Failed to update cell:', error);
+                    }
                 }
             }
-        }
-        
-        setEditingCell(null);
-        setEditValue('');
-    }, [editingCell, editValue, records, onUpdateRecord]);
+
+            setEditingCell(null);
+            setEditValue('');
+        },
+        [editingCell, editValue, records, onUpdateRecord]
+    );
 
     const handleCellCancel = useCallback(() => {
         setEditingCell(null);
         setEditValue('');
     }, []);
 
-    const handleCellKeyDown = useCallback((
-        e: React.KeyboardEvent<HTMLInputElement>,
-        recordId: string,
-        fieldName: string
-    ) => {
-        if (e.key === 'Enter') {
-            e.preventDefault();
-            handleCellBlur(recordId, fieldName);
-        } else if (e.key === 'Escape') {
-            e.preventDefault();
-            handleCellCancel();
-        }
-    }, [handleCellBlur, handleCellCancel]);
+    const handleCellKeyDown = useCallback(
+        (
+            e: React.KeyboardEvent<HTMLInputElement>,
+            recordId: string,
+            fieldName: string
+        ) => {
+            if (e.key === 'Enter') {
+                e.preventDefault();
+                handleCellBlur(recordId, fieldName);
+            } else if (e.key === 'Escape') {
+                e.preventDefault();
+                handleCellCancel();
+            }
+        },
+        [handleCellBlur, handleCellCancel]
+    );
 
     const handleDeleteSelected = useCallback(async () => {
         const selectedIds = Object.keys(rowSelection);
@@ -268,9 +300,9 @@ export function DataGrid({
             <div className="rounded-md border overflow-auto max-h-[600px]">
                 <Table style={{ width: table.getTotalSize() }}>
                     <TableHeader className="sticky top-0 bg-background z-10">
-                        {table.getHeaderGroups().map((headerGroup) => (
+                        {table.getHeaderGroups().map(headerGroup => (
                             <TableRow key={headerGroup.id}>
-                                {headerGroup.headers.map((header) => (
+                                {headerGroup.headers.map(header => (
                                     <TableHead
                                         key={header.id}
                                         style={{ width: header.getSize() }}
@@ -291,7 +323,9 @@ export function DataGrid({
                                             {{
                                                 asc: ' ↑',
                                                 desc: ' ↓'
-                                            }[header.column.getIsSorted() as string] ?? null}
+                                            }[
+                                                header.column.getIsSorted() as string
+                                            ] ?? null}
                                         </div>
                                         {header.column.getCanResize() && (
                                             <div
@@ -306,12 +340,12 @@ export function DataGrid({
                         ))}
                     </TableHeader>
                     <TableBody>
-                        {table.getRowModel().rows.map((row) => (
+                        {table.getRowModel().rows.map(row => (
                             <TableRow
                                 key={row.id}
                                 data-state={row.getIsSelected() && 'selected'}
                             >
-                                {row.getVisibleCells().map((cell) => (
+                                {row.getVisibleCells().map(cell => (
                                     <TableCell
                                         key={cell.id}
                                         style={{ width: cell.column.getSize() }}
@@ -361,7 +395,9 @@ function formatCellValue(value: unknown, fieldType: string): string {
         case 'boolean':
             return value ? '✓' : '✗';
         case 'number':
-            return typeof value === 'number' ? value.toLocaleString() : String(value);
+            return typeof value === 'number'
+                ? value.toLocaleString()
+                : String(value);
         case 'currency':
             return typeof value === 'number'
                 ? new Intl.NumberFormat('en-US', {

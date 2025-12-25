@@ -1,8 +1,9 @@
 /**
  * Records API client for collection data CRUD operations
  */
-import { apiClient, type ServerRequestOptions } from './client.js';
 import type { CollectionRecord } from '@cbnsndwch/struktura-schema-contracts';
+
+import { apiClient, type ServerRequestOptions } from './client.js';
 
 export interface RecordData {
     [key: string]: unknown;

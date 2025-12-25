@@ -70,7 +70,7 @@ export function CellEditor({
                                 : 'text'
                     }
                     value={(value as string) || ''}
-                    onChange={(e) => onChange(e.target.value)}
+                    onChange={e => onChange(e.target.value)}
                     onBlur={onCommit}
                     onKeyDown={handleKeyDown}
                     className="w-full h-full px-2 py-1 border-2 border-blue-500 outline-none rounded-none"
@@ -86,7 +86,7 @@ export function CellEditor({
                     type="number"
                     step={field.type === FieldType.PERCENT ? 0.01 : 'any'}
                     value={(value as number) || ''}
-                    onChange={(e) =>
+                    onChange={e =>
                         onChange(
                             e.target.value === ''
                                 ? null
@@ -120,7 +120,7 @@ export function CellEditor({
                     ref={inputRef}
                     type="date"
                     value={dateValue}
-                    onChange={(e) => onChange(e.target.value)}
+                    onChange={e => onChange(e.target.value)}
                     onBlur={onCommit}
                     onKeyDown={handleKeyDown}
                     className="w-full h-full px-2 py-1 border-2 border-blue-500 outline-none rounded-none"
@@ -149,7 +149,7 @@ export function CellEditor({
                     ref={inputRef}
                     type="datetime-local"
                     value={datetimeValue}
-                    onChange={(e) => onChange(e.target.value)}
+                    onChange={e => onChange(e.target.value)}
                     onBlur={onCommit}
                     onKeyDown={handleKeyDown}
                     className="w-full h-full px-2 py-1 border-2 border-blue-500 outline-none rounded-none"
@@ -162,7 +162,7 @@ export function CellEditor({
                 <div className="flex items-center justify-center h-full">
                     <Checkbox
                         checked={!!value}
-                        onCheckedChange={(checked) => {
+                        onCheckedChange={checked => {
                             onChange(checked);
                             onCommit();
                         }}
@@ -178,7 +178,7 @@ export function CellEditor({
                         ref={inputRef}
                         type="text"
                         value={(value as string) || ''}
-                        onChange={(e) => onChange(e.target.value)}
+                        onChange={e => onChange(e.target.value)}
                         onBlur={onCommit}
                         onKeyDown={handleKeyDown}
                         className="w-full h-full px-2 py-1 border-2 border-blue-500 outline-none rounded-none"
@@ -189,7 +189,7 @@ export function CellEditor({
             return (
                 <Select
                     value={(value as string) || ''}
-                    onValueChange={(newValue) => {
+                    onValueChange={newValue => {
                         onChange(newValue);
                         onCommit();
                     }}
@@ -198,7 +198,7 @@ export function CellEditor({
                         <SelectValue placeholder="Select..." />
                     </SelectTrigger>
                     <SelectContent>
-                        {field.options.choices.map((choice) => (
+                        {field.options.choices.map(choice => (
                             <SelectItem key={choice.value} value={choice.value}>
                                 {choice.label}
                             </SelectItem>
@@ -214,7 +214,7 @@ export function CellEditor({
                     ref={inputRef}
                     type="text"
                     value={String(value || '')}
-                    onChange={(e) => onChange(e.target.value)}
+                    onChange={e => onChange(e.target.value)}
                     onBlur={onCommit}
                     onKeyDown={handleKeyDown}
                     className="w-full h-full px-2 py-1 border-2 border-blue-500 outline-none rounded-none"

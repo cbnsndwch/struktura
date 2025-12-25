@@ -13,13 +13,15 @@ import {
     CardTitle
 } from '@cbnsndwch/struktura-shared-ui';
 
+import type { CollectionRecord } from '@cbnsndwch/struktura-schema-contracts';
+
+import type { Collection } from '@cbnsndwch/struktura-collections-contracts';
+
 import { ViewSwitcher, type ViewType } from '../../components/view-switcher.js';
 import { WorkspaceLayout } from '../../components/workspace-layout.js';
 import { workspaceApi, recordsApi, apiClient } from '../../lib/api/index.js';
 import { requireServerAuth, getCookieHeader } from '../../lib/auth.server.js';
 import { DataGrid } from '../data-grid/index.js';
-import type { CollectionRecord } from '@cbnsndwch/struktura-schema-contracts';
-import type { Collection } from '@cbnsndwch/struktura-collections-contracts';
 
 import type { Route } from './+types/collection-view.js';
 
@@ -51,12 +53,22 @@ export async function loader(args: LoaderFunctionArgs) {
 
     try {
         // Fetch workspace data, collections, full collection details, and records
-        const [workspace, collections, collection, records] = await Promise.all([
-            workspaceApi.getWorkspace(workspaceId, { cookieHeader }),
-            workspaceApi.getWorkspaceCollections(workspaceId, { cookieHeader }),
-            apiClient.get<Collection>(`/collections/${collectionId}`, { cookieHeader }),
-            recordsApi.getRecords(collectionId, { limit: 100 }, { cookieHeader })
-        ]);
+        const [workspace, collections, collection, records] = await Promise.all(
+            [
+                workspaceApi.getWorkspace(workspaceId, { cookieHeader }),
+                workspaceApi.getWorkspaceCollections(workspaceId, {
+                    cookieHeader
+                }),
+                apiClient.get<Collection>(`/collections/${collectionId}`, {
+                    cookieHeader
+                }),
+                recordsApi.getRecords(
+                    collectionId,
+                    { limit: 100 },
+                    { cookieHeader }
+                )
+            ]
+        );
 
         if (!collection) {
             throw new Response('Collection not found', { status: 404 });
@@ -90,7 +102,9 @@ export async function loader(args: LoaderFunctionArgs) {
 export default function CollectionView({ loaderData }: Route.ComponentProps) {
     const { collection, workspace, collections, records, error } = loaderData;
     const [currentView, setCurrentView] = useState<ViewType>('grid');
-    const [localRecords, setLocalRecords] = useState<CollectionRecord[]>(records || []);
+    const [localRecords, setLocalRecords] = useState<CollectionRecord[]>(
+        records || []
+    );
 
     // Handle record updates
     const handleUpdateRecord = useCallback(
@@ -101,10 +115,10 @@ export default function CollectionView({ loaderData }: Route.ComponentProps) {
                     recordId,
                     { data }
                 );
-                
+
                 // Update local state optimistically
-                setLocalRecords((prev) =>
-                    prev.map((r) => (r.id === recordId ? updatedRecord : r))
+                setLocalRecords(prev =>
+                    prev.map(r => (r.id === recordId ? updatedRecord : r))
                 );
             } catch (error) {
                 console.error('Failed to update record:', error);
@@ -119,10 +133,10 @@ export default function CollectionView({ loaderData }: Route.ComponentProps) {
         async (recordIds: string[]) => {
             try {
                 await recordsApi.bulkDeleteRecords(collection!.id, recordIds);
-                
+
                 // Update local state
-                setLocalRecords((prev) =>
-                    prev.filter((r) => !recordIds.includes(r.id))
+                setLocalRecords(prev =>
+                    prev.filter(r => !recordIds.includes(r.id))
                 );
             } catch (error) {
                 console.error('Failed to delete records:', error);
@@ -194,9 +208,7 @@ export default function CollectionView({ loaderData }: Route.ComponentProps) {
                             {localRecords.length}
                         </div>
                         <p className="text-xs text-muted-foreground">
-                            {localRecords.length === 1
-                                ? 'record'
-                                : 'records'}{' '}
+                            {localRecords.length === 1 ? 'record' : 'records'}{' '}
                             loaded
                         </p>
                     </CardContent>
@@ -253,9 +265,9 @@ export default function CollectionView({ loaderData }: Route.ComponentProps) {
                                 {currentView} view coming soon
                             </h3>
                             <p className="text-muted-foreground max-w-md">
-                                The {currentView} view for displaying and managing
-                                collection records will be implemented in a future
-                                update.
+                                The {currentView} view for displaying and
+                                managing collection records will be implemented
+                                in a future update.
                             </p>
                         </div>
                     )}
