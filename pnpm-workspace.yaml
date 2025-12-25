@@ -36,7 +36,7 @@ catalogs:
     graphql-subscriptions: ^3.0.0
     jsonwebtoken: ^9.0.3
     mongodb-memory-server: ^11.0.1
-    mongoose: ^9.0.1
+    mongoose: ^9.0.2
     nodemailer: ^7.0.11
     passport: ^0.7.0
     passport-github2: ^0.1.12
@@ -101,7 +101,7 @@ catalogs:
     react: ^19.2.3
     react-day-picker: ^9.13.0
     react-dom: ^19.2.3
-    react-hook-form: 7.68.0
+    react-hook-form: 7.69.0
     react-resizable-panels: 4.0.15
     react-router: ^7.11.0
     recharts: 3.6.0
@@ -151,7 +151,7 @@ catalogs:
     typescript: ^5.9.3
     typescript-eslint: ^8.50.1
     vitest: ^4.0.16
-    zod: 4.1.13
+    zod: 4.2.1
 
 ignoredBuiltDependencies:
   - '@nestjs/core'
