@@ -12,9 +12,6 @@ catalogs:
     '@as-integrations/express5':
       specifier: ^1.1.2
       version: 1.1.2
-    '@nestjs/apollo':
-      specifier: ^13.2.3
-      version: 13.2.3
     '@nestjs/cli':
       specifier: ^11.0.14
       version: 11.0.14
@@ -81,9 +78,6 @@ catalogs:
     express:
       specifier: ^5.2.1
       version: 5.2.1
-    graphql:
-      specifier: ^16.12.0
-      version: 16.12.0
     graphql-subscriptions:
       specifier: ^3.0.0
       version: 3.0.0
@@ -347,6 +341,9 @@ catalogs:
     '@swc/core':
       specifier: ^1.15.7
       version: 1.15.7
+    '@types/lodash-es':
+      specifier: ^4.17.12
+      version: 4.17.12
     '@types/node':
       specifier: ^22.19.2
       version: 22.19.2
@@ -407,6 +404,9 @@ catalogs:
     globals:
       specifier: ^16.5.0
       version: 16.5.0
+    graphql:
+      specifier: ^16.12.0
+      version: 16.12.0
     http-server:
       specifier: ^14.1.1
       version: 14.1.1
@@ -434,6 +434,9 @@ catalogs:
     tsdown:
       specifier: ^0.18.3
       version: 0.18.3
+    tslib:
+      specifier: 2.8.1
+      version: 2.8.1
     tsx:
       specifier: ^4.21.0
       version: 4.21.0
@@ -505,6 +508,9 @@ importers:
       npm-check-updates:
         specifier: catalog:shared
         version: 19.2.0
+      postcss:
+        specifier: catalog:frontend
+        version: 8.5.6
       prettier:
         specifier: catalog:shared
         version: 3.7.4
@@ -532,6 +538,9 @@ importers:
       '@base-ui/react':
         specifier: catalog:frontend
         version: 1.0.0(@types/react@19.2.7)(react-dom@19.2.3(react@19.2.3))(react@19.2.3)
+      '@cbnsndwch/nestjs-apollo':
+        specifier: workspace:*
+        version: link:../../libs/nest-apollo
       '@cbnsndwch/struktura-auth-contracts':
         specifier: workspace:*
         version: link:../../features/auth/contracts
@@ -568,9 +577,6 @@ importers:
       '@hookform/resolvers':
         specifier: catalog:frontend
         version: 5.2.2(react-hook-form@7.69.0(react@19.2.3))
-      '@nestjs/apollo':
-        specifier: catalog:backend
-        version: 13.2.3(@apollo/server@5.2.0(graphql@16.12.0))(@as-integrations/express5@1.1.2(@apollo/server@5.2.0(graphql@16.12.0))(express@5.2.1))(@nestjs/common@11.1.10(class-transformer@0.5.1)(class-validator@0.14.3)(reflect-metadata@0.2.2)(rxjs@7.8.2))(@nestjs/core@11.1.10)(@nestjs/graphql@13.2.3(@nestjs/common@11.1.10(class-transformer@0.5.1)(class-validator@0.14.3)(reflect-metadata@0.2.2)(rxjs@7.8.2))(@nestjs/core@11.1.10)(class-transformer@0.5.1)(class-validator@0.14.3)(graphql@16.12.0)(reflect-metadata@0.2.2)(ts-morph@26.0.0))(graphql@16.12.0)
       '@nestjs/common':
         specifier: catalog:backend
         version: 11.1.10(class-transformer@0.5.1)(class-validator@0.14.3)(reflect-metadata@0.2.2)(rxjs@7.8.2)
@@ -635,7 +641,7 @@ importers:
         specifier: catalog:backend
         version: 5.2.1
       graphql:
-        specifier: catalog:backend
+        specifier: catalog:shared
         version: 16.12.0
       graphql-subscriptions:
         specifier: catalog:backend
@@ -814,7 +820,7 @@ importers:
         version: 6.0.3(typescript@5.9.3)(vite@7.3.0(@types/node@22.19.2)(jiti@2.6.1)(lightningcss@1.30.2)(terser@5.44.0)(tsx@4.21.0)(yaml@2.8.1))
       vitest:
         specifier: catalog:shared
-        version: 4.0.16(@types/node@22.19.2)(jiti@2.6.1)(jsdom@27.3.0)(lightningcss@1.30.2)(msw@2.12.4(@types/node@22.19.2)(typescript@5.9.3))(terser@5.44.0)(tsx@4.21.0)(yaml@2.8.1)
+        version: 4.0.16(@types/node@22.19.2)(jiti@2.6.1)(jsdom@27.3.0(postcss@8.5.6))(lightningcss@1.30.2)(msw@2.12.4(@types/node@22.19.2)(typescript@5.9.3))(terser@5.44.0)(tsx@4.21.0)(yaml@2.8.1)
 
   features/auth/contracts:
     dependencies:
@@ -831,6 +837,9 @@ importers:
       eslint:
         specifier: catalog:shared
         version: 9.39.2(jiti@2.6.1)
+      postcss:
+        specifier: catalog:frontend
+        version: 8.5.6
       prettier:
         specifier: catalog:shared
         version: 3.7.4
@@ -842,7 +851,7 @@ importers:
         version: 5.9.3
       vitest:
         specifier: catalog:shared
-        version: 4.0.16(@types/node@24.10.4)(jiti@2.6.1)(jsdom@27.3.0)(lightningcss@1.30.2)(msw@2.12.4(@types/node@24.10.4)(typescript@5.9.3))(terser@5.44.0)(tsx@4.21.0)(yaml@2.8.1)
+        version: 4.0.16(@types/node@24.10.4)(jiti@2.6.1)(jsdom@27.3.0(postcss@8.5.6))(lightningcss@1.30.2)(msw@2.12.4(@types/node@24.10.4)(typescript@5.9.3))(terser@5.44.0)(tsx@4.21.0)(yaml@2.8.1)
 
   features/auth/domain:
     dependencies:
@@ -872,7 +881,7 @@ importers:
         version: 6.5.0(@nestjs/common@11.1.10(class-transformer@0.5.1)(class-validator@0.14.3)(reflect-metadata@0.2.2)(rxjs@7.8.2))(@nestjs/core@11.1.10)(reflect-metadata@0.2.2)
       better-auth:
         specifier: catalog:backend
-        version: 1.4.9(mongodb@7.0.0)(react-dom@19.2.3(react@19.2.3))(react@19.2.3)(vitest@4.0.16(@types/node@24.10.4)(jiti@2.6.1)(jsdom@27.3.0)(lightningcss@1.30.2)(msw@2.12.4(@types/node@24.10.4)(typescript@5.9.3))(terser@5.44.0)(tsx@4.21.0)(yaml@2.8.1))
+        version: 1.4.9(mongodb@7.0.0)(react-dom@19.2.3(react@19.2.3))(react@19.2.3)(vitest@4.0.16(@types/node@24.10.4)(jiti@2.6.1)(jsdom@27.3.0(postcss@8.5.6))(lightningcss@1.30.2)(msw@2.12.4(@types/node@24.10.4)(typescript@5.9.3))(terser@5.44.0)(tsx@4.21.0)(yaml@2.8.1))
       class-transformer:
         specifier: catalog:shared
         version: 0.5.1
@@ -904,6 +913,9 @@ importers:
       eslint:
         specifier: catalog:shared
         version: 9.39.2(jiti@2.6.1)
+      postcss:
+        specifier: catalog:frontend
+        version: 8.5.6
       prettier:
         specifier: catalog:shared
         version: 3.7.4
@@ -915,7 +927,7 @@ importers:
         version: 5.9.3
       vitest:
         specifier: catalog:shared
-        version: 4.0.16(@types/node@24.10.4)(jiti@2.6.1)(jsdom@27.3.0)(lightningcss@1.30.2)(msw@2.12.4(@types/node@24.10.4)(typescript@5.9.3))(terser@5.44.0)(tsx@4.21.0)(yaml@2.8.1)
+        version: 4.0.16(@types/node@24.10.4)(jiti@2.6.1)(jsdom@27.3.0(postcss@8.5.6))(lightningcss@1.30.2)(msw@2.12.4(@types/node@24.10.4)(typescript@5.9.3))(terser@5.44.0)(tsx@4.21.0)(yaml@2.8.1)
 
   features/collections/contracts:
     dependencies:
@@ -937,7 +949,7 @@ importers:
         version: 5.9.3
       vitest:
         specifier: catalog:shared
-        version: 4.0.16(@types/node@24.10.4)(jiti@2.6.1)(jsdom@27.3.0)(lightningcss@1.30.2)(msw@2.12.4(@types/node@24.10.4)(typescript@5.9.3))(terser@5.44.0)(tsx@4.21.0)(yaml@2.8.1)
+        version: 4.0.16(@types/node@24.10.4)(jiti@2.6.1)(jsdom@27.3.0(postcss@8.5.6))(lightningcss@1.30.2)(msw@2.12.4(@types/node@24.10.4)(typescript@5.9.3))(terser@5.44.0)(tsx@4.21.0)(yaml@2.8.1)
 
   features/collections/domain:
     dependencies:
@@ -969,7 +981,7 @@ importers:
         specifier: catalog:shared
         version: 0.14.3
       graphql:
-        specifier: catalog:backend
+        specifier: catalog:shared
         version: 16.12.0
       jsep:
         specifier: catalog:shared
@@ -998,7 +1010,7 @@ importers:
         version: 5.9.3
       vitest:
         specifier: catalog:shared
-        version: 4.0.16(@types/node@22.19.2)(jiti@2.6.1)(jsdom@27.3.0)(lightningcss@1.30.2)(msw@2.12.4(@types/node@22.19.2)(typescript@5.9.3))(terser@5.44.0)(tsx@4.21.0)(yaml@2.8.1)
+        version: 4.0.16(@types/node@22.19.2)(jiti@2.6.1)(jsdom@27.3.0(postcss@8.5.6))(lightningcss@1.30.2)(msw@2.12.4(@types/node@22.19.2)(typescript@5.9.3))(terser@5.44.0)(tsx@4.21.0)(yaml@2.8.1)
 
   features/schema/contracts:
     devDependencies:
@@ -1011,6 +1023,9 @@ importers:
       eslint:
         specifier: catalog:shared
         version: 9.39.2(jiti@2.6.1)
+      postcss:
+        specifier: catalog:frontend
+        version: 8.5.6
       prettier:
         specifier: catalog:shared
         version: 3.7.4
@@ -1022,7 +1037,7 @@ importers:
         version: 5.9.3
       vitest:
         specifier: catalog:shared
-        version: 4.0.16(@types/node@24.10.4)(jiti@2.6.1)(jsdom@27.3.0)(lightningcss@1.30.2)(msw@2.12.4(@types/node@24.10.4)(typescript@5.9.3))(terser@5.44.0)(tsx@4.21.0)(yaml@2.8.1)
+        version: 4.0.16(@types/node@24.10.4)(jiti@2.6.1)(jsdom@27.3.0(postcss@8.5.6))(lightningcss@1.30.2)(msw@2.12.4(@types/node@24.10.4)(typescript@5.9.3))(terser@5.44.0)(tsx@4.21.0)(yaml@2.8.1)
 
   features/schema/domain:
     dependencies:
@@ -1042,6 +1057,9 @@ importers:
       eslint:
         specifier: catalog:shared
         version: 9.39.2(jiti@2.6.1)
+      postcss:
+        specifier: catalog:frontend
+        version: 8.5.6
       prettier:
         specifier: catalog:shared
         version: 3.7.4
@@ -1053,7 +1071,7 @@ importers:
         version: 5.9.3
       vitest:
         specifier: catalog:shared
-        version: 4.0.16(@types/node@24.10.4)(jiti@2.6.1)(jsdom@27.3.0)(lightningcss@1.30.2)(msw@2.12.4(@types/node@24.10.4)(typescript@5.9.3))(terser@5.44.0)(tsx@4.21.0)(yaml@2.8.1)
+        version: 4.0.16(@types/node@24.10.4)(jiti@2.6.1)(jsdom@27.3.0(postcss@8.5.6))(lightningcss@1.30.2)(msw@2.12.4(@types/node@24.10.4)(typescript@5.9.3))(terser@5.44.0)(tsx@4.21.0)(yaml@2.8.1)
 
   features/shared/contracts:
     devDependencies:
@@ -1066,6 +1084,9 @@ importers:
       eslint:
         specifier: catalog:shared
         version: 9.39.2(jiti@2.6.1)
+      postcss:
+        specifier: catalog:frontend
+        version: 8.5.6
       prettier:
         specifier: catalog:shared
         version: 3.7.4
@@ -1077,7 +1098,7 @@ importers:
         version: 5.9.3
       vitest:
         specifier: catalog:shared
-        version: 4.0.16(@types/node@24.10.4)(jiti@2.6.1)(jsdom@27.3.0)(lightningcss@1.30.2)(msw@2.12.4(@types/node@24.10.4)(typescript@5.9.3))(terser@5.44.0)(tsx@4.21.0)(yaml@2.8.1)
+        version: 4.0.16(@types/node@24.10.4)(jiti@2.6.1)(jsdom@27.3.0(postcss@8.5.6))(lightningcss@1.30.2)(msw@2.12.4(@types/node@24.10.4)(typescript@5.9.3))(terser@5.44.0)(tsx@4.21.0)(yaml@2.8.1)
 
   features/shared/domain:
     dependencies:
@@ -1097,6 +1118,9 @@ importers:
       eslint:
         specifier: catalog:shared
         version: 9.39.2(jiti@2.6.1)
+      postcss:
+        specifier: catalog:frontend
+        version: 8.5.6
       prettier:
         specifier: catalog:shared
         version: 3.7.4
@@ -1108,7 +1132,7 @@ importers:
         version: 5.9.3
       vitest:
         specifier: catalog:shared
-        version: 4.0.16(@types/node@24.10.4)(jiti@2.6.1)(jsdom@27.3.0)(lightningcss@1.30.2)(msw@2.12.4(@types/node@24.10.4)(typescript@5.9.3))(terser@5.44.0)(tsx@4.21.0)(yaml@2.8.1)
+        version: 4.0.16(@types/node@24.10.4)(jiti@2.6.1)(jsdom@27.3.0(postcss@8.5.6))(lightningcss@1.30.2)(msw@2.12.4(@types/node@24.10.4)(typescript@5.9.3))(terser@5.44.0)(tsx@4.21.0)(yaml@2.8.1)
 
   features/shared/ui:
     dependencies:
@@ -1302,6 +1326,9 @@ importers:
       jsdom:
         specifier: catalog:frontend
         version: 27.3.0(postcss@8.5.6)
+      postcss:
+        specifier: catalog:frontend
+        version: 8.5.6
       prettier:
         specifier: catalog:shared
         version: 3.7.4
@@ -1322,7 +1349,7 @@ importers:
         version: 6.0.3(typescript@5.9.3)(vite@7.3.0(@types/node@24.10.4)(jiti@2.6.1)(lightningcss@1.30.2)(terser@5.44.0)(tsx@4.21.0)(yaml@2.8.1))
       vitest:
         specifier: catalog:shared
-        version: 4.0.16(@types/node@24.10.4)(jiti@2.6.1)(jsdom@27.3.0)(lightningcss@1.30.2)(msw@2.12.4(@types/node@24.10.4)(typescript@5.9.3))(terser@5.44.0)(tsx@4.21.0)(yaml@2.8.1)
+        version: 4.0.16(@types/node@24.10.4)(jiti@2.6.1)(jsdom@27.3.0(postcss@8.5.6))(lightningcss@1.30.2)(msw@2.12.4(@types/node@24.10.4)(typescript@5.9.3))(terser@5.44.0)(tsx@4.21.0)(yaml@2.8.1)
 
   features/workspace/contracts:
     dependencies:
@@ -1339,6 +1366,9 @@ importers:
       eslint:
         specifier: catalog:shared
         version: 9.39.2(jiti@2.6.1)
+      postcss:
+        specifier: catalog:frontend
+        version: 8.5.6
       prettier:
         specifier: catalog:shared
         version: 3.7.4
@@ -1350,7 +1380,7 @@ importers:
         version: 5.9.3
       vitest:
         specifier: catalog:shared
-        version: 4.0.16(@types/node@24.10.4)(jiti@2.6.1)(jsdom@27.3.0)(lightningcss@1.30.2)(msw@2.12.4(@types/node@24.10.4)(typescript@5.9.3))(terser@5.44.0)(tsx@4.21.0)(yaml@2.8.1)
+        version: 4.0.16(@types/node@24.10.4)(jiti@2.6.1)(jsdom@27.3.0(postcss@8.5.6))(lightningcss@1.30.2)(msw@2.12.4(@types/node@24.10.4)(typescript@5.9.3))(terser@5.44.0)(tsx@4.21.0)(yaml@2.8.1)
 
   features/workspace/domain:
     dependencies:
@@ -1382,6 +1412,9 @@ importers:
       eslint:
         specifier: catalog:shared
         version: 9.39.2(jiti@2.6.1)
+      postcss:
+        specifier: catalog:frontend
+        version: 8.5.6
       prettier:
         specifier: catalog:shared
         version: 3.7.4
@@ -1393,13 +1426,37 @@ importers:
         version: 5.9.3
       vitest:
         specifier: catalog:shared
-        version: 4.0.16(@types/node@24.10.4)(jiti@2.6.1)(jsdom@27.3.0)(lightningcss@1.30.2)(msw@2.12.4(@types/node@24.10.4)(typescript@5.9.3))(terser@5.44.0)(tsx@4.21.0)(yaml@2.8.1)
+        version: 4.0.16(@types/node@24.10.4)(jiti@2.6.1)(jsdom@27.3.0(postcss@8.5.6))(lightningcss@1.30.2)(msw@2.12.4(@types/node@24.10.4)(typescript@5.9.3))(terser@5.44.0)(tsx@4.21.0)(yaml@2.8.1)
 
-  libs/auth:
+  libs/nest-apollo:
     dependencies:
-      '@cbnsndwch/struktura-shared-contracts':
-        specifier: workspace:*
-        version: link:../../features/shared/contracts
+      '@apollo/server':
+        specifier: catalog:backend
+        version: 5.2.0(graphql@16.12.0)
+      '@as-integrations/express5':
+        specifier: catalog:backend
+        version: 1.1.2(@apollo/server@5.2.0(graphql@16.12.0))(express@5.2.1)
+      '@nestjs/common':
+        specifier: catalog:backend
+        version: 11.1.10(class-transformer@0.5.1)(class-validator@0.14.3)(reflect-metadata@0.2.2)(rxjs@7.8.2)
+      '@nestjs/core':
+        specifier: catalog:backend
+        version: 11.1.10(@nestjs/common@11.1.10(class-transformer@0.5.1)(class-validator@0.14.3)(reflect-metadata@0.2.2)(rxjs@7.8.2))(@nestjs/platform-express@11.1.10)(reflect-metadata@0.2.2)(rxjs@7.8.2)
+      '@nestjs/graphql':
+        specifier: catalog:backend
+        version: 13.2.3(@nestjs/common@11.1.10(class-transformer@0.5.1)(class-validator@0.14.3)(reflect-metadata@0.2.2)(rxjs@7.8.2))(@nestjs/core@11.1.10)(class-transformer@0.5.1)(class-validator@0.14.3)(graphql@16.12.0)(reflect-metadata@0.2.2)(ts-morph@26.0.0)
+      '@nestjs/platform-express':
+        specifier: catalog:backend
+        version: 11.1.10(@nestjs/common@11.1.10(class-transformer@0.5.1)(class-validator@0.14.3)(reflect-metadata@0.2.2)(rxjs@7.8.2))(@nestjs/core@11.1.10)
+      graphql:
+        specifier: catalog:shared
+        version: 16.12.0
+      lodash-es:
+        specifier: catalog:shared
+        version: 4.17.22
+      tslib:
+        specifier: catalog:shared
+        version: 2.8.1
     devDependencies:
       '@cbnsndwch/struktura-eslint-config':
         specifier: workspace:*
@@ -1407,12 +1464,18 @@ importers:
       '@cbnsndwch/struktura-tsconfig':
         specifier: workspace:*
         version: link:../../tools/tsconfig
+      '@nestjs/testing':
+        specifier: catalog:backend
+        version: 11.1.10(@nestjs/common@11.1.10(class-transformer@0.5.1)(class-validator@0.14.3)(reflect-metadata@0.2.2)(rxjs@7.8.2))(@nestjs/core@11.1.10)(@nestjs/platform-express@11.1.10)
+      '@types/lodash-es':
+        specifier: catalog:shared
+        version: 4.17.12
+      '@types/node':
+        specifier: catalog:shared
+        version: 22.19.2
       eslint:
         specifier: catalog:shared
         version: 9.39.2(jiti@2.6.1)
-      prettier:
-        specifier: catalog:shared
-        version: 3.7.4
       tsdown:
         specifier: catalog:shared
         version: 0.18.3(synckit@0.11.11)(typescript@5.9.3)
@@ -1421,7 +1484,7 @@ importers:
         version: 5.9.3
       vitest:
         specifier: catalog:shared
-        version: 4.0.16(@types/node@24.10.4)(jiti@2.6.1)(jsdom@27.3.0)(lightningcss@1.30.2)(msw@2.12.4(@types/node@24.10.4)(typescript@5.9.3))(terser@5.44.0)(tsx@4.21.0)(yaml@2.8.1)
+        version: 4.0.16(@types/node@22.19.2)(jiti@2.6.1)(jsdom@27.3.0(postcss@8.5.6))(lightningcss@1.30.2)(msw@2.12.4(@types/node@22.19.2)(typescript@5.9.3))(terser@5.44.0)(tsx@4.21.0)(yaml@2.8.1)
 
   libs/utils:
     dependencies:
@@ -1438,6 +1501,9 @@ importers:
       eslint:
         specifier: catalog:shared
         version: 9.39.2(jiti@2.6.1)
+      postcss:
+        specifier: catalog:frontend
+        version: 8.5.6
       prettier:
         specifier: catalog:shared
         version: 3.7.4
@@ -1449,7 +1515,7 @@ importers:
         version: 5.9.3
       vitest:
         specifier: catalog:shared
-        version: 4.0.16(@types/node@24.10.4)(jiti@2.6.1)(jsdom@27.3.0)(lightningcss@1.30.2)(msw@2.12.4(@types/node@24.10.4)(typescript@5.9.3))(terser@5.44.0)(tsx@4.21.0)(yaml@2.8.1)
+        version: 4.0.16(@types/node@24.10.4)(jiti@2.6.1)(jsdom@27.3.0(postcss@8.5.6))(lightningcss@1.30.2)(msw@2.12.4(@types/node@24.10.4)(typescript@5.9.3))(terser@5.44.0)(tsx@4.21.0)(yaml@2.8.1)
 
   tools/dep-version-map:
     devDependencies:
@@ -1495,6 +1561,9 @@ importers:
       globals:
         specifier: catalog:shared
         version: 16.5.0
+      postcss:
+        specifier: catalog:frontend
+        version: 8.5.6
       prettier:
         specifier: catalog:shared
         version: 3.7.4
@@ -1568,13 +1637,6 @@ packages:
     peerDependencies:
       graphql: 14.x || 15.x || 16.x
 
-  '@apollo/server-plugin-landing-page-graphql-playground@4.0.1':
-    resolution: {integrity: sha512-tWhQzD7DtiTO/wfbGvasryz7eJSuEh9XJHgRTMZI7+Wu/omylG5gH6K6ksg1Vccg8/Xuglfi2f1M5Nm/IlBBGw==}
-    engines: {node: '>=14.0'}
-    deprecated: The use of GraphQL Playground in Apollo Server was supported in previous versions, but this is no longer the case as of December 31, 2022. This package exists for v4 migration purposes only. We do not intend to resolve security issues or other bugs with this package if they arise, so please migrate away from this to [Apollo Server's default Explorer](https://www.apollographql.com/docs/apollo-server/api/plugin/landing-pages) as soon as possible.
-    peerDependencies:
-      '@apollo/server': ^4.0.0
-
   '@apollo/server@5.2.0':
     resolution: {integrity: sha512-OEAl5bwVitkvVkmZlgWksSnQ10FUr6q2qJMdkexs83lsvOGmd/y81X5LoETmKZux8UiQsy/A/xzP00b8hTHH/w==}
     engines: {node: '>=20'}
@@ -1643,9 +1705,6 @@ packages:
   '@apollo/utils.withrequired@3.0.0':
     resolution: {integrity: sha512-aaxeavfJ+RHboh7c2ofO5HHtQobGX4AgUujXP4CXpREHp9fQ9jPi6K9T1jrAKe7HIipoP0OJ1gd6JamSkFIpvA==}
     engines: {node: '>=16'}
-
-  '@apollographql/graphql-playground-html@1.6.29':
-    resolution: {integrity: sha512-xCcXpoz52rI4ksJSdOCxeOCn2DLocxwHf9dVT/Q90Pte1LX+LY+91SFtJF3KXVHH8kEin+g1KKCQPKBjZJfWNA==}
 
   '@as-integrations/express5@1.1.2':
     resolution: {integrity: sha512-BxfwtcWNf2CELDkuPQxi5Zl3WqY/dQVJYafeCBOGoFQjv5M0fjhxmAFZ9vKx/5YKKNeok4UY6PkFbHzmQrdxIA==}
@@ -2695,28 +2754,6 @@ packages:
 
   '@napi-rs/wasm-runtime@1.1.0':
     resolution: {integrity: sha512-Fq6DJW+Bb5jaWE69/qOE0D1TUN9+6uWhCeZpdnSBk14pjLcCWR7Q8n49PTSPHazM37JqrsdpEthXy2xn6jWWiA==}
-
-  '@nestjs/apollo@13.2.3':
-    resolution: {integrity: sha512-dzayHaGSS6XUFHPj6YMb+ixsphZiwjdez3TWmL6wiRxBGTSc4uGkHNrz3qv7Qb5tq/4VwrqP7/qoti+XZsc0mA==}
-    peerDependencies:
-      '@apollo/gateway': ^2.0.0
-      '@apollo/server': ^5.0.0
-      '@apollo/subgraph': ^2.0.0
-      '@as-integrations/express5': '*'
-      '@as-integrations/fastify': ^2.1.1 || ^3.0.0
-      '@nestjs/common': ^11.0.1
-      '@nestjs/core': ^11.0.1
-      '@nestjs/graphql': ^13.0.0
-      graphql: ^16.10.0
-    peerDependenciesMeta:
-      '@apollo/gateway':
-        optional: true
-      '@apollo/subgraph':
-        optional: true
-      '@as-integrations/express5':
-        optional: true
-      '@as-integrations/fastify':
-        optional: true
 
   '@nestjs/cli@11.0.14':
     resolution: {integrity: sha512-YwP03zb5VETTwelXU+AIzMVbEZKk/uxJL+z9pw0mdG9ogAtqZ6/mpmIM4nEq/NU8D0a7CBRLcMYUmWW/55pfqw==}
@@ -4559,6 +4596,12 @@ packages:
   '@types/jsonwebtoken@9.0.10':
     resolution: {integrity: sha512-asx5hIG9Qmf/1oStypjanR7iKTv0gXQ1Ov/jfrX6kS/EO0OFni8orbmGCn0672NHR3kXHwpAwR+B368ZGN/2rA==}
 
+  '@types/lodash-es@4.17.12':
+    resolution: {integrity: sha512-0NgftHUcV4v34VhXm8QBSftKVXtbkBG3ViCjs6+eJ5a6y6Mi/jiFGPc1sC7QK+9BFhWrURE3EOggmWaSxL9OzQ==}
+
+  '@types/lodash@4.17.21':
+    resolution: {integrity: sha512-FOvQ0YPD5NOfPgMzJihoT+Za5pdkDJWcbpuj1DjaKZIr/gxodQjY/uWEFlTNqW2ugXHUiL8lRQgw63dzKHZdeQ==}
+
   '@types/long@4.0.2':
     resolution: {integrity: sha512-MqTGEo5bj5t157U6fA/BiDynNkn0YknVdh48CMPkTSpFTVmvao5UQmm7uEF6xBEo7qIMAlY/JSleYaE6VOdpaA==}
 
@@ -5689,9 +5732,6 @@ packages:
     resolution: {integrity: sha512-/Tb/JcjK111nNScGob5MNtsntNM1aCNUDipB/TkwZFhyDrrE47SOx/18wF2bbjgc3ZzCSKW1T5nt5EbFoAz/Vg==}
     engines: {node: '>=4'}
     hasBin: true
-
-  cssfilter@0.0.10:
-    resolution: {integrity: sha512-FAaLDaplstoRsDR8XGYH51znUN0UY7nMc6Z9/fvE8EXGwvJE9hu7W2vHwx1+bd6gCYnln9nLbzxFTrcO9YQDZw==}
 
   cssstyle@5.3.4:
     resolution: {integrity: sha512-KyOS/kJMEq5O9GdPnaf82noigg5X5DYn0kZPJTaAsCUaBizp6Xa1y9D4Qoqf/JazEXWuruErHgVXwjN5391ZJw==}
@@ -7235,10 +7275,6 @@ packages:
 
   lodash.merge@4.6.2:
     resolution: {integrity: sha512-0KpjqXRVvrYyCsX1swR/XTK0va6VQkQM6MNo7PqW77ByjAhoARA8EfrP1N4+KlKj8YS0ZUCtRT/YUuhyYDujIQ==}
-
-  lodash.omit@4.5.0:
-    resolution: {integrity: sha512-XeqSp49hNGmlkj2EJlfrQFIzQ6lXdNro9sddtQzcJY8QaoC2GO0DT7xaIokHeyM+mIT0mPMlPvkYzg2xCuHdZg==}
-    deprecated: This package is deprecated. Use destructuring assignment syntax instead.
 
   lodash.once@4.1.1:
     resolution: {integrity: sha512-Sb487aTOCr9drQVL8pIxOzVhafOjZN9UU54hiN8PU3uAiSV7lx1yYNpbNmex2PK6dSJoNTSJUUswT651yww3Mg==}
@@ -9300,11 +9336,6 @@ packages:
   xmlchars@2.2.0:
     resolution: {integrity: sha512-JZnDKK8B0RCDw84FNdDAIpZK+JuJw+s7Lz8nksI7SIuU3UXJJslUthsi+uWBUYOwPFwW7W7PRLRfUKpxjtjFCw==}
 
-  xss@1.0.15:
-    resolution: {integrity: sha512-FVdlVVC67WOIPvfOwhoMETV72f6GbW7aOabBC3WxN/oUdoEMDyLz4OgRv5/gck2ZeNqEQu+Tb0kloovXOfpYVg==}
-    engines: {node: '>= 0.10.0'}
-    hasBin: true
-
   xtend@4.0.2:
     resolution: {integrity: sha512-LKYU1iAXJXUgAXn9URjiu+MWhyUXHsvfp7mcuYm9dSUKK0/CjtrUwFAxD82/mCWbtLsGjFIad0wIsod4zrTAEQ==}
     engines: {node: '>=0.4'}
@@ -9461,11 +9492,6 @@ snapshots:
       '@apollo/utils.logger': 3.0.0
       graphql: 16.12.0
 
-  '@apollo/server-plugin-landing-page-graphql-playground@4.0.1(@apollo/server@5.2.0(graphql@16.12.0))':
-    dependencies:
-      '@apollo/server': 5.2.0(graphql@16.12.0)
-      '@apollographql/graphql-playground-html': 1.6.29
-
   '@apollo/server@5.2.0(graphql@16.12.0)':
     dependencies:
       '@apollo/cache-control-types': 1.0.3(graphql@16.12.0)
@@ -9544,10 +9570,6 @@ snapshots:
       graphql: 16.12.0
 
   '@apollo/utils.withrequired@3.0.0': {}
-
-  '@apollographql/graphql-playground-html@1.6.29':
-    dependencies:
-      xss: 1.0.15
 
   '@as-integrations/express5@1.1.2(@apollo/server@5.2.0(graphql@16.12.0))(express@5.2.1)':
     dependencies:
@@ -10983,20 +11005,6 @@ snapshots:
       '@emnapi/runtime': 1.7.1
       '@tybys/wasm-util': 0.10.1
     optional: true
-
-  '@nestjs/apollo@13.2.3(@apollo/server@5.2.0(graphql@16.12.0))(@as-integrations/express5@1.1.2(@apollo/server@5.2.0(graphql@16.12.0))(express@5.2.1))(@nestjs/common@11.1.10(class-transformer@0.5.1)(class-validator@0.14.3)(reflect-metadata@0.2.2)(rxjs@7.8.2))(@nestjs/core@11.1.10)(@nestjs/graphql@13.2.3(@nestjs/common@11.1.10(class-transformer@0.5.1)(class-validator@0.14.3)(reflect-metadata@0.2.2)(rxjs@7.8.2))(@nestjs/core@11.1.10)(class-transformer@0.5.1)(class-validator@0.14.3)(graphql@16.12.0)(reflect-metadata@0.2.2)(ts-morph@26.0.0))(graphql@16.12.0)':
-    dependencies:
-      '@apollo/server': 5.2.0(graphql@16.12.0)
-      '@apollo/server-plugin-landing-page-graphql-playground': 4.0.1(@apollo/server@5.2.0(graphql@16.12.0))
-      '@nestjs/common': 11.1.10(class-transformer@0.5.1)(class-validator@0.14.3)(reflect-metadata@0.2.2)(rxjs@7.8.2)
-      '@nestjs/core': 11.1.10(@nestjs/common@11.1.10(class-transformer@0.5.1)(class-validator@0.14.3)(reflect-metadata@0.2.2)(rxjs@7.8.2))(@nestjs/platform-express@11.1.10)(reflect-metadata@0.2.2)(rxjs@7.8.2)
-      '@nestjs/graphql': 13.2.3(@nestjs/common@11.1.10(class-transformer@0.5.1)(class-validator@0.14.3)(reflect-metadata@0.2.2)(rxjs@7.8.2))(@nestjs/core@11.1.10)(class-transformer@0.5.1)(class-validator@0.14.3)(graphql@16.12.0)(reflect-metadata@0.2.2)(ts-morph@26.0.0)
-      graphql: 16.12.0
-      iterall: 1.3.0
-      lodash.omit: 4.5.0
-      tslib: 2.8.1
-    optionalDependencies:
-      '@as-integrations/express5': 1.1.2(@apollo/server@5.2.0(graphql@16.12.0))(express@5.2.1)
 
   '@nestjs/cli@11.0.14(@swc/cli@0.7.9(@swc/core@1.15.7)(chokidar@4.0.3))(@swc/core@1.15.7)(@types/node@22.19.2)':
     dependencies:
@@ -12956,6 +12964,12 @@ snapshots:
       '@types/ms': 2.1.0
       '@types/node': 24.10.4
 
+  '@types/lodash-es@4.17.12':
+    dependencies:
+      '@types/lodash': 4.17.21
+
+  '@types/lodash@4.17.21': {}
+
   '@types/long@4.0.2': {}
 
   '@types/methods@1.1.4': {}
@@ -13784,7 +13798,7 @@ snapshots:
       react-dom: 19.2.3(react@19.2.3)
       vitest: 4.0.16(@types/node@22.19.2)(jiti@2.6.1)(jsdom@27.3.0(postcss@8.5.6))(lightningcss@1.30.2)(msw@2.12.4(@types/node@22.19.2)(typescript@5.9.3))(terser@5.44.0)(tsx@4.21.0)(yaml@2.8.1)
 
-  better-auth@1.4.9(mongodb@7.0.0)(react-dom@19.2.3(react@19.2.3))(react@19.2.3)(vitest@4.0.16(@types/node@24.10.4)(jiti@2.6.1)(jsdom@27.3.0)(lightningcss@1.30.2)(msw@2.12.4(@types/node@24.10.4)(typescript@5.9.3))(terser@5.44.0)(tsx@4.21.0)(yaml@2.8.1)):
+  better-auth@1.4.9(mongodb@7.0.0)(react-dom@19.2.3(react@19.2.3))(react@19.2.3)(vitest@4.0.16(@types/node@24.10.4)(jiti@2.6.1)(jsdom@27.3.0(postcss@8.5.6))(lightningcss@1.30.2)(msw@2.12.4(@types/node@24.10.4)(typescript@5.9.3))(terser@5.44.0)(tsx@4.21.0)(yaml@2.8.1)):
     dependencies:
       '@better-auth/core': 1.4.9(@better-auth/utils@0.3.0)(@better-fetch/fetch@1.1.21)(better-call@1.1.7(zod@4.2.1))(jose@6.1.3)(kysely@0.28.9)(nanostores@1.1.0)
       '@better-auth/telemetry': 1.4.9(@better-auth/core@1.4.9(@better-auth/utils@0.3.0)(@better-fetch/fetch@1.1.21)(better-call@1.1.7(zod@4.2.1))(jose@6.1.3)(kysely@0.28.9)(nanostores@1.1.0))
@@ -13802,7 +13816,7 @@ snapshots:
       mongodb: 7.0.0
       react: 19.2.3
       react-dom: 19.2.3(react@19.2.3)
-      vitest: 4.0.16(@types/node@24.10.4)(jiti@2.6.1)(jsdom@27.3.0)(lightningcss@1.30.2)(msw@2.12.4(@types/node@24.10.4)(typescript@5.9.3))(terser@5.44.0)(tsx@4.21.0)(yaml@2.8.1)
+      vitest: 4.0.16(@types/node@24.10.4)(jiti@2.6.1)(jsdom@27.3.0(postcss@8.5.6))(lightningcss@1.30.2)(msw@2.12.4(@types/node@24.10.4)(typescript@5.9.3))(terser@5.44.0)(tsx@4.21.0)(yaml@2.8.1)
 
   better-call@1.1.7(zod@4.2.1):
     dependencies:
@@ -14229,8 +14243,6 @@ snapshots:
   css.escape@1.5.1: {}
 
   cssesc@3.0.0: {}
-
-  cssfilter@0.0.10: {}
 
   cssstyle@5.3.4(postcss@8.5.6):
     dependencies:
@@ -15854,8 +15866,6 @@ snapshots:
   lodash.isstring@4.0.1: {}
 
   lodash.merge@4.6.2: {}
-
-  lodash.omit@4.5.0: {}
 
   lodash.once@4.1.1: {}
 
@@ -18005,45 +18015,7 @@ snapshots:
       - tsx
       - yaml
 
-  vitest@4.0.16(@types/node@22.19.2)(jiti@2.6.1)(jsdom@27.3.0)(lightningcss@1.30.2)(msw@2.12.4(@types/node@22.19.2)(typescript@5.9.3))(terser@5.44.0)(tsx@4.21.0)(yaml@2.8.1):
-    dependencies:
-      '@vitest/expect': 4.0.16
-      '@vitest/mocker': 4.0.16(msw@2.12.4(@types/node@22.19.2)(typescript@5.9.3))(vite@7.3.0(@types/node@22.19.2)(jiti@2.6.1)(lightningcss@1.30.2)(terser@5.44.0)(tsx@4.21.0)(yaml@2.8.1))
-      '@vitest/pretty-format': 4.0.16
-      '@vitest/runner': 4.0.16
-      '@vitest/snapshot': 4.0.16
-      '@vitest/spy': 4.0.16
-      '@vitest/utils': 4.0.16
-      es-module-lexer: 1.7.0
-      expect-type: 1.2.2
-      magic-string: 0.30.21
-      obug: 2.1.1
-      pathe: 2.0.3
-      picomatch: 4.0.3
-      std-env: 3.10.0
-      tinybench: 2.9.0
-      tinyexec: 1.0.2
-      tinyglobby: 0.2.15
-      tinyrainbow: 3.0.3
-      vite: 7.3.0(@types/node@22.19.2)(jiti@2.6.1)(lightningcss@1.30.2)(terser@5.44.0)(tsx@4.21.0)(yaml@2.8.1)
-      why-is-node-running: 2.3.0
-    optionalDependencies:
-      '@types/node': 22.19.2
-      jsdom: 27.3.0(postcss@8.5.6)
-    transitivePeerDependencies:
-      - jiti
-      - less
-      - lightningcss
-      - msw
-      - sass
-      - sass-embedded
-      - stylus
-      - sugarss
-      - terser
-      - tsx
-      - yaml
-
-  vitest@4.0.16(@types/node@24.10.4)(jiti@2.6.1)(jsdom@27.3.0)(lightningcss@1.30.2)(msw@2.12.4(@types/node@24.10.4)(typescript@5.9.3))(terser@5.44.0)(tsx@4.21.0)(yaml@2.8.1):
+  vitest@4.0.16(@types/node@24.10.4)(jiti@2.6.1)(jsdom@27.3.0(postcss@8.5.6))(lightningcss@1.30.2)(msw@2.12.4(@types/node@24.10.4)(typescript@5.9.3))(terser@5.44.0)(tsx@4.21.0)(yaml@2.8.1):
     dependencies:
       '@vitest/expect': 4.0.16
       '@vitest/mocker': 4.0.16(msw@2.12.4(@types/node@24.10.4)(typescript@5.9.3))(vite@7.3.0(@types/node@24.10.4)(jiti@2.6.1)(lightningcss@1.30.2)(terser@5.44.0)(tsx@4.21.0)(yaml@2.8.1))
@@ -18242,11 +18214,6 @@ snapshots:
   xml-name-validator@5.0.0: {}
 
   xmlchars@2.2.0: {}
-
-  xss@1.0.15:
-    dependencies:
-      commander: 2.20.3
-      cssfilter: 0.0.10
 
   xtend@4.0.2: {}
 
