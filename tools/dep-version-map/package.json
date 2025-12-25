@@ -4,6 +4,6 @@
     "private": true,
     "devDependencies": {
         "glob": "catalog:shared",
-        "lodash-es": "^4.17.22"
+        "lodash-es": "catalog:shared"
     }
 }

@@ -35,10 +35,6 @@
         "typescript": "catalog:shared",
         "vitest": "catalog:shared"
     },
-    "peerDependencies": {
-        "@nestjs/common": "^11.0.0",
-        "@nestjs/core": "^11.0.0"
-    },
     "module": "./dist/index.js",
     "types": "./dist/index.d.ts",
     "exports": {

@@ -22,10 +22,10 @@
         "@nestjs/graphql": "catalog:backend",
         "@nestjs/mongoose": "catalog:backend",
         "@nestjs/throttler": "catalog:backend",
-        "better-auth": "^1.4.6",
+        "better-auth": "catalog:backend",
         "class-transformer": "catalog:shared",
         "class-validator": "catalog:shared",
-        "mongodb": "^7.0.0",
+        "mongodb": "catalog:backend",
         "mongoose": "catalog:backend",
         "reflect-metadata": "catalog:shared",
         "rxjs": "catalog:shared"
