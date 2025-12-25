@@ -260,8 +260,8 @@ catalogs:
       specifier: ^27.3.0
       version: 27.3.0
     lucide-react:
-      specifier: 0.561.0
-      version: 0.561.0
+      specifier: 0.562.0
+      version: 0.562.0
     next-themes:
       specifier: 0.4.6
       version: 0.4.6
@@ -284,14 +284,14 @@ catalogs:
       specifier: 7.68.0
       version: 7.68.0
     react-resizable-panels:
-      specifier: 3.0.6
-      version: 3.0.6
+      specifier: 4.0.15
+      version: 4.0.15
     react-router:
       specifier: ^7.11.0
       version: 7.11.0
     shadcn:
-      specifier: ^3.6.1
-      version: 3.6.1
+      specifier: ^3.6.2
+      version: 3.6.2
     sonner:
       specifier: 2.0.7
       version: 2.0.7
@@ -621,7 +621,7 @@ importers:
         version: 9.0.3
       lucide-react:
         specifier: catalog:frontend
-        version: 0.561.0(react@19.2.3)
+        version: 0.562.0(react@19.2.3)
       mongodb:
         specifier: ^7.0.0
         version: 7.0.0
@@ -663,7 +663,7 @@ importers:
         version: 7.8.2
       shadcn:
         specifier: catalog:frontend
-        version: 3.6.1(@types/node@22.19.2)(typescript@5.9.3)
+        version: 3.6.2(@types/node@22.19.2)(typescript@5.9.3)
       tailwind-merge:
         specifier: catalog:frontend
         version: 3.4.0
@@ -1198,7 +1198,7 @@ importers:
         version: 1.4.2(react-dom@19.2.3(react@19.2.3))(react@19.2.3)
       lucide-react:
         specifier: catalog:frontend
-        version: 0.561.0(react@19.2.3)
+        version: 0.562.0(react@19.2.3)
       next-themes:
         specifier: catalog:frontend
         version: 0.4.6(react-dom@19.2.3(react@19.2.3))(react@19.2.3)
@@ -1216,7 +1216,7 @@ importers:
         version: 7.68.0(react@19.2.3)
       react-resizable-panels:
         specifier: catalog:frontend
-        version: 3.0.6(react-dom@19.2.3(react@19.2.3))(react@19.2.3)
+        version: 4.0.15(react-dom@19.2.3(react@19.2.3))(react@19.2.3)
       react-router:
         specifier: catalog:frontend
         version: 7.11.0(react-dom@19.2.3(react@19.2.3))(react@19.2.3)
@@ -7223,8 +7223,8 @@ packages:
     resolution: {integrity: sha512-Jo6dJ04CmSjuznwJSS3pUeWmd/H0ffTlkXXgwZi+eq1UCmqQwCh+eLsYOYCwY991i2Fah4h1BEMCx4qThGbsiA==}
     engines: {node: '>=10'}
 
-  lucide-react@0.561.0:
-    resolution: {integrity: sha512-Y59gMY38tl4/i0qewcqohPdEbieBy7SovpBL9IFebhc2mDd8x4PZSOsiFRkpPcOq6bj1r/mjH/Rk73gSlIJP2A==}
+  lucide-react@0.562.0:
+    resolution: {integrity: sha512-82hOAu7y0dbVuFfmO4bYF1XEwYk/mEbM5E+b1jgci/udUBEE/R7LF5Ip0CCEmXe8AybRM8L+04eP+LGZeDvkiw==}
     peerDependencies:
       react: ^16.5.1 || ^17.0.0 || ^18.0.0 || ^19.0.0
 
@@ -7994,11 +7994,11 @@ packages:
       '@types/react':
         optional: true
 
-  react-resizable-panels@3.0.6:
-    resolution: {integrity: sha512-b3qKHQ3MLqOgSS+FRYKapNkJZf5EQzuf6+RLiq1/IlTHw99YrZ2NJZLk4hQIzTnnIkRg2LUqyVinu6YWWpUYew==}
+  react-resizable-panels@4.0.15:
+    resolution: {integrity: sha512-+ygM/EI2h4Qc/cl2fasQ2qwOgNfpQwXLNTU5PqhhPerliX+wnbf7ejcqran7lz3BqABzjddf0pJ3j3G/+A0v9Q==}
     peerDependencies:
-      react: ^16.14.0 || ^17.0.0 || ^18.0.0 || ^19.0.0 || ^19.0.0-rc
-      react-dom: ^16.14.0 || ^17.0.0 || ^18.0.0 || ^19.0.0 || ^19.0.0-rc
+      react: ^18.0.0 || ^19.0.0
+      react-dom: ^18.0.0 || ^19.0.0
 
   react-router@7.11.0:
     resolution: {integrity: sha512-uI4JkMmjbWCZc01WVP2cH7ZfSzH91JAZUDd7/nIprDgWxBV1TkkmLToFh7EbMTcMak8URFRa2YoBL/W8GWnCTQ==}
@@ -8293,8 +8293,8 @@ packages:
     engines: {node: '>= 0.10'}
     hasBin: true
 
-  shadcn@3.6.1:
-    resolution: {integrity: sha512-ClAtlvtyWVVzM87NCQyivSNSEPQEPLOAVCvey8rr6CukNyK2JeLNzJTdo9+4kpS/BSpx2MvQT+g+/V6ymZWmoQ==}
+  shadcn@3.6.2:
+    resolution: {integrity: sha512-2g48/7UsXTSWMFU9GYww85AN5iVTkErbeycrcleI55R+atqW8HE1M/YDFyQ+0T3Bwsd4e8vycPu9gmwODunDpw==}
     hasBin: true
 
   shebang-command@2.0.0:
@@ -15826,7 +15826,7 @@ snapshots:
     dependencies:
       yallist: 4.0.0
 
-  lucide-react@0.561.0(react@19.2.3):
+  lucide-react@0.562.0(react@19.2.3):
     dependencies:
       react: 19.2.3
 
@@ -16636,7 +16636,7 @@ snapshots:
     optionalDependencies:
       '@types/react': 19.2.7
 
-  react-resizable-panels@3.0.6(react-dom@19.2.3(react@19.2.3))(react@19.2.3):
+  react-resizable-panels@4.0.15(react-dom@19.2.3(react@19.2.3))(react@19.2.3):
     dependencies:
       react: 19.2.3
       react-dom: 19.2.3(react@19.2.3)
@@ -17019,7 +17019,7 @@ snapshots:
       safe-buffer: 5.2.1
       to-buffer: 1.2.2
 
-  shadcn@3.6.1(@types/node@22.19.2)(typescript@5.9.3):
+  shadcn@3.6.2(@types/node@22.19.2)(typescript@5.9.3):
     dependencies:
       '@antfu/ni': 25.0.0
       '@babel/core': 7.28.5
