@@ -27,7 +27,7 @@ export class RecordService {
         query?: QueryRecordsDto
     ): Promise<Record[]> {
         const filter = { collectionId, ...(query?.filter || {}) };
-        
+
         let queryBuilder = this.recordModel.find(filter);
 
         if (query?.sort) {

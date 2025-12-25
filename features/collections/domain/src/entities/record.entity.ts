@@ -17,7 +17,12 @@ export class Record implements ICollectionRecord {
     @Field(() => ID)
     id!: string;
 
-    @Prop({ type: Types.ObjectId, ref: 'Collection', required: true, index: true })
+    @Prop({
+        type: Types.ObjectId,
+        ref: 'Collection',
+        required: true,
+        index: true
+    })
     @Field(() => String)
     @IsString()
     collectionId!: string;

@@ -12,7 +12,10 @@ import {
     SecureExpressionEvaluatorService,
     RecordService
 } from './services/index.js';
-import { CollectionsController, RecordsController } from './controllers/index.js';
+import {
+    CollectionsController,
+    RecordsController
+} from './controllers/index.js';
 import { CollectionResolver } from './resolvers/collection.resolver.js';
 
 @Module({
