@@ -4,19 +4,13 @@ This directory contains shared libraries and packages for the Struktura monorepo
 
 ## Structure
 
-- **`contracts/`** - TypeScript interfaces and types shared across applications
-- **`ui/`** - Shared React UI components and design system
-- **`database/`** - MongoDB utilities, schemas, and data access layer
-- **`auth/`** - Authentication and authorization utilities
-- **`validation/`** - Data validation schemas and utilities
-- **`utils/`** - Common utility functions
+- **`utils/`** - Common utility functions and shared logic used across the monorepo.
 
 ## Guidelines
 
 ### Naming Convention
 
 - Use kebab-case for directory names
-- Prefix with purpose: `ui-*`, `database-*`, `auth-*`, etc.
 - Keep names descriptive but concise
 
 ### Package Structure
