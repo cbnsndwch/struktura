@@ -18,7 +18,7 @@ catalogs:
     '@nestjs/jwt': ^11.0.2
     '@nestjs/mongoose': ^11.0.4
     '@nestjs/passport': ^11.0.5
-    '@nestjs/platform-express': ^11.1.9
+    '@nestjs/platform-express': ^11.1.10
     '@nestjs/schematics': ^11.0.9
     '@nestjs/serve-static': ^5.0.4
     '@nestjs/testing': ^11.1.9
