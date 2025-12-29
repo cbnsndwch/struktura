@@ -35,7 +35,7 @@ catalogs:
     graphql: ^16.12.0
     graphql-subscriptions: ^3.0.0
     jsonwebtoken: ^9.0.3
-    mongodb-memory-server: ^10.4.1
+    mongodb-memory-server: ^11.0.1
     mongoose: ^9.0.1
     nodemailer: ^7.0.11
     passport: ^0.7.0
