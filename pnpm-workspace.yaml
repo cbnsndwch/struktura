@@ -37,7 +37,7 @@ catalogs:
     jsonwebtoken: ^9.0.3
     mongodb-memory-server: ^10.4.1
     mongoose: ^9.0.1
-    nodemailer: ^7.0.11
+    nodemailer: ^7.0.12
     passport: ^0.7.0
     passport-github2: ^0.1.12
     passport-google-oauth20: ^2.0.0
