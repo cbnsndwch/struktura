@@ -75,107 +75,15 @@ export function DataGrid({
     const [editValue, setEditValue] = useState<unknown>('');
     const [showDeleteDialog, setShowDeleteDialog] = useState(false);
     const [selectedIdsToDelete, setSelectedIdsToDelete] = useState<string[]>([]);
+    const [focusedCell, setFocusedCell] = useState<{
+        rowIndex: number;
+        columnIndex: number;
+    } | null>(null);
 
-    // Create column definitions from field definitions
-    const columns = useMemo<ColumnDef<CollectionRecord>[]>(() => {
-        const cols: ColumnDef<CollectionRecord>[] = [
-            // Selection column
-            {
-                id: 'select',
-                size: 40,
-                header: ({ table }) => (
-                    <Checkbox
-                        checked={table.getIsAllPageRowsSelected()}
-                        onCheckedChange={value =>
-                            table.toggleAllPageRowsSelected(!!value)
-                        }
-                        aria-label="Select all"
-                    />
-                ),
-                cell: ({ row }) => (
-                    <Checkbox
-                        checked={row.getIsSelected()}
-                        onCheckedChange={value => row.toggleSelected(!!value)}
-                        aria-label="Select row"
-                    />
-                ),
-                enableSorting: false,
-                enableResizing: false
-            }
-        ];
-
-        // Add field columns
-        fields.forEach(field => {
-            cols.push({
-                accessorKey: `data.${field.name}`,
-                id: field.name,
-                header: field.name,
-                size: 200,
-                cell: ({ row, column }) => {
-                    const value = row.original.data[field.name];
-                    const isEditing =
-                        editingCell?.rowId === row.id &&
-                        editingCell?.columnId === column.id;
-
-                    if (isEditing) {
-                        return (
-                            <CellEditor
-                                field={field}
-                                value={editValue}
-                                onChange={setEditValue}
-                                onCommit={() =>
-                                    handleCellBlur(row.original.id, field.name)
-                                }
-                                onCancel={() => handleCellCancel()}
-                            />
-                        );
-                    }
-
-                    return (
-                        <div
-                            className="px-2 py-1 cursor-pointer hover:bg-muted/50"
-                            onClick={() =>
-                                handleCellClick(row.id, column.id, value)
-                            }
-                            onDoubleClick={() =>
-                                handleCellDoubleClick(row.id, column.id, value)
-                            }
-                        >
-                            {formatCellValue(value, field.type)}
-                        </div>
-                    );
-                },
-                enableSorting: true,
-                enableResizing: true
-            });
-        });
-
-        return cols;
-    }, [fields]);
-
-    const table = useReactTable({
-        data: records,
-        columns,
-        columnResizeMode,
-        getCoreRowModel: getCoreRowModel(),
-        getSortedRowModel: getSortedRowModel(),
-        getFilteredRowModel: getFilteredRowModel(),
-        onSortingChange: setSorting,
-        onColumnFiltersChange: setColumnFilters,
-        onRowSelectionChange: setRowSelection,
-        enableRowSelection: true,
-        enableColumnResizing: true,
-        state: {
-            sorting,
-            columnFilters,
-            rowSelection
-        },
-        getRowId: row => row.id
-    });
-
+    // Cell interaction handlers (defined before columns to avoid circular dependency)
     const handleCellClick = useCallback(
         (rowId: string, columnId: string, value: unknown) => {
-            // Single click - select/focus
+            // Single click - select/focus (handled in cell render)
         },
         []
     );
@@ -219,6 +127,108 @@ export function DataGrid({
         setEditingCell(null);
         setEditValue('');
     }, []);
+
+    // Create column definitions from field definitions
+    const columns = useMemo<ColumnDef<CollectionRecord>[]>(() => {
+        const cols: ColumnDef<CollectionRecord>[] = [
+            // Selection column
+            {
+                id: 'select',
+                size: 40,
+                header: ({ table }) => (
+                    <Checkbox
+                        checked={table.getIsAllPageRowsSelected()}
+                        onCheckedChange={value =>
+                            table.toggleAllPageRowsSelected(!!value)
+                        }
+                        aria-label="Select all"
+                    />
+                ),
+                cell: ({ row }) => (
+                    <Checkbox
+                        checked={row.getIsSelected()}
+                        onCheckedChange={value => row.toggleSelected(!!value)}
+                        aria-label="Select row"
+                    />
+                ),
+                enableSorting: false,
+                enableResizing: false
+            }
+        ];
+
+        // Add field columns
+        fields.forEach((field, fieldIndex) => {
+            cols.push({
+                accessorKey: `data.${field.name}`,
+                id: field.name,
+                header: field.name,
+                size: 200,
+                cell: ({ row, column, table }) => {
+                    const value = row.original.data[field.name];
+                    const rowIndex = table.getRowModel().rows.findIndex(r => r.id === row.id);
+                    const isFocused = focusedCell?.rowIndex === rowIndex && focusedCell?.columnIndex === fieldIndex;
+                    const isEditing =
+                        editingCell?.rowId === row.id &&
+                        editingCell?.columnId === column.id;
+
+                    if (isEditing) {
+                        return (
+                            <CellEditor
+                                field={field}
+                                value={editValue}
+                                onChange={setEditValue}
+                                onCommit={() =>
+                                    handleCellBlur(row.original.id, field.name)
+                                }
+                                onCancel={() => handleCellCancel()}
+                            />
+                        );
+                    }
+
+                    return (
+                        <div
+                            className={`px-2 py-1 cursor-pointer hover:bg-muted/50 ${
+                                isFocused ? 'ring-2 ring-primary ring-inset bg-muted/30' : ''
+                            }`}
+                            onClick={() => {
+                                setFocusedCell({ rowIndex, columnIndex: fieldIndex });
+                                handleCellClick(row.id, column.id, value);
+                            }}
+                            onDoubleClick={() =>
+                                handleCellDoubleClick(row.id, column.id, value)
+                            }
+                        >
+                            {formatCellValue(value, field.type)}
+                        </div>
+                    );
+                },
+                enableSorting: true,
+                enableResizing: true
+            });
+        });
+
+        return cols;
+    }, [fields, focusedCell, editingCell, editValue, handleCellClick, handleCellDoubleClick, handleCellBlur, handleCellCancel]);
+
+    const table = useReactTable({
+        data: records,
+        columns,
+        columnResizeMode,
+        getCoreRowModel: getCoreRowModel(),
+        getSortedRowModel: getSortedRowModel(),
+        getFilteredRowModel: getFilteredRowModel(),
+        onSortingChange: setSorting,
+        onColumnFiltersChange: setColumnFilters,
+        onRowSelectionChange: setRowSelection,
+        enableRowSelection: true,
+        enableColumnResizing: true,
+        state: {
+            sorting,
+            columnFilters,
+            rowSelection
+        },
+        getRowId: row => row.id
+    });
 
     const handleCellKeyDown = useCallback(
         (
@@ -267,13 +277,94 @@ export function DataGrid({
                 return;
             }
 
+            if (!focusedCell || records.length === 0) {
+                return;
+            }
+
+            const { rowIndex, columnIndex } = focusedCell;
+            const dataColumns = fields.length; // Number of data columns (excluding selection column)
+
             // Handle arrow key navigation
-            // TODO: Implement arrow key navigation between cells
+            switch (e.key) {
+                case 'ArrowUp':
+                    e.preventDefault();
+                    if (rowIndex > 0) {
+                        setFocusedCell({
+                            rowIndex: rowIndex - 1,
+                            columnIndex
+                        });
+                    }
+                    break;
+
+                case 'ArrowDown':
+                    e.preventDefault();
+                    if (rowIndex < records.length - 1) {
+                        setFocusedCell({
+                            rowIndex: rowIndex + 1,
+                            columnIndex
+                        });
+                    }
+                    break;
+
+                case 'ArrowLeft':
+                    e.preventDefault();
+                    if (columnIndex > 0) {
+                        setFocusedCell({
+                            rowIndex,
+                            columnIndex: columnIndex - 1
+                        });
+                    }
+                    break;
+
+                case 'ArrowRight':
+                    e.preventDefault();
+                    if (columnIndex < dataColumns - 1) {
+                        setFocusedCell({
+                            rowIndex,
+                            columnIndex: columnIndex + 1
+                        });
+                    }
+                    break;
+
+                case 'Enter':
+                    e.preventDefault();
+                    // Enter edit mode for the focused cell
+                    const row = table.getRowModel().rows[rowIndex];
+                    const field = fields[columnIndex];
+                    if (row && field) {
+                        const currentValue = row.original.data[field.name];
+                        setEditingCell({
+                            rowId: row.id,
+                            columnId: field.name
+                        });
+                        setEditValue(currentValue);
+                    }
+                    break;
+
+                case 'Tab':
+                    e.preventDefault();
+                    // Tab moves to next cell (with wrapping)
+                    let nextColumnIndex = columnIndex + 1;
+                    let nextRowIndex = rowIndex;
+
+                    if (nextColumnIndex >= dataColumns) {
+                        nextColumnIndex = 0;
+                        nextRowIndex = rowIndex + 1;
+                    }
+
+                    if (nextRowIndex < records.length) {
+                        setFocusedCell({
+                            rowIndex: nextRowIndex,
+                            columnIndex: nextColumnIndex
+                        });
+                    }
+                    break;
+            }
         };
 
         window.addEventListener('keydown', handleKeyDown);
         return () => window.removeEventListener('keydown', handleKeyDown);
-    }, [editingCell]);
+    }, [editingCell, focusedCell, records.length, fields, table]);
 
     const selectedCount = Object.keys(rowSelection).length;
 
