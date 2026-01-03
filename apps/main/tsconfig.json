@@ -1,15 +1,10 @@
 {
     "extends": "@cbnsndwch/struktura-tsconfig/nest-library",
-    "include": ["src", "app", ".react-router/types/**/*"],
-    "exclude": [
-        "dist",
-        "node_modules",
-        "**/*.spec.ts",
-        "**/*.e2e.spec.ts",
-        "**/*.test.ts"
-    ],
     "compilerOptions": {
-        "lib": ["ES2023", "DOM"],
+        "lib": [
+            "ES2023",
+            "DOM"
+        ],
         "outDir": "./dist",
         "baseUrl": ".",
         "rootDir": ".",
@@ -18,10 +13,41 @@
         "jsxImportSource": "react",
         "allowSyntheticDefaultImports": true,
         "esModuleInterop": true,
-        "rootDirs": [".", "./.react-router/types"],
+        "rootDirs": [
+            ".",
+            "./.react-router/types"
+        ],
+        "types": [
+            "node",
+            "vitest/globals",
+            "vite/client"
+        ],
         "paths": {
-            "@/*": ["./app/*"],
-            "app/*": ["./app/*"]
+            "@/*": [
+                "./app/*"
+            ],
+            "app/*": [
+                "./app/*"
+            ],
+            "e2e/*": [
+                "./e2e/*"
+            ]
         }
-    }
+    },
+    "include": [
+        "src",
+        "app",
+        "e2e",
+        ".react-router/types/**/*",
+    ],
+    "exclude": [
+        "dist",
+        "node_modules",
+        "**/*.spec.ts",
+        "**/*.e2e.spec.ts",
+        "**/*.test.ts",
+        "**/*.spec.ts",
+        "**/*.test.tsx",
+        "**/*.spec.tsx"
+    ]
 }

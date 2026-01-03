@@ -2,9 +2,9 @@
     "name": "@cbnsndwch/struktura-monorepo",
     "description": "Struktura - No-Code Data Management Platform",
     "version": "0.1.0",
+    "type": "module",
     "license": "MIT",
     "private": true,
-    "type": "module",
     "repository": "https://github.com/cbnsndwch/struktura",
     "author": {
         "name": "cbnsndwch LLC",
@@ -15,6 +15,7 @@
     },
     "scripts": {
         "build": "turbo run build",
+        "build:libs": "turbo run build --filter=\"./features/**/*\" --filter=\"./libs/**/*\"",
         "build:feat": "turbo run build --filter=\"./features/**/*\"",
         "clean": "turbo run clean",
         "clog": "conventional-changelog -p angular -i CHANGELOG.md -o changelog-temp.md",
@@ -33,7 +34,8 @@
         "vset": "tsx ./scripts/version-bump.ts",
         "vtag": "tsx ./scripts/create-version-tag.ts",
         "test:telegram": "tsx ./scripts/test-telegram-bot.ts",
-        "db:seed": "tsx ./scripts/seed-test-users.ts"
+        "db:seed": "tsx ./scripts/seed-test-users.ts",
+        "test:e2e:login": "./scripts/run-e2e-login-tests.sh"
     },
     "devDependencies": {
         "@changesets/cli": "catalog:shared",
@@ -50,6 +52,7 @@
         "globals": "catalog:shared",
         "http-server": "catalog:shared",
         "npm-check-updates": "catalog:shared",
+        "postcss": "catalog:frontend",
         "prettier": "catalog:shared",
         "tsx": "catalog:shared",
         "turbo": "catalog:shared",
@@ -101,5 +104,5 @@
             "protobufjs"
         ]
     },
-    "packageManager": "pnpm@10.25.0+sha512.5e82639027af37cf832061bcc6d639c219634488e0f2baebe785028a793de7b525ffcd3f7ff574f5e9860654e098fe852ba8ac5dd5cefe1767d23a020a92f501"
+    "packageManager": "pnpm@10.27.0"
 }

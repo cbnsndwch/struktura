@@ -7,3 +7,4 @@ export * from './FieldValidationRuleDto.js';
 export * from './UpdateCollectionDto.js';
 export * from './UpdateFieldDto.js';
 export * from './ViewDefinitionDto.js';
+export * from './record.dto.js';

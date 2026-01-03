@@ -1,31 +1,3 @@
-import type { MetaFunction } from 'react-router';
-
-import * as React from 'react';
-
-import {
-    Button,
-    Card,
-    CardContent,
-    CardDescription,
-    CardHeader,
-    CardTitle,
-    Badge,
-    Input,
-    Label,
-    ThemeToggle,
-    SimpleThemeToggle,
-    useTheme,
-    // Data table components
-    DataTable,
-    DataTableColumnHeader,
-    DataTablePagination,
-    DataTableViewOptions,
-    DataTableFacetedFilter,
-    Checkbox,
-    cn
-} from '@cbnsndwch/struktura-shared-ui';
-
-// Import React Table functionality
 import {
     getCoreRowModel,
     getFilteredRowModel,
@@ -33,10 +5,35 @@ import {
     getSortedRowModel,
     useReactTable,
     type ColumnDef,
-    type SortingState,
     type ColumnFiltersState,
+    type SortingState,
     type VisibilityState
 } from '@tanstack/react-table';
+import React from 'react';
+import type { MetaFunction } from 'react-router';
+
+import {
+    Badge,
+    Button,
+    Card,
+    CardContent,
+    CardDescription,
+    CardHeader,
+    CardTitle,
+    Checkbox,
+    cn,
+    // Data table components
+    DataTable,
+    DataTableColumnHeader,
+    DataTableFacetedFilter,
+    DataTablePagination,
+    DataTableViewOptions,
+    Input,
+    Label,
+    SimpleThemeToggle,
+    ThemeToggle,
+    useTheme
+} from '@cbnsndwch/struktura-shared-ui';
 
 export const meta: MetaFunction = () => {
     return [
@@ -511,7 +508,7 @@ export default function UIDemo() {
                                                         event.target.value
                                                     )
                                             }
-                                            className="h-8 w-[150px] lg:w-[250px]"
+                                            className="h-8 w-37.5 lg:w-62.5"
                                         />
                                         {table.getColumn('status') && (
                                             <DataTableFacetedFilter

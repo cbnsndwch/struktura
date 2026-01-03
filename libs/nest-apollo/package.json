@@ -1,0 +1,58 @@
+{
+    "name": "@cbnsndwch/nestjs-apollo",
+    "description": "A fork of the NestJS Apollo Server integration package with custom modifications.",
+    "version": "0.1.0",
+    "type": "module",
+    "license": "MIT",
+    "private": true,
+    "repository": "https://github.com/cbnsndwch/struktura",
+    "author": {
+        "name": "cbnsndwch LLC",
+        "url": "https://github.com/cbnsndwch"
+    },
+    "scripts": {
+        "build": "tsdown",
+        "clean": "rm -rf dist",
+        "dev": "tsdown --watch",
+        "lint": "eslint . --fix",
+        "format": "prettier --write .",
+        "test": "vitest --run --passWithNoTests",
+        "test:watch": "vitest",
+        "test:e2e": "jest --config ./tests/jest-e2e.ts --runInBand",
+        "test:e2e:dev": "jest --config ./tests/jest-e2e.ts --runInBand --watch"
+    },
+    "dependencies": {
+        "@apollo/server": "catalog:backend",
+        "@as-integrations/express5": "catalog:backend",
+        "@nestjs/common": "catalog:backend",
+        "@nestjs/core": "catalog:backend",
+        "@nestjs/graphql": "catalog:backend",
+        "@nestjs/platform-express": "catalog:backend",
+        "graphql": "catalog:shared",
+        "lodash-es": "catalog:shared",
+        "tslib": "catalog:shared"
+    },
+    "devDependencies": {
+        "@cbnsndwch/struktura-eslint-config": "workspace:*",
+        "@cbnsndwch/struktura-tsconfig": "workspace:*",
+        "@nestjs/testing": "catalog:backend",
+        "@types/lodash-es": "catalog:shared",
+        "@types/node": "catalog:shared",
+        "eslint": "catalog:shared",
+        "tsdown": "catalog:shared",
+        "typescript": "catalog:shared",
+        "vitest": "catalog:shared"
+    },
+    "files": [
+        "dist"
+    ],
+    "main": "./dist/index.js",
+    "types": "./dist/index.d.ts",
+    "exports": {
+        ".": {
+            "types": "./dist/index.d.ts",
+            "import": "./dist/index.js"
+        },
+        "./package.json": "./package.json"
+    }
+}

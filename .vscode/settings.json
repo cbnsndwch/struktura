@@ -62,7 +62,8 @@
         "*.tsx": "${capture}.jsx,${capture}.spec.tsx,${capture}.spec-d.tsx,${capture}.test.tsx,${capture}.test-d.tsx,${capture}.stories.tsx,${capture}.stories.ts,${capture}.mdx",
         "package.json": "package-lock.json,yarn.lock,pnpm-lock.yaml",
         "tsconfig.json": "tsconfig.*.json,tsconfig.tsbuildinfo",
-        "typedoc.config.js": "typedoc.*.jsonc, typedoc.*.json"
+        "typedoc.config.js": "typedoc.*.jsonc, typedoc.*.json",
+        "vitest.config.ts": "vitest.*.config.ts"
     },
     "files.associations": {
         ".env": "dotenv",

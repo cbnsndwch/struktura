@@ -3,3 +3,4 @@
  */
 export * from './client.js';
 export * from './workspaces.js';
+export * from './records.js';

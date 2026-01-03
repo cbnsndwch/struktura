@@ -16,7 +16,8 @@
          * target runtime environment.
          */
         "lib": [
-            "ESNext"
+            "ESNext",
+            "ES2024"
         ],
         /**
          * Enable experimental support for TC39 stage 2 draft decorators.

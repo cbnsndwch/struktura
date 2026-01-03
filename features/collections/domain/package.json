@@ -22,7 +22,7 @@
         "@nestjs/mongoose": "catalog:backend",
         "class-transformer": "catalog:shared",
         "class-validator": "catalog:shared",
-        "graphql": "catalog:backend",
+        "graphql": "catalog:shared",
         "jsep": "catalog:shared",
         "mongoose": "catalog:backend"
     },
@@ -34,10 +34,6 @@
         "tsdown": "catalog:shared",
         "typescript": "catalog:shared",
         "vitest": "catalog:shared"
-    },
-    "peerDependencies": {
-        "@nestjs/common": "^11.0.0",
-        "@nestjs/core": "^11.0.0"
     },
     "module": "./dist/index.js",
     "types": "./dist/index.d.ts",

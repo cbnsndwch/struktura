@@ -1,9 +1,10 @@
 /**
  * Collection view - displays collection data in different views
  */
-import { useState } from 'react';
+import { useState, useCallback } from 'react';
 import type { MetaFunction, LoaderFunctionArgs } from 'react-router';
 import { Database, FileText } from 'lucide-react';
+import { toast } from 'sonner';
 
 import {
     Card,
@@ -13,10 +14,15 @@ import {
     CardTitle
 } from '@cbnsndwch/struktura-shared-ui';
 
+import type { CollectionRecord } from '@cbnsndwch/struktura-schema-contracts';
+
+import type { Collection } from '@cbnsndwch/struktura-collections-contracts';
+
 import { ViewSwitcher, type ViewType } from '../../components/view-switcher.js';
 import { WorkspaceLayout } from '../../components/workspace-layout.js';
-import { workspaceApi } from '../../lib/api/index.js';
+import { workspaceApi, recordsApi, apiClient } from '../../lib/api/index.js';
 import { requireServerAuth, getCookieHeader } from '../../lib/auth.server.js';
+import { DataGrid } from '../data-grid/index.js';
 
 import type { Route } from './+types/collection-view.js';
 
@@ -47,14 +53,23 @@ export async function loader(args: LoaderFunctionArgs) {
     }
 
     try {
-        // Fetch workspace data and all collections
-        const [workspace, collections] = await Promise.all([
-            workspaceApi.getWorkspace(workspaceId, { cookieHeader }),
-            workspaceApi.getWorkspaceCollections(workspaceId, { cookieHeader })
-        ]);
-
-        // Find the specific collection
-        const collection = collections.find(c => c.id === collectionId);
+        // Fetch workspace data, collections, full collection details, and records
+        const [workspace, collections, collection, records] = await Promise.all(
+            [
+                workspaceApi.getWorkspace(workspaceId, { cookieHeader }),
+                workspaceApi.getWorkspaceCollections(workspaceId, {
+                    cookieHeader
+                }),
+                apiClient.get<Collection>(`/collections/${collectionId}`, {
+                    cookieHeader
+                }),
+                recordsApi.getRecords(
+                    collectionId,
+                    { limit: 100 },
+                    { cookieHeader }
+                )
+            ]
+        );
 
         if (!collection) {
             throw new Response('Collection not found', { status: 404 });
@@ -67,6 +82,7 @@ export async function loader(args: LoaderFunctionArgs) {
                 name: workspace.name
             },
             collections,
+            records,
             error: null
         };
     } catch (error) {
@@ -75,6 +91,7 @@ export async function loader(args: LoaderFunctionArgs) {
             collection: null,
             workspace: null,
             collections: [],
+            records: [],
             error:
                 error instanceof Error
                     ? error.message
@@ -84,8 +101,57 @@ export async function loader(args: LoaderFunctionArgs) {
 }
 
 export default function CollectionView({ loaderData }: Route.ComponentProps) {
-    const { collection, workspace, collections, error } = loaderData;
+    const { collection, workspace, collections, records, error } = loaderData;
     const [currentView, setCurrentView] = useState<ViewType>('grid');
+    const [localRecords, setLocalRecords] = useState<CollectionRecord[]>(
+        records || []
+    );
+
+    // Handle record updates
+    const handleUpdateRecord = useCallback(
+        async (recordId: string, data: Record<string, unknown>) => {
+            try {
+                const updatedRecord = await recordsApi.updateRecord(
+                    collection!.id,
+                    recordId,
+                    { data }
+                );
+
+                // Update local state optimistically
+                setLocalRecords(prev =>
+                    prev.map(r => (r.id === recordId ? updatedRecord : r))
+                );
+                
+                toast.success('Record updated successfully');
+            } catch (error) {
+                console.error('Failed to update record:', error);
+                toast.error('Failed to update record. Please try again.');
+                throw error;
+            }
+        },
+        [collection]
+    );
+
+    // Handle bulk delete
+    const handleDeleteRecords = useCallback(
+        async (recordIds: string[]) => {
+            try {
+                await recordsApi.bulkDeleteRecords(collection!.id, recordIds);
+
+                // Update local state
+                setLocalRecords(prev =>
+                    prev.filter(r => !recordIds.includes(r.id))
+                );
+                
+                toast.success(`Successfully deleted ${recordIds.length} record(s)`);
+            } catch (error) {
+                console.error('Failed to delete records:', error);
+                toast.error('Failed to delete records. Please try again.');
+                throw error;
+            }
+        },
+        [collection]
+    );
 
     if (error || !collection || !workspace) {
         return (
@@ -146,13 +212,11 @@ export default function CollectionView({ loaderData }: Route.ComponentProps) {
                     </CardHeader>
                     <CardContent>
                         <div className="text-2xl font-bold">
-                            {collection.recordCount}
+                            {localRecords.length}
                         </div>
                         <p className="text-xs text-muted-foreground">
-                            {collection.recordCount === 1
-                                ? 'record'
-                                : 'records'}{' '}
-                            in collection
+                            {localRecords.length === 1 ? 'record' : 'records'}{' '}
+                            loaded
                         </p>
                     </CardContent>
                 </Card>
@@ -160,20 +224,19 @@ export default function CollectionView({ loaderData }: Route.ComponentProps) {
                 <Card>
                     <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
                         <CardTitle className="text-sm font-medium">
-                            Last Updated
+                            Fields
                         </CardTitle>
                         <Database className="h-4 w-4 text-muted-foreground" />
                     </CardHeader>
                     <CardContent>
                         <div className="text-2xl font-bold">
-                            {new Date(
-                                collection.lastUpdated
-                            ).toLocaleDateString()}
+                            {collection.fields.length}
                         </div>
                         <p className="text-xs text-muted-foreground">
-                            {new Date(
-                                collection.lastUpdated
-                            ).toLocaleTimeString()}
+                            {collection.fields.length === 1
+                                ? 'field'
+                                : 'fields'}{' '}
+                            defined
                         </p>
                     </CardContent>
                 </Card>
@@ -194,17 +257,27 @@ export default function CollectionView({ loaderData }: Route.ComponentProps) {
                     </CardDescription>
                 </CardHeader>
                 <CardContent>
-                    <div className="flex flex-col items-center justify-center py-12 text-center">
-                        <Database className="h-16 w-16 text-muted-foreground mb-4" />
-                        <h3 className="text-lg font-semibold mb-2">
-                            Collection view coming soon
-                        </h3>
-                        <p className="text-muted-foreground max-w-md">
-                            The {currentView} view for displaying and managing
-                            collection records will be implemented in a future
-                            update.
-                        </p>
-                    </div>
+                    {currentView === 'grid' ? (
+                        <DataGrid
+                            collectionId={collection.id}
+                            fields={collection.fields}
+                            records={localRecords}
+                            onUpdateRecord={handleUpdateRecord}
+                            onDeleteRecords={handleDeleteRecords}
+                        />
+                    ) : (
+                        <div className="flex flex-col items-center justify-center py-12 text-center">
+                            <Database className="h-16 w-16 text-muted-foreground mb-4" />
+                            <h3 className="text-lg font-semibold mb-2">
+                                {currentView} view coming soon
+                            </h3>
+                            <p className="text-muted-foreground max-w-md">
+                                The {currentView} view for displaying and
+                                managing collection records will be implemented
+                                in a future update.
+                            </p>
+                        </div>
+                    )}
                 </CardContent>
             </Card>
         </WorkspaceLayout>

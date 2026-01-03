@@ -8,6 +8,7 @@
         "GRAPHQL_PLAYGROUND",
         "GRAPHQL_INTROSPECTION",
         "CI",
+        "PW_TEST",
         "GITHUB_ACTIONS",
         "BETTER_AUTH_SECRET",
         "GITHUB_CLIENT_ID",
@@ -35,7 +36,8 @@
                 "nest-cli.json"
             ],
             "outputs": ["dist/**", "lib/**", "build/**"],
-            "env": ["NODE_ENV"]
+            "env": ["NODE_ENV"],
+            "outputLogs": "errors-only"
         },
         "dev": {
             "cache": false,
@@ -56,7 +58,8 @@
                 "eslint.config.js",
                 ".eslintrc*"
             ],
-            "outputs": []
+            "outputs": [],
+            "outputLogs": "errors-only"
         },
         "lint:fix": {
             "dependsOn": ["^build"],
@@ -70,7 +73,8 @@
                 ".eslintrc*"
             ],
             "outputs": [],
-            "cache": false
+            "cache": false,
+            "outputLogs": "errors-only"
         },
         "format": {
             "inputs": [
@@ -84,10 +88,12 @@
                 "prettier.config.*"
             ],
             "outputs": [],
-            "cache": false
+            "cache": false,
+            "outputLogs": "errors-only"
         },
         "test": {
             "dependsOn": ["^build"],
+            "cache": false,
             "inputs": [
                 "src/**",
                 "test/**",
@@ -97,14 +103,15 @@
                 "vitest.config.*",
                 "jest.config.*"
             ],
-            "outputs": ["coverage/**"],
-            "env": ["NODE_ENV"]
+            "env": ["NODE_ENV"],
+            "outputLogs": "errors-only"
         },
         "test:watch": {
             "cache": false,
             "persistent": true
         },
         "test:e2e": {
+            "cache": false,
             "dependsOn": ["^build"],
             "inputs": [
                 "src/**",
@@ -113,7 +120,6 @@
                 "**/*.e2e.*",
                 "vitest.e2e.config.*"
             ],
-            "outputs": ["coverage/**"],
             "env": ["NODE_ENV", "DATABASE_URL"]
         }
     }

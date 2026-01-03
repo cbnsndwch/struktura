@@ -1,0 +1,15 @@
+/* eslint-disable @typescript-eslint/no-unsafe-function-type */
+import { SetMetadata } from '@nestjs/common';
+
+import { PLUGIN_METADATA } from '../constants/index.js';
+
+/**
+ * Decorator that marks a class as an Apollo plugin.
+ *
+ * @publicApi
+ */
+export function Plugin(): ClassDecorator {
+    return (target: Function) => {
+        SetMetadata(PLUGIN_METADATA, true)(target);
+    };
+}
