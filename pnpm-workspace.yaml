@@ -31,19 +31,19 @@ catalogs:
     '@types/passport-jwt': ^4.0.1
     '@apollo/server-plugin-response-cache': 5.0.0
     bcrypt: ^6.0.0
-    better-auth: ^1.4.9
+    better-auth: ^1.4.10
     express: ^5.2.1
     graphql-subscriptions: ^3.0.0
     jsonwebtoken: ^9.0.3
     mongodb-memory-server: ^11.0.1
     mongodb: ^7.0.0
-    mongoose: ^9.0.2
+    mongoose: ^9.1.1
     nodemailer: ^7.0.12
     passport-github2: ^0.1.12
     passport-google-oauth20: ^2.0.0
     passport-jwt: ^4.0.1
     passport: ^0.7.0
-    protobufjs: ^7.2.5
+    protobufjs: ^8.0.0
 
   frontend:
     '@base-ui/react': ^1.0.0
