@@ -26,9 +26,18 @@ import {
     TableRow,
     Checkbox,
     Button,
-    Skeleton
+    Skeleton,
+    AlertDialog,
+    AlertDialogAction,
+    AlertDialogCancel,
+    AlertDialogContent,
+    AlertDialogDescription,
+    AlertDialogFooter,
+    AlertDialogHeader,
+    AlertDialogTitle
 } from '@cbnsndwch/struktura-shared-ui';
 import { Trash2, Download } from 'lucide-react';
+import { toast } from 'sonner';
 
 import { CellEditor } from './CellEditor.js';
 
@@ -64,6 +73,8 @@ export function DataGrid({
         columnId: string;
     } | null>(null);
     const [editValue, setEditValue] = useState<unknown>('');
+    const [showDeleteDialog, setShowDeleteDialog] = useState(false);
+    const [selectedIdsToDelete, setSelectedIdsToDelete] = useState<string[]>([]);
 
     // Create column definitions from field definitions
     const columns = useMemo<ColumnDef<CollectionRecord>[]>(() => {
@@ -226,19 +237,27 @@ export function DataGrid({
         [handleCellBlur, handleCellCancel]
     );
 
-    const handleDeleteSelected = useCallback(async () => {
+    const handleDeleteSelected = useCallback(() => {
         const selectedIds = Object.keys(rowSelection);
         if (selectedIds.length > 0 && onDeleteRecords) {
-            if (confirm(`Delete ${selectedIds.length} record(s)?`)) {
-                try {
-                    await onDeleteRecords(selectedIds);
-                    setRowSelection({});
-                } catch (error) {
-                    console.error('Failed to delete records:', error);
-                }
-            }
+            setSelectedIdsToDelete(selectedIds);
+            setShowDeleteDialog(true);
         }
     }, [rowSelection, onDeleteRecords]);
+
+    const confirmDelete = useCallback(async () => {
+        if (selectedIdsToDelete.length > 0 && onDeleteRecords) {
+            try {
+                await onDeleteRecords(selectedIdsToDelete);
+                setRowSelection({});
+                setShowDeleteDialog(false);
+                setSelectedIdsToDelete([]);
+            } catch (error) {
+                console.error('Failed to delete records:', error);
+                toast.error('Failed to delete records. Please try again.');
+            }
+        }
+    }, [selectedIdsToDelete, onDeleteRecords]);
 
     // Keyboard navigation
     useEffect(() => {
@@ -364,6 +383,30 @@ export function DataGrid({
                     </TableBody>
                 </Table>
             </div>
+
+            {/* Delete Confirmation Dialog */}
+            <AlertDialog open={showDeleteDialog} onOpenChange={setShowDeleteDialog}>
+                <AlertDialogContent>
+                    <AlertDialogHeader>
+                        <AlertDialogTitle>Confirm Delete</AlertDialogTitle>
+                        <AlertDialogDescription>
+                            Are you sure you want to delete {selectedIdsToDelete.length} record(s)? 
+                            This action cannot be undone.
+                        </AlertDialogDescription>
+                    </AlertDialogHeader>
+                    <AlertDialogFooter>
+                        <AlertDialogCancel onClick={() => {
+                            setShowDeleteDialog(false);
+                            setSelectedIdsToDelete([]);
+                        }}>
+                            Cancel
+                        </AlertDialogCancel>
+                        <AlertDialogAction onClick={confirmDelete} className="bg-destructive hover:bg-destructive/90">
+                            Delete
+                        </AlertDialogAction>
+                    </AlertDialogFooter>
+                </AlertDialogContent>
+            </AlertDialog>
         </div>
     );
 }

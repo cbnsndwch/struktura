@@ -10,9 +10,12 @@ import {
     HttpCode,
     HttpStatus,
     Req,
-    NotFoundException
+    NotFoundException,
+    UseGuards
 } from '@nestjs/common';
 import { Request } from 'express';
+
+import { BetterAuthGuard } from '@cbnsndwch/struktura-auth-domain';
 
 import { Record } from '../entities/record.entity.js';
 import { RecordService } from '../services/record.service.js';
@@ -26,6 +29,7 @@ import {
 } from '../dto/record.dto.js';
 
 @Controller('api/collections/:collectionId/records')
+@UseGuards(BetterAuthGuard)
 export class RecordsController {
     constructor(private readonly recordService: RecordService) {}
 

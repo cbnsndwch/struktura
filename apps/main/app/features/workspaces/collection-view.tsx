@@ -4,6 +4,7 @@
 import { useState, useCallback } from 'react';
 import type { MetaFunction, LoaderFunctionArgs } from 'react-router';
 import { Database, FileText } from 'lucide-react';
+import { toast } from 'sonner';
 
 import {
     Card,
@@ -120,8 +121,11 @@ export default function CollectionView({ loaderData }: Route.ComponentProps) {
                 setLocalRecords(prev =>
                     prev.map(r => (r.id === recordId ? updatedRecord : r))
                 );
+                
+                toast.success('Record updated successfully');
             } catch (error) {
                 console.error('Failed to update record:', error);
+                toast.error('Failed to update record. Please try again.');
                 throw error;
             }
         },
@@ -138,8 +142,11 @@ export default function CollectionView({ loaderData }: Route.ComponentProps) {
                 setLocalRecords(prev =>
                     prev.filter(r => !recordIds.includes(r.id))
                 );
+                
+                toast.success(`Successfully deleted ${recordIds.length} record(s)`);
             } catch (error) {
                 console.error('Failed to delete records:', error);
+                toast.error('Failed to delete records. Please try again.');
                 throw error;
             }
         },
