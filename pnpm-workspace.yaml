@@ -11,16 +11,16 @@ catalogs:
     '@apollo/server': ^5.2.0
     '@as-integrations/express5': ^1.1.2
     '@nestjs/cli': ^11.0.14
-    '@nestjs/common': ^11.1.10
-    '@nestjs/core': ^11.1.10
+    '@nestjs/common': ^11.1.11
+    '@nestjs/core': ^11.1.11
     '@nestjs/graphql': ^13.2.3
     '@nestjs/jwt': ^11.0.2
     '@nestjs/mongoose': ^11.0.4
     '@nestjs/passport': ^11.0.5
-    '@nestjs/platform-express': ^11.1.10
+    '@nestjs/platform-express': ^11.1.11
     '@nestjs/schematics': ^11.0.9
     '@nestjs/serve-static': ^5.0.4
-    '@nestjs/testing': ^11.1.10
+    '@nestjs/testing': ^11.1.11
     '@nestjs/throttler': ^6.5.0
     '@types/bcrypt': ^6.0.0
     '@types/express': ^5.0.6
