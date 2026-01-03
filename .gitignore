@@ -72,3 +72,7 @@ tsconfig.tsbuildinfo
 
 # RR7
 .react-router/
+
+# Playwright
+playwright-report/
+test-results/
