@@ -3,7 +3,7 @@
  */
 module.exports = {
     reject: [
-        // we'll move to Node 24 manually when it's time
+        // we'll stay on Node 24 for now
         '@types/node'
     ],
 

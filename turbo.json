@@ -8,6 +8,7 @@
         "GRAPHQL_PLAYGROUND",
         "GRAPHQL_INTROSPECTION",
         "CI",
+        "PW_TEST",
         "GITHUB_ACTIONS",
         "BETTER_AUTH_SECRET",
         "GITHUB_CLIENT_ID",

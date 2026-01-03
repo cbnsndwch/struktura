@@ -15,6 +15,7 @@
     },
     "scripts": {
         "build": "turbo run build",
+        "build:libs": "turbo run build --filter=\"./features/**/*\" --filter=\"./libs/**/*\"",
         "build:feat": "turbo run build --filter=\"./features/**/*\"",
         "clean": "turbo run clean",
         "clog": "conventional-changelog -p angular -i CHANGELOG.md -o changelog-temp.md",
