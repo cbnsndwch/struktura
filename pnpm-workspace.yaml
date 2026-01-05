@@ -163,7 +163,7 @@ catalogs:
     typescript-eslint: ^8.51.0
     typescript: ^5.9.3
     vitest: ^4.0.16
-    zod: 4.3.4
+    zod: 4.3.5
 
 ignoredBuiltDependencies:
   - '@nestjs/core'
