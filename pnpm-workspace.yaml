@@ -78,7 +78,7 @@ catalogs:
     '@radix-ui/react-tooltip': 1.2.8
     '@react-router/dev': ^7.11.0
     '@react-router/express': ^7.11.0
-    '@react-router/node': ^7.11.0
+    '@react-router/node': ^7.12.0
     '@tailwindcss/postcss': ^4.1.18
     '@tailwindcss/typography': ^0.5.19
     '@tailwindcss/vite': ^4.1.18
