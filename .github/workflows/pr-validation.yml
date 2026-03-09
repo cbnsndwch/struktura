@@ -156,7 +156,7 @@ jobs:
           platforms: linux/arm64
 
       - name: Build Docker image (test only)
-        uses: docker/build-push-action@v6
+        uses: docker/build-push-action@v7
         with:
           context: .
           file: .docker/main.dockerfile
